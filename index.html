@@ -69,6 +69,10 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible{
 @media (max-width: 480px){.hdr-cta{padding:0 14px !important;font-size:13px !important}.hdr-logo{gap:8px !important}.hdr-logo span+span{letter-spacing:.24em !important}}
 @media (max-width: 420px){.hdr-logo span+span{display:none}}
 
+.hdr-logo span{transition:color .25s ease}
+.hdr-logo:hover span,.hdr-logo:focus-visible span{color:#3E6DA6 !important}
+@media (max-width: 1100px) and (min-width: 481px){.hdr-logo span:first-child{font-size:44px !important}.hdr-logo span+span{font-size:26px !important}}
+@media (max-width: 1180px) and (min-width: 901px){.navlinks{gap:24px !important;font-size:13px}.hdr-logo span:first-child{font-size:40px !important}.hdr-logo span+span{font-size:23px !important}}
 .scrub-top{top:clamp(128px,17vh,170px) !important}
 @media (max-width: 480px){.hdr-row{height:80px !important}}
 @media (max-width: 480px){.hdr-logo span:first-child{font-size:30px !important}.hdr-logo span+span{font-size:16px !important}}
@@ -102,10 +106,10 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible{
 
 <!-- NAV -->
 <header style="position: sticky; top: 0; z-index: 100; background: rgba(255,255,255,0.92); backdrop-filter: blur(10px); border-bottom: 1px solid #ECEAE4">
-<div class="wrap hdr-row" style="display: flex; align-items: center; justify-content: space-between; height: 104px; gap: 24px">
+<div class="wrap hdr-row" style="display: flex; align-items: center; justify-content: space-between; height: 112px; gap: 24px">
 <a href="#top" class="hdr-logo" aria-label="EIB GROUP — მთავარი" style="display: flex; align-items: baseline; gap: 14px">
-<span style="font-family: 'Bodoni Moda', Didot, 'Times New Roman', serif; font-size: 44px; letter-spacing: 0.18em; font-weight: 500; line-height: 1">EIB</span>
-<span style="font-family: 'Bodoni Moda', Didot, serif; font-size: 26px; letter-spacing: 0.36em; color: #5A6475; line-height: 1">GROUP</span>
+<span style="font-family: 'Bodoni Moda', Didot, 'Times New Roman', serif; font-size: 52px; letter-spacing: 0.18em; font-weight: 500; line-height: 1">EIB</span>
+<span style="font-family: 'Bodoni Moda', Didot, serif; font-size: 30px; letter-spacing: 0.36em; color: #5A6475; line-height: 1">GROUP</span>
 </a>
 <nav class="navlinks" aria-label="მთავარი ნავიგაცია" style="gap: 44px; font-size: 14px; letter-spacing: 0.02em">
 <a href="#about">ჩვენ შესახებ</a>
