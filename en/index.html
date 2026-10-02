@@ -103,9 +103,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible{
 
 <!-- HERO -->
 <section class="layer" style="background: #FFFFFF; padding-top: clamp(72px, 11vw, 160px); padding-bottom: clamp(64px, 9vw, 140px)">
-<div aria-hidden="true" style="position: absolute; top: 0; right: 0; width: 44%; height: 82%; background: #EEF3F9"></div>
-<div aria-hidden="true" style="position: absolute; top: 0; right: 44%; width: 1px; height: 82%; background: #C9D7E8"></div>
-<div class="wrap" style="position: relative">
+<div class="wrap">
 <div class="g">
 <div class="c-1-12" style="display: flex; align-items: center; gap: 18px; margin-bottom: clamp(36px, 5vw, 64px); font-size: 12px; letter-spacing: 0.28em; text-transform: uppercase; color: #5A6475">
 <span style="display: inline-block; width: 56px; height: 1px; background: #3E6DA6"></span>
@@ -400,8 +398,8 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible{
   var caps = [].slice.call(sec.querySelectorAll('.cap'));
   var fills = [].slice.call(sec.querySelectorAll('.scrub-bar b'));
   var hint = document.getElementById('scrubHint');
-  // scene boundaries in seconds, taken from the cuts in the source video
-  var SEG = [[0, 1.46], [1.46, 3.54], [3.54, 5.5], [5.5, 7.75], [7.75, 10.0]];
+  // scene windows in seconds: each stops before the next transition's blur/dissolve and starts after it
+  var SEG = [[0, 1.33], [1.85, 3.2], [3.72, 5.42], [5.5, 7.5], [8.1, 10.0]];
   var N = SEG.length;
   var small = Math.min(screen.width, window.innerWidth) < 760;
   vid.src = sec.getAttribute('data-base') + (small ? 'process-sm.mp4' : 'process.mp4');
