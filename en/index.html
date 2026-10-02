@@ -60,7 +60,8 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible{
 .scrub-bar{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin-top:28px}
 .scrub-bar i{display:block;height:2px;background:rgba(255,255,255,.22);position:relative;overflow:hidden}
 .scrub-bar i b{position:absolute;inset:0;background:#C2A57A;transform-origin:left;transform:scaleX(0)}
-.scrub-hint{display:inline-flex;align-items:center;gap:12px;font-size:12px;letter-spacing:.28em;text-transform:uppercase;color:#AEB7C6;transition:opacity .4s}
+.scrub-hint{transition:opacity .4s}
+.scrub-chip{display:inline-flex;align-items:center;gap:12px;padding:10px 16px;background:rgba(11,22,40,.78);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);color:#FFFFFF;font-size:12px;font-weight:500;letter-spacing:.28em;text-transform:uppercase;line-height:1}
 @media (prefers-reduced-motion: reduce){.cap{transition:none}}
 
 .layer{position:sticky;isolation:isolate;box-shadow:0 -28px 60px -20px rgba(11,22,40,.28)}
@@ -109,7 +110,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible{
 <div class="wrap hdr-row" style="display: flex; align-items: center; justify-content: space-between; height: 112px; gap: 24px">
 <a href="#top" class="hdr-logo" aria-label="EIB GROUP — home" style="display: flex; align-items: baseline; gap: 14px">
 <span style="font-family: 'Bodoni Moda', Didot, 'Times New Roman', serif; font-size: 52px; letter-spacing: 0.18em; font-weight: 500; line-height: 1">EIB</span>
-<span style="font-family: 'Bodoni Moda', Didot, serif; font-size: 30px; letter-spacing: 0.36em; color: #5A6475; line-height: 1">GROUP</span>
+<span style="font-family: 'Bodoni Moda', Didot, serif; font-size: 30px; letter-spacing: 0.36em; color: #0B1628; line-height: 1">GROUP</span>
 </a>
 <nav class="navlinks" aria-label="Main navigation" style="gap: 44px; font-size: 14px; letter-spacing: 0.02em">
 <a href="#about">About</a>
@@ -165,7 +166,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible{
 <div data-px="mono" style="position: absolute; right: -0.06em; bottom: -0.2em; font-family: 'Bodoni Moda', Didot, serif; font-size: clamp(160px, 22vw, 320px); line-height: 1; letter-spacing: -0.02em; color: transparent; -webkit-text-stroke: 1px rgba(194,165,122,0.55); will-change: transform" aria-hidden="true">EIB</div>
 <div style="position: relative; display: flex; flex-direction: column; gap: 14px; max-width: 18em">
 <span style="font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 300; font-size: clamp(22px, 2.2vw, 30px); line-height: 1.35">General trading &amp; supply</span>
-<span style="font-size: 14px; line-height: 1.7; color: #AEB7C6">General supply, B2B procurement and import of any kind of goods.</span>
+<span style="font-size: 14px; line-height: 1.7; color: #AEB7C6">B2B procurement and import of any kind of goods.</span>
 </div>
 </div>
 </div>
@@ -180,8 +181,8 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible{
 <video id="scrubVideo" muted playsinline preload="auto" disablepictureinpicture poster="../media/process-poster.webp" aria-hidden="true"></video>
 <div class="scrub-scrim"></div>
 <div class="scrub-top"><div class="wrap" style="display: flex; justify-content: space-between; align-items: center; gap: 24px">
-<span style="font-size: 12px; letter-spacing: 0.28em; text-transform: uppercase; color: #C2A57A">How we work</span>
-<span class="scrub-hint" id="scrubHint">Scroll <svg width="12" height="20" viewBox="0 0 12 20" fill="none" stroke="#AEB7C6" stroke-width="1.2" aria-hidden="true"><path d="M6 0v18M1 13l5 5 5-5"></path></svg></span>
+<span class="scrub-chip"><span aria-hidden="true" style="display: inline-block; width: 18px; height: 1px; background: #C2A57A"></span>How we work</span>
+<span class="scrub-hint scrub-chip" id="scrubHint">Scroll <svg width="12" height="20" viewBox="0 0 12 20" fill="none" stroke="#FFFFFF" stroke-width="1.2" aria-hidden="true"><path d="M6 0v18M1 13l5 5 5-5"></path></svg></span>
 </div></div>
 <div class="scrub-ui"><div class="wrap">
 <div class="caps">
