@@ -510,7 +510,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible{
     if (nav || !zone() || scene < 0) { exitDir = 0; return; }
     var k = scene + dir, inRange = k >= 0 && k < N;
     if (!inRange && exitDir === dir) return;                  // an exit gesture keeps scrolling out
-    if (armed && now - lastStep > 300) {
+    if (armed && now - lastStep > 150) {
       if (inRange) { e.preventDefault(); exitDir = 0; step(k); return; }
       exitDir = dir; armed = false; return;                    // past the first/last scene: scroll out
     }
