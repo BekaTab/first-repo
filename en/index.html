@@ -78,8 +78,11 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible{
 @media (max-width: 480px){.hdr-row{height:80px !important}}
 @media (max-width: 480px){.hdr-logo span:first-child{font-size:30px !important}.hdr-logo span+span{font-size:16px !important}}
 
-.ge-map{position:relative;flex:1 1 auto;min-height:0;display:flex;align-items:center;justify-content:center;padding:clamp(18px,3vw,40px) 0;pointer-events:none}
-.ge-map svg{display:block;width:100%;height:100%;max-height:100%;overflow:visible}
+.ge-map{position:absolute;left:var(--pp);right:var(--pp);top:calc(var(--pt) + 34px);bottom:calc(clamp(160px, 22vw, 320px) * 0.72 + 18px);display:flex;align-items:center;justify-content:center;pointer-events:none}
+.ge-map svg{display:block;width:100%;height:100%;overflow:visible}
+.hero-panel [data-px="panel"]{--pp:clamp(28px, 3.4vw, 52px);--pt:clamp(20px, 2.2vw, 32px);padding-top:var(--pt) !important}
+.panel-labels{font-size:14px !important;letter-spacing:.28em !important;color:#C9D2DF !important}
+@media (max-width: 480px){.panel-labels{font-size:12px !important}}
 .ge-outline{fill:none;stroke:#C2A57A;stroke-opacity:.85;stroke-width:1.3;stroke-linejoin:round;vector-effect:non-scaling-stroke;stroke-dasharray:1;stroke-dashoffset:1;animation:ge-draw 2.8s cubic-bezier(.65,.05,.25,1) .3s forwards}
 .ge-fill{fill:#C2A57A;fill-opacity:.06;stroke:none;opacity:0;animation:ge-fade 1.4s ease 2.6s forwards}
 @keyframes ge-draw{to{stroke-dashoffset:0}}
@@ -153,7 +156,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible{
 </div>
 <div class="c-7-6 hero-panel" style="position: relative; height: clamp(420px, 40vw, 560px)">
 <div data-px="panel" style="position: absolute; inset: 0; background: #0B1628; color: #FFFFFF; will-change: transform; display: flex; flex-direction: column; justify-content: space-between; padding: clamp(28px, 3.4vw, 52px); overflow: hidden">
-<div style="display: flex; justify-content: space-between; gap: 16px; font-size: 11px; letter-spacing: 0.3em; text-transform: uppercase; color: #AEB7C6">
+<div class="panel-labels" style="display: flex; justify-content: space-between; gap: 16px; font-size: 11px; letter-spacing: 0.3em; text-transform: uppercase; color: #AEB7C6">
 <span>Tbilisi · Georgia</span>
 <span>B2B</span>
 </div>
