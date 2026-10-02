@@ -399,7 +399,8 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible{
   var fills = [].slice.call(sec.querySelectorAll('.scrub-bar b'));
   var hint = document.getElementById('scrubHint');
   // scene windows in seconds: each stops before the next transition's blur/dissolve and starts after it
-  var SEG = [[0, 1.33], [1.85, 3.2], [3.72, 5.42], [5.5, 7.5], [8.1, 10.0]];
+  // the map shot repeats its animation at 6.67s, so scene 4 plays only the first pass, slowed to 60%
+  var SEG = [[0, 1.33], [1.85, 3.2], [3.72, 5.42], [5.5, 6.64, 0.6], [8.1, 10.0]];
   var N = SEG.length;
   var small = Math.min(screen.width, window.innerWidth) < 760;
   vid.src = sec.getAttribute('data-base') + (small ? 'process-sm.mp4' : 'process.mp4');
@@ -427,7 +428,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible{
     cancelAnimationFrame(raf);
     var a = SEG[k][0], b = SEG[k][1];
     show(k, 0);
-    try { vid.currentTime = a; } catch (e) {}
+    try { vid.currentTime = a; vid.playbackRate = SEG[k][2] || 1; } catch (e) {}
     var p = vid.play();
     var t0 = performance.now();
     (function loop() {
