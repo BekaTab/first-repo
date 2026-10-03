@@ -1,0 +1,73 @@
+// Applies content.json (edited in /admin) to the site's HTML before GitHub Pages publishes it.
+// Every editable element carries data-edit="key" and holds plain text only.
+// Usage: node tools/apply-content.mjs [rootDir]
+import { readFileSync, writeFileSync, existsSync } from 'node:fs';
+import { join } from 'node:path';
+
+const root = process.argv[2] || '.';
+const PAGES = ['index.html', 'en/index.html'];
+
+const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+const escAttr = (s) => esc(s).replace(/"/g, '&quot;');
+const digits = (s) => String(s || '').replace(/[^\d+]/g, '');
+const validEmail = (s) => /^[^\s@\[\]]+@[^\s@\[\]]+$/.test(s || '');
+// Only same-site paths or https URLs may be used for images and the form endpoint.
+const safeUrl = (s) => typeof s === 'string' && (/^https:\/\/[^\s"<>]+$/.test(s) || /^[\w./-]+$/.test(s)) ? s : '';
+
+function setAttr(tag, name, value) {
+  const re = new RegExp(`\\s${name}(="[^"]*")?(?=[\\s>])`);
+  const cleaned = tag.replace(re, '');
+  if (value === null) return cleaned;
+  return cleaned.replace(/^<([a-zA-Z0-9]+)/, `<$1 ${name}${value === '' ? '' : `="${escAttr(value)}"`}`);
+}
+
+// Rewrites every opening tag that carries `attr`, via fn(openingTag) -> newTag.
+function eachTag(html, attr, fn) {
+  return html.replace(new RegExp(`<[a-zA-Z0-9]+\\b[^>]*\\s${attr}(?:="[^"]*")?[^>]*>`, 'g'), fn);
+}
+
+export function applyContent(html, content) {
+  const lang = (html.match(/<html[^>]*\slang="([^"]+)"/) || [])[1] || 'ka';
+  const t = content[lang] || {};
+  const sh = content.shared || {};
+  let missing = 0;
+
+  // text: <tag ... data-edit="key" ...>TEXT</tag>
+  html = html.replace(/(<([a-zA-Z0-9]+)\b[^>]*\sdata-edit="([^"]+)"[^>]*>)([^<]*)(<\/\2>)/g, (m, open, _tag, key, _text, close) => {
+    const v = key.startsWith('shared.') ? sh[key.slice(7)] : t[key];
+    if (typeof v !== 'string') { missing++; return m; }
+    return open + esc(v) + close;
+  });
+
+  if (typeof sh.phone === 'string' && digits(sh.phone)) html = eachTag(html, 'data-tel', (tag) => setAttr(tag, 'href', 'tel:' + digits(sh.phone)));
+  html = eachTag(html, 'data-mail', (tag) => setAttr(tag, 'href', validEmail(sh.email) ? 'mailto:' + sh.email : null));
+
+  const logo = safeUrl(sh.logo), logoDark = safeUrl(sh.logoDark) || logo;
+  html = eachTag(html, 'data-logo', (tag) => {
+    const src = /data-logo="footer"/.test(tag) ? logoDark : logo;
+    tag = setAttr(tag, 'src', src || null);
+    return setAttr(tag, 'hidden', src ? null : '');
+  });
+  const hideWords = !!logo && sh.showWordmark === false;
+  html = eachTag(html, 'data-wordmark', (tag) => setAttr(tag, 'hidden', hideWords ? '' : null));
+  html = eachTag(html, 'data-endpoint', (tag) => setAttr(tag, 'data-endpoint', safeUrl(sh.formEndpoint)));
+
+  if (typeof t['seo.title'] === 'string') html = html.replace(/<title>[^<]*<\/title>/, `<title>${esc(t['seo.title'])}</title>`);
+  if (typeof t['seo.description'] === 'string') html = html.replace(/(<meta name="description" content=")[^"]*(")/, `$1${escAttr(t['seo.description'])}$2`);
+  return { html, missing };
+}
+
+if (import.meta.url === `file://${process.argv[1]}`) {
+  const file = join(root, 'content.json');
+  if (!existsSync(file)) { console.log('content.json not found; pages left unchanged.'); process.exit(0); }
+  let content;
+  try { content = JSON.parse(readFileSync(file, 'utf8')); }
+  catch (e) { console.error('content.json is not valid JSON:', e.message); process.exit(1); }
+  for (const page of PAGES) {
+    const path = join(root, page);
+    if (!existsSync(path)) continue;
+    const { html, missing } = applyContent(readFileSync(path, 'utf8'), content);
+    writeFileSync(path, html);
+    console.log(`${page}: content applied${missing ? ` (${missing} keys kept their default text)` : ''}`);
+  }
+}
