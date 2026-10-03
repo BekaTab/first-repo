@@ -1,0 +1,715 @@
+<!doctype html>
+<html lang="ka">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>EIB GROUP · ადმინ პანელი</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,500&family=Noto+Sans+Georgian:wght@400;500;600&display=swap">
+<style>
+/* Admin: navy + white, same palette as the site. Layout: top bar; sidebar of sections | fields | live preview. */
+:root{
+  --navy:#0B1628; --ink:#0B1628; --muted:#5A6475; --line:#E3E6EC; --bg:#F5F8FC; --white:#FFFFFF;
+  --blue:#3E6DA6; --mist:#EEF3F9; --gold:#C2A57A; --ok:#1F5E45; --warn:#9A6A12; --err:#A3362B;
+  --sans:"Noto Sans Georgian","Segoe UI",system-ui,sans-serif; --serif:"Bodoni Moda",Didot,"Times New Roman",serif;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:14px;line-height:1.55;-webkit-font-smoothing:antialiased}
+[hidden]{display:none !important}
+button,input,textarea,select{font:inherit;color:inherit}
+a{color:var(--blue)}
+:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+.wordmark{font-family:var(--serif);letter-spacing:.18em;font-weight:500}
+.wordmark small{font-size:.55em;letter-spacing:.36em;margin-left:.5em;color:var(--muted)}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:40px;padding:0 18px;border:1px solid var(--navy);background:var(--navy);color:#fff;cursor:pointer;font-weight:500;border-radius:0;transition:background .15s,opacity .15s}
+.btn:hover{background:#13233D}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.ghost{background:transparent;color:var(--navy)}
+.btn.ghost:hover{background:var(--mist)}
+.btn.small{min-height:32px;padding:0 12px;font-size:13px}
+.btn.danger{background:transparent;color:var(--err);border-color:#E7C4BF}
+.btn.danger:hover{background:#FBF1EF}
+.linkbtn{background:none;border:0;padding:0;color:var(--blue);cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+
+/* auth screens */
+.auth{min-height:100%;display:grid;place-items:center;padding:32px 16px;background:linear-gradient(180deg,var(--navy) 0 38%,var(--bg) 38%)}
+.card{width:100%;max-width:460px;background:#fff;padding:36px 36px 30px;box-shadow:0 24px 60px -30px rgba(11,22,40,.45)}
+.card.wide{max-width:620px}
+.card .wordmark{font-size:28px;display:block;margin-bottom:6px;color:var(--blue)}
+.card h1{font-size:20px;font-weight:600;margin:18px 0 6px}
+.card p.sub{margin:0 0 22px;color:var(--muted)}
+.fieldset{display:flex;flex-direction:column;gap:6px;margin-bottom:16px}
+.fieldset label{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.input{width:100%;border:1px solid var(--line);background:#fff;padding:10px 12px;border-radius:0;transition:border-color .15s}
+.input:focus{border-color:var(--blue);outline:none;box-shadow:0 0 0 3px rgba(62,109,166,.15)}
+textarea.input{resize:vertical;min-height:84px;line-height:1.6}
+.hint{font-size:12.5px;color:var(--muted)}
+.msg{padding:10px 12px;font-size:13.5px;border-left:3px solid;margin:0 0 16px}
+.msg.err{background:#FBF1EF;border-color:var(--err);color:var(--err)}
+.msg.ok{background:#EEF6F1;border-color:var(--ok);color:var(--ok)}
+.msg.info{background:var(--mist);border-color:var(--blue);color:var(--ink)}
+.steps{margin:0 0 20px;padding:0;list-style:none;counter-reset:s;display:flex;flex-direction:column;gap:10px}
+.steps li{counter-increment:s;display:grid;grid-template-columns:26px 1fr;gap:10px;font-size:13.5px}
+.steps li::before{content:counter(s);width:24px;height:24px;border-radius:50%;background:var(--mist);color:var(--blue);display:grid;place-items:center;font-weight:600;font-size:12px}
+.row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.spacer{flex:1}
+
+/* editor */
+.app{height:100%;display:grid;grid-template-rows:60px 1fr}
+.top{display:flex;align-items:center;gap:16px;padding:0 20px;background:var(--navy);color:#fff}
+.top .wordmark{font-size:20px;color:#fff}
+.top .wordmark small{color:#AEB7C6}
+.top .tag{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
+.top .btn.ghost{color:#fff;border-color:rgba(255,255,255,.35)}
+.top .btn.ghost:hover{background:rgba(255,255,255,.08)}
+.status{font-size:13px;color:#C9D2DF;display:flex;align-items:center;gap:8px;min-width:0;flex:1 1 auto}
+#statusText{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.top{min-width:0}
+.top .btn{flex:none}
+.status .dot{width:8px;height:8px;border-radius:50%;background:#AEB7C6;flex:none}
+.status.dirty .dot{background:var(--gold)} .status.busy .dot{background:#6FB2F5;animation:pulse 1s infinite} .status.ok .dot{background:#3CC48A} .status.err .dot{background:#E06B5F}
+@keyframes pulse{50%{opacity:.3}}
+.main{display:grid;grid-template-columns:230px minmax(0,1fr) minmax(0,1.05fr);min-height:0}
+.side{background:#fff;border-right:1px solid var(--line);overflow:auto;padding:14px 0}
+.side h2{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:10px 20px 8px;font-weight:600}
+.side button{display:flex;align-items:center;justify-content:space-between;width:100%;text-align:left;background:none;border:0;border-left:3px solid transparent;padding:10px 17px;cursor:pointer;font-size:14px}
+.side button:hover{background:var(--bg)}
+.side button[aria-current="true"]{border-left-color:var(--blue);background:var(--mist);font-weight:600}
+.side .count{font-size:11px;background:var(--gold);color:var(--navy);border-radius:10px;padding:0 7px;font-weight:600}
+.editor{overflow:auto;padding:24px 28px 0}
+.editor h3{font-size:22px;font-weight:600;margin:0 0 4px}
+.editor .lead{color:var(--muted);margin:0 0 22px;max-width:52em}
+.langs{display:inline-flex;border:1px solid var(--line);background:#fff;margin-bottom:22px}
+.langs button{border:0;background:none;padding:7px 16px;cursor:pointer;font-weight:600;font-size:13px;letter-spacing:.06em}
+.langs button[aria-pressed="true"]{background:var(--navy);color:#fff}
+.f{background:#fff;border:1px solid var(--line);padding:14px 16px;margin-bottom:12px;transition:border-color .15s}
+.f.changed{border-color:var(--gold);box-shadow:inset 3px 0 0 var(--gold)}
+.f .head{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.f label{font-weight:600;font-size:13.5px}
+.f .key{font-size:11px;color:#9AA1AD;font-family:ui-monospace,Menlo,monospace}
+.f .undo{margin-left:auto;font-size:12px}
+.f .warn{font-size:12.5px;color:var(--warn);margin-top:6px}
+.f .err{font-size:12.5px;color:var(--err);margin-top:6px}
+.switch{display:flex;align-items:center;gap:10px;cursor:pointer}
+.switch input{width:18px;height:18px;accent-color:var(--navy)}
+.logo-box{display:grid;grid-template-columns:200px 1fr;gap:16px;align-items:center}
+.logo-prev{height:96px;border:1px dashed #C9CDD5;display:grid;place-items:center;background:#fff;padding:10px}
+.logo-prev.dark{background:var(--navy);border-color:#2A3A55}
+.logo-prev img{max-height:100%;max-width:100%;object-fit:contain}
+.logo-prev span{font-size:12px;color:#9AA1AD}
+.logo-prev.dark span{color:#7D8AA0}
+.preview{border-left:1px solid var(--line);display:grid;grid-template-rows:auto 1fr;min-height:0;background:#E9EDF3}
+.pbar{display:flex;align-items:center;gap:10px;padding:10px 14px;background:#fff;border-bottom:1px solid var(--line);font-size:13px}
+.pbar .seg{display:inline-flex;border:1px solid var(--line)}
+.pbar .seg button{border:0;background:none;padding:5px 12px;cursor:pointer;font-size:12.5px}
+.pbar .seg button[aria-pressed="true"]{background:var(--navy);color:#fff}
+.pwrap{overflow:hidden;position:relative}
+.pwrap iframe{position:absolute;top:0;left:50%;border:0;background:#fff;transform-origin:top center;box-shadow:0 10px 40px -20px rgba(11,22,40,.4)}
+.publish{position:sticky;bottom:0;margin:24px -28px 0;padding:14px 28px;background:rgba(255,255,255,.96);backdrop-filter:blur(6px);border-top:1px solid var(--line);display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.publish .info{color:var(--muted);font-size:13px}
+.tabs-m{display:none}
+@media (max-width: 1180px){
+  .main{grid-template-columns:200px minmax(0,1fr)}
+  .preview{display:none}
+  .preview.show{display:grid;position:fixed;inset:60px 0 0 0;z-index:20}
+  .tabs-m{display:inline-flex}
+}
+@media (max-width: 760px){
+  .main{grid-template-columns:minmax(0,1fr)}
+  .top .wordmark{font-size:16px}
+  .top .wordmark small{display:none}
+  .side{display:flex;overflow-x:auto;padding:0;border-right:0;border-bottom:1px solid var(--line)}
+  .side h2{display:none}
+  .side button{white-space:nowrap;border-left:0;border-bottom:3px solid transparent;width:auto}
+  .side button[aria-current="true"]{border-bottom-color:var(--blue)}
+  .editor{padding:18px 16px 0}
+  .publish{margin:24px -16px 0;padding:12px 16px}
+  .logo-box{grid-template-columns:1fr}
+  .top{padding:0 12px;gap:10px}
+  .top .tag,.top .hide-s{display:none}
+  .card{padding:28px 22px}
+}
+</style>
+</head>
+<body>
+
+<!-- ============ SETUP (first time on this device) ============ -->
+<main class="auth" id="viewSetup" hidden>
+  <div class="card wide">
+    <span class="wordmark">EIB <small>GROUP</small></span>
+    <h1>ადმინ პანელის დაყენება</h1>
+    <p class="sub">ერთჯერადი ნაბიჯი ამ მოწყობილობაზე. საიტის ცვლილებები ინახება GitHub-ზე და საიტი ავტომატურად განახლდება.</p>
+    <ol class="steps">
+      <li><span>გახსენით <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">GitHub → ახალი Fine-grained token</a> და მიეცით სახელი, მაგ. „EIB admin“.</span></li>
+      <li><span><b>Repository access:</b> Only select repositories → <b id="repoName">first-repo</b>.</span></li>
+      <li><span><b>Permissions → Repository:</b> Contents — <b>Read and write</b>; Actions — <b>Read-only</b> (გამოქვეყნების სტატუსისთვის).</span></li>
+      <li><span>დააჭირეთ „Generate token“, დააკოპირეთ და ჩასვით ქვემოთ.</span></li>
+    </ol>
+    <form id="setupForm" novalidate>
+      <div class="msg err" id="setupErr" role="alert" hidden></div>
+      <div class="fieldset">
+        <label for="setupToken">GitHub token</label>
+        <input class="input" id="setupToken" type="password" autocomplete="off" spellcheck="false" placeholder="github_pat_…" required>
+      </div>
+      <div class="row" style="align-items:flex-start">
+        <div class="fieldset" style="flex:1;min-width:180px">
+          <label for="setupPass">ახალი პაროლი</label>
+          <input class="input" id="setupPass" type="password" autocomplete="new-password" minlength="8" required>
+        </div>
+        <div class="fieldset" style="flex:1;min-width:180px">
+          <label for="setupPass2">გაიმეორეთ პაროლი</label>
+          <input class="input" id="setupPass2" type="password" autocomplete="new-password" minlength="8" required>
+        </div>
+      </div>
+      <p class="hint" style="margin:-4px 0 18px">პაროლი (მინიმუმ 8 სიმბოლო) შიფრავს token-ს ამ მოწყობილობაზე. შემდეგ ჯერზე შესასვლელად მხოლოდ პაროლი დაგჭირდებათ. Token არსად იგზავნება, გარდა GitHub-ისა.</p>
+      <details style="margin:0 0 18px">
+        <summary class="hint" style="cursor:pointer">დამატებითი: რეპოზიტორია</summary>
+        <div class="row" style="margin-top:12px">
+          <div class="fieldset" style="flex:1"><label for="setupOwner">მფლობელი</label><input class="input" id="setupOwner"></div>
+          <div class="fieldset" style="flex:1"><label for="setupRepo">რეპოზიტორია</label><input class="input" id="setupRepo"></div>
+          <div class="fieldset" style="flex:1"><label for="setupBranch">ბრენჩი</label><input class="input" id="setupBranch"></div>
+        </div>
+      </details>
+      <button class="btn" type="submit" id="setupBtn" style="width:100%">დაყენება და შესვლა</button>
+    </form>
+  </div>
+</main>
+
+<!-- ============ LOGIN ============ -->
+<main class="auth" id="viewLogin" hidden>
+  <div class="card">
+    <span class="wordmark">EIB <small>GROUP</small></span>
+    <h1>შესვლა ადმინ პანელში</h1>
+    <p class="sub">შეიყვანეთ პაროლი, რომელიც ამ მოწყობილობაზე დაყენებისას შექმენით.</p>
+    <form id="loginForm" novalidate>
+      <div class="msg err" id="loginErr" role="alert" hidden></div>
+      <div class="fieldset">
+        <label for="loginPass">პაროლი</label>
+        <input class="input" id="loginPass" type="password" autocomplete="current-password" required>
+      </div>
+      <button class="btn" type="submit" id="loginBtn" style="width:100%">შესვლა</button>
+    </form>
+    <p class="hint" style="margin:20px 0 0">დაგავიწყდათ პაროლი? <button class="linkbtn" type="button" id="resetDevice">თავიდან დაყენება</button> (საჭირო იქნება GitHub token).</p>
+  </div>
+</main>
+
+<!-- ============ EDITOR ============ -->
+<div class="app" id="viewApp" hidden>
+  <header class="top">
+    <span class="wordmark">EIB <small>GROUP</small></span>
+    <span class="tag hide-s">ადმინი</span>
+    <span class="status" id="status" role="status" aria-live="polite"><span class="dot"></span><span id="statusText">იტვირთება…</span></span>
+    <button class="btn ghost small tabs-m" type="button" id="togglePreview">გადახედვა</button>
+    <a class="btn ghost small hide-s" id="openSite" href="../" target="_blank" rel="noopener">საიტის ნახვა</a>
+    <button class="btn ghost small" type="button" id="logout">გასვლა</button>
+  </header>
+  <div class="main">
+    <nav class="side" id="side" aria-label="განყოფილებები"></nav>
+    <section class="editor" id="editor" aria-live="off"></section>
+    <aside class="preview" id="preview" aria-label="გადახედვა">
+      <div class="pbar">
+        <span>გადახედვა</span>
+        <span class="seg" role="group" aria-label="ეკრანის ზომა">
+          <button type="button" data-dev="desktop" aria-pressed="true">კომპიუტერი</button>
+          <button type="button" data-dev="mobile" aria-pressed="false">ტელეფონი</button>
+        </span>
+        <span class="spacer"></span>
+        <span class="hint" id="previewLang">KA</span>
+      </div>
+      <div class="pwrap" id="pwrap"><iframe id="frame" title="საიტის გადახედვა"></iframe></div>
+    </aside>
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+  // ---------------------------------------------------------------- configuration
+  var DEFAULT_REPO = { owner: 'BekaTab', repo: 'first-repo', branch: 'main' };
+  var CONTENT_PATH = 'content.json';
+  var UPLOAD_DIR = 'media/uploads';
+  var SITE_BASE = '../';
+  var STORE_KEY = 'eib-admin-v1';
+  var SESSION_KEY = 'eib-admin-session';
+  var API = 'https://api.github.com';
+
+  // ---------------------------------------------------------------- editable fields
+  // t: text (single line), a: textarea; scope 'lang' fields exist per language, 'shared' fields once.
+  var SECTIONS = [
+    { id: 'general', title: 'კონტაქტი და ლოგო', lead: 'ტელეფონი, ელ-ფოსტა და ლოგო ორივე ენაზე ერთნაირია.', shared: true, fields: [
+      { k: 'phone', l: 'ტელეფონის ნომერი', t: 't', check: 'phone' },
+      { k: 'email', l: 'ელ-ფოსტა', t: 't', check: 'email' },
+      { k: '__logo', l: 'ლოგო' },
+      { k: 'formEndpoint', l: 'ფორმის მიმღები მისამართი (Formspree)', t: 't', check: 'url',
+        h: 'ფორმიდან შეტყობინებების მისაღებად შექმენით უფასო ფორმა formspree.io-ზე და ჩასვით მისი მისამართი (მაგ. https://formspree.io/f/abcd1234). ცარიელის შემთხვევაში საიტი სთხოვს ვიზიტორს დარეკვას.' } ] },
+    { id: 'menu', title: 'მენიუ', lead: 'ჰედერის ბმულები და ღილაკი.', fields: [
+      { k: 'nav.1', l: 'ბმული 1 (ვიდეო)', t: 't' }, { k: 'nav.2', l: 'ბმული 2 (სერვისები)', t: 't' },
+      { k: 'nav.3', l: 'ბმული 3 (გამოცდილება)', t: 't' }, { k: 'nav.4', l: 'ბმული 4 (კონტაქტი)', t: 't' },
+      { k: 'header.cta', l: 'ღილაკი ჰედერში', t: 't' } ] },
+    { id: 'hero', title: 'მთავარი ბლოკი', lead: 'გვერდის დასაწყისი: სლოგანი, ტექსტი და მუქი პანელი რუკით.', fields: [
+      { k: 'hero.eyebrow', l: 'ზედა წარწერა', t: 't' },
+      { k: 'hero.l1', l: 'სლოგანი — ხაზი 1', t: 't' }, { k: 'hero.l2', l: 'სლოგანი — ხაზი 2', t: 't' },
+      { k: 'hero.l3', l: 'სლოგანი — ხაზი 3', t: 't' }, { k: 'hero.l4', l: 'სლოგანი — ხაზი 4', t: 't' },
+      { k: 'hero.lead', l: 'ტექსტი სლოგანის ქვეშ', t: 'a' }, { k: 'hero.cta', l: 'ბმული „დაგვიკავშირდით“', t: 't' },
+      { k: 'panel.title', l: 'პანელის სათაური', t: 't' }, { k: 'panel.caption', l: 'პანელის ტექსტი', t: 'a' } ] },
+    { id: 'video', title: 'ვიდეო: როგორ ვმუშაობთ', lead: 'ხუთი სცენის წარწერები.', fields: [
+      { k: 'scrub.eyebrow', l: 'წარწერა ვიდეოს თავზე', t: 't' }, { k: 'scrub.hint', l: 'მინიშნება „გადაახვიეთ“', t: 't' },
+      { k: 'scene1.title', l: 'სცენა 1 — სათაური', t: 't' }, { k: 'scene1.text', l: 'სცენა 1 — ტექსტი', t: 'a' },
+      { k: 'scene2.title', l: 'სცენა 2 — სათაური', t: 't' }, { k: 'scene2.text', l: 'სცენა 2 — ტექსტი', t: 'a' },
+      { k: 'scene3.title', l: 'სცენა 3 — სათაური', t: 't' }, { k: 'scene3.text', l: 'სცენა 3 — ტექსტი', t: 'a' },
+      { k: 'scene4.title', l: 'სცენა 4 — სათაური', t: 't' }, { k: 'scene4.text', l: 'სცენა 4 — ტექსტი', t: 'a' },
+      { k: 'scene5.title', l: 'სცენა 5 — სათაური', t: 't' }, { k: 'scene5.text', l: 'სცენა 5 — ტექსტი', t: 'a' } ] },
+    { id: 'services', title: 'სერვისები', lead: 'კომპანიის აღწერა და სამი სერვისი.', fields: [
+      { k: 'about.eyebrow', l: 'ზედა წარწერა', t: 't' }, { k: 'services.title', l: 'სათაური', t: 't' },
+      { k: 'about.text', l: 'კომპანიის მოკლე აღწერა', t: 'a' }, { k: 'about.statement', l: 'მთავარი დაპირება (დიდი ტექსტი)', t: 'a' },
+      { k: 'svc1.label', l: 'სერვისი 1 — მცირე წარწერა', t: 't' }, { k: 'svc1.title', l: 'სერვისი 1 — სახელი', t: 't' }, { k: 'svc1.text', l: 'სერვისი 1 — აღწერა', t: 'a' },
+      { k: 'svc2.label', l: 'სერვისი 2 — მცირე წარწერა', t: 't' }, { k: 'svc2.title', l: 'სერვისი 2 — სახელი', t: 't' }, { k: 'svc2.text', l: 'სერვისი 2 — აღწერა', t: 'a' },
+      { k: 'svc3.label', l: 'სერვისი 3 — მცირე წარწერა', t: 't' }, { k: 'svc3.title', l: 'სერვისი 3 — სახელი', t: 't' }, { k: 'svc3.text', l: 'სერვისი 3 — აღწერა', t: 'a' } ] },
+    { id: 'stats', title: 'გამოცდილება და ციფრები', lead: 'წლები, პროექტები და სანდოობა.', fields: [
+      { k: 'stats.eyebrow', l: 'ზედა წარწერა', t: 't' }, { k: 'stats.title', l: 'სათაური', t: 'a' }, { k: 'stats.text', l: 'ტექსტი', t: 'a' },
+      { k: 'stat1.num', l: 'ციფრი 1 (წლები, „+“ ავტომატურად ემატება)', t: 't' }, { k: 'stat1.label', l: 'ციფრი 1 — წარწერა', t: 't' },
+      { k: 'stat2.num', l: 'ციფრი 2 (პროექტები, „+“ ავტომატურად ემატება)', t: 't' }, { k: 'stat2.label', l: 'ციფრი 2 — წარწერა', t: 't' },
+      { k: 'stat3.word', l: 'მესამე ბლოკი — დიდი სიტყვა', t: 't' }, { k: 'stat3.label', l: 'მესამე ბლოკი — წარწერა', t: 't' }, { k: 'stat3.text', l: 'მესამე ბლოკი — ტექსტი', t: 'a' } ] },
+    { id: 'contact', title: 'კონტაქტი და ფორმა', lead: 'საკონტაქტო ბლოკი, მისამართი და ფორმის წარწერები.', fields: [
+      { k: 'contact.eyebrow', l: 'ზედა წარწერა', t: 't' }, { k: 'contact.title', l: 'სათაური', t: 't' },
+      { k: 'contact.address', l: 'მისამართი', t: 't' },
+      { k: 'contact.labelPhone', l: 'წარწერა „ტელეფონი“', t: 't' }, { k: 'contact.labelEmail', l: 'წარწერა „ელ-ფოსტა“', t: 't' }, { k: 'contact.labelAddress', l: 'წარწერა „მისამართი“', t: 't' },
+      { k: 'form.name', l: 'ფორმა — სახელი', t: 't' }, { k: 'form.company', l: 'ფორმა — კომპანია', t: 't' }, { k: 'form.phone', l: 'ფორმა — ტელეფონი', t: 't' },
+      { k: 'form.email', l: 'ფორმა — ელ-ფოსტა', t: 't' }, { k: 'form.message', l: 'ფორმა — მოთხოვნა', t: 't' },
+      { k: 'form.submit', l: 'ღილაკი „გაგზავნა“', t: 't' }, { k: 'form.required', l: 'შენიშვნა სავალდებულო ველზე', t: 't' },
+      { k: 'form.error', l: 'შეტყობინება: შეცდომა შევსებისას', t: 'a' }, { k: 'form.sent', l: 'შეტყობინება: გაიგზავნა', t: 'a' },
+      { k: 'form.fail', l: 'შეტყობინება: ვერ გაიგზავნა', t: 'a' }, { k: 'form.demo', l: 'შეტყობინება: ფორმა არ არის დაკავშირებული', t: 'a' } ] },
+    { id: 'footer', title: 'ფუტერი', lead: 'გვერდის ბოლო.', fields: [
+      { k: 'footer.tagline', l: 'წარწერა ლოგოს გვერდით', t: 't' }, { k: 'footer.copyright', l: 'საავტორო უფლებები', t: 't' } ] },
+    { id: 'seo', title: 'Google (SEO)', lead: 'სათაური ბრაუზერის ჩანართში და აღწერა Google-ის ძიებაში.', fields: [
+      { k: 'seo.title', l: 'გვერდის სათაური', t: 't' }, { k: 'seo.description', l: 'აღწერა ძიებისთვის', t: 'a', h: 'რეკომენდებულია 120–160 სიმბოლო.' } ] }
+  ];
+
+  // ---------------------------------------------------------------- small helpers
+  var $ = function (id) { return document.getElementById(id); };
+  function el(tag, attrs, kids) {
+    var n = document.createElement(tag);
+    if (attrs) Object.keys(attrs).forEach(function (k) {
+      if (k === 'text') n.textContent = attrs[k]; else if (k.slice(0, 2) === 'on') n.addEventListener(k.slice(2), attrs[k]);
+      else if (attrs[k] !== null && attrs[k] !== undefined && attrs[k] !== false) n.setAttribute(k, attrs[k] === true ? '' : attrs[k]);
+    });
+    (kids || []).forEach(function (c) { if (c) n.appendChild(typeof c === 'string' ? document.createTextNode(c) : c); });
+    return n;
+  }
+  function clone(o) { return JSON.parse(JSON.stringify(o)); }
+  function show(view) { ['viewSetup', 'viewLogin', 'viewApp'].forEach(function (v) { $(v).hidden = v !== view; }); }
+  function store(get, val) {
+    try { if (get) return JSON.parse(localStorage.getItem(STORE_KEY) || 'null'); localStorage.setItem(STORE_KEY, JSON.stringify(val)); } catch (e) { return null; }
+  }
+  function b64FromBytes(bytes) { var s = ''; for (var i = 0; i < bytes.length; i += 0x8000) s += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000)); return btoa(s); }
+  function bytesFromB64(b64) { var bin = atob(b64.replace(/\s/g, '')); var out = new Uint8Array(bin.length); for (var i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i); return out; }
+  var enc = new TextEncoder(), dec = new TextDecoder();
+
+  // ---------------------------------------------------------------- token encryption (PBKDF2 + AES-GCM, local only)
+  function deriveKey(pass, salt) {
+    return crypto.subtle.importKey('raw', enc.encode(pass), 'PBKDF2', false, ['deriveKey']).then(function (base) {
+      return crypto.subtle.deriveKey({ name: 'PBKDF2', salt: salt, iterations: 310000, hash: 'SHA-256' }, base, { name: 'AES-GCM', length: 256 }, false, ['encrypt', 'decrypt']);
+    });
+  }
+  function encryptToken(token, pass) {
+    var salt = crypto.getRandomValues(new Uint8Array(16)), iv = crypto.getRandomValues(new Uint8Array(12));
+    return deriveKey(pass, salt).then(function (key) { return crypto.subtle.encrypt({ name: 'AES-GCM', iv: iv }, key, enc.encode(token)); })
+      .then(function (ct) { return { salt: b64FromBytes(salt), iv: b64FromBytes(iv), data: b64FromBytes(new Uint8Array(ct)) }; });
+  }
+  function decryptToken(box, pass) {
+    return deriveKey(pass, bytesFromB64(box.salt)).then(function (key) {
+      return crypto.subtle.decrypt({ name: 'AES-GCM', iv: bytesFromB64(box.iv) }, key, bytesFromB64(box.data));
+    }).then(function (pt) { return dec.decode(pt); });
+  }
+
+  // ---------------------------------------------------------------- GitHub API
+  var S = { token: null, repo: clone(DEFAULT_REPO) };
+  function gh(method, path, body) {
+    return fetch(API + path, {
+      method: method, cache: 'no-store',
+      headers: { 'Authorization': 'Bearer ' + S.token, 'Accept': 'application/vnd.github+json', 'X-GitHub-Api-Version': '2022-11-28',
+                 'Content-Type': 'application/json' },
+      body: body ? JSON.stringify(body) : undefined
+    }).then(function (r) {
+      return r.text().then(function (t) {
+        var data = null; try { data = t ? JSON.parse(t) : null; } catch (e) {}
+        if (!r.ok) { var err = new Error((data && data.message) || ('HTTP ' + r.status)); err.status = r.status; throw err; }
+        return data;
+      });
+    });
+  }
+  function repoPath(p) { return '/repos/' + encodeURIComponent(S.repo.owner) + '/' + encodeURIComponent(S.repo.repo) + p; }
+  function explain(e) {
+    if (!navigator.onLine) return 'ინტერნეტთან კავშირი არ არის.';
+    if (e.status === 401) return 'Token არასწორია ან ვადა გაუვიდა. შექმენით ახალი token და დააყენეთ თავიდან.';
+    if (e.status === 403) return 'Token-ს არ აქვს საკმარისი უფლება (საჭიროა Contents: Read and write).';
+    if (e.status === 404) return 'რეპოზიტორია ან ფაილი ვერ მოიძებნა. შეამოწმეთ token-ის Repository access.';
+    if (e.status === 409 || e.status === 422) return 'GitHub-მა ცვლილება ვერ მიიღო. სცადეთ ხელახლა.';
+    return 'შეცდომა: ' + e.message;
+  }
+
+  // ---------------------------------------------------------------- state
+  var published = null;   // content as it is on GitHub
+  var draft = null;       // content being edited
+  var publishedSha = null;
+  var pending = {};       // logo uploads not yet published: { logo: {path, b64, dataUrl}, logoDark: … }
+  var current = 'general', lang = 'ka', device = 'desktop', frameReady = false, busy = false;
+
+  function changedKeys() {
+    var out = [];
+    if (!published || !draft) return out;
+    Object.keys(draft.shared).forEach(function (k) { if (JSON.stringify(draft.shared[k]) !== JSON.stringify(published.shared[k])) out.push('shared.' + k); });
+    ['ka', 'en'].forEach(function (lg) { Object.keys(draft[lg]).forEach(function (k) { if (draft[lg][k] !== published[lg][k]) out.push(lg + '.' + k); }); });
+    return out;
+  }
+  function setStatus(kind, text) { var s = $('status'); s.className = 'status ' + (kind || ''); $('statusText').textContent = text; }
+  function refreshStatus() {
+    if (busy) return;
+    var n = changedKeys().length;
+    if (n) setStatus('dirty', n + ' გამოუქვეყნებელი ცვლილება'); else setStatus('', 'ყველა ცვლილება გამოქვეყნებულია');
+    renderSide(); renderPublishBar();
+  }
+
+  // ---------------------------------------------------------------- auth flows
+  function boot() {
+    var saved = store(true);
+    S.repo = (saved && saved.repo) || clone(DEFAULT_REPO);
+    $('repoName').textContent = S.repo.repo;
+    var sess = null; try { sess = JSON.parse(sessionStorage.getItem(SESSION_KEY) || 'null'); } catch (e) {}
+    if (saved && sess && sess.token && sess.exp > Date.now()) { S.token = sess.token; return enterApp(); }
+    if (saved && saved.box) { show('viewLogin'); setTimeout(function () { $('loginPass').focus(); }, 50); }
+    else { show('viewSetup'); $('setupOwner').value = S.repo.owner; $('setupRepo').value = S.repo.repo; $('setupBranch').value = S.repo.branch; }
+  }
+  function keepSession() { try { sessionStorage.setItem(SESSION_KEY, JSON.stringify({ token: S.token, exp: Date.now() + 4 * 3600 * 1000 })); } catch (e) {} }
+
+  $('setupForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var err = $('setupErr'), btn = $('setupBtn'); err.hidden = true;
+    var token = $('setupToken').value.trim(), p1 = $('setupPass').value, p2 = $('setupPass2').value;
+    var repo = { owner: $('setupOwner').value.trim() || DEFAULT_REPO.owner, repo: $('setupRepo').value.trim() || DEFAULT_REPO.repo, branch: $('setupBranch').value.trim() || DEFAULT_REPO.branch };
+    var fail = function (m) { err.textContent = m; err.hidden = false; btn.disabled = false; btn.textContent = 'დაყენება და შესვლა'; };
+    if (!token) return fail('ჩასვით GitHub token.');
+    if (p1.length < 8) return fail('პაროლი უნდა იყოს მინიმუმ 8 სიმბოლო.');
+    if (p1 !== p2) return fail('პაროლები არ ემთხვევა.');
+    btn.disabled = true; btn.textContent = 'მოწმდება…';
+    S.token = token; S.repo = repo;
+    gh('GET', repoPath('')).then(function (r) {
+      if (r && r.permissions && r.permissions.push === false) throw Object.assign(new Error('no push'), { status: 403 });
+      return encryptToken(token, p1);
+    }).then(function (box) {
+      store(false, { v: 1, repo: repo, box: box });
+      $('setupToken').value = $('setupPass').value = $('setupPass2').value = '';
+      keepSession(); enterApp();
+    }).catch(function (e) { S.token = null; fail(explain(e)); });
+  });
+
+  $('loginForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var err = $('loginErr'), btn = $('loginBtn'); err.hidden = true;
+    var saved = store(true); if (!saved || !saved.box) return boot();
+    btn.disabled = true; btn.textContent = 'მოწმდება…';
+    decryptToken(saved.box, $('loginPass').value).then(function (token) {
+      S.token = token; S.repo = saved.repo; $('loginPass').value = ''; keepSession(); enterApp();
+    }).catch(function () {
+      err.textContent = 'პაროლი არასწორია.'; err.hidden = false; $('loginPass').select();
+    }).then(function () { btn.disabled = false; btn.textContent = 'შესვლა'; });
+  });
+
+  $('resetDevice').addEventListener('click', function () {
+    if (!window.confirm('ამ მოწყობილობაზე შენახული token წაიშლება და დაგჭირდებათ თავიდან დაყენება. გავაგრძელო?')) return;
+    try { localStorage.removeItem(STORE_KEY); sessionStorage.removeItem(SESSION_KEY); } catch (e) {}
+    boot();
+  });
+  $('logout').addEventListener('click', function () {
+    if (changedKeys().length && !window.confirm('გაქვთ გამოუქვეყნებელი ცვლილებები. მაინც გავიდე?')) return;
+    try { sessionStorage.removeItem(SESSION_KEY); } catch (e) {}
+    S.token = null; published = draft = null; pending = {};
+    show('viewLogin'); $('loginErr').hidden = true;
+  });
+
+  // ---------------------------------------------------------------- load content
+  function readContent() {
+    return gh('GET', repoPath('/contents/' + CONTENT_PATH + '?ref=' + encodeURIComponent(S.repo.branch))).then(function (f) {
+      return { sha: f.sha, content: JSON.parse(dec.decode(bytesFromB64(f.content))) };
+    });
+  }
+  function normalise(c) {
+    c = c || {}; c.version = 1; c.shared = c.shared || {}; c.ka = c.ka || {}; c.en = c.en || {};
+    ['phone', 'email', 'logo', 'logoDark', 'formEndpoint'].forEach(function (k) { if (typeof c.shared[k] !== 'string') c.shared[k] = ''; });
+    if (typeof c.shared.showWordmark !== 'boolean') c.shared.showWordmark = true;
+    return c;
+  }
+  function enterApp() {
+    show('viewApp'); setStatus('busy', 'შინაარსი იტვირთება…'); busy = true;
+    $('openSite').href = SITE_BASE;
+    readContent().then(function (r) {
+      published = normalise(r.content); publishedSha = r.sha; draft = clone(published); pending = {};
+      busy = false; renderAll(); loadFrame();
+    }).catch(function (e) {
+      busy = false; setStatus('err', explain(e));
+      $('editor').innerHTML = ''; $('editor').appendChild(el('div', { class: 'msg err', text: explain(e) }));
+      if (e.status === 401) { try { sessionStorage.removeItem(SESSION_KEY); } catch (x) {} }
+    });
+  }
+
+  // ---------------------------------------------------------------- rendering
+  function renderAll() { renderSide(); renderEditor(); refreshStatus(); }
+  function sectionChanges(sec) {
+    var ch = changedKeys();
+    return sec.fields.filter(function (f) {
+      if (f.k === '__logo') return ch.some(function (c) { return /^shared\.(logo|logoDark|showWordmark)$/.test(c); });
+      return sec.shared ? ch.indexOf('shared.' + f.k) >= 0 : (ch.indexOf('ka.' + f.k) >= 0 || ch.indexOf('en.' + f.k) >= 0);
+    }).length;
+  }
+  function renderSide() {
+    var side = $('side'); side.innerHTML = '';
+    side.appendChild(el('h2', { text: 'განყოფილებები' }));
+    SECTIONS.forEach(function (sec) {
+      var n = sectionChanges(sec);
+      side.appendChild(el('button', { type: 'button', 'aria-current': sec.id === current ? 'true' : 'false', onclick: function () { current = sec.id; renderAll(); $('editor').scrollTop = 0; } },
+        [el('span', { text: sec.title }), n ? el('span', { class: 'count', title: 'შეცვლილი ველები', text: String(n) }) : null]));
+    });
+  }
+  function checkValue(f, v) {
+    if (f.check === 'phone' && v.replace(/\D/g, '').length < 9) return { warn: 'ნომერში 9-ზე ნაკლები ციფრია.' };
+    if (f.check === 'email' && v && !/^[^\s@\[\]]+@[^\s@\[\]]+\.[^\s@\[\]]+$/.test(v)) return { warn: 'ეს არ ჰგავს ელ-ფოსტას. საიტზე ტექსტად გამოჩნდება, დაჭერით არ გაიხსნება.' };
+    if (f.check === 'url' && v && !/^https:\/\/[^\s"<>]+$/.test(v)) return { err: 'მისამართი უნდა იწყებოდეს https://-ით.' };
+    if (!v.trim() && f.check !== 'url' && f.k !== 'email') return { warn: 'ცარიელი ველი საიტზე ცარიელ ადგილს დატოვებს.' };
+    return null;
+  }
+  function fieldRow(sec, f) {
+    if (f.k === '__logo') return logoRow();
+    var isShared = !!sec.shared, bag = isShared ? draft.shared : draft[lang], base = isShared ? published.shared : published[lang];
+    var id = 'f_' + (isShared ? 'shared_' : lang + '_') + f.k.replace(/\W/g, '_');
+    var val = typeof bag[f.k] === 'string' ? bag[f.k] : '';
+    var box = el('div', { class: 'f' + (val !== (base[f.k] || '') ? ' changed' : '') });
+    var input = f.t === 'a' ? el('textarea', { class: 'input', id: id, rows: '3' }) : el('input', { class: 'input', id: id, type: 'text' });
+    input.value = val;
+    var note = el('div', { class: 'warn', hidden: true });
+    var undo = el('button', { class: 'linkbtn undo', type: 'button', hidden: val === (base[f.k] || ''), text: 'დაბრუნება', title: 'გამოქვეყნებული ტექსტის აღდგენა' });
+    function update(fromInput) {
+      var v = input.value.replace(/\r?\n/g, ' ');
+      if (v !== input.value && fromInput) input.value = v;
+      bag[f.k] = v;
+      var c = checkValue(f, v);
+      note.hidden = !c; note.className = c && c.err ? 'err' : 'warn'; note.textContent = c ? (c.err || c.warn) : '';
+      var changed = v !== (base[f.k] || '');
+      box.classList.toggle('changed', changed); undo.hidden = !changed;
+      sendPreview(); refreshStatus();
+    }
+    input.addEventListener('input', function () { update(true); });
+    input.addEventListener('focus', function () { focusPreview(isShared ? 'shared.' + f.k : f.k); });
+    undo.addEventListener('click', function () { input.value = base[f.k] || ''; update(false); input.focus(); });
+    box.appendChild(el('div', { class: 'head' }, [el('label', { for: id, text: f.l }), el('span', { class: 'key', text: f.k }), undo]));
+    box.appendChild(input);
+    if (f.h) box.appendChild(el('div', { class: 'hint', style: 'margin-top:6px', text: f.h }));
+    box.appendChild(note);
+    var c0 = checkValue(f, val); if (c0) { note.hidden = false; note.className = c0.err ? 'err' : 'warn'; note.textContent = c0.err || c0.warn; }
+    return box;
+  }
+  function logoPreview(which) {
+    var p = pending[which], src = p ? p.dataUrl : (draft.shared[which] ? SITE_BASE + draft.shared[which] : '');
+    var box = el('div', { class: 'logo-prev' + (which === 'logoDark' ? ' dark' : '') });
+    box.appendChild(src ? el('img', { src: src, alt: '' }) : el('span', { text: which === 'logo' ? 'ლოგო არ არის' : 'გამოიყენება მთავარი ლოგო' }));
+    return box;
+  }
+  function logoRow() {
+    var wrap = el('div', { class: 'f' + (['logo', 'logoDark', 'showWordmark'].some(function (k) { return draft.shared[k] !== published.shared[k]; }) ? ' changed' : '') });
+    wrap.appendChild(el('div', { class: 'head' }, [el('label', { text: 'ლოგო' })]));
+    function block(which, title, help) {
+      var file = el('input', { type: 'file', accept: 'image/png,image/jpeg,image/webp,image/svg+xml', id: 'file_' + which, hidden: true });
+      var err = el('div', { class: 'err', hidden: true });
+      file.addEventListener('change', function () { if (file.files[0]) takeLogo(which, file.files[0], err); file.value = ''; });
+      var has = !!(pending[which] || draft.shared[which]);
+      var controls = el('div', {}, [
+        el('div', { style: 'font-weight:600;margin-bottom:4px', text: title }),
+        el('div', { class: 'hint', style: 'margin-bottom:10px', text: help }),
+        el('div', { class: 'row' }, [
+          el('button', { class: 'btn small', type: 'button', text: has ? 'შეცვლა' : 'ატვირთვა', onclick: function () { file.click(); } }),
+          has ? el('button', { class: 'btn small danger', type: 'button', text: 'წაშლა', onclick: function () { delete pending[which]; draft.shared[which] = ''; afterLogoChange(); } }) : null
+        ]), file, err ]);
+      return el('div', { class: 'logo-box', style: 'margin-bottom:18px' }, [logoPreview(which), controls]);
+    }
+    wrap.appendChild(block('logo', 'მთავარი ლოგო', 'ჩანს ჰედერში. PNG, SVG, JPG ან WebP, მაქსიმუმ 3 MB. საუკეთესოა გამჭვირვალე ფონით.'));
+    wrap.appendChild(block('logoDark', 'ლოგო მუქი ფონისთვის (არასავალდებულო)', 'ჩანს მუქ ფუტერში. თუ არ ატვირთავთ, გამოიყენება მთავარი ლოგო.'));
+    var cb = el('input', { type: 'checkbox', id: 'showWordmark' }); cb.checked = draft.shared.showWordmark !== false;
+    cb.addEventListener('change', function () { draft.shared.showWordmark = cb.checked; afterLogoChange(); });
+    wrap.appendChild(el('label', { class: 'switch', for: 'showWordmark' }, [cb, el('span', { text: 'ლოგოს გვერდით „EIB GROUP“ წარწერაც გამოჩნდეს' })]));
+    wrap.appendChild(el('div', { class: 'hint', style: 'margin-top:6px', text: 'თუ ლოგოში კომპანიის სახელი უკვე წერია, მოხსენით მონიშვნა.' }));
+    return wrap;
+  }
+  function afterLogoChange() { renderEditor(); sendPreview(); refreshStatus(); }
+  function takeLogo(which, f, errBox) {
+    errBox.hidden = true;
+    var fail = function (m) { errBox.textContent = m; errBox.hidden = false; };
+    if (!/^image\/(png|jpeg|webp|svg\+xml)$/.test(f.type)) return fail('დაშვებულია მხოლოდ PNG, JPG, WebP ან SVG.');
+    if (f.size > 3 * 1024 * 1024) return fail('ფაილი 3 MB-ზე დიდია.');
+    var stamp = new Date().toISOString().replace(/[-:T]/g, '').slice(0, 14);
+    if (f.type === 'image/svg+xml') {
+      f.text().then(function (txt) {
+        if (!/<svg[\s>]/i.test(txt)) return fail('SVG ფაილი დაზიანებულია.');
+        // logos are shown with <img>, where scripts never run; strip them anyway to keep the file clean
+        txt = txt.replace(/<script[\s\S]*?<\/script>/gi, '').replace(/\son\w+="[^"]*"/gi, '');
+        var bytes = enc.encode(txt);
+        pending[which] = { path: UPLOAD_DIR + '/' + which + '-' + stamp + '.svg', b64: b64FromBytes(bytes), dataUrl: 'data:image/svg+xml;base64,' + b64FromBytes(bytes) };
+        draft.shared[which] = pending[which].path; afterLogoChange();
+      });
+      return;
+    }
+    var img = new Image(), url = URL.createObjectURL(f);
+    img.onload = function () {
+      // keep logos light: fit within 800×320 px, PNG keeps transparency
+      var s = Math.min(1, 800 / img.naturalWidth, 320 / img.naturalHeight);
+      var c = document.createElement('canvas'); c.width = Math.max(1, Math.round(img.naturalWidth * s)); c.height = Math.max(1, Math.round(img.naturalHeight * s));
+      c.getContext('2d').drawImage(img, 0, 0, c.width, c.height); URL.revokeObjectURL(url);
+      var dataUrl = c.toDataURL('image/png');
+      pending[which] = { path: UPLOAD_DIR + '/' + which + '-' + stamp + '.png', b64: dataUrl.split(',')[1], dataUrl: dataUrl };
+      draft.shared[which] = pending[which].path; afterLogoChange();
+    };
+    img.onerror = function () { URL.revokeObjectURL(url); fail('სურათი ვერ წაიკითხა.'); };
+    img.src = url;
+  }
+  function renderEditor() {
+    var sec = SECTIONS.filter(function (s) { return s.id === current; })[0];
+    var ed = $('editor'), keep = ed.scrollTop; ed.innerHTML = '';
+    ed.appendChild(el('h3', { text: sec.title }));
+    ed.appendChild(el('p', { class: 'lead', text: sec.lead }));
+    if (!sec.shared) {
+      var langs = el('div', { class: 'langs', role: 'group', 'aria-label': 'ენა' });
+      [['ka', 'ქართული'], ['en', 'English']].forEach(function (p) {
+        langs.appendChild(el('button', { type: 'button', 'aria-pressed': lang === p[0] ? 'true' : 'false', text: p[1], onclick: function () { lang = p[0]; renderEditor(); loadFrame(); } }));
+      });
+      ed.appendChild(langs);
+    }
+    sec.fields.forEach(function (f) { ed.appendChild(fieldRow(sec, f)); });
+    ed.appendChild(el('div', { class: 'publish', id: 'publishBar' }));
+    renderPublishBar(); ed.scrollTop = keep;
+  }
+  function blockingErrors() {
+    var errs = [];
+    SECTIONS.forEach(function (sec) { sec.fields.forEach(function (f) {
+      if (f.k === '__logo') return;
+      var v = sec.shared ? draft.shared[f.k] : null;
+      if (sec.shared) { var c = checkValue(f, v || ''); if (c && c.err) errs.push(f.l + ': ' + c.err); }
+    }); });
+    return errs;
+  }
+  function renderPublishBar() {
+    var bar = $('publishBar'); if (!bar || !draft) return;
+    bar.innerHTML = '';
+    var n = changedKeys().length, errs = blockingErrors();
+    var pub = el('button', { class: 'btn', type: 'button', id: 'publishBtn', disabled: !n || busy || errs.length > 0, text: busy ? 'ქვეყნდება…' : 'გამოქვეყნება', onclick: publish });
+    var discard = el('button', { class: 'btn ghost', type: 'button', disabled: !n || busy, text: 'ცვლილებების გაუქმება', onclick: function () {
+      if (!window.confirm('ყველა გამოუქვეყნებელი ცვლილება გაუქმდება. გავაგრძელო?')) return;
+      draft = clone(published); pending = {}; renderAll(); sendPreview();
+    } });
+    bar.appendChild(pub); bar.appendChild(discard);
+    bar.appendChild(el('span', { class: 'info', text: errs.length ? errs[0] : (n ? n + ' ცვლილება მზადაა გამოსაქვეყნებლად. საიტი განახლდება დაახლოებით 1 წუთში.' : 'ცვლილებები არ არის.') }));
+  }
+
+  // ---------------------------------------------------------------- preview
+  function previewContent() {
+    var c = clone(draft);
+    ['logo', 'logoDark'].forEach(function (k) {
+      if (pending[k]) c.shared[k] = pending[k].dataUrl;
+      else if (c.shared[k] && !/^(https?:|data:|\/)/.test(c.shared[k])) c.shared[k] = SITE_BASE + c.shared[k];
+    });
+    return c;
+  }
+  function frameWin() { var f = $('frame'); return f && f.contentWindow; }
+  function sendPreview() { if (frameReady && frameWin()) frameWin().postMessage({ type: 'eib-preview', content: previewContent() }, location.origin); }
+  function focusPreview(key) { if (frameReady && frameWin()) frameWin().postMessage({ type: 'eib-focus', key: key }, location.origin); }
+  function loadFrame() {
+    frameReady = false;
+    $('previewLang').textContent = lang.toUpperCase();
+    $('frame').src = SITE_BASE + (lang === 'en' ? 'en/' : '') + '?preview=' + Date.now();
+    layoutFrame();
+  }
+  function layoutFrame() {
+    var wrap = $('pwrap'), f = $('frame'); if (!wrap.clientWidth) return;
+    var w = device === 'mobile' ? 390 : 1366, h = device === 'mobile' ? 844 : 900;
+    var scale = Math.min(1, (wrap.clientWidth - 24) / w);
+    f.style.width = w + 'px'; f.style.height = Math.max(h, (wrap.clientHeight - 24) / scale) + 'px';
+    f.style.transform = 'translateX(-50%) scale(' + scale + ')'; f.style.top = '12px';
+  }
+  window.addEventListener('message', function (e) {
+    if (e.origin !== location.origin || !e.data) return;
+    if (e.data.type === 'eib-preview-ready') { frameReady = true; sendPreview(); }
+  });
+  document.querySelectorAll('[data-dev]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      device = b.getAttribute('data-dev');
+      document.querySelectorAll('[data-dev]').forEach(function (x) { x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); });
+      layoutFrame();
+    });
+  });
+  window.addEventListener('resize', layoutFrame);
+  $('togglePreview').addEventListener('click', function () {
+    var p = $('preview'), on = !p.classList.contains('show'); p.classList.toggle('show', on);
+    $('togglePreview').textContent = on ? 'რედაქტირება' : 'გადახედვა'; setTimeout(layoutFrame, 0);
+  });
+
+  // ---------------------------------------------------------------- publish (one commit: content.json + any new logo files)
+  function mergeOnto(remote) {
+    // keep everything changed elsewhere since this page loaded, and apply only the keys edited here
+    var out = normalise(clone(remote));
+    changedKeys().forEach(function (path) {
+      var i = path.indexOf('.'), scope = path.slice(0, i), key = path.slice(i + 1);
+      out[scope][key] = draft[scope][key];
+    });
+    return out;
+  }
+  function pollRun(sha, started) {
+    return gh('GET', repoPath('/actions/runs?head_sha=' + sha + '&per_page=1')).then(function (r) {
+      var run = r && r.workflow_runs && r.workflow_runs[0];
+      if (run && run.status === 'completed') return run.conclusion;
+      if (Date.now() - started > 4 * 60 * 1000) return 'timeout';
+      setStatus('busy', 'საიტი ქვეყნდება… (' + Math.round((Date.now() - started) / 1000) + ' წმ)');
+      return new Promise(function (res) { setTimeout(res, 5000); }).then(function () { return pollRun(sha, started); });
+    });
+  }
+  function publish() {
+    if (busy || !changedKeys().length || blockingErrors().length) return;
+    busy = true; renderPublishBar(); setStatus('busy', 'ინახება…');
+    var b = S.repo.branch, finalContent, newSha;
+    readContent().then(function (remote) {
+      finalContent = remote.sha === publishedSha ? clone(draft) : mergeOnto(remote.content);
+      return gh('GET', repoPath('/git/ref/heads/' + encodeURIComponent(b)));
+    }).then(function (ref) {
+      var parent = ref.object.sha;
+      return gh('GET', repoPath('/git/commits/' + parent)).then(function (commit) {
+        var files = [{ path: CONTENT_PATH, b64: b64FromBytes(enc.encode(JSON.stringify(finalContent, null, 2) + '\n')) }];
+        Object.keys(pending).forEach(function (k) { if (finalContent.shared[k] === pending[k].path) files.push({ path: pending[k].path, b64: pending[k].b64 }); });
+        return Promise.all(files.map(function (f) {
+          return gh('POST', repoPath('/git/blobs'), { content: f.b64, encoding: 'base64' }).then(function (blob) { return { path: f.path, mode: '100644', type: 'blob', sha: blob.sha }; });
+        })).then(function (tree) { return gh('POST', repoPath('/git/trees'), { base_tree: commit.tree.sha, tree: tree }); })
+          .then(function (tree) { return gh('POST', repoPath('/git/commits'), { message: 'Update site content from admin panel', tree: tree.sha, parents: [parent] }); })
+          .then(function (c) { newSha = c.sha; return gh('PATCH', repoPath('/git/refs/heads/' + encodeURIComponent(b)), { sha: c.sha, force: false }); });
+      });
+    }).then(function () {
+      published = clone(finalContent); draft = clone(finalContent); pending = {};
+      return readContent().then(function (r) { publishedSha = r.sha; }, function () {});
+    }).then(function () {
+      renderAll(); setStatus('busy', 'შენახულია. საიტი ქვეყნდება…');
+      return pollRun(newSha, Date.now()).then(function (result) {
+        busy = false;
+        if (result === 'success') setStatus('ok', 'გამოქვეყნდა. საიტზე ჩანს ახალი ვერსია.');
+        else if (result === 'timeout') setStatus('dirty', 'შენახულია. გამოქვეყნებას ჩვეულებრივზე მეტი დრო სჭირდება.');
+        else setStatus('err', 'შენახულია, მაგრამ გამოქვეყნება ვერ მოხერხდა. შეამოწმეთ GitHub → Actions.');
+      }, function () { busy = false; setStatus('ok', 'შენახულია. საიტი განახლდება დაახლოებით 1 წუთში.'); });
+    }).catch(function (e) {
+      busy = false; setStatus('err', explain(e)); renderPublishBar();
+    }).then(function () { renderSide(); renderPublishBar(); });
+  }
+
+  window.addEventListener('beforeunload', function (e) { if (draft && changedKeys().length) { e.preventDefault(); e.returnValue = ''; } });
+  boot();
+})();
+</script>
+</body>
+</html>

@@ -73,11 +73,11 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible{
 .hdr-logo span{transition:color .25s ease}
 .hdr-logo span{color:#3E6DA6 !important}
 .hdr-logo:hover span,.hdr-logo:focus-visible span{color:#0B1628 !important}
-@media (max-width: 1100px) and (min-width: 481px){.hdr-logo span:first-child{font-size:44px !important}.hdr-logo span+span{font-size:26px !important}}
-@media (max-width: 1180px) and (min-width: 901px){.navlinks{gap:24px !important;font-size:13px}.hdr-logo span:first-child{font-size:40px !important}.hdr-logo span+span{font-size:23px !important}}
+@media (max-width: 1100px) and (min-width: 481px){.hdr-logo span:first-of-type{font-size:44px !important}.hdr-logo span+span{font-size:26px !important}}
+@media (max-width: 1180px) and (min-width: 901px){.navlinks{gap:24px !important;font-size:13px}.hdr-logo span:first-of-type{font-size:40px !important}.hdr-logo span+span{font-size:23px !important}}
 .scrub-top{top:clamp(128px,17vh,170px) !important}
 @media (max-width: 480px){.hdr-row{height:80px !important}}
-@media (max-width: 480px){.hdr-logo span:first-child{font-size:30px !important}.hdr-logo span+span{font-size:16px !important}}
+@media (max-width: 480px){.hdr-logo span:first-of-type{font-size:30px !important}.hdr-logo span+span{font-size:16px !important}}
 
 .ge-map{position:absolute;left:var(--pp);right:var(--pp);top:calc(var(--pt) + 34px);bottom:calc(clamp(160px, 22vw, 320px) * 0.72 + 18px);display:flex;align-items:center;justify-content:center;pointer-events:none}
 .ge-map svg{display:block;width:100%;height:100%;overflow:visible}
@@ -104,6 +104,16 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible{
 .band-lines{display:flex;flex-direction:column;gap:clamp(14px,2.2vw,30px);font-weight:300;line-height:1.15;letter-spacing:-0.015em}
 .band-lines > div{max-width:100%;overflow-wrap:break-word}
 @media (max-width: 900px){.band-lines > div:last-child{align-self:flex-start !important;text-align:left !important}}
+
+[hidden]{display:none !important}
+.brand-logo{display:block;height:52px;width:auto;max-width:220px;object-fit:contain;align-self:center}
+footer .brand-logo{height:30px;max-width:160px}
+@media (max-width: 1180px) and (min-width: 901px){.hdr-logo .brand-logo{height:42px}}
+@media (max-width: 480px){.hdr-logo .brand-logo{height:34px;max-width:140px}}
+.field input[aria-invalid="true"],.field textarea[aria-invalid="true"]{border-bottom-color:#A3362B}
+button[type="submit"][aria-busy="true"]{opacity:.6;cursor:progress}
+a[hreflang]{display:inline-flex;align-items:center;justify-content:center;min-width:44px;min-height:44px;margin:-14px -12px}
+a[data-tel],a[data-mail]{display:inline-block;padding-block:10px;margin-block:-10px}
 </style>
 </head>
 <body>
@@ -113,18 +123,19 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible{
 <header style="position: sticky; top: 0; z-index: 100; background: rgba(255,255,255,0.92); backdrop-filter: blur(10px); border-bottom: 1px solid #ECEAE4">
 <div class="wrap hdr-row" style="display: flex; align-items: center; justify-content: space-between; height: 112px; gap: 24px">
 <a href="#top" class="hdr-logo" aria-label="EIB GROUP — home" style="display: flex; align-items: baseline; gap: 14px">
-<span style="font-family: 'Bodoni Moda', Didot, 'Times New Roman', serif; font-size: 52px; letter-spacing: 0.18em; font-weight: 500; line-height: 1">EIB</span>
-<span style="font-family: 'Bodoni Moda', Didot, serif; font-size: 30px; letter-spacing: 0.36em; color: #0B1628; line-height: 1">GROUP</span>
+<img class="brand-logo" data-logo="header" alt="EIB GROUP" hidden>
+<span data-wordmark style="font-family: 'Bodoni Moda', Didot, 'Times New Roman', serif; font-size: 52px; letter-spacing: 0.18em; font-weight: 500; line-height: 1">EIB</span>
+<span data-wordmark style="font-family: 'Bodoni Moda', Didot, serif; font-size: 30px; letter-spacing: 0.36em; color: #0B1628; line-height: 1">GROUP</span>
 </a>
 <nav class="navlinks" aria-label="Main navigation" style="gap: 44px; font-size: 14px; letter-spacing: 0.02em">
-<a href="#about">About</a>
-<a href="#services">Services</a>
-<a href="#experience">Experience</a>
-<a href="#contact">Contact</a>
+<a data-edit="nav.1" href="#eib-scrub">How we work</a>
+<a data-edit="nav.2" href="#services">Services</a>
+<a data-edit="nav.3" href="#experience">Experience</a>
+<a data-edit="nav.4" href="#contact">Contact</a>
 </nav>
 <div style="display: flex; align-items: center; gap: 20px">
 <span style="font-size: 13px; letter-spacing: 0.12em; display: inline-flex; gap: 10px; align-items: center"><a href="../" hreflang="ka" lang="ka" style="color: #5A6475">KA</a><span style="color: #C9CDD5">/</span><span aria-current="true" style="font-weight: 600">EN</span></span>
-<a href="#contact" class="hdr-cta" style="display: inline-flex; white-space: nowrap; align-items: center; min-height: 44px; padding: 0 22px; border: 1px solid #0B1628; font-size: 14px; letter-spacing: 0.02em">Get in touch</a>
+<a data-edit="header.cta" href="#contact" class="hdr-cta" style="display: inline-flex; white-space: nowrap; align-items: center; min-height: 44px; padding: 0 22px; border: 1px solid #0B1628; font-size: 14px; letter-spacing: 0.02em">Get in touch</a>
 </div>
 </div>
 </header>
@@ -138,20 +149,20 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible{
 <div class="c-1-6" style="display: flex; flex-direction: column; gap: clamp(26px, 3vw, 40px); padding-right: clamp(0px, 3vw, 48px)">
 <div class="hero-fade" style="display: flex; align-items: center; gap: 18px; font-size: 12px; letter-spacing: 0.28em; text-transform: uppercase; color: #5A6475">
 <span style="display: inline-block; width: 56px; height: 1px; background: #3E6DA6"></span>
-<span>General Trading · Procurement · Import</span>
+<span data-edit="hero.eyebrow">General Trading · Procurement · Import</span>
 </div>
 <h1 class="hero-h1" style="font-family: 'Cormorant Garamond', Georgia, serif; font-size: clamp(36px, 4vw, 58px)">
-<span class="hl"><span>Your trusted partner</span></span>
-<span class="hl"><span>in global</span></span>
-<span class="hl"><span>procurement</span></span>
-<span class="hl"><span>and import<span style="color: #3E6DA6">.</span></span></span>
+<span class="hl"><span data-edit="hero.l1">Your trusted partner</span></span>
+<span class="hl"><span data-edit="hero.l2">in global</span></span>
+<span class="hl"><span data-edit="hero.l3">procurement</span></span>
+<span class="hl"><span><span data-edit="hero.l4">and import</span><span style="color: #3E6DA6">.</span></span></span>
 </h1>
 <span class="hero-rule" aria-hidden="true"></span>
 <div class="hero-fade" style="display: flex; flex-direction: column; gap: 32px">
-<p style="margin: 0; font-size: 18px; line-height: 1.8; color: #3C4658; max-width: 30em">We find manufacturers, buy and deliver products of any kind. You tell us what your business needs. We handle sourcing, shipping and customs clearance.</p>
+<p data-edit="hero.lead" style="margin: 0; font-size: 18px; line-height: 1.8; color: #3C4658; max-width: 30em">We find manufacturers, buy and deliver products of any kind. You tell us what your business needs. We handle sourcing, shipping and customs clearance.</p>
 <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 28px 40px">
-<a href="#contact" class="lnk" style="font-size: 16px; font-weight: 500; min-height: 44px">Get in touch <span class="rule"></span></a>
-<span style="font-family: 'Bodoni Moda', Didot, serif; font-size: 20px; letter-spacing: 0.04em; font-variant-numeric: lining-nums">+995 577 55 38 17</span>
+<a href="#contact" class="lnk" style="font-size: 16px; font-weight: 500; min-height: 44px"><span data-edit="hero.cta">Get in touch</span> <span class="rule"></span></a>
+<span data-edit="shared.phone" style="font-family: 'Bodoni Moda', Didot, serif; font-size: 20px; letter-spacing: 0.04em; font-variant-numeric: lining-nums">+995 577 55 38 17</span>
 </div>
 </div>
 </div>
@@ -169,8 +180,8 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible{
 </div>
 <div data-px="mono" style="position: absolute; right: -0.06em; bottom: -0.2em; font-family: 'Bodoni Moda', Didot, serif; font-size: clamp(160px, 22vw, 320px); line-height: 1; letter-spacing: -0.02em; color: transparent; -webkit-text-stroke: 1px rgba(194,165,122,0.55); will-change: transform" aria-hidden="true">EIB</div>
 <div style="position: relative; display: flex; flex-direction: column; gap: 14px; max-width: 18em">
-<span style="font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 300; font-size: clamp(22px, 2.2vw, 30px); line-height: 1.35">General trading &amp; supply</span>
-<span style="font-size: 14px; line-height: 1.7; color: #AEB7C6">B2B procurement and import of any kind of goods.</span>
+<span data-edit="panel.title" style="font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 300; font-size: clamp(22px, 2.2vw, 30px); line-height: 1.35">General trading &amp; supply</span>
+<span data-edit="panel.caption" style="font-size: 14px; line-height: 1.7; color: #AEB7C6">B2B procurement and import of any kind of goods.</span>
 </div>
 </div>
 </div>
@@ -185,105 +196,67 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible{
 <video id="scrubVideo" muted playsinline preload="auto" disablepictureinpicture poster="../media/process-poster.webp" aria-hidden="true"></video>
 <div class="scrub-scrim"></div>
 <div class="scrub-top"><div class="wrap" style="display: flex; justify-content: space-between; align-items: center; gap: 24px">
-<span class="scrub-chip"><span aria-hidden="true" style="display: inline-block; width: 18px; height: 1px; background: #C2A57A"></span>How we work</span>
-<span class="scrub-hint scrub-chip" id="scrubHint">Scroll <svg width="12" height="20" viewBox="0 0 12 20" fill="none" stroke="#FFFFFF" stroke-width="1.2" aria-hidden="true"><path d="M6 0v18M1 13l5 5 5-5"></path></svg></span>
+<span class="scrub-chip"><span aria-hidden="true" style="display: inline-block; width: 18px; height: 1px; background: #C2A57A"></span><span data-edit="scrub.eyebrow">How we work</span></span>
+<span class="scrub-hint scrub-chip" id="scrubHint"><span data-edit="scrub.hint">Scroll</span> <svg width="12" height="20" viewBox="0 0 12 20" fill="none" stroke="#FFFFFF" stroke-width="1.2" aria-hidden="true"><path d="M6 0v18M1 13l5 5 5-5"></path></svg></span>
 </div></div>
 <div class="scrub-ui"><div class="wrap">
 <div class="caps">
-<div class="cap on" data-i="0"><span style="display: block; font-family: 'Bodoni Moda', Didot, serif; font-size: 15px; letter-spacing: 0.08em; color: #C2A57A; margin-bottom: 14px">01 / 05</span><h3 style="margin: 0 0 12px; font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 300; font-size: clamp(32px, 4.6vw, 68px); line-height: 1.1; letter-spacing: -0.015em">Stock and warehousing</h3><p style="margin: 0; font-size: clamp(15px, 1.3vw, 17px); line-height: 1.7; color: #D5DCE6">We store goods and prepare them for dispatch.</p></div>
-<div class="cap" data-i="1"><span style="display: block; font-family: 'Bodoni Moda', Didot, serif; font-size: 15px; letter-spacing: 0.08em; color: #C2A57A; margin-bottom: 14px">02 / 05</span><h3 style="margin: 0 0 12px; font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 300; font-size: clamp(32px, 4.6vw, 68px); line-height: 1.1; letter-spacing: -0.015em">Procurement planning</h3><p style="margin: 0; font-size: clamp(15px, 1.3vw, 17px); line-height: 1.7; color: #D5DCE6">Every order is planned and tracked digitally.</p></div>
-<div class="cap" data-i="2"><span style="display: block; font-family: 'Bodoni Moda', Didot, serif; font-size: 15px; letter-spacing: 0.08em; color: #C2A57A; margin-bottom: 14px">03 / 05</span><h3 style="margin: 0 0 12px; font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 300; font-size: clamp(32px, 4.6vw, 68px); line-height: 1.1; letter-spacing: -0.015em">Logistics</h3><p style="margin: 0; font-size: clamp(15px, 1.3vw, 17px); line-height: 1.7; color: #D5DCE6">Road, sea and air freight.</p></div>
-<div class="cap" data-i="3"><span style="display: block; font-family: 'Bodoni Moda', Didot, serif; font-size: 15px; letter-spacing: 0.08em; color: #C2A57A; margin-bottom: 14px">04 / 05</span><h3 style="margin: 0 0 12px; font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 300; font-size: clamp(32px, 4.6vw, 68px); line-height: 1.1; letter-spacing: -0.015em">Global import</h3><p style="margin: 0; font-size: clamp(15px, 1.3vw, 17px); line-height: 1.7; color: #D5DCE6">Suppliers from markets around the world.</p></div>
-<div class="cap" data-i="4"><span style="display: block; font-family: 'Bodoni Moda', Didot, serif; font-size: 15px; letter-spacing: 0.08em; color: #C2A57A; margin-bottom: 14px">05 / 05</span><h3 style="margin: 0 0 12px; font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 300; font-size: clamp(32px, 4.6vw, 68px); line-height: 1.1; letter-spacing: -0.015em">Delivered to your door</h3><p style="margin: 0; font-size: clamp(15px, 1.3vw, 17px); line-height: 1.7; color: #D5DCE6">Goods at your address, with full documentation.</p></div>
+<div class="cap on" data-i="0"><span style="display: block; font-family: 'Bodoni Moda', Didot, serif; font-size: 15px; letter-spacing: 0.08em; color: #C2A57A; margin-bottom: 14px">01 / 05</span><h3 data-edit="scene1.title" style="margin: 0 0 12px; font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 300; font-size: clamp(32px, 4.6vw, 68px); line-height: 1.1; letter-spacing: -0.015em">Stock and warehousing</h3><p data-edit="scene1.text" style="margin: 0; font-size: clamp(15px, 1.3vw, 17px); line-height: 1.7; color: #D5DCE6">We store goods and prepare them for dispatch.</p></div>
+<div class="cap" data-i="1"><span style="display: block; font-family: 'Bodoni Moda', Didot, serif; font-size: 15px; letter-spacing: 0.08em; color: #C2A57A; margin-bottom: 14px">02 / 05</span><h3 data-edit="scene2.title" style="margin: 0 0 12px; font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 300; font-size: clamp(32px, 4.6vw, 68px); line-height: 1.1; letter-spacing: -0.015em">Procurement planning</h3><p data-edit="scene2.text" style="margin: 0; font-size: clamp(15px, 1.3vw, 17px); line-height: 1.7; color: #D5DCE6">Every order is planned and tracked digitally.</p></div>
+<div class="cap" data-i="2"><span style="display: block; font-family: 'Bodoni Moda', Didot, serif; font-size: 15px; letter-spacing: 0.08em; color: #C2A57A; margin-bottom: 14px">03 / 05</span><h3 data-edit="scene3.title" style="margin: 0 0 12px; font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 300; font-size: clamp(32px, 4.6vw, 68px); line-height: 1.1; letter-spacing: -0.015em">Logistics</h3><p data-edit="scene3.text" style="margin: 0; font-size: clamp(15px, 1.3vw, 17px); line-height: 1.7; color: #D5DCE6">Road, sea and air freight.</p></div>
+<div class="cap" data-i="3"><span style="display: block; font-family: 'Bodoni Moda', Didot, serif; font-size: 15px; letter-spacing: 0.08em; color: #C2A57A; margin-bottom: 14px">04 / 05</span><h3 data-edit="scene4.title" style="margin: 0 0 12px; font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 300; font-size: clamp(32px, 4.6vw, 68px); line-height: 1.1; letter-spacing: -0.015em">Global import</h3><p data-edit="scene4.text" style="margin: 0; font-size: clamp(15px, 1.3vw, 17px); line-height: 1.7; color: #D5DCE6">Suppliers from markets around the world.</p></div>
+<div class="cap" data-i="4"><span style="display: block; font-family: 'Bodoni Moda', Didot, serif; font-size: 15px; letter-spacing: 0.08em; color: #C2A57A; margin-bottom: 14px">05 / 05</span><h3 data-edit="scene5.title" style="margin: 0 0 12px; font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 300; font-size: clamp(32px, 4.6vw, 68px); line-height: 1.1; letter-spacing: -0.015em">Delivered to your door</h3><p data-edit="scene5.text" style="margin: 0; font-size: clamp(15px, 1.3vw, 17px); line-height: 1.7; color: #D5DCE6">Goods at your address, with full documentation.</p></div>
 </div>
 <div class="scrub-bar" aria-hidden="true"><i><b></b></i><i><b></b></i><i><b></b></i><i><b></b></i><i><b></b></i></div>
 </div></div>
 </div>
 </section>
-
-<!-- KEYWORD BAND (horizontal scroll asymmetry) -->
-<section id="eib-band" class="layer" aria-label="Areas of work" style="background: #0B1628; color: #FFFFFF; padding: clamp(72px, 10vw, 150px) 0; overflow: hidden">
-<div class="wrap band-lines" style="font-family: 'Cormorant Garamond', Georgia, serif; font-size: clamp(32px, 4.8vw, 72px)">
-<div data-px="k1" style="will-change: transform; align-self: flex-start">B2B procurement and</div>
-<div data-px="k2" style="will-change: transform; align-self: flex-end; text-align: right; color: #AEB7C6">import of any kind of goods</div>
-</div>
-</section>
-
-<!-- ABOUT -->
-<section id="about" class="layer" style="background: #F5F8FC; padding: clamp(96px, 13vw, 200px) 0">
+<!-- SERVICES (about + services) -->
+<section id="services" class="layer" style="background: #F5F8FC; padding-top: clamp(88px, 11vw, 168px); padding-bottom: clamp(88px, 11vw, 168px)">
 <div class="wrap">
-<div class="g" style="row-gap: 40px">
+<div class="g" style="row-gap: 48px; align-items: start">
 <div class="c-1-4">
-<div class="sticky-l" style="position: sticky; top: 150px; display: flex; flex-direction: column; gap: 16px">
-<span style="font-size: 12px; letter-spacing: 0.28em; text-transform: uppercase; color: #3E6DA6">About us</span>
-<span style="font-size: 14px; color: #5A6475; line-height: 1.7">and what we do</span>
+<div class="sticky-l" style="position: sticky; top: 150px; display: flex; flex-direction: column; gap: 20px">
+<span data-edit="about.eyebrow" style="font-size: 12px; letter-spacing: 0.28em; text-transform: uppercase; color: #3E6DA6">About us</span>
+<h2 data-edit="services.title" style="margin: 0; font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 300; font-size: clamp(34px, 3.8vw, 56px); line-height: 1.1; letter-spacing: -0.02em">Services</h2>
+<p data-edit="about.text" style="margin: 0; font-size: 15px; line-height: 1.85; color: #3C4658; max-width: 26em">EIB GROUP is a trading and supply company. We supply businesses with goods sourced both on the local market and abroad.</p>
 </div>
 </div>
-<div class="c-5-8" style="display: flex; flex-direction: column; gap: 48px">
-<p style="margin: 0; font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 300; font-size: clamp(26px, 3vw, 42px); line-height: 1.45; letter-spacing: -0.01em">Bring us the request, we bring you the product. One contract, one point of contact, and a price that already includes shipping and customs.</p>
-<div class="two" style="row-gap: 28px">
-<p style="margin: 0; font-size: 16px; line-height: 1.85; color: #3C4658">EIB GROUP is a trading and supply company. We supply businesses with goods sourced both on the local market and abroad.</p>
-<p style="margin: 0; font-size: 16px; line-height: 1.85; color: #3C4658">We are not limited to one category. We find a reliable manufacturer, compare prices, check quality and deliver on the agreed date with full documentation.</p>
-</div>
-</div>
-</div>
-</div>
-</section>
-
-<!-- SERVICES -->
-<section id="services" class="layer" style="background: #FFFFFF; padding-top: clamp(96px, 13vw, 200px); padding-bottom: clamp(96px, 13vw, 200px)">
-<div class="wrap">
-<div class="g" style="margin-bottom: clamp(48px, 6vw, 88px); row-gap: 24px; align-items: end">
-<h2 class="c-1-6" style="margin: 0; font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 300; font-size: clamp(36px, 4.6vw, 68px); line-height: 1.1; letter-spacing: -0.02em">Services</h2>
-<p class="c-8-5" style="margin: 0; font-size: 15px; line-height: 1.8; color: #5A6475">Three services that cover the whole procurement cycle, from your request to your warehouse.</p>
-</div>
-
+<div class="c-5-8" style="display: flex; flex-direction: column; gap: clamp(40px, 5vw, 64px)">
+<p data-edit="about.statement" style="margin: 0; font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 300; font-size: clamp(24px, 2.6vw, 38px); line-height: 1.45; letter-spacing: -0.01em">Bring us the request, we bring you the product. One contract, one point of contact, and a price that already includes shipping and customs.</p>
 <div style="border-top: 1px solid #0B1628">
 <a href="#contact" class="svc" style="display: block; padding: clamp(32px, 4vw, 56px) 0; border-bottom: 1px solid #E3E0D8">
 <div class="svc-row">
 <div style="display: flex; flex-direction: column; gap: 10px">
-<span style="font-family: 'Bodoni Moda', serif; font-style: italic; font-size: 15px; color: #3E6DA6">Single vendor</span>
-<span style="font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 400; font-size: clamp(24px, 2.6vw, 36px); line-height: 1.25">General supply</span>
+<span data-edit="svc1.label" style="font-family: 'Bodoni Moda', serif; font-style: italic; font-size: 15px; color: #3E6DA6">Single vendor</span>
+<span data-edit="svc1.title" style="font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 400; font-size: clamp(24px, 2.6vw, 36px); line-height: 1.25">General supply</span>
 </div>
-<p class="svc-desc" style="margin: 0; font-size: 15px; line-height: 1.8; color: #3C4658">Regular and one-off supply from a single vendor: consumables, inventory and equipment.</p>
+<p data-edit="svc1.text" class="svc-desc" style="margin: 0; font-size: 15px; line-height: 1.8; color: #3C4658">Regular and one-off supply from a single vendor: consumables, inventory and equipment.</p>
 <span class="arr" aria-hidden="true" style="justify-self: end"><svg width="28" height="14" viewBox="0 0 28 14" fill="none" stroke="#0B1628" stroke-width="1.2"><path d="M0 7h26M20 1l6 6-6 6"></path></svg></span>
 </div>
 </a>
 <a href="#contact" class="svc" style="display: block; padding: clamp(32px, 4vw, 56px) 0; border-bottom: 1px solid #E3E0D8">
 <div class="svc-row">
 <div style="display: flex; flex-direction: column; gap: 10px">
-<span style="font-family: 'Bodoni Moda', serif; font-style: italic; font-size: 15px; color: #3E6DA6">Best offer</span>
-<span style="font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 400; font-size: clamp(24px, 2.6vw, 36px); line-height: 1.25">B2B procurement</span>
+<span data-edit="svc2.label" style="font-family: 'Bodoni Moda', serif; font-style: italic; font-size: 15px; color: #3E6DA6">Best offer</span>
+<span data-edit="svc2.title" style="font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 400; font-size: clamp(24px, 2.6vw, 36px); line-height: 1.25">B2B procurement</span>
 </div>
-<p class="svc-desc" style="margin: 0; font-size: 15px; line-height: 1.8; color: #3C4658">We take your specification, research the market and offer the best combination of price and quality.</p>
+<p data-edit="svc2.text" class="svc-desc" style="margin: 0; font-size: 15px; line-height: 1.8; color: #3C4658">We take your specification, research the market and offer the best combination of price and quality.</p>
 <span class="arr" aria-hidden="true" style="justify-self: end"><svg width="28" height="14" viewBox="0 0 28 14" fill="none" stroke="#0B1628" stroke-width="1.2"><path d="M0 7h26M20 1l6 6-6 6"></path></svg></span>
 </div>
 </a>
 <a href="#contact" class="svc" style="display: block; padding: clamp(32px, 4vw, 56px) 0; border-bottom: 1px solid #E3E0D8">
 <div class="svc-row">
 <div style="display: flex; flex-direction: column; gap: 10px">
-<span style="font-family: 'Bodoni Moda', serif; font-style: italic; font-size: 15px; color: #3E6DA6">Door to door</span>
-<span style="font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 400; font-size: clamp(24px, 2.6vw, 36px); line-height: 1.25">Import of any kind of goods</span>
+<span data-edit="svc3.label" style="font-family: 'Bodoni Moda', serif; font-style: italic; font-size: 15px; color: #3E6DA6">Door to door</span>
+<span data-edit="svc3.title" style="font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 400; font-size: clamp(24px, 2.6vw, 36px); line-height: 1.25">Import of any kind of goods</span>
 </div>
-<p class="svc-desc" style="margin: 0; font-size: 15px; line-height: 1.8; color: #3C4658">We arrange shipping, insurance and customs. The goods are handed over ready to use, at your address.</p>
+<p data-edit="svc3.text" class="svc-desc" style="margin: 0; font-size: 15px; line-height: 1.8; color: #3C4658">We arrange shipping, insurance and customs. The goods are handed over ready to use, at your address.</p>
 <span class="arr" aria-hidden="true" style="justify-self: end"><svg width="28" height="14" viewBox="0 0 28 14" fill="none" stroke="#0B1628" stroke-width="1.2"><path d="M0 7h26M20 1l6 6-6 6"></path></svg></span>
 </div>
 </a>
 </div>
-
-<!-- PROCESS -->
-<div class="g" style="margin-top: clamp(96px, 12vw, 180px); row-gap: 48px; background: #EEF3F9; padding: clamp(32px, 4.5vw, 64px) clamp(24px, 4vw, 56px); border-top: 2px solid #3E6DA6">
-<div class="c-1-4" style="display: flex; flex-direction: column; gap: 16px">
-<span style="font-size: 12px; letter-spacing: 0.28em; text-transform: uppercase; color: #3E6DA6">Process</span>
-<span style="font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 300; font-size: clamp(26px, 2.6vw, 36px); line-height: 1.3">From request to delivery</span>
 </div>
-<ol class="c-5-8 steps" style="list-style: none; margin: 0; padding: 0; border-top: 1px solid #E3E0D8">
-<li style="display: flex; flex-direction: column; gap: 14px; padding: 28px 20px 0 0"><span style="font-family: 'Bodoni Moda', serif; font-size: 30px; color: #0B1628">01</span><span style="font-weight: 600; font-size: 15px">Request</span><span style="font-size: 14px; line-height: 1.7; color: #5A6475">Product, quantity, deadline.</span></li>
-<li style="display: flex; flex-direction: column; gap: 14px; padding: 28px 20px 0 0"><span style="font-family: 'Bodoni Moda', serif; font-size: 30px; color: #0B1628">02</span><span style="font-weight: 600; font-size: 15px">Sourcing</span><span style="font-size: 14px; line-height: 1.7; color: #5A6475">We compare manufacturers and send an offer.</span></li>
-<li style="display: flex; flex-direction: column; gap: 14px; padding: 28px 20px 0 0"><span style="font-family: 'Bodoni Moda', serif; font-size: 30px; color: #0B1628">03</span><span style="font-weight: 600; font-size: 15px">Purchase</span><span style="font-size: 14px; line-height: 1.7; color: #5A6475">Contract and quality control.</span></li>
-<li style="display: flex; flex-direction: column; gap: 14px; padding: 28px 20px 0 0"><span style="font-family: 'Bodoni Moda', serif; font-size: 30px; color: #0B1628">04</span><span style="font-weight: 600; font-size: 15px">Logistics</span><span style="font-size: 14px; line-height: 1.7; color: #5A6475">Shipping, insurance, customs.</span></li>
-<li style="display: flex; flex-direction: column; gap: 14px; padding: 28px 0 0 0"><span style="font-family: 'Bodoni Moda', serif; font-size: 30px; color: #3E6DA6">05</span><span style="font-weight: 600; font-size: 15px">Delivery</span><span style="font-size: 14px; line-height: 1.7; color: #5A6475">To your address, with documentation.</span></li>
-</ol>
 </div>
 </div>
 </section>
@@ -293,25 +266,25 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible{
 <div class="wrap" id="eib-stats">
 <div class="g" style="row-gap: 32px; margin-bottom: clamp(72px, 9vw, 140px)">
 <div class="c-1-5" style="display: flex; flex-direction: column; gap: 20px">
-<span style="font-size: 12px; letter-spacing: 0.28em; text-transform: uppercase; color: #C2A57A">Experience in numbers</span>
-<h2 style="margin: 0; font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 300; font-size: clamp(34px, 4vw, 58px); line-height: 1.15; letter-spacing: -0.02em">Trust you can measure</h2>
+<span data-edit="stats.eyebrow" style="font-size: 12px; letter-spacing: 0.28em; text-transform: uppercase; color: #C2A57A">Experience in numbers</span>
+<h2 data-edit="stats.title" style="margin: 0; font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 300; font-size: clamp(34px, 4vw, 58px); line-height: 1.15; letter-spacing: -0.02em">Trust you can measure</h2>
 </div>
-<p class="c-8-5" style="margin: 0; align-self: end; font-size: 15px; line-height: 1.85; color: #AEB7C6">Over the years we have built a supplier network and a working process that make every order predictable.</p>
+<p data-edit="stats.text" class="c-8-5" style="margin: 0; align-self: end; font-size: 15px; line-height: 1.85; color: #AEB7C6">Over the years we have built a supplier network and a working process that make every order predictable.</p>
 </div>
 
 <div class="stats3" style="align-items: start">
 <div data-px="s1" style="will-change: transform; border-top: 1px solid rgba(255,255,255,0.18); padding-top: 28px; display: flex; flex-direction: column; gap: 18px">
-<span style="font-family: 'Bodoni Moda', Didot, serif; font-weight: 400; font-size: clamp(96px, 11vw, 168px); line-height: 0.9; letter-spacing: -0.03em; font-variant-numeric: lining-nums">5<span style="color: #C2A57A">+</span></span>
-<span style="font-size: 16px; font-weight: 500">years of experience</span>
+<span style="font-family: 'Bodoni Moda', Didot, serif; font-weight: 400; font-size: clamp(96px, 11vw, 168px); line-height: 0.9; letter-spacing: -0.03em; font-variant-numeric: lining-nums"><span data-edit="stat1.num">5</span><span style="color: #C2A57A">+</span></span>
+<span data-edit="stat1.label" style="font-size: 16px; font-weight: 500">years of experience</span>
 </div>
 <div data-px="s2" style="will-change: transform; border-top: 1px solid rgba(255,255,255,0.18); padding-top: 28px; display: flex; flex-direction: column; gap: 18px; margin-top: clamp(0px, 8vw, 120px)">
-<span style="font-family: 'Bodoni Moda', Didot, serif; font-weight: 400; font-size: clamp(96px, 11vw, 168px); line-height: 0.9; letter-spacing: -0.03em; font-variant-numeric: lining-nums">50<span style="color: #C2A57A">+</span></span>
-<span style="font-size: 16px; font-weight: 500">successful projects</span>
+<span style="font-family: 'Bodoni Moda', Didot, serif; font-weight: 400; font-size: clamp(96px, 11vw, 168px); line-height: 0.9; letter-spacing: -0.03em; font-variant-numeric: lining-nums"><span data-edit="stat2.num">50</span><span style="color: #C2A57A">+</span></span>
+<span data-edit="stat2.label" style="font-size: 16px; font-weight: 500">successful projects</span>
 </div>
 <div data-px="s3" style="will-change: transform; border-top: 1px solid rgba(255,255,255,0.18); padding-top: 28px; display: flex; flex-direction: column; gap: 18px; margin-top: clamp(0px, 4vw, 60px)">
-<span style="font-family: 'Bodoni Moda', Didot, serif; font-style: italic; font-weight: 400; font-size: clamp(56px, 6vw, 92px); line-height: 1.05; letter-spacing: -0.02em; color: #C2A57A">Trusted</span>
-<span style="font-size: 16px; font-weight: 500">Reliable partner</span>
-<span style="font-size: 14px; line-height: 1.7; color: #AEB7C6">We keep to the agreed deadline, price and quality.</span>
+<span data-edit="stat3.word" style="font-family: 'Bodoni Moda', Didot, serif; font-style: italic; font-weight: 400; font-size: clamp(56px, 6vw, 92px); line-height: 1.05; letter-spacing: -0.02em; color: #C2A57A">Trusted</span>
+<span data-edit="stat3.label" style="font-size: 16px; font-weight: 500">Reliable partner</span>
+<span data-edit="stat3.text" style="font-size: 14px; line-height: 1.7; color: #AEB7C6">We keep to the agreed deadline, price and quality.</span>
 </div>
 </div>
 </div>
@@ -323,53 +296,55 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible{
 <div class="g" style="row-gap: 72px">
 <div class="c-1-5" style="display: flex; flex-direction: column; gap: 48px; background: #EEF3F9; padding: clamp(28px, 3.5vw, 48px); border-top: 2px solid #3E6DA6">
 <div style="display: flex; flex-direction: column; gap: 20px">
-<span style="font-size: 12px; letter-spacing: 0.28em; text-transform: uppercase; color: #3E6DA6">Contact</span>
-<h2 style="margin: 0; font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 300; font-size: clamp(36px, 4.6vw, 68px); line-height: 1.1; letter-spacing: -0.02em">Tell us what you need</h2>
+<span data-edit="contact.eyebrow" style="font-size: 12px; letter-spacing: 0.28em; text-transform: uppercase; color: #3E6DA6">Contact</span>
+<h2 data-edit="contact.title" style="margin: 0; font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 300; font-size: clamp(36px, 4.6vw, 68px); line-height: 1.1; letter-spacing: -0.02em">Tell us what you need</h2>
 </div>
 <dl style="margin: 0; display: flex; flex-direction: column">
 <div style="display: flex; flex-direction: column; gap: 6px; padding: 22px 0; border-top: 1px solid #E3E0D8">
-<dt style="font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; color: #5A6475">Phone</dt>
-<dd style="margin: 0"><a href="tel:+995577553817" style="font-family: 'Bodoni Moda', Didot, serif; font-size: clamp(26px, 2.6vw, 34px); letter-spacing: 0.02em; user-select: all">+995 577 55 38 17</a></dd>
+<dt data-edit="contact.labelPhone" style="font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; color: #5A6475">Phone</dt>
+<dd style="margin: 0"><a data-edit="shared.phone" data-tel href="tel:+995577553817" style="font-family: 'Bodoni Moda', Didot, serif; font-size: clamp(26px, 2.6vw, 34px); letter-spacing: 0.02em; user-select: all">+995 577 55 38 17</a></dd>
 </div>
 <div style="display: flex; flex-direction: column; gap: 6px; padding: 22px 0; border-top: 1px solid #E3E0D8">
-<dt style="font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; color: #5A6475">Email</dt>
-<dd style="margin: 0; font-size: 17px">[info@eibgroup.ge]</dd>
+<dt data-edit="contact.labelEmail" style="font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; color: #5A6475">Email</dt>
+<dd style="margin: 0; font-size: 17px"><a data-edit="shared.email" data-mail>[info@eibgroup.ge]</a></dd>
 </div>
 <div style="display: flex; flex-direction: column; gap: 6px; padding: 22px 0; border-top: 1px solid #E3E0D8; border-bottom: 1px solid #E3E0D8">
-<dt style="font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; color: #5A6475">Address</dt>
-<dd style="margin: 0; font-size: 17px">[Street and number], Tbilisi, Georgia</dd>
+<dt data-edit="contact.labelAddress" style="font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; color: #5A6475">Address</dt>
+<dd data-edit="contact.address" style="margin: 0; font-size: 17px">[Street and number], Tbilisi, Georgia</dd>
 </div>
 </dl>
 </div>
 
-<form class="c-7-6" id="contactForm" novalidate="novalidate" style="display: flex; flex-direction: column; gap: 36px; padding-top: 8px">
+<form class="c-7-6" id="contactForm" data-endpoint="" novalidate="novalidate" style="display: flex; flex-direction: column; gap: 36px; padding-top: 8px">
 <div class="two" style="row-gap: 36px">
 <div class="field" style="display: flex; flex-direction: column; gap: 4px">
-<label for="f-name" style="font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; color: #5A6475">Name *</label>
+<label data-edit="form.name" for="f-name" style="font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; color: #5A6475">Name *</label>
 <input id="f-name" name="name" type="text" autocomplete="name" placeholder="Your full name">
 </div>
 <div class="field" style="display: flex; flex-direction: column; gap: 4px">
-<label for="f-company" style="font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; color: #5A6475">Company</label>
+<label data-edit="form.company" for="f-company" style="font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; color: #5A6475">Company</label>
 <input id="f-company" name="company" type="text" autocomplete="organization" placeholder="Company name">
 </div>
 <div class="field" style="display: flex; flex-direction: column; gap: 4px">
-<label for="f-phone" style="font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; color: #5A6475">Phone *</label>
+<label data-edit="form.phone" for="f-phone" style="font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; color: #5A6475">Phone *</label>
 <input id="f-phone" name="phone" type="tel" autocomplete="tel" placeholder="+995 5XX XX XX XX">
 </div>
 <div class="field" style="display: flex; flex-direction: column; gap: 4px">
-<label for="f-email" style="font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; color: #5A6475">Email</label>
+<label data-edit="form.email" for="f-email" style="font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; color: #5A6475">Email</label>
 <input id="f-email" name="email" type="email" autocomplete="email" placeholder="name@company.ge">
 </div>
 </div>
 <div class="field" style="display: flex; flex-direction: column; gap: 4px">
-<label for="f-msg" style="font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; color: #5A6475">What products do you need? *</label>
+<label data-edit="form.message" for="f-msg" style="font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; color: #5A6475">What products do you need? *</label>
 <textarea id="f-msg" name="message" rows="4" placeholder="E.g. 500 office chairs, delivered to Tbilisi within 30 days" style="resize: vertical"></textarea>
 </div>
-<p id="formError" hidden role="alert" style="margin: 0; font-size: 14px; color: #A3362B">Please fill in your name, phone (at least 9 digits) and a short description of your request.</p>
-<p id="formSent" hidden role="status" style="margin: 0; font-size: 14px; line-height: 1.7; color: #1F5E45">The form is filled in correctly. This is a demo version: to actually send requests, the form needs to be connected to a server.</p>
+<p data-edit="form.error" id="formError" hidden role="alert" style="margin: 0; font-size: 14px; color: #A3362B">Please fill in your name, phone (at least 9 digits) and a short description of your request.</p>
+<p data-edit="form.sent" id="formSent" hidden role="status" style="margin: 0; font-size: 14px; line-height: 1.7; color: #1F5E45">Thank you! Your request has been sent. We will contact you within one business day.</p>
+<p data-edit="form.fail" id="formFail" hidden role="alert" style="margin: 0; font-size: 14px; line-height: 1.7; color: #A3362B">Sending failed. Please try again or call us.</p>
+<p data-edit="form.demo" id="formDemo" hidden role="status" style="margin: 0; font-size: 14px; line-height: 1.7; color: #5A6475">The online form is temporarily unavailable. Please contact us by phone.</p>
 <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 24px">
-<button type="submit" style="display: inline-flex; align-items: center; gap: 18px; min-height: 56px; padding: 0 36px; background: #0B1628; color: #FFFFFF; border: 0; border-radius: 0; font: inherit; font-size: 15px; letter-spacing: 0.04em; cursor: pointer">Send request <svg width="22" height="12" viewBox="0 0 28 14" fill="none" stroke="#FFFFFF" stroke-width="1.2" aria-hidden="true"><path d="M0 7h26M20 1l6 6-6 6"></path></svg></button>
-<span style="font-size: 13px; color: #5A6475">* required field</span>
+<button type="submit" style="display: inline-flex; align-items: center; gap: 18px; min-height: 56px; padding: 0 36px; background: #0B1628; color: #FFFFFF; border: 0; border-radius: 0; font: inherit; font-size: 15px; letter-spacing: 0.04em; cursor: pointer"><span data-edit="form.submit">Send request</span> <svg width="22" height="12" viewBox="0 0 28 14" fill="none" stroke="#FFFFFF" stroke-width="1.2" aria-hidden="true"><path d="M0 7h26M20 1l6 6-6 6"></path></svg></button>
+<span data-edit="form.required" style="font-size: 13px; color: #5A6475">* required field</span>
 </div>
 </form>
 </div>
@@ -381,11 +356,12 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible{
 <footer class="layer" style="background: #0B1628; color: #AEB7C6; border-top: 1px solid rgba(255,255,255,0.08)">
 <div class="wrap" style="display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 24px; padding-top: 56px; padding-bottom: 56px">
 <div style="display: flex; align-items: baseline; gap: 14px; color: #FFFFFF">
-<span style="font-family: 'Bodoni Moda', Didot, serif; font-size: 20px; letter-spacing: 0.22em">EIB</span>
-<span style="font-family: 'Bodoni Moda', Didot, serif; font-size: 12px; letter-spacing: 0.42em; color: #FFFFFF">GROUP</span>
-<span class="hide-m" style="font-size: 13px; color: #AEB7C6; margin-left: 12px">ი აი ბი გრუპი</span>
+<img class="brand-logo" data-logo="footer" alt="EIB GROUP" hidden>
+<span data-wordmark style="font-family: 'Bodoni Moda', Didot, serif; font-size: 20px; letter-spacing: 0.22em">EIB</span>
+<span data-wordmark style="font-family: 'Bodoni Moda', Didot, serif; font-size: 12px; letter-spacing: 0.42em; color: #FFFFFF">GROUP</span>
+<span data-edit="footer.tagline" class="hide-m" style="font-size: 13px; color: #AEB7C6; margin-left: 12px">ი აი ბი გრუპი</span>
 </div>
-<span style="font-size: 13px">© 2026 EIB GROUP. All rights reserved.</span>
+<span data-edit="footer.copyright" style="font-size: 13px">© 2026 EIB GROUP. All rights reserved.</span>
 </div>
 </footer>
 
@@ -416,12 +392,26 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible{
   update();
 
   var form = document.getElementById('contactForm');
+  var btn = form.querySelector('button[type="submit"]');
+  var states = { error: 'formError', sent: 'formSent', fail: 'formFail', demo: 'formDemo' };
+  function show(which) { Object.keys(states).forEach(function (k) { var el = document.getElementById(states[k]); if (el) el.hidden = k !== which; }); }
   form.addEventListener('submit', function (e) {
     e.preventDefault();
+    if (btn.disabled) return;
     var v = function (n) { return (form.elements[n].value || '').trim(); };
-    var ok = v('name').length >= 2 && v('phone').replace(/\D/g, '').length >= 9 && v('message').length >= 5;
-    document.getElementById('formError').hidden = ok;
-    document.getElementById('formSent').hidden = !ok;
+    var checks = { name: v('name').length >= 2, phone: v('phone').replace(/\D/g, '').length >= 9, message: v('message').length >= 5,
+                   email: !v('email') || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v('email')) };
+    var bad = Object.keys(checks).filter(function (k) { return !checks[k]; });
+    ['name', 'phone', 'message', 'email'].forEach(function (k) { form.elements[k].setAttribute('aria-invalid', bad.indexOf(k) >= 0 ? 'true' : 'false'); });
+    if (bad.length) { show('error'); form.elements[bad[0]].focus(); return; }
+    var endpoint = form.getAttribute('data-endpoint');
+    if (!endpoint) { show('demo'); return; }
+    btn.disabled = true; btn.setAttribute('aria-busy', 'true');
+    fetch(endpoint, { method: 'POST', headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: v('name'), company: v('company'), phone: v('phone'), email: v('email'), message: v('message'), page: location.href }) })
+      .then(function (r) { if (!r.ok) throw new Error(r.status); show('sent'); form.reset(); })
+      .catch(function () { show('fail'); })
+      .then(function () { btn.disabled = false; btn.removeAttribute('aria-busy'); });
   });
 })();
 </script>
@@ -563,6 +553,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible{
     if (!a) return;
     var id = a.getAttribute('href').slice(1), y;
     if (!id || id === 'top') y = 0;
+    else if (id === 'eib-scrub') y = naturalTop(mark);           // the video section starts exactly at its first scene
     else { var el = document.getElementById(id); if (!el) return; y = naturalTop(el) - (header ? header.offsetHeight : 0); }
     e.preventDefault();
     nav = true; token++; cancelAnimationFrame(raf); scene = -1;
@@ -623,6 +614,50 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible{
   window.addEventListener('load', layout);
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(layout);
   layout();
+})();
+</script>
+<script>
+(function () {
+  if (window.parent === window || !/[?&]preview\b/.test(location.search)) return;
+  function digits(s) { return (s || '').replace(/[^\d+]/g, ''); }
+  function apply(c) {
+    var lang = document.documentElement.lang, t = c[lang] || {}, sh = c.shared || {};
+    document.querySelectorAll('[data-edit]').forEach(function (el) {
+      var k = el.getAttribute('data-edit'), v = k.indexOf('shared.') === 0 ? sh[k.slice(7)] : t[k];
+      if (typeof v === 'string') el.textContent = v;
+    });
+    document.querySelectorAll('[data-tel]').forEach(function (a) { a.setAttribute('href', 'tel:' + digits(sh.phone)); });
+    document.querySelectorAll('[data-mail]').forEach(function (a) { if (/^[^\s@\[\]]+@[^\s@\[\]]+$/.test(sh.email || '')) a.setAttribute('href', 'mailto:' + sh.email); else a.removeAttribute('href'); });
+    document.querySelectorAll('[data-logo]').forEach(function (img) {
+      var src = img.getAttribute('data-logo') === 'footer' && sh.logoDark ? sh.logoDark : sh.logo;
+      if (src) { img.src = src; img.hidden = false; } else { img.removeAttribute('src'); img.hidden = true; }
+    });
+    var hideWords = !!sh.logo && sh.showWordmark === false;
+    document.querySelectorAll('[data-wordmark]').forEach(function (el) { el.hidden = hideWords; });
+    var f = document.getElementById('contactForm'); if (f) f.setAttribute('data-endpoint', sh.formEndpoint || '');
+    if (t['seo.title']) document.title = t['seo.title'];
+  }
+  var flash = document.createElement('style');
+  flash.textContent = '.eib-focus{outline:2px solid #3E6DA6 !important;outline-offset:6px;transition:outline-color .3s}' +
+    '.layer::after{opacity:0 !important}.layer{transform:none !important}';   // no dimming/shrinking while editing
+  document.head.appendChild(flash);
+  function focusKey(key) {
+    var el = document.querySelector('[data-edit="' + key.replace(/"/g, '') + '"]');
+    if (!el) return;
+    var cap = el.closest('.cap');
+    if (cap) document.querySelectorAll('.cap').forEach(function (c) { c.classList.toggle('on', c === cap); });
+    var y = el.getBoundingClientRect().top + window.scrollY - window.innerHeight / 3;
+    window.scrollTo({ top: Math.max(0, y), behavior: 'instant' });
+    document.querySelectorAll('.eib-focus').forEach(function (x) { x.classList.remove('eib-focus'); });
+    el.classList.add('eib-focus');
+    setTimeout(function () { el.classList.remove('eib-focus'); }, 1600);
+  }
+  window.addEventListener('message', function (e) {
+    if (e.origin !== location.origin || !e.data) return;
+    if (e.data.type === 'eib-preview') apply(e.data.content);
+    if (e.data.type === 'eib-focus') focusKey(String(e.data.key || ''));
+  });
+  window.parent.postMessage({ type: 'eib-preview-ready' }, location.origin);
 })();
 </script>
 </body>
