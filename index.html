@@ -130,10 +130,10 @@ a[data-tel],a[data-mail]{display:inline-block;padding-block:10px;margin-block:-1
 .wa-pill svg{width:18px;height:18px;fill:#25D366;flex:none;transition:fill .25s ease}
 .wa-pill:hover{background:#25D366;border-color:#25D366;color:#FFFFFF}
 .wa-pill:hover svg{fill:#FFFFFF}
-.contact-head{display:flex;flex-direction:column;gap:clamp(12px,1.2vw,18px);margin-bottom:clamp(48px,6vw,88px);max-width:900px}
-.contact-head .hero-tag{margin-bottom:clamp(8px,1vw,14px)}
-.contact-sub{margin:0;font-family:var(--f-display);font-weight:300;font-size:var(--ht-b);line-height:1.38;letter-spacing:-.005em;color:var(--c-accent);max-width:30em;text-wrap:balance}
-.contact-head h2{margin:0;font-family:var(--f-display);font-weight:400;font-size:var(--ht-a);line-height:1.14;letter-spacing:-.02em;color:var(--c-navy);text-wrap:balance;overflow-wrap:break-word}
+.contact-head{display:flex;flex-direction:column;align-items:center;gap:clamp(16px,1.6vw,22px);margin:0 auto clamp(56px,6.5vw,100px);text-align:center}
+.contact-head .hero-tag{align-self:center}
+.orn{display:flex;align-items:center;gap:14px;margin-top:clamp(2px,.4vw,6px)}.orn::before,.orn::after{content:"";width:44px;height:1px;background:color-mix(in srgb,var(--c-gold) 70%,transparent)}.orn i{width:7px;height:7px;background:var(--c-gold);transform:rotate(45deg)}
+.contact-head h2{margin:0;font-family:var(--f-display);font-weight:300;font-size:clamp(30px,3.3vw,50px);line-height:1.15;letter-spacing:-.015em;color:var(--c-navy);text-wrap:balance;overflow-wrap:break-word}
 
 .hero-tag{align-self:flex-start;display:inline-flex;align-items:center;padding:9px calc(16px - .28em) 9px 16px;border:1px solid color-mix(in srgb,var(--c-navy) 16%,transparent);font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:#5A6475;line-height:1.4}
 .hero-title{display:flex;flex-direction:column;gap:clamp(12px,1.2vw,18px);font-family:var(--f-display)}
@@ -353,8 +353,8 @@ a[data-tel],a[data-mail]{display:inline-block;padding-block:10px;margin-block:-1
 <div class="wrap">
 <div class="contact-head">
 <span class="hero-tag"><span data-edit="contact.eyebrow">კონტაქტი</span></span>
-<h2 data-edit="contact.title">ვითანამშრომლოთ</h2>
-<p data-edit="contact.sub" class="contact-sub">შეავსეთ ფორმა ან დაგვიკავშირდით პირდაპირ. გიპასუხებთ ერთი სამუშაო დღის განმავლობაში.</p>
+<h2 data-edit="contact.title">მოგვიყევით, რა გჭირდებათ</h2>
+<span class="orn" aria-hidden="true"><i></i></span>
 </div>
 <div class="g" style="row-gap: 72px">
 <div class="c-1-5" style="display: flex; flex-direction: column; gap: 48px; background: var(--c-mist); padding: clamp(28px, 3.5vw, 48px); border-top: 2px solid var(--c-accent)">
