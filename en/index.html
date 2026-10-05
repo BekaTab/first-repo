@@ -130,8 +130,10 @@ a[data-tel],a[data-mail]{display:inline-block;padding-block:10px;margin-block:-1
 .wa-pill svg{width:18px;height:18px;fill:#25D366;flex:none;transition:fill .25s ease}
 .wa-pill:hover{background:#25D366;border-color:#25D366;color:#FFFFFF}
 .wa-pill:hover svg{fill:#FFFFFF}
-.contact-head{display:flex;flex-direction:column;gap:18px;margin-bottom:clamp(44px,5.5vw,80px);max-width:900px}
-.contact-head h2{margin:0;font-family:var(--f-display);font-weight:300;font-size:clamp(32px,3.4vw,50px);line-height:1.15;letter-spacing:-.015em;text-wrap:balance}
+.contact-head{display:flex;flex-direction:column;gap:clamp(12px,1.2vw,18px);margin-bottom:clamp(48px,6vw,88px);max-width:900px}
+.contact-head .hero-tag{margin-bottom:clamp(8px,1vw,14px)}
+.contact-sub{margin:0;font-family:var(--f-display);font-weight:300;font-size:var(--ht-b);line-height:1.38;letter-spacing:-.005em;color:var(--c-accent);max-width:30em;text-wrap:balance}
+.contact-head h2{margin:0;font-family:var(--f-display);font-weight:400;font-size:var(--ht-a);line-height:1.14;letter-spacing:-.02em;color:var(--c-navy);text-wrap:balance;overflow-wrap:break-word}
 
 .hero-tag{align-self:flex-start;display:inline-flex;align-items:center;padding:9px calc(16px - .28em) 9px 16px;border:1px solid color-mix(in srgb,var(--c-navy) 16%,transparent);font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:#5A6475;line-height:1.4}
 .hero-title{display:flex;flex-direction:column;gap:clamp(12px,1.2vw,18px);font-family:var(--f-display)}
@@ -140,6 +142,7 @@ a[data-tel],a[data-mail]{display:inline-block;padding-block:10px;margin-block:-1
 .ht-b{font-weight:300;font-size:var(--ht-b);line-height:1.38;letter-spacing:-.005em;color:var(--c-accent);text-wrap:balance}
 :root{--ht-a:clamp(34px,3.5vw,52px);--ht-b:clamp(21px,1.95vw,29px)}
 :root[lang="en"]{--ht-a:clamp(42px,4.5vw,66px);--ht-b:clamp(25px,2.3vw,34px)}
+@media (max-width: 400px){:root{--ht-a:clamp(27px,8.4vw,34px)}}
 
 .svc-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(16px,1.8vw,24px);align-items:stretch}
 .svc-card{position:relative;display:flex;flex-direction:column;gap:16px;padding:clamp(28px,2.8vw,40px);background:#FFFFFF;border-top:2px solid var(--c-accent);color:var(--c-navy);box-shadow:0 1px 0 color-mix(in srgb,var(--c-navy) 6%,transparent);transition:background .45s ease,color .45s ease,transform .45s ease,box-shadow .45s ease}
@@ -349,8 +352,9 @@ a[data-tel],a[data-mail]{display:inline-block;padding-block:10px;margin-block:-1
 <section id="contact" class="layer" style="background: #FFFFFF; padding: clamp(96px, 13vw, 200px) 0">
 <div class="wrap">
 <div class="contact-head">
-<span data-edit="contact.eyebrow" style="font-size: 12px; letter-spacing: 0.28em; text-transform: uppercase; color: var(--c-accent)">Contact</span>
-<h2 data-edit="contact.title">Tell us what you need</h2>
+<span class="hero-tag"><span data-edit="contact.eyebrow">Contact</span></span>
+<h2 data-edit="contact.title">Let's work together</h2>
+<p data-edit="contact.sub" class="contact-sub">Fill in the form or contact us directly. We reply within one business day.</p>
 </div>
 <div class="g" style="row-gap: 72px">
 <div class="c-1-5" style="display: flex; flex-direction: column; gap: 48px; background: var(--c-mist); padding: clamp(28px, 3.5vw, 48px); border-top: 2px solid var(--c-accent)">
