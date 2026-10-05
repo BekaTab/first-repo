@@ -132,6 +132,14 @@ a[data-tel],a[data-mail]{display:inline-block;padding-block:10px;margin-block:-1
 .wa-pill:hover svg{fill:#FFFFFF}
 .contact-head{display:flex;flex-direction:column;gap:18px;margin-bottom:clamp(44px,5.5vw,80px);max-width:900px}
 .contact-head h2{margin:0;font-family:var(--f-display);font-weight:300;font-size:clamp(32px,3.4vw,50px);line-height:1.15;letter-spacing:-.015em;text-wrap:balance}
+
+.hero-tag{align-self:flex-start;display:inline-flex;align-items:center;padding:9px calc(16px - .28em) 9px 16px;border:1px solid color-mix(in srgb,var(--c-navy) 16%,transparent);font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:#5A6475;line-height:1.4}
+.hero-title{display:flex;flex-direction:column;gap:clamp(12px,1.2vw,18px);font-family:var(--f-display)}
+.hero-title .hl{padding-bottom:.12em;margin-bottom:-.12em}
+.ht-a{font-weight:400;font-size:var(--ht-a);line-height:1.14;letter-spacing:-.02em;color:var(--c-navy);text-wrap:balance}
+.ht-b{font-weight:300;font-size:var(--ht-b);line-height:1.38;letter-spacing:-.005em;color:var(--c-accent);text-wrap:balance}
+:root{--ht-a:clamp(34px,3.5vw,52px);--ht-b:clamp(21px,1.95vw,29px)}
+:root[lang="en"]{--ht-a:clamp(42px,4.5vw,66px);--ht-b:clamp(25px,2.3vw,34px)}
 @media (max-width: 480px){.btn-main{flex:1 1 100%;justify-content:center}}
 
 .eib-block{padding-top:clamp(88px,11vw,168px);padding-bottom:clamp(88px,11vw,168px);color:var(--c-navy)}
@@ -180,17 +188,11 @@ a[data-tel],a[data-mail]{display:inline-block;padding-block:10px;margin-block:-1
 <div class="wrap">
 <div class="g" style="align-items: center; row-gap: 56px">
 <div class="c-1-6" style="display: flex; flex-direction: column; gap: clamp(26px, 3vw, 40px); padding-right: clamp(0px, 3vw, 48px)">
-<div class="hero-fade" style="display: flex; align-items: center; gap: 18px; font-size: 12px; letter-spacing: 0.28em; text-transform: uppercase; color: #5A6475">
-<span style="display: inline-block; width: 56px; height: 1px; background: var(--c-accent)"></span>
-<span data-edit="hero.eyebrow">B2B Procurement · Import</span>
-</div>
-<h1 class="hero-h1" style="font-family: 'Cormorant Garamond', Georgia, serif; font-size: clamp(36px, 4vw, 58px)">
-<span class="hl"><span data-edit="hero.l1">Your trusted partner</span></span>
-<span class="hl"><span data-edit="hero.l2">in global</span></span>
-<span class="hl"><span data-edit="hero.l3">procurement</span></span>
-<span class="hl"><span><span data-edit="hero.l4">and import</span><span style="color: var(--c-accent)">.</span></span></span>
+<div class="hero-fade hero-tag"><span data-edit="hero.eyebrow">B2B Procurement · Import</span></div>
+<h1 class="hero-h1 hero-title">
+<span class="hl ht-a"><span><span data-edit="hero.l1">Your trusted</span> <span data-edit="hero.l2">partner</span></span></span>
+<span class="hl ht-b"><span><span data-edit="hero.l3">in global procurement</span> <span data-edit="hero.l4">and import</span></span></span>
 </h1>
-<span class="hero-rule" aria-hidden="true"></span>
 <div class="hero-fade" style="display: flex; flex-direction: column; gap: 32px">
 <p data-edit="hero.lead" style="margin: 0; font-size: 18px; line-height: 1.8; color: #3C4658; max-width: 30em">We find manufacturers, buy and deliver products of any kind. You tell us what your business needs. We handle sourcing, shipping and customs clearance.</p>
 <div class="hero-cta">
