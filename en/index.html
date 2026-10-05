@@ -117,6 +117,23 @@ button[type="submit"][aria-busy="true"]{opacity:.6;cursor:progress}
 a[hreflang]{display:inline-flex;align-items:center;justify-content:center;min-width:44px;min-height:44px;margin:-14px -12px}
 a[data-tel],a[data-mail]{display:inline-block;padding-block:10px;margin-block:-10px}
 
+.num{font-family:'Hanken Grotesk', 'Noto Sans Georgian', 'Segoe UI', sans-serif;font-weight:500;font-variant-numeric:lining-nums tabular-nums;letter-spacing:.015em}
+.hero-cta{display:flex;flex-wrap:wrap;align-items:center;gap:18px 30px}
+.btn-main{display:inline-flex;align-items:center;gap:14px;min-height:54px;padding:0 30px;background:var(--c-navy);color:#FFFFFF;font-size:15px;font-weight:500;letter-spacing:.02em;transition:background .3s ease,gap .3s ease}
+.btn-main:hover{background:var(--c-accent);color:#FFFFFF;gap:20px}
+.tel-wa{display:inline-flex;align-items:center;gap:14px}
+.tel-num{font-size:19px;color:var(--c-navy)}
+.wa-btn{display:inline-flex;align-items:center;justify-content:center;flex:none;width:44px;height:44px;border-radius:50%;background:#25D366;color:#FFFFFF;transition:transform .25s ease,box-shadow .25s ease}
+.wa-btn:hover{color:#FFFFFF;transform:translateY(-2px);box-shadow:0 10px 22px -10px rgba(37,211,102,.9)}
+.wa-btn svg{width:22px;height:22px;fill:currentColor}
+.wa-pill{display:inline-flex;align-items:center;gap:10px;min-height:42px;padding:0 18px 0 14px;border:1px solid rgba(37,211,102,.55);border-radius:999px;background:#FFFFFF;font-size:14px;color:var(--c-navy);transition:background .25s ease,color .25s ease,border-color .25s ease}
+.wa-pill svg{width:18px;height:18px;fill:#25D366;flex:none;transition:fill .25s ease}
+.wa-pill:hover{background:#25D366;border-color:#25D366;color:#FFFFFF}
+.wa-pill:hover svg{fill:#FFFFFF}
+.contact-head{display:flex;flex-direction:column;gap:18px;margin-bottom:clamp(44px,5.5vw,80px);max-width:900px}
+.contact-head h2{margin:0;font-family:var(--f-display);font-weight:300;font-size:clamp(32px,3.4vw,50px);line-height:1.15;letter-spacing:-.015em;text-wrap:balance}
+@media (max-width: 480px){.btn-main{flex:1 1 100%;justify-content:center}}
+
 .eib-block{padding-top:clamp(88px,11vw,168px);padding-bottom:clamp(88px,11vw,168px);color:var(--c-navy)}
 .blk-grid{row-gap:28px;align-items:start}
 .blk-head{display:flex;flex-direction:column;gap:18px}
@@ -176,9 +193,9 @@ a[data-tel],a[data-mail]{display:inline-block;padding-block:10px;margin-block:-1
 <span class="hero-rule" aria-hidden="true"></span>
 <div class="hero-fade" style="display: flex; flex-direction: column; gap: 32px">
 <p data-edit="hero.lead" style="margin: 0; font-size: 18px; line-height: 1.8; color: #3C4658; max-width: 30em">We find manufacturers, buy and deliver products of any kind. You tell us what your business needs. We handle sourcing, shipping and customs clearance.</p>
-<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 28px 40px">
-<a href="#contact" class="lnk" style="font-size: 16px; font-weight: 500; min-height: 44px"><span data-edit="hero.cta">Get in touch</span> <span class="rule"></span></a>
-<span data-edit="shared.phone" style="font-family: 'Bodoni Moda', Didot, serif; font-size: 20px; letter-spacing: 0.04em; font-variant-numeric: lining-nums">+995 577 55 38 17</span>
+<div class="hero-cta">
+<a href="#contact" class="btn-main"><span data-edit="hero.cta">Get in touch</span><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M1 8h13M9 3l5 5-5 5" stroke="currentColor" stroke-width="1.4"/></svg></a>
+<span class="tel-wa"><a data-edit="shared.phone" data-tel href="tel:+995577553817" class="num tel-num">+995 577 55 38 17</a><a data-wa href="https://wa.me/995577553817" target="_blank" rel="noopener" class="wa-btn" aria-label="WhatsApp" title="WhatsApp"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg></a></span>
 </div>
 </div>
 </div>
@@ -217,11 +234,11 @@ a[data-tel],a[data-mail]{display:inline-block;padding-block:10px;margin-block:-1
 </div></div>
 <div class="scrub-ui"><div class="wrap">
 <div class="caps">
-<div class="cap on" data-i="0"><span style="display: block; font-family: 'Bodoni Moda', Didot, serif; font-size: 15px; letter-spacing: 0.08em; color: var(--c-gold); margin-bottom: 14px">01 / 05</span><h3 data-edit="scene1.title" style="margin: 0 0 12px; font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 300; font-size: clamp(32px, 4.6vw, 68px); line-height: 1.1; letter-spacing: -0.015em">Stock and warehousing</h3><p data-edit="scene1.text" style="margin: 0; font-size: clamp(15px, 1.3vw, 17px); line-height: 1.7; color: #D5DCE6">We store goods and prepare them for dispatch.</p></div>
-<div class="cap" data-i="1"><span style="display: block; font-family: 'Bodoni Moda', Didot, serif; font-size: 15px; letter-spacing: 0.08em; color: var(--c-gold); margin-bottom: 14px">02 / 05</span><h3 data-edit="scene2.title" style="margin: 0 0 12px; font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 300; font-size: clamp(32px, 4.6vw, 68px); line-height: 1.1; letter-spacing: -0.015em">Procurement planning</h3><p data-edit="scene2.text" style="margin: 0; font-size: clamp(15px, 1.3vw, 17px); line-height: 1.7; color: #D5DCE6">Every order is planned and tracked digitally.</p></div>
-<div class="cap" data-i="2"><span style="display: block; font-family: 'Bodoni Moda', Didot, serif; font-size: 15px; letter-spacing: 0.08em; color: var(--c-gold); margin-bottom: 14px">03 / 05</span><h3 data-edit="scene3.title" style="margin: 0 0 12px; font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 300; font-size: clamp(32px, 4.6vw, 68px); line-height: 1.1; letter-spacing: -0.015em">Logistics</h3><p data-edit="scene3.text" style="margin: 0; font-size: clamp(15px, 1.3vw, 17px); line-height: 1.7; color: #D5DCE6">Road, sea and air freight.</p></div>
-<div class="cap" data-i="3"><span style="display: block; font-family: 'Bodoni Moda', Didot, serif; font-size: 15px; letter-spacing: 0.08em; color: var(--c-gold); margin-bottom: 14px">04 / 05</span><h3 data-edit="scene4.title" style="margin: 0 0 12px; font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 300; font-size: clamp(32px, 4.6vw, 68px); line-height: 1.1; letter-spacing: -0.015em">Global import</h3><p data-edit="scene4.text" style="margin: 0; font-size: clamp(15px, 1.3vw, 17px); line-height: 1.7; color: #D5DCE6">Suppliers from markets around the world.</p></div>
-<div class="cap" data-i="4"><span style="display: block; font-family: 'Bodoni Moda', Didot, serif; font-size: 15px; letter-spacing: 0.08em; color: var(--c-gold); margin-bottom: 14px">05 / 05</span><h3 data-edit="scene5.title" style="margin: 0 0 12px; font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 300; font-size: clamp(32px, 4.6vw, 68px); line-height: 1.1; letter-spacing: -0.015em">Delivered to your door</h3><p data-edit="scene5.text" style="margin: 0; font-size: clamp(15px, 1.3vw, 17px); line-height: 1.7; color: #D5DCE6">Goods at your address, with full documentation.</p></div>
+<div class="cap on" data-i="0"><span style="display: block; font-family: 'Hanken Grotesk', 'Noto Sans Georgian', 'Segoe UI', sans-serif; font-weight: 500; font-size: 13px; letter-spacing: 0.16em; font-variant-numeric: tabular-nums; color: var(--c-gold); margin-bottom: 14px">01 / 05</span><h3 data-edit="scene1.title" style="margin: 0 0 12px; font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 300; font-size: clamp(32px, 4.6vw, 68px); line-height: 1.1; letter-spacing: -0.015em">Sourcing, purchasing and warehousing</h3><p data-edit="scene1.text" style="margin: 0; font-size: clamp(15px, 1.3vw, 17px); line-height: 1.7; color: #D5DCE6">We store the sourced goods in the nearest warehouse and prepare them for dispatch.</p></div>
+<div class="cap" data-i="1"><span style="display: block; font-family: 'Hanken Grotesk', 'Noto Sans Georgian', 'Segoe UI', sans-serif; font-weight: 500; font-size: 13px; letter-spacing: 0.16em; font-variant-numeric: tabular-nums; color: var(--c-gold); margin-bottom: 14px">02 / 05</span><h3 data-edit="scene2.title" style="margin: 0 0 12px; font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 300; font-size: clamp(32px, 4.6vw, 68px); line-height: 1.1; letter-spacing: -0.015em">Procurement planning</h3><p data-edit="scene2.text" style="margin: 0; font-size: clamp(15px, 1.3vw, 17px); line-height: 1.7; color: #D5DCE6">Every order is planned and tracked digitally.</p></div>
+<div class="cap" data-i="2"><span style="display: block; font-family: 'Hanken Grotesk', 'Noto Sans Georgian', 'Segoe UI', sans-serif; font-weight: 500; font-size: 13px; letter-spacing: 0.16em; font-variant-numeric: tabular-nums; color: var(--c-gold); margin-bottom: 14px">03 / 05</span><h3 data-edit="scene3.title" style="margin: 0 0 12px; font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 300; font-size: clamp(32px, 4.6vw, 68px); line-height: 1.1; letter-spacing: -0.015em">Logistics</h3><p data-edit="scene3.text" style="margin: 0; font-size: clamp(15px, 1.3vw, 17px); line-height: 1.7; color: #D5DCE6">Road, sea and air freight.</p></div>
+<div class="cap" data-i="3"><span style="display: block; font-family: 'Hanken Grotesk', 'Noto Sans Georgian', 'Segoe UI', sans-serif; font-weight: 500; font-size: 13px; letter-spacing: 0.16em; font-variant-numeric: tabular-nums; color: var(--c-gold); margin-bottom: 14px">04 / 05</span><h3 data-edit="scene4.title" style="margin: 0 0 12px; font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 300; font-size: clamp(32px, 4.6vw, 68px); line-height: 1.1; letter-spacing: -0.015em">Global import</h3><p data-edit="scene4.text" style="margin: 0; font-size: clamp(15px, 1.3vw, 17px); line-height: 1.7; color: #D5DCE6">Suppliers from markets around the world.</p></div>
+<div class="cap" data-i="4"><span style="display: block; font-family: 'Hanken Grotesk', 'Noto Sans Georgian', 'Segoe UI', sans-serif; font-weight: 500; font-size: 13px; letter-spacing: 0.16em; font-variant-numeric: tabular-nums; color: var(--c-gold); margin-bottom: 14px">05 / 05</span><h3 data-edit="scene5.title" style="margin: 0 0 12px; font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 300; font-size: clamp(32px, 4.6vw, 68px); line-height: 1.1; letter-spacing: -0.015em">Delivered to your door</h3><p data-edit="scene5.text" style="margin: 0; font-size: clamp(15px, 1.3vw, 17px); line-height: 1.7; color: #D5DCE6">Goods at your address, with full documentation.</p></div>
 </div>
 <div class="scrub-bar" aria-hidden="true"><i><b></b></i><i><b></b></i><i><b></b></i><i><b></b></i><i><b></b></i></div>
 </div></div>
@@ -239,7 +256,7 @@ a[data-tel],a[data-mail]{display:inline-block;padding-block:10px;margin-block:-1
 </div>
 </div>
 <div class="c-5-8" style="display: flex; flex-direction: column; gap: clamp(40px, 5vw, 64px)">
-<p data-edit="about.statement" style="margin: 0; font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 300; font-size: clamp(24px, 2.6vw, 38px); line-height: 1.45; letter-spacing: -0.01em">Bring us the request, we bring you the product. One contract, one point of contact, and a price that already includes shipping and customs.</p>
+<p data-edit="about.statement" style="margin: 0; font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 300; font-size: clamp(24px, 2.6vw, 38px); line-height: 1.45; letter-spacing: -0.01em">Share your request and we will source and deliver the products you need. We manage every stage, from logistics to customs clearance, and you receive the goods at their destination with maximum convenience and in the shortest possible time.</p>
 <div style="border-top: 1px solid var(--c-navy)">
 <a href="#contact" class="svc" style="display: block; padding: clamp(32px, 4vw, 56px) 0; border-bottom: 1px solid #E3E0D8">
 <div class="svc-row">
@@ -247,7 +264,7 @@ a[data-tel],a[data-mail]{display:inline-block;padding-block:10px;margin-block:-1
 <span data-edit="svc2.label" style="font-family: 'Bodoni Moda', serif; font-style: italic; font-size: 15px; color: var(--c-accent)">Best offer</span>
 <span data-edit="svc2.title" style="font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 400; font-size: clamp(24px, 2.6vw, 36px); line-height: 1.25">B2B procurement</span>
 </div>
-<p data-edit="svc2.text" class="svc-desc" style="margin: 0; font-size: 15px; line-height: 1.8; color: #3C4658">We take your specification, research the market and offer the best combination of price and quality.</p>
+<p data-edit="svc2.text" class="svc-desc" style="margin: 0; font-size: 15px; line-height: 1.8; color: #3C4658">We take your product order, research the market and offer the best combination of price and quality.</p>
 <span class="arr" aria-hidden="true" style="justify-self: end"><svg width="28" height="14" viewBox="0 0 28 14" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M0 7h26M20 1l6 6-6 6"></path></svg></span>
 </div>
 </a>
@@ -257,7 +274,7 @@ a[data-tel],a[data-mail]{display:inline-block;padding-block:10px;margin-block:-1
 <span data-edit="svc3.label" style="font-family: 'Bodoni Moda', serif; font-style: italic; font-size: 15px; color: var(--c-accent)">Door to door</span>
 <span data-edit="svc3.title" style="font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 400; font-size: clamp(24px, 2.6vw, 36px); line-height: 1.25">Import of any kind of goods</span>
 </div>
-<p data-edit="svc3.text" class="svc-desc" style="margin: 0; font-size: 15px; line-height: 1.8; color: #3C4658">We arrange shipping, insurance and customs. The goods are handed over ready to use, at your address.</p>
+<p data-edit="svc3.text" class="svc-desc" style="margin: 0; font-size: 15px; line-height: 1.8; color: #3C4658">Air, road, sea and rail freight. Delivery to the address of your choice.</p>
 <span class="arr" aria-hidden="true" style="justify-self: end"><svg width="28" height="14" viewBox="0 0 28 14" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M0 7h26M20 1l6 6-6 6"></path></svg></span>
 </div>
 </a>
@@ -281,11 +298,11 @@ a[data-tel],a[data-mail]{display:inline-block;padding-block:10px;margin-block:-1
 
 <div class="stats3" style="align-items: start">
 <div data-px="s1" style="will-change: transform; border-top: 1px solid rgba(255,255,255,0.18); padding-top: 28px; display: flex; flex-direction: column; gap: 18px">
-<span style="font-family: 'Bodoni Moda', Didot, serif; font-weight: 400; font-size: clamp(96px, 11vw, 168px); line-height: 0.9; letter-spacing: -0.03em; font-variant-numeric: lining-nums"><span data-edit="stat1.num">5</span><span style="color: var(--c-gold)">+</span></span>
+<span style="font-family: 'Bodoni Moda', Didot, serif; font-weight: 400; font-size: clamp(96px, 11vw, 168px); line-height: 0.9; letter-spacing: -0.03em; font-variant-numeric: lining-nums"><span data-edit="stat1.num">7</span><span style="color: var(--c-gold)">+</span></span>
 <span data-edit="stat1.label" style="font-size: 16px; font-weight: 500">years of experience</span>
 </div>
 <div data-px="s2" style="will-change: transform; border-top: 1px solid rgba(255,255,255,0.18); padding-top: 28px; display: flex; flex-direction: column; gap: 18px; margin-top: clamp(0px, 8vw, 120px)">
-<span style="font-family: 'Bodoni Moda', Didot, serif; font-weight: 400; font-size: clamp(96px, 11vw, 168px); line-height: 0.9; letter-spacing: -0.03em; font-variant-numeric: lining-nums"><span data-edit="stat2.num">50</span><span style="color: var(--c-gold)">+</span></span>
+<span style="font-family: 'Bodoni Moda', Didot, serif; font-weight: 400; font-size: clamp(96px, 11vw, 168px); line-height: 0.9; letter-spacing: -0.03em; font-variant-numeric: lining-nums"><span data-edit="stat2.num">150</span><span style="color: var(--c-gold)">+</span></span>
 <span data-edit="stat2.label" style="font-size: 16px; font-weight: 500">successful projects</span>
 </div>
 <div data-px="s3" style="will-change: transform; border-top: 1px solid rgba(255,255,255,0.18); padding-top: 28px; display: flex; flex-direction: column; gap: 18px; margin-top: clamp(0px, 4vw, 60px)">
@@ -301,16 +318,16 @@ a[data-tel],a[data-mail]{display:inline-block;padding-block:10px;margin-block:-1
 <!-- CONTACT -->
 <section id="contact" class="layer" style="background: #FFFFFF; padding: clamp(96px, 13vw, 200px) 0">
 <div class="wrap">
+<div class="contact-head">
+<span data-edit="contact.eyebrow" style="font-size: 12px; letter-spacing: 0.28em; text-transform: uppercase; color: var(--c-accent)">Contact</span>
+<h2 data-edit="contact.title">Tell us what you need</h2>
+</div>
 <div class="g" style="row-gap: 72px">
 <div class="c-1-5" style="display: flex; flex-direction: column; gap: 48px; background: var(--c-mist); padding: clamp(28px, 3.5vw, 48px); border-top: 2px solid var(--c-accent)">
-<div style="display: flex; flex-direction: column; gap: 20px">
-<span data-edit="contact.eyebrow" style="font-size: 12px; letter-spacing: 0.28em; text-transform: uppercase; color: var(--c-accent)">Contact</span>
-<h2 data-edit="contact.title" style="margin: 0; font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 300; font-size: clamp(36px, 4.6vw, 68px); line-height: 1.1; letter-spacing: -0.02em">Tell us what you need</h2>
-</div>
 <dl style="margin: 0; display: flex; flex-direction: column">
-<div style="display: flex; flex-direction: column; gap: 6px; padding: 22px 0; border-top: 1px solid #E3E0D8">
+<div style="display: flex; flex-direction: column; gap: 6px; padding: 0 0 22px">
 <dt data-edit="contact.labelPhone" style="font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; color: #5A6475">Phone</dt>
-<dd style="margin: 0"><a data-edit="shared.phone" data-tel href="tel:+995577553817" style="font-family: 'Bodoni Moda', Didot, serif; font-size: clamp(26px, 2.6vw, 34px); letter-spacing: 0.02em; user-select: all">+995 577 55 38 17</a></dd>
+<dd style="margin: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 14px 20px"><a data-edit="shared.phone" data-tel href="tel:+995577553817" class="num" style="font-size: clamp(24px, 2.3vw, 30px)">+995 577 55 38 17</a><a data-wa href="https://wa.me/995577553817" target="_blank" rel="noopener" class="wa-pill"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg><span data-edit="contact.wa">Message on WhatsApp</span></a></dd>
 </div>
 <div style="display: flex; flex-direction: column; gap: 6px; padding: 22px 0; border-top: 1px solid #E3E0D8">
 <dt data-edit="contact.labelEmail" style="font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; color: #5A6475">Email</dt>
@@ -416,7 +433,7 @@ a[data-tel],a[data-mail]{display:inline-block;padding-block:10px;margin-block:-1
     if (!endpoint) { show('demo'); return; }
     btn.disabled = true; btn.setAttribute('aria-busy', 'true');
     fetch(endpoint, { method: 'POST', headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name: v('name'), company: v('company'), phone: v('phone'), email: v('email'), message: v('message'), page: location.href }) })
+      body: JSON.stringify({ _subject: (document.documentElement.lang === 'en' ? 'New request from the website' : 'ახალი მოთხოვნა საიტიდან') + ' — ' + v('name'), _replyto: v('email') || undefined, name: v('name'), company: v('company'), phone: v('phone'), email: v('email'), message: v('message'), page: location.href }) })
       .then(function (r) { if (!r.ok) throw new Error(r.status); show('sent'); form.reset(); })
       .catch(function () { show('fail'); })
       .then(function () { btn.disabled = false; btn.removeAttribute('aria-busy'); });
@@ -672,6 +689,8 @@ a[data-tel],a[data-mail]{display:inline-block;padding-block:10px;margin-block:-1
       if (typeof v === 'string') el.textContent = v;
     });
     document.querySelectorAll('[data-tel]').forEach(function (a) { a.setAttribute('href', 'tel:' + digits(sh.phone)); });
+    var wa = (sh.phone || '').replace(/\D/g, '');
+    if (wa) document.querySelectorAll('[data-wa]').forEach(function (a) { a.setAttribute('href', 'https://wa.me/' + wa); });
     document.querySelectorAll('[data-mail]').forEach(function (a) { if (/^[^\s@\[\]]+@[^\s@\[\]]+$/.test(sh.email || '')) a.setAttribute('href', 'mailto:' + sh.email); else a.removeAttribute('href'); });
     document.querySelectorAll('[data-logo]').forEach(function (img) {
       var src = img.getAttribute('data-logo') === 'footer' && sh.logoDark ? sh.logoDark : sh.logo;

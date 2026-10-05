@@ -262,7 +262,7 @@ textarea.input{resize:vertical;min-height:84px;line-height:1.6}
   // t: text (single line), a: textarea; scope 'lang' fields exist per language, 'shared' fields once.
   var SECTIONS = [
     { id: 'general', title: 'კონტაქტი და ლოგო', lead: 'ტელეფონი, ელ-ფოსტა და ლოგო ორივე ენაზე ერთნაირია.', shared: true, fields: [
-      { k: 'phone', l: 'ტელეფონის ნომერი', t: 't', check: 'phone' },
+      { k: 'phone', l: 'ტელეფონის ნომერი (WhatsApp-იც ამ ნომერზე გაიხსნება; ქვეყნის კოდით, მაგ. +995)', t: 't', check: 'phone' },
       { k: 'email', l: 'ელ-ფოსტა', t: 't', check: 'email' },
       { k: '__logo', l: 'ლოგო' },
       { k: 'formEndpoint', l: 'ფორმის მიმღები მისამართი (Formspree)', t: 't', check: 'url',
@@ -298,7 +298,7 @@ textarea.input{resize:vertical;min-height:84px;line-height:1.6}
       { k: 'stat3.word', l: 'მესამე ბლოკი — დიდი სიტყვა', t: 't' }, { k: 'stat3.label', l: 'მესამე ბლოკი — წარწერა', t: 't' }, { k: 'stat3.text', l: 'მესამე ბლოკი — ტექსტი', t: 'a' } ] },
     { id: 'contact', title: 'კონტაქტი და ფორმა', lead: 'საკონტაქტო ბლოკი, მისამართი და ფორმის წარწერები.', fields: [
       { k: 'contact.eyebrow', l: 'ზედა წარწერა', t: 't' }, { k: 'contact.title', l: 'სათაური', t: 't' },
-      { k: 'contact.address', l: 'მისამართი', t: 't' },
+      { k: 'contact.address', l: 'მისამართი', t: 't' }, { k: 'contact.wa', l: 'WhatsApp ღილაკის წარწერა (ნომერი იგივეა, რაც ტელეფონი)', t: 't' },
       { k: 'contact.labelPhone', l: 'წარწერა „ტელეფონი“', t: 't' }, { k: 'contact.labelEmail', l: 'წარწერა „ელ-ფოსტა“', t: 't' }, { k: 'contact.labelAddress', l: 'წარწერა „მისამართი“', t: 't' },
       { k: 'form.name', l: 'ფორმა — სახელი', t: 't' }, { k: 'form.company', l: 'ფორმა — კომპანია', t: 't' }, { k: 'form.phone', l: 'ფორმა — ტელეფონი', t: 't' },
       { k: 'form.email', l: 'ფორმა — ელ-ფოსტა', t: 't' }, { k: 'form.message', l: 'ფორმა — მოთხოვნა', t: 't' },

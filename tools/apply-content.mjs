@@ -48,6 +48,9 @@ export function applyContent(html, content, base = '') {
   });
 
   if (typeof sh.phone === 'string' && digits(sh.phone)) html = eachTag(html, 'data-tel', (tag) => setAttr(tag, 'href', 'tel:' + digits(sh.phone)));
+  // WhatsApp chat links follow the same number (digits only, with country code)
+  const wa = String(sh.phone || '').replace(/\D/g, '');
+  if (wa) html = eachTag(html, 'data-wa', (tag) => setAttr(tag, 'href', 'https://wa.me/' + wa));
   html = eachTag(html, 'data-mail', (tag) => setAttr(tag, 'href', validEmail(sh.email) ? 'mailto:' + sh.email : null));
 
   // site paths are stored relative to the site root; pages in sub-folders (en/) need a prefix
