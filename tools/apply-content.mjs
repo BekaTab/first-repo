@@ -3,6 +3,14 @@
 // Usage: node tools/apply-content.mjs [rootDir]
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+// shared with the admin preview: tools/render-blocks.js defines globalThis.eibRenderBlocks
+const here = fileURLToPath(new URL('.', import.meta.url));
+new Function(readFileSync(join(here, 'render-blocks.js'), 'utf8'))();
+const renderBlocks = globalThis.eibRenderBlocks;
+const COLOR_KEYS = ['navy', 'accent', 'gold', 'ice', 'mist'];
+const SECTION_KEYS = ['video', 'services', 'experience'];
 
 const root = process.argv[2] || '.';
 const PAGES = ['index.html', 'en/index.html'];
@@ -26,7 +34,7 @@ function eachTag(html, attr, fn) {
   return html.replace(new RegExp(`<[a-zA-Z0-9]+\\b[^>]*\\s${attr}(?:="[^"]*")?[^>]*>`, 'g'), fn);
 }
 
-export function applyContent(html, content) {
+export function applyContent(html, content, base = '') {
   const lang = (html.match(/<html[^>]*\slang="([^"]+)"/) || [])[1] || 'ka';
   const t = content[lang] || {};
   const sh = content.shared || {};
@@ -42,7 +50,9 @@ export function applyContent(html, content) {
   if (typeof sh.phone === 'string' && digits(sh.phone)) html = eachTag(html, 'data-tel', (tag) => setAttr(tag, 'href', 'tel:' + digits(sh.phone)));
   html = eachTag(html, 'data-mail', (tag) => setAttr(tag, 'href', validEmail(sh.email) ? 'mailto:' + sh.email : null));
 
-  const logo = safeUrl(sh.logo), logoDark = safeUrl(sh.logoDark) || logo;
+  // site paths are stored relative to the site root; pages in sub-folders (en/) need a prefix
+  const resolve = (p) => (/^https:\/\//.test(p) ? p : base + p);
+  const logo = safeUrl(sh.logo) && resolve(safeUrl(sh.logo)), logoDark = (safeUrl(sh.logoDark) && resolve(safeUrl(sh.logoDark))) || logo;
   html = eachTag(html, 'data-logo', (tag) => {
     const src = /data-logo="footer"/.test(tag) ? logoDark : logo;
     tag = setAttr(tag, 'src', src || null);
@@ -51,6 +61,24 @@ export function applyContent(html, content) {
   const hideWords = !!logo && sh.showWordmark === false;
   html = eachTag(html, 'data-wordmark', (tag) => setAttr(tag, 'hidden', hideWords ? '' : null));
   html = eachTag(html, 'data-endpoint', (tag) => setAttr(tag, 'data-endpoint', safeUrl(sh.formEndpoint)));
+
+  // brand colours
+  const cols = (sh.colors && typeof sh.colors === 'object') ? sh.colors : {};
+  const vars = COLOR_KEYS.filter((k) => /^#[0-9a-f]{6}$/i.test(cols[k] || '')).map((k) => `--c-${k}:${cols[k]};`).join('');
+  html = html.replace(/<style id="eib-theme">[^<]*<\/style>/, `<style id="eib-theme">${vars ? `:root{${vars}}` : ''}</style>`);
+
+  // hidden sections (and their menu links)
+  const hid = (sh.hidden && typeof sh.hidden === 'object') ? sh.hidden : {};
+  html = eachTag(html, 'data-section', (tag) => {
+    const name = (tag.match(/data-section="([^"]+)"/) || [])[1];
+    return setAttr(tag, 'hidden', SECTION_KEYS.includes(name) && hid[name] === true ? '' : null);
+  });
+
+  // custom blocks
+  for (const slot of ['a', 'b']) {
+    const re = new RegExp(`(<div class="eib-blocks" data-slot="${slot}"[^>]*>)[\\s\\S]*?(</div><!--/eib-slot-${slot}-->)`);
+    html = html.replace(re, (m, open, close) => open + renderBlocks(content.blocks, lang, slot, (p) => (safeUrl(p) ? resolve(safeUrl(p)) : '')) + close);
+  }
 
   if (typeof t['seo.title'] === 'string') html = html.replace(/<title>[^<]*<\/title>/, `<title>${esc(t['seo.title'])}</title>`);
   if (typeof t['seo.description'] === 'string') html = html.replace(/(<meta name="description" content=")[^"]*(")/, `$1${escAttr(t['seo.description'])}$2`);
@@ -66,7 +94,8 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   for (const page of PAGES) {
     const path = join(root, page);
     if (!existsSync(path)) continue;
-    const { html, missing } = applyContent(readFileSync(path, 'utf8'), content);
+    const base = '../'.repeat(page.split('/').length - 1);
+    const { html, missing } = applyContent(readFileSync(path, 'utf8'), content, base);
     writeFileSync(path, html);
     console.log(`${page}: content applied${missing ? ` (${missing} keys kept their default text)` : ''}`);
   }

@@ -6,7 +6,9 @@
     "logo": "",
     "logoDark": "",
     "showWordmark": true,
-    "formEndpoint": ""
+    "formEndpoint": "",
+    "colors": {},
+    "hidden": {}
   },
   "ka": {
     "nav.1": "როგორ ვმუშაობთ",
@@ -147,5 +149,6 @@
     "footer.copyright": "© 2026 EIB GROUP. All rights reserved.",
     "seo.title": "EIB GROUP — Supply & Import",
     "seo.description": "EIB GROUP: B2B procurement and import of any kind of goods. +995 577 55 38 17"
-  }
+  },
+  "blocks": []
 }

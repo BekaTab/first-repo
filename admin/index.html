@@ -110,6 +110,26 @@ textarea.input{resize:vertical;min-height:84px;line-height:1.6}
 .pbar .seg button[aria-pressed="true"]{background:var(--navy);color:#fff}
 .pwrap{overflow:hidden;position:relative}
 .pwrap iframe{position:absolute;top:0;left:50%;border:0;background:#fff;transform-origin:top center;box-shadow:0 10px 40px -20px rgba(11,22,40,.4)}
+.card2{background:#fff;border:1px solid var(--line);padding:16px 18px;margin-bottom:14px}
+.card2.changed{border-color:var(--gold);box-shadow:inset 3px 0 0 var(--gold)}
+.card2 h4{margin:0 0 4px;font-size:15px}
+.color-row{display:grid;grid-template-columns:52px 120px 1fr auto;gap:12px;align-items:center}
+.color-row input[type=color]{width:52px;height:40px;padding:2px;border:1px solid var(--line);background:#fff;cursor:pointer}
+.color-row .input{font-family:ui-monospace,Menlo,monospace;text-transform:uppercase}
+.swatches{display:flex;gap:6px;margin-top:10px}
+.swatches span{width:22px;height:22px;border:1px solid var(--line)}
+.blk-top{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-bottom:12px}
+.blk-top h4{margin:0 auto 0 0}
+.select{border:1px solid var(--line);background:#fff;padding:7px 10px;border-radius:0}
+.iconbtn{min-width:36px;min-height:36px;border:1px solid var(--line);background:#fff;cursor:pointer;font-size:15px}
+.iconbtn:hover{background:var(--mist)}
+.iconbtn:disabled{opacity:.35;cursor:not-allowed}
+.blk-img-row{display:grid;grid-template-columns:160px 1fr;gap:14px;align-items:center;margin-top:10px}
+.blk-img-prev{height:100px;border:1px dashed #C9CDD5;display:grid;place-items:center;background:var(--bg);overflow:hidden}
+.blk-img-prev img{width:100%;height:100%;object-fit:cover}
+.blk-img-prev span{font-size:12px;color:#9AA1AD}
+.sub{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600;margin:14px 0 6px}
+@media (max-width: 760px){.color-row{grid-template-columns:52px 1fr}.color-row .hint{grid-column:1 / -1}.blk-img-row{grid-template-columns:1fr}}
 .publish{position:sticky;bottom:0;margin:24px -28px 0;padding:14px 28px;background:rgba(255,255,255,.96);backdrop-filter:blur(6px);border-top:1px solid var(--line);display:flex;align-items:center;gap:12px;flex-wrap:wrap}
 .publish .info{color:var(--muted);font-size:13px}
 .tabs-m{display:none}
@@ -247,6 +267,8 @@ textarea.input{resize:vertical;min-height:84px;line-height:1.6}
       { k: '__logo', l: 'ლოგო' },
       { k: 'formEndpoint', l: 'ფორმის მიმღები მისამართი (Formspree)', t: 't', check: 'url',
         h: 'ფორმიდან შეტყობინებების მისაღებად შექმენით უფასო ფორმა formspree.io-ზე და ჩასვით მისი მისამართი (მაგ. https://formspree.io/f/abcd1234). ცარიელის შემთხვევაში საიტი სთხოვს ვიზიტორს დარეკვას.' } ] },
+    { id: 'colors', title: 'ფერები', lead: 'საიტის ძირითადი ფერები. ცვლილება მაშინვე ჩანს გადახედვაში; ნეიტრალური ნაცრისფერები და თეთრი უცვლელი რჩება.', shared: true, custom: 'colors', fields: [] },
+    { id: 'structure', title: 'გვერდის სტრუქტურა', lead: 'სექციების ჩვენება/დამალვა და დამატებითი ბლოკები სურათით.', custom: 'structure', fields: [] },
     { id: 'menu', title: 'მენიუ', lead: 'ჰედერის ბმულები და ღილაკი.', fields: [
       { k: 'nav.1', l: 'ბმული 1 (ვიდეო)', t: 't' }, { k: 'nav.2', l: 'ბმული 2 (სერვისები)', t: 't' },
       { k: 'nav.3', l: 'ბმული 3 (გამოცდილება)', t: 't' }, { k: 'nav.4', l: 'ბმული 4 (კონტაქტი)', t: 't' },
@@ -356,14 +378,27 @@ textarea.input{resize:vertical;min-height:84px;line-height:1.6}
   var published = null;   // content as it is on GitHub
   var draft = null;       // content being edited
   var publishedSha = null;
-  var pending = {};       // logo uploads not yet published: { logo: {path, b64, dataUrl}, logoDark: … }
+  var pending = {};       // images uploaded here but not yet published: { 'media/uploads/x.png': {b64, dataUrl} }
+  var SHARED_SCALARS = ['phone', 'email', 'logo', 'logoDark', 'showWordmark', 'formEndpoint'];
+  var COLORS = [
+    ['navy', 'მთავარი მუქი', '#0B1628', 'ტექსტი, მუქი სექციები, ღილაკები, ფუტერი'],
+    ['accent', 'აქცენტი (ლურჯი)', '#3E6DA6', 'მცირე სათაურები, ბმულები, ლოგო'],
+    ['gold', 'ოქროსფერი', '#C2A57A', 'დეტალები მუქ ფონზე, რუკის კონტური'],
+    ['ice', 'ღია ფონი 1', '#F5F8FC', 'სერვისების სექციის ფონი'],
+    ['mist', 'ღია ფონი 2', '#EEF3F9', 'საკონტაქტო ბლოკის ფონი']
+  ];
+  var SECTION_TOGGLES = [['video', 'ვიდეო „როგორ ვმუშაობთ“'], ['services', 'სერვისები'], ['experience', 'გამოცდილება და ციფრები']];
+  var MAX_BLOCKS = 12;
   var current = 'general', lang = 'ka', device = 'desktop', frameReady = false, busy = false;
 
   function changedKeys() {
     var out = [];
     if (!published || !draft) return out;
-    Object.keys(draft.shared).forEach(function (k) { if (JSON.stringify(draft.shared[k]) !== JSON.stringify(published.shared[k])) out.push('shared.' + k); });
+    SHARED_SCALARS.forEach(function (k) { if (draft.shared[k] !== published.shared[k]) out.push('shared.' + k); });
+    COLORS.forEach(function (c) { if ((draft.shared.colors[c[0]] || '') !== (published.shared.colors[c[0]] || '')) out.push('shared.colors.' + c[0]); });
+    SECTION_TOGGLES.forEach(function (t) { if (!!draft.shared.hidden[t[0]] !== !!published.shared.hidden[t[0]]) out.push('shared.hidden.' + t[0]); });
     ['ka', 'en'].forEach(function (lg) { Object.keys(draft[lg]).forEach(function (k) { if (draft[lg][k] !== published[lg][k]) out.push(lg + '.' + k); }); });
+    if (JSON.stringify(draft.blocks) !== JSON.stringify(published.blocks)) out.push('blocks');
     return out;
   }
   function setStatus(kind, text) { var s = $('status'); s.className = 'status ' + (kind || ''); $('statusText').textContent = text; }
@@ -441,6 +476,14 @@ textarea.input{resize:vertical;min-height:84px;line-height:1.6}
     c = c || {}; c.version = 1; c.shared = c.shared || {}; c.ka = c.ka || {}; c.en = c.en || {};
     ['phone', 'email', 'logo', 'logoDark', 'formEndpoint'].forEach(function (k) { if (typeof c.shared[k] !== 'string') c.shared[k] = ''; });
     if (typeof c.shared.showWordmark !== 'boolean') c.shared.showWordmark = true;
+    var cols = (c.shared.colors && typeof c.shared.colors === 'object') ? c.shared.colors : {};
+    c.shared.colors = {}; COLORS.forEach(function (x) { if (/^#[0-9a-f]{6}$/i.test(cols[x[0]] || '')) c.shared.colors[x[0]] = cols[x[0]].toUpperCase(); });
+    var hid = (c.shared.hidden && typeof c.shared.hidden === 'object') ? c.shared.hidden : {};
+    c.shared.hidden = {}; SECTION_TOGGLES.forEach(function (t) { if (hid[t[0]] === true) c.shared.hidden[t[0]] = true; });
+    c.blocks = (Array.isArray(c.blocks) ? c.blocks : []).filter(function (b) { return b && /^[a-z0-9-]{1,40}$/.test(b.id || ''); }).map(function (b) {
+      var side = function (x) { x = x || {}; return { eyebrow: String(x.eyebrow || ''), title: String(x.title || ''), text: String(x.text || '') }; };
+      return { id: b.id, pos: b.pos === 'a' ? 'a' : 'b', bg: ({ white: 1, light: 1, dark: 1 })[b.bg] ? b.bg : 'white', image: typeof b.image === 'string' ? b.image : '', ka: side(b.ka), en: side(b.en) };
+    });
     return c;
   }
   function enterApp() {
@@ -460,6 +503,8 @@ textarea.input{resize:vertical;min-height:84px;line-height:1.6}
   function renderAll() { renderSide(); renderEditor(); refreshStatus(); }
   function sectionChanges(sec) {
     var ch = changedKeys();
+    if (sec.custom === 'colors') return ch.filter(function (c) { return c.indexOf('shared.colors.') === 0; }).length;
+    if (sec.custom === 'structure') return ch.filter(function (c) { return c.indexOf('shared.hidden.') === 0 || c === 'blocks'; }).length;
     return sec.fields.filter(function (f) {
       if (f.k === '__logo') return ch.some(function (c) { return /^shared\.(logo|logoDark|showWordmark)$/.test(c); });
       return sec.shared ? ch.indexOf('shared.' + f.k) >= 0 : (ch.indexOf('ka.' + f.k) >= 0 || ch.indexOf('en.' + f.k) >= 0);
@@ -511,27 +556,37 @@ textarea.input{resize:vertical;min-height:84px;line-height:1.6}
     var c0 = checkValue(f, val); if (c0) { note.hidden = false; note.className = c0.err ? 'err' : 'warn'; note.textContent = c0.err || c0.warn; }
     return box;
   }
+  function imgSrc(path) {
+    if (!path) return '';
+    if (pending[path]) return pending[path].dataUrl;
+    return /^(https?:|data:)/.test(path) ? path : SITE_BASE + path;
+  }
   function logoPreview(which) {
-    var p = pending[which], src = p ? p.dataUrl : (draft.shared[which] ? SITE_BASE + draft.shared[which] : '');
+    var src = imgSrc(draft.shared[which]);
     var box = el('div', { class: 'logo-prev' + (which === 'logoDark' ? ' dark' : '') });
     box.appendChild(src ? el('img', { src: src, alt: '' }) : el('span', { text: which === 'logo' ? 'ლოგო არ არის' : 'გამოიყენება მთავარი ლოგო' }));
     return box;
+  }
+  function uploadButtons(has, onFile, onRemove, idSuffix) {
+    var file = el('input', { type: 'file', accept: 'image/png,image/jpeg,image/webp,image/svg+xml', id: 'file_' + idSuffix, hidden: true });
+    var err = el('div', { class: 'err', hidden: true });
+    file.addEventListener('change', function () { if (file.files[0]) onFile(file.files[0], err); file.value = ''; });
+    return el('div', {}, [el('div', { class: 'row' }, [
+      el('button', { class: 'btn small', type: 'button', text: has ? 'შეცვლა' : 'ატვირთვა', onclick: function () { file.click(); } }),
+      has ? el('button', { class: 'btn small danger', type: 'button', text: 'წაშლა', onclick: onRemove }) : null
+    ]), file, err]);
   }
   function logoRow() {
     var wrap = el('div', { class: 'f' + (['logo', 'logoDark', 'showWordmark'].some(function (k) { return draft.shared[k] !== published.shared[k]; }) ? ' changed' : '') });
     wrap.appendChild(el('div', { class: 'head' }, [el('label', { text: 'ლოგო' })]));
     function block(which, title, help) {
-      var file = el('input', { type: 'file', accept: 'image/png,image/jpeg,image/webp,image/svg+xml', id: 'file_' + which, hidden: true });
-      var err = el('div', { class: 'err', hidden: true });
-      file.addEventListener('change', function () { if (file.files[0]) takeLogo(which, file.files[0], err); file.value = ''; });
-      var has = !!(pending[which] || draft.shared[which]);
       var controls = el('div', {}, [
         el('div', { style: 'font-weight:600;margin-bottom:4px', text: title }),
         el('div', { class: 'hint', style: 'margin-bottom:10px', text: help }),
-        el('div', { class: 'row' }, [
-          el('button', { class: 'btn small', type: 'button', text: has ? 'შეცვლა' : 'ატვირთვა', onclick: function () { file.click(); } }),
-          has ? el('button', { class: 'btn small danger', type: 'button', text: 'წაშლა', onclick: function () { delete pending[which]; draft.shared[which] = ''; afterLogoChange(); } }) : null
-        ]), file, err ]);
+        uploadButtons(!!draft.shared[which],
+          function (f, err) { takeImage(f, which, err, function (path) { draft.shared[which] = path; afterLogoChange(); }); },
+          function () { draft.shared[which] = ''; afterLogoChange(); }, which)
+      ]);
       return el('div', { class: 'logo-box', style: 'margin-bottom:18px' }, [logoPreview(which), controls]);
     }
     wrap.appendChild(block('logo', 'მთავარი ლოგო', 'ჩანს ჰედერში. PNG, SVG, JPG ან WebP, მაქსიმუმ 3 MB. საუკეთესოა გამჭვირვალე ფონით.'));
@@ -543,35 +598,154 @@ textarea.input{resize:vertical;min-height:84px;line-height:1.6}
     return wrap;
   }
   function afterLogoChange() { renderEditor(); sendPreview(); refreshStatus(); }
-  function takeLogo(which, f, errBox) {
+  // kind: 'logo' | 'logoDark' (fit 800×320, PNG) or 'block' (fit 1800×1200, JPEG for photos, PNG when the source is PNG)
+  function takeImage(f, kind, errBox, done) {
     errBox.hidden = true;
     var fail = function (m) { errBox.textContent = m; errBox.hidden = false; };
+    var limit = kind === 'block' ? 8 : 3;
     if (!/^image\/(png|jpeg|webp|svg\+xml)$/.test(f.type)) return fail('დაშვებულია მხოლოდ PNG, JPG, WebP ან SVG.');
-    if (f.size > 3 * 1024 * 1024) return fail('ფაილი 3 MB-ზე დიდია.');
-    var stamp = new Date().toISOString().replace(/[-:T]/g, '').slice(0, 14);
+    if (f.size > limit * 1024 * 1024) return fail('ფაილი ' + limit + ' MB-ზე დიდია.');
+    var stamp = new Date().toISOString().replace(/[-:T.Z]/g, '').slice(0, 17);
+    var base = UPLOAD_DIR + '/' + kind + '-' + stamp;
     if (f.type === 'image/svg+xml') {
       f.text().then(function (txt) {
         if (!/<svg[\s>]/i.test(txt)) return fail('SVG ფაილი დაზიანებულია.');
-        // logos are shown with <img>, where scripts never run; strip them anyway to keep the file clean
+        // images are shown with <img>, where scripts never run; strip them anyway to keep the file clean
         txt = txt.replace(/<script[\s\S]*?<\/script>/gi, '').replace(/\son\w+="[^"]*"/gi, '');
-        var bytes = enc.encode(txt);
-        pending[which] = { path: UPLOAD_DIR + '/' + which + '-' + stamp + '.svg', b64: b64FromBytes(bytes), dataUrl: 'data:image/svg+xml;base64,' + b64FromBytes(bytes) };
-        draft.shared[which] = pending[which].path; afterLogoChange();
+        var b64 = b64FromBytes(enc.encode(txt));
+        pending[base + '.svg'] = { b64: b64, dataUrl: 'data:image/svg+xml;base64,' + b64 };
+        done(base + '.svg');
       });
       return;
     }
     var img = new Image(), url = URL.createObjectURL(f);
     img.onload = function () {
-      // keep logos light: fit within 800×320 px, PNG keeps transparency
-      var s = Math.min(1, 800 / img.naturalWidth, 320 / img.naturalHeight);
-      var c = document.createElement('canvas'); c.width = Math.max(1, Math.round(img.naturalWidth * s)); c.height = Math.max(1, Math.round(img.naturalHeight * s));
-      c.getContext('2d').drawImage(img, 0, 0, c.width, c.height); URL.revokeObjectURL(url);
-      var dataUrl = c.toDataURL('image/png');
-      pending[which] = { path: UPLOAD_DIR + '/' + which + '-' + stamp + '.png', b64: dataUrl.split(',')[1], dataUrl: dataUrl };
-      draft.shared[which] = pending[which].path; afterLogoChange();
+      var maxW = kind === 'block' ? 1800 : 800, maxH = kind === 'block' ? 1200 : 320;
+      var sc = Math.min(1, maxW / img.naturalWidth, maxH / img.naturalHeight);
+      var c = document.createElement('canvas'); c.width = Math.max(1, Math.round(img.naturalWidth * sc)); c.height = Math.max(1, Math.round(img.naturalHeight * sc));
+      var ctx = c.getContext('2d');
+      var photo = kind === 'block' && f.type !== 'image/png';
+      if (photo) { ctx.fillStyle = '#FFFFFF'; ctx.fillRect(0, 0, c.width, c.height); }
+      ctx.drawImage(img, 0, 0, c.width, c.height); URL.revokeObjectURL(url);
+      var dataUrl = photo ? c.toDataURL('image/jpeg', 0.86) : c.toDataURL('image/png');
+      var path = base + (photo ? '.jpg' : '.png');
+      pending[path] = { b64: dataUrl.split(',')[1], dataUrl: dataUrl };
+      done(path);
     };
     img.onerror = function () { URL.revokeObjectURL(url); fail('სურათი ვერ წაიკითხა.'); };
     img.src = url;
+  }
+
+  // ---------------------------------------------------------------- colours
+  function hexOk(v) { return /^#[0-9a-f]{6}$/i.test(v || ''); }
+  function lum(hex) {
+    var c = [1, 3, 5].map(function (i) { var v = parseInt(hex.substr(i, 2), 16) / 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); });
+    return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2];
+  }
+  function contrast(a, b) { var x = lum(a), y = lum(b); return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05); }
+  function colorOf(k) { var v = draft.shared.colors[k]; return hexOk(v) ? v : COLORS.filter(function (c) { return c[0] === k; })[0][2]; }
+  function colorWarnings() {
+    var w = [], n = colorOf('navy');
+    if (contrast(n, '#FFFFFF') < 4.5) w.push('თეთრი ტექსტი მთავარ მუქ ფერზე ცუდად იკითხება — აირჩიეთ უფრო მუქი ფერი.');
+    if (contrast(colorOf('accent'), '#FFFFFF') < 4.5) w.push('აქცენტის ფერი თეთრ ფონზე ცუდად იკითხება — აირჩიეთ უფრო მუქი.');
+    if (contrast(colorOf('gold'), n) < 3) w.push('ოქროსფერი მუქ ფონზე ცუდად ჩანს — აირჩიეთ უფრო ღია.');
+    if (contrast(n, colorOf('ice')) < 4.5 || contrast(n, colorOf('mist')) < 4.5) w.push('ტექსტი ღია ფონზე ცუდად იკითხება — ღია ფონები უფრო ღია უნდა იყოს.');
+    return w;
+  }
+  function renderColors(ed) {
+    var warnBox = el('div', { class: 'msg info', hidden: true });
+    function refreshWarn() { var w = colorWarnings(); warnBox.hidden = !w.length; warnBox.innerHTML = ''; w.forEach(function (x) { warnBox.appendChild(el('div', { text: x })); }); }
+    COLORS.forEach(function (c) {
+      var k = c[0], card = el('div', { class: 'card2' });
+      var picker = el('input', { type: 'color', id: 'color_' + k, 'aria-label': c[1] });
+      var hex = el('input', { class: 'input', id: 'hex_' + k, type: 'text', maxlength: '7', spellcheck: 'false', 'aria-label': c[1] + ' (HEX)' });
+      var reset = el('button', { class: 'linkbtn', type: 'button', text: 'ნაგულისხმევი' });
+      function sync(fromPicker) {
+        var v = (fromPicker ? picker.value : hex.value.trim()).toUpperCase();
+        if (v && v[0] !== '#') v = '#' + v;
+        hex.classList.toggle('bad', !hexOk(v));
+        if (!hexOk(v)) { hex.style.borderColor = 'var(--err)'; renderPublishBar(); return; }
+        hex.style.borderColor = '';
+        if (fromPicker) hex.value = v; else picker.value = v.toLowerCase();
+        if (v === c[2]) delete draft.shared.colors[k]; else draft.shared.colors[k] = v;
+        mark(); refreshWarn(); sendPreview(); refreshStatus();
+      }
+      function mark() { card.classList.toggle('changed', (draft.shared.colors[k] || '') !== (published.shared.colors[k] || '')); }
+      var v0 = colorOf(k); picker.value = v0.toLowerCase(); hex.value = v0.toUpperCase();
+      picker.addEventListener('input', function () { sync(true); });
+      hex.addEventListener('input', function () { sync(false); });
+      reset.addEventListener('click', function () { hex.value = c[2]; sync(false); });
+      card.appendChild(el('h4', { text: c[1] }));
+      card.appendChild(el('div', { class: 'color-row' }, [picker, hex, el('div', { class: 'hint', text: c[3] }), reset]));
+      mark(); ed.appendChild(card);
+    });
+    ed.appendChild(warnBox); refreshWarn();
+    ed.appendChild(el('button', { class: 'btn ghost small', type: 'button', text: 'ყველა ფერის დაბრუნება', onclick: function () {
+      if (!window.confirm('ყველა ფერი დაბრუნდება საწყის მნიშვნელობაზე. გავაგრძელო?')) return;
+      draft.shared.colors = {}; renderEditor(); sendPreview(); refreshStatus();
+    } }));
+  }
+
+  // ---------------------------------------------------------------- page structure: sections + custom blocks
+  function newId() { return 'b' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5); }
+  function renderStructure(ed) {
+    var secCard = el('div', { class: 'card2' + (changedKeys().some(function (c) { return c.indexOf('shared.hidden.') === 0; }) ? ' changed' : '') });
+    secCard.appendChild(el('h4', { text: 'სექციები' }));
+    secCard.appendChild(el('div', { class: 'hint', style: 'margin-bottom:10px', text: 'დამალული სექცია და მისი ბმული მენიუში საიტზე არ ჩანს. მთავარი ბლოკი და კონტაქტი ყოველთვის ჩანს.' }));
+    SECTION_TOGGLES.forEach(function (t) {
+      var cb = el('input', { type: 'checkbox', id: 'show_' + t[0] }); cb.checked = !draft.shared.hidden[t[0]];
+      cb.addEventListener('change', function () {
+        if (cb.checked) delete draft.shared.hidden[t[0]]; else draft.shared.hidden[t[0]] = true;
+        renderEditor(); sendPreview(); refreshStatus();
+      });
+      secCard.appendChild(el('label', { class: 'switch', for: 'show_' + t[0], style: 'margin:8px 0' }, [cb, el('span', { text: t[1] + ' — ჩანს საიტზე' })]));
+    });
+    ed.appendChild(secCard);
+
+    ed.appendChild(el('div', { class: 'sub', text: 'დამატებითი ბლოკები (' + draft.blocks.length + ')' }));
+    ed.appendChild(el('p', { class: 'hint', style: 'margin:0 0 12px', text: 'ბლოკი არის ახალი სექცია სათაურით, ტექსტით და სურათით. ტექსტში ცარიელი ხაზი ახალ აბზაცს ქმნის. თუ ერთ-ერთ ენაზე ბლოკი ცარიელია, იმ ენის გვერდზე არ გამოჩნდება.' }));
+    var pubById = {}; published.blocks.forEach(function (b) { pubById[b.id] = JSON.stringify(b); });
+    draft.blocks.forEach(function (b, i) {
+      var card = el('div', { class: 'card2' + (pubById[b.id] !== JSON.stringify(b) ? ' changed' : ''), 'data-block-card': b.id });
+      var pos = el('select', { class: 'select', 'aria-label': 'ადგილი გვერდზე' });
+      [['a', 'სერვისების შემდეგ'], ['b', 'კონტაქტის წინ']].forEach(function (o) { var op = el('option', { value: o[0], text: o[1] }); if (b.pos === o[0]) op.selected = true; pos.appendChild(op); });
+      var bg = el('select', { class: 'select', 'aria-label': 'ფონი' });
+      [['white', 'თეთრი ფონი'], ['light', 'ღია ფონი'], ['dark', 'მუქი ფონი']].forEach(function (o) { var op = el('option', { value: o[0], text: o[1] }); if (b.bg === o[0]) op.selected = true; bg.appendChild(op); });
+      function changed(rerender) { if (rerender) renderEditor(); else card.classList.toggle('changed', pubById[b.id] !== JSON.stringify(b)); sendPreview(); refreshStatus(); }
+      pos.addEventListener('change', function () { b.pos = pos.value; changed(true); focusPreview('block:' + b.id); });
+      bg.addEventListener('change', function () { b.bg = bg.value; changed(false); });
+      function move(d) { var j = i + d; if (j < 0 || j >= draft.blocks.length) return; draft.blocks.splice(i, 1); draft.blocks.splice(j, 0, b); changed(true); }
+      card.appendChild(el('div', { class: 'blk-top' }, [
+        el('h4', { text: 'ბლოკი ' + (i + 1) + (b[lang].title ? ' — ' + b[lang].title : '') }), pos, bg,
+        el('button', { class: 'iconbtn', type: 'button', title: 'ზემოთ', 'aria-label': 'ზემოთ', text: '↑', disabled: i === 0, onclick: function () { move(-1); } }),
+        el('button', { class: 'iconbtn', type: 'button', title: 'ქვემოთ', 'aria-label': 'ქვემოთ', text: '↓', disabled: i === draft.blocks.length - 1, onclick: function () { move(1); } }),
+        el('button', { class: 'btn small danger', type: 'button', text: 'წაშლა', onclick: function () {
+          if (!window.confirm('ბლოკი წაიშლება. გავაგრძელო?')) return;
+          draft.blocks.splice(i, 1); changed(true);
+        } })
+      ]));
+      [['eyebrow', 'მცირე წარწერა', 't'], ['title', 'სათაური', 't'], ['text', 'ტექსტი', 'a']].forEach(function (f) {
+        var id = 'blk_' + b.id + '_' + lang + '_' + f[0];
+        var inp = f[2] === 'a' ? el('textarea', { class: 'input', id: id, rows: '5' }) : el('input', { class: 'input', id: id, type: 'text' });
+        inp.value = b[lang][f[0]];
+        inp.addEventListener('input', function () { b[lang][f[0]] = f[2] === 'a' ? inp.value : inp.value.replace(/\r?\n/g, ' '); changed(false); });
+        inp.addEventListener('focus', function () { focusPreview('block:' + b.id); });
+        card.appendChild(el('div', { class: 'fieldset', style: 'margin:10px 0 0' }, [el('label', { for: id, text: f[1] + ' (' + lang.toUpperCase() + ')' }), inp]));
+      });
+      var src = imgSrc(b.image);
+      card.appendChild(el('div', { class: 'blk-img-row' }, [
+        el('div', { class: 'blk-img-prev' }, [src ? el('img', { src: src, alt: '' }) : el('span', { text: 'სურათი არ არის' })]),
+        el('div', {}, [el('div', { class: 'hint', style: 'margin-bottom:8px', text: 'სურათი (არასავალდებულო): PNG, JPG, WebP ან SVG, მაქსიმუმ 8 MB. დიდი სურათი ავტომატურად მცირდება.' }),
+          uploadButtons(!!b.image, function (file, err) { takeImage(file, 'block', err, function (path) { b.image = path; changed(true); focusPreview('block:' + b.id); }); },
+            function () { b.image = ''; changed(true); }, 'blk_' + b.id)])
+      ]));
+      ed.appendChild(card);
+    });
+    ed.appendChild(el('button', { class: 'btn', type: 'button', id: 'addBlock', disabled: draft.blocks.length >= MAX_BLOCKS, text: '+ ბლოკის დამატება', onclick: function () {
+      var b = { id: newId(), pos: 'b', bg: 'white', image: '', ka: { eyebrow: '', title: 'ახალი ბლოკი', text: '' }, en: { eyebrow: '', title: 'New block', text: '' } };
+      draft.blocks.push(b); renderEditor(); sendPreview(); refreshStatus();
+      setTimeout(function () { var x = document.getElementById('blk_' + b.id + '_' + lang + '_title'); if (x) { x.focus(); x.select(); } focusPreview('block:' + b.id); }, 60);
+    } }));
   }
   function renderEditor() {
     var sec = SECTIONS.filter(function (s) { return s.id === current; })[0];
@@ -585,7 +759,9 @@ textarea.input{resize:vertical;min-height:84px;line-height:1.6}
       });
       ed.appendChild(langs);
     }
-    sec.fields.forEach(function (f) { ed.appendChild(fieldRow(sec, f)); });
+    if (sec.custom === 'colors') renderColors(ed);
+    else if (sec.custom === 'structure') renderStructure(ed);
+    else sec.fields.forEach(function (f) { ed.appendChild(fieldRow(sec, f)); });
     ed.appendChild(el('div', { class: 'publish', id: 'publishBar' }));
     renderPublishBar(); ed.scrollTop = keep;
   }
@@ -596,6 +772,7 @@ textarea.input{resize:vertical;min-height:84px;line-height:1.6}
       var v = sec.shared ? draft.shared[f.k] : null;
       if (sec.shared) { var c = checkValue(f, v || ''); if (c && c.err) errs.push(f.l + ': ' + c.err); }
     }); });
+    if (document.querySelector('.color-row .input.bad')) errs.push('ფერი უნდა იყოს ფორმატით #RRGGBB.');
     return errs;
   }
   function renderPublishBar() {
@@ -614,10 +791,8 @@ textarea.input{resize:vertical;min-height:84px;line-height:1.6}
   // ---------------------------------------------------------------- preview
   function previewContent() {
     var c = clone(draft);
-    ['logo', 'logoDark'].forEach(function (k) {
-      if (pending[k]) c.shared[k] = pending[k].dataUrl;
-      else if (c.shared[k] && !/^(https?:|data:|\/)/.test(c.shared[k])) c.shared[k] = SITE_BASE + c.shared[k];
-    });
+    ['logo', 'logoDark'].forEach(function (k) { c.shared[k] = imgSrc(c.shared[k]); });
+    c.blocks.forEach(function (b) { b.image = imgSrc(b.image); });
     return c;
   }
   function frameWin() { var f = $('frame'); return f && f.contentWindow; }
@@ -658,6 +833,9 @@ textarea.input{resize:vertical;min-height:84px;line-height:1.6}
     // keep everything changed elsewhere since this page loaded, and apply only the keys edited here
     var out = normalise(clone(remote));
     changedKeys().forEach(function (path) {
+      if (path === 'blocks') { out.blocks = clone(draft.blocks); return; }
+      var m = path.match(/^shared\.(colors|hidden)\.(.+)$/);
+      if (m) { if (draft.shared[m[1]][m[2]] === undefined) delete out.shared[m[1]][m[2]]; else out.shared[m[1]][m[2]] = draft.shared[m[1]][m[2]]; return; }
       var i = path.indexOf('.'), scope = path.slice(0, i), key = path.slice(i + 1);
       out[scope][key] = draft[scope][key];
     });
@@ -683,7 +861,8 @@ textarea.input{resize:vertical;min-height:84px;line-height:1.6}
       var parent = ref.object.sha;
       return gh('GET', repoPath('/git/commits/' + parent)).then(function (commit) {
         var files = [{ path: CONTENT_PATH, b64: b64FromBytes(enc.encode(JSON.stringify(finalContent, null, 2) + '\n')) }];
-        Object.keys(pending).forEach(function (k) { if (finalContent.shared[k] === pending[k].path) files.push({ path: pending[k].path, b64: pending[k].b64 }); });
+        var used = [finalContent.shared.logo, finalContent.shared.logoDark].concat(finalContent.blocks.map(function (x) { return x.image; }));
+        Object.keys(pending).forEach(function (path) { if (used.indexOf(path) >= 0) files.push({ path: path, b64: pending[path].b64 }); });
         return Promise.all(files.map(function (f) {
           return gh('POST', repoPath('/git/blobs'), { content: f.b64, encoding: 'base64' }).then(function (blob) { return { path: f.path, mode: '100644', type: 'blob', sha: blob.sha }; });
         })).then(function (tree) { return gh('POST', repoPath('/git/trees'), { base_tree: commit.tree.sha, tree: tree }); })
