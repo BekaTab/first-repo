@@ -1,7 +1,7 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": null,
-  "buildCommand": "rm -rf dist && mkdir dist && cp -r index.html en admin media content.json robots.txt favicon.ico favicon-32.png apple-touch-icon.png icon-512.png dist/ && node tools/apply-content.mjs dist",
+  "buildCommand": "rm -rf dist && mkdir dist && cp -r index.html en admin media content.json robots.txt favicon.ico favicon.svg favicon-32.png apple-touch-icon.png icon-512.png dist/ && node tools/apply-content.mjs dist",
   "outputDirectory": "dist",
   "headers": [
     {
