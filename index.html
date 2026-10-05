@@ -157,8 +157,19 @@ a[data-tel],a[data-mail]{display:inline-block;padding-block:10px;margin-block:-1
 .svc-card:hover .svc-text{color:#AEB7C6}
 .svc-card:hover .svc-more{border-color:rgba(255,255,255,.18)}
 .svc-card:hover .svc-more svg{transform:translateX(6px)}
-.svc-statement{margin:0;font-family:var(--f-display);font-weight:300;font-size:clamp(19px,1.95vw,29px);line-height:1.6;letter-spacing:-.005em;color:var(--c-navy);max-width:36em;text-wrap:pretty}
 @media (max-width: 900px){.svc-grid{grid-template-columns:minmax(0,1fr)}}
+
+.svc-intro{display:flex;flex-direction:column;gap:clamp(18px,1.8vw,26px)}
+.svc-statement{margin:0;font-family:var(--f-display);font-weight:400;font-size:clamp(23px,2.25vw,33px);line-height:1.38;letter-spacing:-.012em;color:var(--c-navy);max-width:24em;text-wrap:balance}
+.svc-detail{margin:0;font-size:16px;line-height:1.85;color:#3C4658;max-width:38em}
+.stages{list-style:none;margin:clamp(10px,1.4vw,18px) 0 0;padding:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));position:relative}
+.stages::before{content:"";position:absolute;left:0;right:0;top:5px;height:1px;background:color-mix(in srgb,var(--c-navy) 16%,transparent)}
+.stages li{position:relative;display:flex;flex-direction:column;gap:6px;padding:28px 14px 0 0;min-width:0}
+.stages li::before{content:"";position:absolute;top:0;left:0;width:11px;height:11px;box-sizing:border-box;border-radius:50%;background:var(--c-ice);border:1px solid var(--c-gold)}
+.stages li:last-child::before{background:var(--c-gold)}
+.stage-no{font-size:12px;letter-spacing:.16em;color:var(--c-gold)}
+.stage-name{font-size:15px;font-weight:500;line-height:1.35;color:var(--c-navy);overflow-wrap:break-word}
+@media (max-width: 640px){.stages{grid-template-columns:minmax(0,1fr)}.stages::before{left:5px;right:auto;top:6px;bottom:22px;width:1px;height:auto}.stages li{flex-direction:row;align-items:baseline;gap:14px;padding:0 0 16px 32px}.stages li::before{top:5px}}
 @media (max-width: 480px){.btn-main{flex:1 1 100%;justify-content:center}}
 
 .eib-block{padding-top:clamp(88px,11vw,168px);padding-bottom:clamp(88px,11vw,168px);color:var(--c-navy)}
@@ -273,21 +284,25 @@ a[data-tel],a[data-mail]{display:inline-block;padding-block:10px;margin-block:-1
 <div class="sticky-l" style="position: sticky; top: 150px; display: flex; flex-direction: column; gap: 20px">
 <span data-edit="about.eyebrow" style="font-size: 12px; letter-spacing: 0.28em; text-transform: uppercase; color: var(--c-accent)">ჩვენ შესახებ</span>
 <h2 data-edit="services.title" style="margin: 0; font-family: 'Noto Serif Georgian', Georgia, serif; font-weight: 300; font-size: clamp(34px, 3.8vw, 56px); line-height: 1.1; letter-spacing: -0.02em">სერვისები</h2>
-<p data-edit="about.text" style="margin: 0; font-size: 15px; line-height: 1.85; color: #3C4658; max-width: 26em">EIB GROUP სავაჭრო და მომარაგების კომპანიაა. ბიზნესებს ვამარაგებთ როგორც ადგილობრივ ბაზარზე, ისე საზღვარგარეთ შესყიდული პროდუქციით.</p>
+<p data-edit="about.text" style="margin: 0; font-size: 15px; line-height: 1.85; color: #3C4658; max-width: 26em">EIB GROUP სავაჭრო და მომარაგების კომპანიაა. ბიზნესებს საზღვარგარეთისა და ადგილობრივი მწარმოებლებისგან ვაწვდით მათთვის სასურველ პროდუქციას.</p>
 </div>
 </div>
 <div class="c-5-8" style="display: flex; flex-direction: column; gap: clamp(40px, 5vw, 64px)">
-<p data-edit="about.statement" class="svc-statement">გაგვიზიარეთ თქვენი მოთხოვნა და ჩვენ უზრუნველვყოფთ სასურველი პროდუქციის მოძიებასა და მოწოდებას. თითოეულ ეტაპს, ლოჯისტიკიდან საბაჟო გაფორმებამდე, სრულად ჩვენ ვმართავთ. თქვენ იღებთ პროდუქციას დანიშნულების ადგილზე, მაქსიმალური კომფორტითა და უმოკლეს ვადებში.</p>
+<div class="svc-intro">
+<p data-edit="about.statement" class="svc-statement">გაგვიზიარეთ თქვენი მოთხოვნა და ჩვენ უზრუნველვყოფთ სასურველი პროდუქციის მოძიებასა და მოწოდებას.</p>
+<p data-edit="about.statement2" class="svc-detail">თითოეულ ეტაპს, ლოჯისტიკიდან საბაჟო გაფორმებამდე, სრულად ჩვენ ვმართავთ. თქვენ იღებთ პროდუქციას დანიშნულების ადგილზე, მაქსიმალური კომფორტითა და უმოკლეს ვადებში.</p>
+<ol class="stages"><li><span class="stage-no num">01</span><span data-edit="stage.1" class="stage-name">მოძიება</span></li><li><span class="stage-no num">02</span><span data-edit="stage.2" class="stage-name">შესყიდვა</span></li><li><span class="stage-no num">03</span><span data-edit="stage.3" class="stage-name">ლოჯისტიკა</span></li><li><span class="stage-no num">04</span><span data-edit="stage.4" class="stage-name">საბაჟო გაფორმება</span></li><li><span class="stage-no num">05</span><span data-edit="stage.5" class="stage-name">მიწოდება</span></li></ol>
+</div>
 <div class="svc-grid">
 <a href="#contact" class="svc-card">
-<div class="svc-top"><svg class="svc-ico" viewBox="0 0 40 40" aria-hidden="true"><path d="M10 5h15l7 7v23H10z"/><path d="M25 5v7h7"/><path d="M15 18h12M15 23h12M15 28h7"/></svg><span class="svc-no num">01</span></div>
+<div class="svc-top"><svg class="svc-ico" viewBox="0 0 40 40" aria-hidden="true"><path d="M10 5h15l7 7v23H10z"/><path d="M25 5v7h7"/><path d="M15 18h12M15 23h12M15 28h7"/></svg></div>
 <span data-edit="svc2.label" class="svc-label">B2B procurement</span>
 <h3 data-edit="svc2.title" class="svc-title">B2B შესყიდვები</h3>
 <p data-edit="svc2.text" class="svc-text">ვიღებთ თქვენს შეკვეთას პროდუქციაზე, ვიკვლევთ ბაზარს და გთავაზობთ საუკეთესო ფასისა და ხარისხის შეთავაზებას.</p>
 <span class="svc-more"><span data-edit="services.more">მოთხოვნის გაგზავნა</span><svg width="28" height="14" viewBox="0 0 28 14" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true"><path d="M0 7h26M20 1l6 6-6 6"/></svg></span>
 </a>
 <a href="#contact" class="svc-card">
-<div class="svc-top"><svg class="svc-ico" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="14"/><ellipse cx="20" cy="20" rx="6" ry="14"/><path d="M6 20h28M8.5 12.5h23M8.5 27.5h23"/></svg><span class="svc-no num">02</span></div>
+<div class="svc-top"><svg class="svc-ico" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="14"/><ellipse cx="20" cy="20" rx="6" ry="14"/><path d="M6 20h28M8.5 12.5h23M8.5 27.5h23"/></svg></div>
 <span data-edit="svc3.label" class="svc-label">Import of any goods</span>
 <h3 data-edit="svc3.title" class="svc-title">ნებისმიერი სახის პროდუქციის იმპორტი</h3>
 <p data-edit="svc3.text" class="svc-text">საჰაერო, სახმელეთო, საზღვაო და სარკინიგზო გადაზიდვები. პროდუქციის მიწოდება თქვენთვის სასურველ მისამართზე.</p>
