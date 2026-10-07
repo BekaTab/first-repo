@@ -16,6 +16,11 @@ if not exist ".venv\installed.ok" (
   ".venv\Scripts\python.exe" -m playwright install chromium || goto :fail
   echo ok> ".venv\installed.ok"
 )
+rem Skip Streamlit's one-time "Email:" question (same file Streamlit writes when you just press Enter).
+if not exist "%USERPROFILE%\.streamlit\credentials.toml" (
+  mkdir "%USERPROFILE%\.streamlit" 2>nul
+  (echo [general]& echo email = "")> "%USERPROFILE%\.streamlit\credentials.toml"
+)
 echo The dashboard opens in your browser. Keep this window open while you use it.
 ".venv\Scripts\python.exe" -m streamlit run app.py
 pause

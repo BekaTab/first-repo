@@ -15,5 +15,9 @@ if [ ! -f .venv/installed.ok ]; then
     && touch .venv/installed.ok \
     || { echo "Installation failed - see the messages above."; read -r -p "Press Enter to close..."; exit 1; }
 fi
+# Skip Streamlit's one-time "Email:" question (same file Streamlit writes when you just press Enter).
+if [ ! -f "$HOME/.streamlit/credentials.toml" ]; then
+  mkdir -p "$HOME/.streamlit" && printf '[general]\nemail = ""\n' > "$HOME/.streamlit/credentials.toml"
+fi
 echo "The dashboard opens in your browser. Keep this window open while you use it."
 exec .venv/bin/python -m streamlit run app.py
