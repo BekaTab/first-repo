@@ -155,11 +155,11 @@ prefix the command with it. The defaults are in `scraper/config.py`.
 | `AHB_SEARCH_URL_TEMPLATE` | – | Direct result URL, e.g. `https://autohelperbot.com/.../{vin}`. Skips the search form |
 | `AHB_INPUT_SELECTORS` | see config | Selectors for the VIN search box |
 | `HEADLESS` | `0` | `1` hides the browser. Sites are more likely to block a hidden browser, and you can't solve CAPTCHAs |
-| `BROWSER_CHANNEL` | – | `chrome` uses your installed Google Chrome |
+| `BROWSER_CHANNEL` | `chrome` if installed | Google Chrome is used automatically when installed; `chromium` forces Playwright's bundled browser |
 | `BROWSER_EXECUTABLE` | – | Path to a specific Chromium/Chrome binary |
 | `MIN_DELAY` / `MAX_DELAY` | `2.5` / `6.0` | Random pause between actions, in seconds |
 | `CHALLENGE_TIMEOUT` | `180` | Seconds to wait for you to solve a CAPTCHA |
-| `DATA_DIR` / `BROWSER_PROFILE_DIR` | `data/` / `.browser-profile/` | Storage locations |
+| `DATA_DIR` / `BROWSER_PROFILE_DIR` | `data/` / `.browser-profile-chrome/` (or `.browser-profile/` for Chromium) | Storage locations |
 
 ### If a site changes its layout
 
@@ -203,7 +203,8 @@ and it won't get your buyer account banned.
 
 1. **Run from your home or office internet connection.** Cloud servers and VPN IPs
    (AWS, GCP, DigitalOcean, etc.) get far more challenges, and often outright blocks.
-2. **Use your installed Chrome.** Set `BROWSER_CHANNEL=chrome`; its fingerprint matches a normal
+2. **Install Google Chrome.** It is picked up automatically. IAAI's Imperva firewall can reject
+   Playwright's bundled "Chrome for Testing" (error page "Error 5.1342 ... Powered by Imperva"). Chrome's fingerprint matches a normal
    user better than the bundled Chromium.
 3. **Log in to IAAI with your own buyer account** (`--login`). Logged-in sessions are trusted
    more. They also often show full VINs; Autohelperbot can't look up a partial VIN, so those rows

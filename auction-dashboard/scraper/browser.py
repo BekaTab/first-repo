@@ -34,6 +34,8 @@ BLOCK_TEXT_MARKERS = (
     "attention required! | cloudflare",
     "access denied",
     "sorry, you have been blocked",
+    "powered by imperva",
+    "incapsula incident id",
 )
 # Challenge iframes / resources.
 BLOCK_FRAME_MARKERS = (

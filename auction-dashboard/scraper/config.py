@@ -28,19 +28,43 @@ def _env_list(name: str, default: list[str]) -> list[str]:
     return [part.strip() for part in raw.split("||") if part.strip()]
 
 
+CHROME_PATHS = (
+    Path("/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"),
+    Path(os.getenv("PROGRAMFILES", r"C:\Program Files")) / "Google/Chrome/Application/chrome.exe",
+    Path(os.getenv("PROGRAMFILES(X86)", r"C:\Program Files (x86)")) / "Google/Chrome/Application/chrome.exe",
+    Path(os.getenv("LOCALAPPDATA", "")) / "Google/Chrome/Application/chrome.exe",
+    Path("/usr/bin/google-chrome"),
+    Path("/opt/google/chrome/chrome"),
+)
+
+
+def _default_channel() -> str | None:
+    channel = os.getenv("BROWSER_CHANNEL")
+    if channel:
+        return None if channel.lower() == "chromium" else channel
+    if os.getenv("BROWSER_EXECUTABLE"):
+        return None
+    return "chrome" if any(p.is_file() for p in CHROME_PATHS) else None
+
+
 @dataclass
 class Settings:
     # --- Browser -----------------------------------------------------------
     # Headed by default: a visible browser is far less likely to be challenged,
     # and it lets you solve a CAPTCHA by hand when one does appear.
     headless: bool = field(default_factory=lambda: _env_bool("HEADLESS", False))
-    # Persistent profile keeps cookies (logins, cleared challenges) between runs.
-    profile_dir: Path = field(
-        default_factory=lambda: Path(os.getenv("BROWSER_PROFILE_DIR", PROJECT_ROOT / ".browser-profile"))
-    )
-    # "chrome" uses your locally installed Google Chrome instead of Playwright's Chromium.
-    browser_channel: str | None = field(default_factory=lambda: os.getenv("BROWSER_CHANNEL") or None)
+    # Your installed Google Chrome is used when present: sites block it far less often than
+    # Playwright's bundled "Chrome for Testing". BROWSER_CHANNEL=chromium forces the bundled one.
+    browser_channel: str | None = field(default_factory=lambda: _default_channel())
     browser_executable: str | None = field(default_factory=lambda: os.getenv("BROWSER_EXECUTABLE") or None)
+    # Persistent profile keeps cookies (logins, cleared challenges) between runs.
+    # Chrome and the bundled Chromium get separate profiles: their profile formats can differ.
+    profile_dir: Path = field(
+        default_factory=lambda: Path(
+            os.getenv("BROWSER_PROFILE_DIR")
+            or PROJECT_ROOT / (".browser-profile-chrome" if _default_channel() == "chrome" else ".browser-profile")
+        )
+    )
     locale: str = field(default_factory=lambda: os.getenv("BROWSER_LOCALE", "en-US"))
     timezone: str = field(default_factory=lambda: os.getenv("BROWSER_TIMEZONE", "America/Chicago"))
     nav_timeout_ms: int = field(default_factory=lambda: int(os.getenv("NAV_TIMEOUT_MS", "45000")))
