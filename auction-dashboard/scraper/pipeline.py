@@ -7,6 +7,8 @@ from dataclasses import asdict
 from datetime import datetime, timezone
 from pathlib import Path
 
+from playwright.sync_api import Error as PlaywrightError
+
 from .autohelperbot import AutoHelperBotClient
 from .browser import BlockedError, browser_context, goto, human_delay
 from .config import Settings
@@ -74,10 +76,18 @@ def interactive_login(settings: Settings) -> None:
         raise SystemExit("--login needs a visible browser; unset HEADLESS.")
     with browser_context(settings) as context:
         page = context.pages[0] if context.pages else context.new_page()
-        for url in ("https://www.iaai.com", settings.ahb_base_url):
-            tab = page if url.startswith("https://www.iaai") else context.new_page()
+        for i, url in enumerate((settings.iaai_login_url, settings.ahb_base_url)):
             try:
+                tab = page if i == 0 else context.new_page()
                 goto(tab, url, settings)
-            except BlockedError as exc:
-                log.warning("%s", exc)
-        input("Log in / solve any challenges in the browser tabs, then press Enter here to save the session... ")
+            except (BlockedError, PlaywrightError) as exc:
+                # Leave the tab open anyway: the user can retry or navigate by hand.
+                log.warning("Could not open %s: %s", url, str(exc).splitlines()[0])
+        log.warning("Log in / solve any challenges in the browser, then CLOSE the browser window to save the session.")
+        # Closing the window closes every page; cookies are already on disk in the profile.
+        while context.pages:
+            try:
+                context.pages[0].wait_for_event("close", timeout=0)
+            except PlaywrightError:
+                break
+        log.info("Browser closed - session saved in %s", settings.profile_dir)

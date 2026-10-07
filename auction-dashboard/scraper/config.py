@@ -58,6 +58,7 @@ class Settings:
     iaai_search_url: str = field(
         default_factory=lambda: os.getenv("IAAI_SEARCH_URL", "https://www.iaai.com/Search")
     )
+    iaai_login_url: str = field(default_factory=lambda: os.getenv("IAAI_LOGIN_URL", "https://www.iaai.com"))
     # Text of the filter/link clicked when IAAI_SEARCH_URL does not already apply it.
     iaai_timed_filter_text: str = field(default_factory=lambda: os.getenv("IAAI_TIMED_FILTER_TEXT", "Timed Auction"))
     iaai_card_selectors: list[str] = field(

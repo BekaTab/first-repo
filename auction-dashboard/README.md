@@ -57,6 +57,23 @@ an amount on the same line or the next line.
 - Ascending / Descending sort toggle. Rows without a price always go to the bottom.
 - CSV download of the filtered table
 
+## Quick start (no terminal needed)
+
+1. Install Python from <https://www.python.org/downloads/>. On Windows, tick
+   **"Add python.exe to PATH"** in the installer.
+2. Download this project as a ZIP and unzip it. Open the `auction-dashboard` folder.
+3. Double-click **`start.bat`** (Windows) or **`start.command`** (Mac; the first time, right-click it
+   and choose **Open**). The first start installs everything and takes a few minutes. The dashboard
+   then opens in your browser at <http://localhost:8501>. Keep the black window open while you use it.
+4. In the dashboard's left sidebar, open **Refresh data**:
+   - **Log in to the sites:** a browser opens. Log in to IAAI and to Autohelperbot with your premium
+     account, then close that browser window. You only need to do this once.
+   - Paste the **IAAI search URL**: open IAAI search, tick the *Timed Auction* filter and copy the
+     address bar.
+   - Click **Run scraper now**. A browser works by itself for a few minutes. If a CAPTCHA appears,
+     solve it.
+5. The table fills with today's vehicles and reserve prices.
+
 ## Run it locally
 
 Requires Python 3.10+.
@@ -81,8 +98,8 @@ streamlit run app.py                 # opens http://localhost:8501
 
 ```bash
 # 4. One-time: open both sites in the scraper's own browser profile.
-#    Log in to IAAI (and Autohelperbot if it requires an account), solve any
-#    CAPTCHA, then press Enter in the terminal. The cookies are kept in .browser-profile/.
+#    Log in to IAAI and to Autohelperbot (premium is needed to see reserves), solve any
+#    CAPTCHA, then CLOSE the browser window. The session is kept in .browser-profile/.
 python run_scraper.py --login
 
 # 5. In that browser (or your own), open IAAI search, tick the "Timed Auction" filter

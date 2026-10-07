@@ -21,6 +21,7 @@ from scraper.storage import list_datasets, load_dataset
 
 st.set_page_config(page_title="Timed Auction Dashboard", page_icon="🚗", layout="wide")
 settings = Settings()
+SEARCH_URL_FILE = settings.data_dir / "iaai_search_url.txt"
 
 
 @st.cache_data(show_spinner=False)
@@ -42,10 +43,25 @@ with st.sidebar:
     st.header("Data")
     datasets = list_datasets(settings.data_dir)
     with st.expander("Refresh data", expanded=not datasets):
-        st.caption("Opens a browser window; solve any CAPTCHA it shows. Can take several minutes.")
+        st.markdown("**Step 1 (first time only):** log in to IAAI and Autohelperbot.")
+        if st.button("Log in to the sites", width="stretch"):
+            with st.spinner("A browser window opened. Log in to both sites, then close that window."):
+                proc = run_scraper(["--login"])
+            (st.success if proc.returncode == 0 else st.error)(
+                "Login saved." if proc.returncode == 0 else (proc.stdout + proc.stderr)[-2000:]
+            )
+
+        st.markdown("**Step 2:** paste the IAAI search URL with the *Timed Auction* filter ticked.")
+        saved_url = SEARCH_URL_FILE.read_text().strip() if SEARCH_URL_FILE.exists() else ""
+        search_url = st.text_input("IAAI search URL", value=saved_url, placeholder="https://www.iaai.com/Search?...")
+        if search_url.strip() != saved_url:
+            SEARCH_URL_FILE.parent.mkdir(parents=True, exist_ok=True)
+            SEARCH_URL_FILE.write_text(search_url.strip())
+
+        st.markdown("**Step 3:** collect today's list (a browser window opens; can take several minutes).")
         if st.button("Run scraper now", type="primary", width="stretch"):
             with st.spinner("Scraping IAAI and Autohelperbot..."):
-                proc = run_scraper([])
+                proc = run_scraper(["--search-url", search_url.strip()] if search_url.strip() else [])
             (st.success if proc.returncode == 0 else st.error)(f"Scraper exited with code {proc.returncode}")
             st.code((proc.stdout + proc.stderr)[-4000:] or "(no output)")
             st.cache_data.clear()

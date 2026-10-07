@@ -157,4 +157,7 @@ def browser_context(settings: Settings) -> Iterator[BrowserContext]:
         try:
             yield context
         finally:
-            context.close()
+            try:
+                context.close()
+            except PlaywrightError:
+                pass  # the user already closed the browser window
