@@ -64,9 +64,17 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible{
 .caps{position:relative;height:clamp(150px,22vh,210px)}
 .cap{position:absolute;left:0;bottom:0;max-width:34em;opacity:0;transform:translateY(18px);transition:opacity .5s ease,transform .5s ease}
 .cap.on{opacity:1;transform:none}
-.scrub-bar{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin-top:28px}
-.scrub-bar i{display:block;height:2px;background:rgba(255,255,255,.22);position:relative;overflow:hidden}
-.scrub-bar i b{position:absolute;inset:0;background:var(--c-gold);transform-origin:left;transform:scaleX(0)}
+.scrub-dots{position:absolute;z-index:3;right:clamp(12px,3vw,44px);top:50%;transform:translateY(-50%);display:flex;flex-direction:column;align-items:center;gap:12px;padding:16px 10px 12px;border-radius:999px;background:color-mix(in srgb, var(--c-navy) 55%, transparent);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+.scrub-dots .track{position:relative;display:flex;flex-direction:column;align-items:center;gap:clamp(20px,3.6vh,34px)}
+.scrub-dots .track::before{content:"";position:absolute;left:50%;top:5px;bottom:5px;width:1px;margin-left:-.5px;background:rgba(255,255,255,.25)}
+.scrub-dots .fill{position:absolute;left:50%;top:5px;width:1px;margin-left:-.5px;height:calc(100% - 10px);background:var(--c-gold);transform-origin:top;transform:scaleY(0);transition:transform .3s linear}
+.scrub-dots i{position:relative;display:block;width:10px;height:10px;border-radius:50%;box-sizing:border-box;border:1px solid rgba(255,255,255,.7);background:var(--c-navy);transition:transform .35s ease,background .35s ease,border-color .35s ease,box-shadow .35s ease}
+.scrub-dots i.done{background:var(--c-gold);border-color:var(--c-gold)}
+.scrub-dots i.on{background:var(--c-gold);border-color:var(--c-gold);transform:scale(1.4);box-shadow:0 0 0 5px color-mix(in srgb, var(--c-gold) 22%, transparent)}
+.scrub-dots svg{display:block;opacity:.85;animation:dot-nudge 1.8s ease-in-out infinite}
+@keyframes dot-nudge{0%,100%{transform:translateY(0)}50%{transform:translateY(4px)}}
+@media (max-width: 700px){.scrub-dots{right:6px;padding:12px 8px 10px}.scrub-dots .track{gap:18px}.scrub-dots i{width:8px;height:8px}}
+@media (prefers-reduced-motion: reduce){.scrub-dots svg{animation:none}.scrub-dots .fill{transition:none}}
 .scrub-hint{transition:opacity .4s}
 .scrub-chip{display:inline-flex;align-items:center;gap:12px;padding:10px 16px;background:color-mix(in srgb, var(--c-navy) 78%, transparent);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);color:#FFFFFF;font-size:12px;font-weight:500;letter-spacing:.28em;text-transform:uppercase;line-height:1}
 @media (prefers-reduced-motion: reduce){.cap{transition:none}}
@@ -328,8 +336,8 @@ a[data-tel],a[data-mail]{display:inline-block;padding-block:10px;margin-block:-1
 <div class="cap" data-i="3"><span style="display: block; font-family: 'Hanken Grotesk', 'Noto Sans Georgian', 'Segoe UI', sans-serif; font-weight: 500; font-size: 13px; letter-spacing: 0.16em; font-variant-numeric: tabular-nums; color: var(--c-gold); margin-bottom: 14px">04 / 05</span><h3 data-edit="scene4.title" style="margin: 0 0 12px; font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 300; font-size: clamp(32px, 4.6vw, 68px); line-height: 1.1; letter-spacing: -0.015em">Global import</h3><p data-edit="scene4.text" style="margin: 0; font-size: clamp(15px, 1.3vw, 17px); line-height: 1.7; color: #D5DCE6">Suppliers from markets around the world.</p></div>
 <div class="cap" data-i="4"><span style="display: block; font-family: 'Hanken Grotesk', 'Noto Sans Georgian', 'Segoe UI', sans-serif; font-weight: 500; font-size: 13px; letter-spacing: 0.16em; font-variant-numeric: tabular-nums; color: var(--c-gold); margin-bottom: 14px">05 / 05</span><h3 data-edit="scene5.title" style="margin: 0 0 12px; font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 300; font-size: clamp(32px, 4.6vw, 68px); line-height: 1.1; letter-spacing: -0.015em">Delivered to your door</h3><p data-edit="scene5.text" style="margin: 0; font-size: clamp(15px, 1.3vw, 17px); line-height: 1.7; color: #D5DCE6">Goods at your address, with full documentation.</p></div>
 </div>
-<div class="scrub-bar" aria-hidden="true"><i><b></b></i><i><b></b></i><i><b></b></i><i><b></b></i><i><b></b></i></div>
 </div></div>
+<div class="scrub-dots" aria-hidden="true"><div class="track"><span class="fill"></span><i></i><i></i><i></i><i></i><i></i></div><svg width="10" height="14" viewBox="0 0 10 14" fill="none" stroke="var(--c-gold)" stroke-width="1.3"><path d="M5 0v12M1 8l4 4 4-4"/></svg></div>
 </div>
 </section>
 <!-- SERVICES (about + services) -->
@@ -560,7 +568,7 @@ a[data-tel],a[data-mail]{display:inline-block;padding-block:10px;margin-block:-1
   var mark = document.getElementById('scrubMark');
   var vid = document.getElementById('scrubVideo');
   var caps = [].slice.call(sec.querySelectorAll('.cap'));
-  var fills = [].slice.call(sec.querySelectorAll('.scrub-bar b'));
+  var dots = [].slice.call(sec.querySelectorAll('.scrub-dots i')), rail = sec.querySelector('.scrub-dots .fill');
   var hint = document.getElementById('scrubHint');
   var header = document.querySelector('header');
   var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -583,7 +591,8 @@ a[data-tel],a[data-mail]{display:inline-block;padding-block:10px;margin-block:-1
 
   function show(k, prog) {
     caps.forEach(function (c, i) { c.classList.toggle('on', i === k); });
-    fills.forEach(function (f, i) { f.style.transform = 'scaleX(' + (i < k ? 1 : i > k ? 0 : prog).toFixed(3) + ')'; });
+    dots.forEach(function (d, i) { d.classList.toggle('done', i < k); d.classList.toggle('on', i === k); });
+    if (rail) rail.style.transform = 'scaleY(' + Math.max(0, Math.min(1, (k - 1 + prog) / (dots.length - 1))).toFixed(3) + ')';
     if (hint) hint.style.opacity = k > 0 || prog > 0.3 ? '0' : '1';
   }
   function hold(k) {
