@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>mypoker.ge</title>
 <meta name="description" content="პოკერის პრემიუმ აქსესუარები საქართველოში — ჩიპები, კარტები, მაგიდები და აქსესუარები.">
-<style>html,body{background:#2f2675;color:#fff;margin:0}</style>
+<style>html,body{background:#24443a;color:#f5f1e8;margin:0}</style>
 <script src="https://cdn.tailwindcss.com/3.4.17"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
@@ -202,18 +202,6 @@ const productWhatsAppLink = (product) =>
     `გამარჯობა, mypoker.ge-დან გწერთ, მაინტერესებს ეს პროდუქტი: ${product.name} (ფასი: ${product.price}₾)`
   );
 
-/* ბარათის 3D დახრა მაუსის მიხედვით */
-const tilt = (e) => {
-  const el = e.currentTarget;
-  const r = el.getBoundingClientRect();
-  const x = (e.clientX - r.left) / r.width - 0.5;
-  const y = (e.clientY - r.top) / r.height - 0.5;
-  el.style.setProperty("--rx", `${(-y * 6).toFixed(2)}deg`);
-  el.style.setProperty("--ry", `${(x * 8).toFixed(2)}deg`);
-  el.style.setProperty("--ty", "-6px");
-};
-const untilt = (e) => ["--rx", "--ry", "--ty"].forEach((v) => e.currentTarget.style.removeProperty(v));
-
 const cartWhatsAppLink = (lines, total) =>
   buildWhatsAppLink(
     [
@@ -339,24 +327,16 @@ function useProductFilter(products) {
 /*  გლობალური სტილები                                                 */
 /* ------------------------------------------------------------------ */
 const GLOBAL_CSS = `
-  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Georgian:wght@400;500;600;700&family=Manrope:wght@600;700&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Georgian:wght@400;500;600;700&family=Noto+Serif+Georgian:wght@500;600&family=Manrope:wght@600;700&display=swap');
   :root { color-scheme: dark; }
-  body { margin: 0; background: #2f2675; color: #ffffff; }
+  body { margin: 0; background: #24443a; color: #f5f1e8; }
   .mp-sans { font-family: 'Noto Sans Georgian', system-ui, -apple-system, 'Segoe UI', sans-serif; }
+  .mp-serif { font-family: 'Noto Serif Georgian', 'Noto Sans Georgian', Georgia, serif; }
   .mp-brand { font-family: 'Manrope', 'Noto Sans Georgian', system-ui, sans-serif; }
   .mp-num { font-variant-numeric: tabular-nums; }
   @keyframes mp-rise { from { opacity: 0; translate: 0 14px; scale: .97; } to { opacity: 1; translate: 0 0; scale: 1; } }
   @keyframes mp-pop { 0% { scale: .4; } 60% { scale: 1.35; } 100% { scale: 1; } }
-  @keyframes mp-float { 0%,100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-8px) rotate(-1.5deg); } }
-  @keyframes mp-blob { 0% { transform: translate(0,0) scale(1); } 33% { transform: translate(8vw,6vh) scale(1.15); } 66% { transform: translate(-6vw,10vh) scale(.92); } 100% { transform: translate(0,0) scale(1); } }
-  @keyframes mp-marquee { to { transform: translateX(-50%); } }
   .mp-pop { animation: mp-pop .45s cubic-bezier(.16,1,.3,1) both; }
-  .mp-blob { animation: mp-blob 21s ease-in-out infinite; will-change: transform; }
-  .mp-marquee { animation: mp-marquee 32s linear infinite; }
-  .mp-tilt { transform: perspective(1000px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateY(var(--ty, 0px)); transition: transform .3s cubic-bezier(.16,1,.3,1), border-color .3s, box-shadow .3s; }
-  .group:hover .mp-hover-float { animation: mp-float 2.8s ease-in-out infinite; }
-  .mp-shine { position: absolute; inset: 0; pointer-events: none; background: linear-gradient(115deg, transparent 35%, rgba(255,255,255,.16) 50%, transparent 65%); transform: translateX(-110%); }
-  .group:hover .mp-shine { transform: translateX(110%); transition: transform 1s cubic-bezier(.16,1,.3,1); }
   @keyframes mp-fade { from { opacity: 0; } to { opacity: 1; } }
   @keyframes mp-ping { 0% { transform: scale(1); opacity: .7; } 80%,100% { transform: scale(2.2); opacity: 0; } }
   @keyframes mp-slide-in { from { transform: translateX(100%); } to { transform: none; } }
@@ -368,7 +348,7 @@ const GLOBAL_CSS = `
   .mp-toast { animation: mp-toast .3s cubic-bezier(.16,1,.3,1) both; }
   .mp-scroll::-webkit-scrollbar { display: none; }
   .mp-scroll { scrollbar-width: none; }
-  :focus-visible { outline: 2px solid #ecd08c; outline-offset: 2px; }
+  :focus-visible { outline: 2px solid #c8a96a; outline-offset: 2px; }
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; }
   }
@@ -401,7 +381,7 @@ function LogoMark({ size = 34 }) {
       {/* ყვავი */}
       <path
         d="M20 9.2c0 0-8.4 6.3-8.4 11.3 0 2.8 2.1 4.7 4.6 4.7 1.4 0 2.6-.6 3.1-1.5l-1.2 5.1h3.8l-1.2-5.1c.5.9 1.7 1.5 3.1 1.5 2.5 0 4.6-1.9 4.6-4.7 0-5-8.4-11.3-8.4-11.3Z"
-        fill="#2b3340"
+        fill="#1e3a32"
       />
     </svg>
   );
@@ -413,8 +393,8 @@ function Logo() {
       <span className="transition-transform duration-500 ease-[cubic-bezier(.16,1,.3,1)] group-hover:rotate-[-8deg] group-hover:scale-105">
         <LogoMark />
       </span>
-      <span className="mp-brand text-[19px] font-semibold leading-none tracking-[-0.02em] text-white">
-        mypoker<span className="text-[#fcd34d]">.ge</span>
+      <span className="mp-brand text-[19px] font-semibold leading-none tracking-[-0.02em] text-[#f5f1e8]">
+        mypoker<span className="text-[#c8a96a]">.ge</span>
       </span>
     </a>
   );
@@ -578,52 +558,20 @@ function ProductVisual({ visual, uid, label }) {
 
 
 /* ------------------------------------------------------------------ */
-/*  მოძრავი ფერადი ფონი                                               */
-/* ------------------------------------------------------------------ */
-function Aurora() {
-  return (
-    <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden" aria-hidden="true">
-      <div className="mp-blob absolute -left-48 -top-48 h-[38rem] w-[38rem] rounded-full bg-fuchsia-500/40 blur-[120px]" />
-      <div className="mp-blob absolute -right-40 top-1/4 h-[34rem] w-[34rem] rounded-full bg-cyan-400/35 blur-[120px] [animation-delay:-7s]" />
-      <div className="mp-blob absolute -bottom-48 left-1/4 h-[36rem] w-[36rem] rounded-full bg-emerald-400/30 blur-[120px] [animation-delay:-14s]" />
-    </div>
-  );
-}
-
-const MARQUEE = ["ორიგინალი ბრენდები", "მიწოდება მთელ საქართველოში", "შეკვეთა WhatsApp-ით", "−13% ჩიპების ნაკრებზე", "ახალი მაგიდები მარაგშია"];
-const SUITS = ["♠", "♥", "♦", "♣"];
-
-function Marquee() {
-  const items = [...MARQUEE, ...MARQUEE];
-  return (
-    <div className="h-8 overflow-hidden border-t border-white/[0.1]" aria-hidden="true">
-      <div className="mp-marquee flex h-full w-max items-center gap-8 pl-8 text-[12px] font-medium text-white/85">
-        {items.map((t, i) => (
-          <span key={i} className="flex items-center gap-8 whitespace-nowrap">
-            {t}
-            <span className={i % 2 ? "text-[#fb7185]" : "text-[#fcd34d]"}>{SUITS[i % 4]}</span>
-          </span>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-/* ------------------------------------------------------------------ */
 /*  ჰედერი                                                             */
 /* ------------------------------------------------------------------ */
 function SearchField({ id, query, onQuery }) {
   return (
     <label htmlFor={id} className="relative block w-full">
       <span className="sr-only">ძიება</span>
-      <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-300" />
+      <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#b8c3b8]" />
       <input
         id={id}
         type="search"
         value={query}
         onChange={(e) => onQuery(e.target.value)}
         placeholder="მოძებნეთ პროდუქტი"
-        className="h-11 w-full rounded-full border border-white/[0.12] bg-white/[0.07] pl-11 pr-4 text-sm text-white placeholder:text-slate-300 transition-colors focus:border-[#fcd34d]/70 focus:bg-white/[0.1] focus:outline-none"
+        className="h-11 w-full rounded-full border border-white/[0.12] bg-white/[0.07] pl-11 pr-4 text-sm text-[#f5f1e8] placeholder:text-[#b8c3b8] transition-colors focus:border-[#c8a96a]/70 focus:bg-white/[0.1] focus:outline-none"
       />
     </label>
   );
@@ -631,7 +579,7 @@ function SearchField({ id, query, onQuery }) {
 
 function Header({ cartCount, onOpenCart, query, onQuery }) {
   return (
-    <header className="sticky top-[env(safe-area-inset-top,0px)] z-40 border-b border-white/[0.08] bg-[#2f2675]/75 backdrop-blur-xl backdrop-saturate-150">
+    <header className="sticky top-[env(safe-area-inset-top,0px)] z-40 border-b border-white/[0.08] bg-[#24443a]/75 backdrop-blur-xl backdrop-saturate-150">
       <div className="mx-auto flex h-16 max-w-[1400px] items-center gap-4 px-4 sm:px-6 lg:gap-8">
         <Logo />
 
@@ -642,30 +590,29 @@ function Header({ cartCount, onOpenCart, query, onQuery }) {
         <div className="ml-auto flex items-center gap-2">
           <a
             href={`tel:${CONFIG.phoneTel}`}
-            className="group flex h-11 items-center gap-2.5 rounded-full border border-white/[0.12] bg-white/[0.07] px-3 transition-colors hover:border-[#25d366]/50 hover:bg-[#25d366]/10 sm:pr-4"
+            className="group flex h-11 items-center gap-2.5 rounded-full border border-white/[0.12] bg-white/[0.07] px-3 transition-colors hover:border-[#c8a96a]/50 hover:bg-[#c8a96a]/10 sm:pr-4"
             aria-label={`დაგვირეკეთ: ${CONFIG.phoneDisplay}`}
           >
             <span className="relative grid h-6 w-6 place-items-center">
-              <span className="mp-ping absolute inset-0 rounded-full bg-[#25d366]/50" />
-              <span className="relative grid h-6 w-6 place-items-center rounded-full bg-[#25d366] text-[#04260f]">
+              <span className="relative grid h-6 w-6 place-items-center rounded-full bg-[#c8a96a] text-[#1e3a32]">
                 <Phone className="h-3.5 w-3.5" strokeWidth={2.5} />
               </span>
             </span>
             <span className="hidden flex-col leading-tight sm:flex">
-              <span className="text-[10px] text-slate-200">დაგვირეკეთ</span>
-              <span className="mp-num whitespace-nowrap text-[13px] font-semibold text-white">{CONFIG.phoneDisplay}</span>
+              <span className="text-[10px] text-[#d3d9cf]">დაგვირეკეთ</span>
+              <span className="mp-num whitespace-nowrap text-[13px] font-semibold text-[#f5f1e8]">{CONFIG.phoneDisplay}</span>
             </span>
           </a>
 
           <button
             type="button"
             onClick={onOpenCart}
-            className="relative grid h-11 w-11 place-items-center rounded-full border border-white/[0.12] bg-white/[0.07] text-white transition-colors hover:border-[#fcd34d]/60 hover:text-[#fcd34d]"
+            className="relative grid h-11 w-11 place-items-center rounded-full border border-white/[0.12] bg-white/[0.07] text-[#f5f1e8] transition-colors hover:border-[#c8a96a]/60 hover:text-[#c8a96a]"
             aria-label={`კალათა, ${cartCount} ნივთი`}
           >
             <ShoppingBag className="h-5 w-5" strokeWidth={1.8} />
             {cartCount > 0 && (
-              <span key={cartCount} className="mp-num mp-pop absolute -right-1 -top-1 grid h-5 min-w-5 place-items-center rounded-full bg-[#fcd34d] px-1 text-[11px] font-bold text-[#1e1b4b]">
+              <span key={cartCount} className="mp-num mp-pop absolute -right-1 -top-1 grid h-5 min-w-5 place-items-center rounded-full bg-[#c8a96a] px-1 text-[11px] font-bold text-[#1e3a32]">
                 {cartCount}
               </span>
             )}
@@ -676,7 +623,6 @@ function Header({ cartCount, onOpenCart, query, onQuery }) {
       <div className="px-4 pb-3 md:hidden">
         <SearchField id="mp-search-mobile" query={query} onQuery={onQuery} />
       </div>
-      <Marquee />
     </header>
   );
 }
@@ -687,7 +633,7 @@ function Header({ cartCount, onOpenCart, query, onQuery }) {
 function FilterGroup({ title, children }) {
   return (
     <div>
-      <p className="px-3 text-xs font-semibold text-slate-200">{title}</p>
+      <p className="px-3 text-xs font-semibold text-[#d3d9cf]">{title}</p>
       <div className="mt-2 flex flex-col gap-0.5">{children}</div>
     </div>
   );
@@ -700,12 +646,12 @@ function FilterOption({ active, onClick, label, count }) {
       onClick={onClick}
       aria-pressed={active}
       className={`flex items-center justify-between rounded-xl px-3 py-2 text-left text-sm transition-colors ${
-        active ? "bg-gradient-to-r from-[#fcd34d] to-[#fb923c] font-semibold text-[#1e1b4b] shadow-lg shadow-orange-500/20" : "text-slate-100 hover:bg-white/[0.08]"
+        active ? "bg-[#f5f1e8] font-semibold text-[#1e3a32]" : "text-[#ece8de] hover:bg-white/[0.08]"
       }`}
     >
       {label}
       {count !== undefined && (
-        <span className={`mp-num text-xs ${active ? "text-[#1e1b4b]/60" : "text-slate-300"}`}>{count}</span>
+        <span className={`mp-num text-xs ${active ? "text-[#1e3a32]/60" : "text-[#b8c3b8]"}`}>{count}</span>
       )}
     </button>
   );
@@ -715,7 +661,7 @@ function Sidebar({ filter }) {
   const { category, setCategory, price, setPrice, counts, hasFilters, reset } = filter;
   return (
     <aside className="hidden lg:block">
-      <div className="sticky top-28 flex flex-col gap-7">
+      <div className="sticky top-24 flex flex-col gap-7">
         <FilterGroup title="კატეგორია">
           {CATEGORIES.map((c) => (
             <FilterOption key={c.id} active={category === c.id} onClick={() => setCategory(c.id)} label={c.label} count={counts[c.id] || 0} />
@@ -727,14 +673,14 @@ function Sidebar({ filter }) {
           ))}
         </FilterGroup>
         {hasFilters && (
-          <button type="button" onClick={reset} className="px-3 text-left text-sm text-[#fcd34d] hover:underline">
+          <button type="button" onClick={reset} className="px-3 text-left text-sm text-[#c8a96a] hover:underline">
             ფილტრების გასუფთავება
           </button>
         )}
         <div className="rounded-2xl border border-white/[0.1] bg-white/[0.05] p-4">
-          <p className="text-sm font-semibold text-white">შეკვეთა WhatsApp-ით</p>
-          <p className="mt-1 text-xs leading-relaxed text-slate-200">აირჩიეთ პროდუქტი და მოგვწერეთ — გიპასუხებთ რამდენიმე წუთში.</p>
-          <a href={`tel:${CONFIG.phoneTel}`} className="mp-num mt-3 block select-all text-sm font-semibold text-white hover:text-[#25d366]">
+          <p className="text-sm font-semibold text-[#f5f1e8]">შეკვეთა WhatsApp-ით</p>
+          <p className="mt-1 text-xs leading-relaxed text-[#d3d9cf]">აირჩიეთ პროდუქტი და მოგვწერეთ — გიპასუხებთ რამდენიმე წუთში.</p>
+          <a href={`tel:${CONFIG.phoneTel}`} className="mp-num mt-3 block select-all text-sm font-semibold text-[#f5f1e8] hover:text-[#c8a96a]">
             {CONFIG.phoneDisplay}
           </a>
         </div>
@@ -746,7 +692,7 @@ function Sidebar({ filter }) {
 function MobileFilters({ filter }) {
   const { category, setCategory, price, setPrice, counts } = filter;
   return (
-    <div className="sticky top-[calc(env(safe-area-inset-top,0px)+9.5rem+2px)] z-30 -mx-4 border-b border-white/[0.08] bg-[#2f2675]/85 px-4 py-3 backdrop-blur-xl md:top-[calc(env(safe-area-inset-top,0px)+6rem+2px)] lg:hidden">
+    <div className="sticky top-[calc(env(safe-area-inset-top,0px)+7.5rem+1px)] z-30 -mx-4 border-b border-white/[0.08] bg-[#24443a]/85 px-4 py-3 backdrop-blur-xl md:top-[calc(env(safe-area-inset-top,0px)+4rem+1px)] lg:hidden">
       <div className="mp-scroll flex gap-2 overflow-x-auto" role="tablist" aria-label="კატეგორიები">
         {CATEGORIES.map((c) => {
           const active = category === c.id;
@@ -758,11 +704,11 @@ function MobileFilters({ filter }) {
               aria-selected={active}
               onClick={() => setCategory(c.id)}
               className={`inline-flex shrink-0 items-center gap-1.5 rounded-full border px-4 py-2 text-[13px] transition-colors ${
-                active ? "border-transparent bg-gradient-to-r from-[#fcd34d] to-[#fb923c] font-semibold text-[#1e1b4b] shadow-lg shadow-orange-500/25" : "border-white/[0.14] text-slate-100"
+                active ? "border-[#f5f1e8] bg-[#f5f1e8] font-semibold text-[#1e3a32]" : "border-white/[0.14] text-[#ece8de]"
               }`}
             >
               {c.label}
-              <span className={`mp-num text-[11px] ${active ? "text-[#1e1b4b]/60" : "text-slate-300"}`}>{counts[c.id] || 0}</span>
+              <span className={`mp-num text-[11px] ${active ? "text-[#1e3a32]/60" : "text-[#b8c3b8]"}`}>{counts[c.id] || 0}</span>
             </button>
           );
         })}
@@ -773,7 +719,7 @@ function MobileFilters({ filter }) {
           id="mp-price-mobile"
           value={price}
           onChange={(e) => setPrice(e.target.value)}
-          className="h-9 w-full appearance-none rounded-full border border-white/[0.14] bg-[#43359e] pl-4 pr-9 text-[13px] text-white focus:outline-none"
+          className="h-9 w-full appearance-none rounded-full border border-white/[0.14] bg-[#2c5247] pl-4 pr-9 text-[13px] text-[#f5f1e8] focus:outline-none"
         >
           {PRICE_RANGES.map((r) => (
             <option key={r.id} value={r.id}>
@@ -781,7 +727,7 @@ function MobileFilters({ filter }) {
             </option>
           ))}
         </select>
-        <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-300" />
+        <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#b8c3b8]" />
       </label>
     </div>
   );
@@ -795,25 +741,22 @@ function ProductCard({ product, index, inCart, onAdd }) {
 
   return (
     <article
-      onMouseMove={tilt}
-      onMouseLeave={untilt}
-      className="mp-rise mp-tilt group relative flex flex-col overflow-hidden rounded-3xl border border-white/[0.16] bg-white/[0.09] backdrop-blur-md hover:border-white/[0.34] hover:shadow-[0_30px_60px_-25px_rgba(124,58,237,0.7)]"
+      className="mp-rise group relative flex flex-col overflow-hidden rounded-2xl border border-[#f5f1e8]/[0.1] bg-[#2c5247] transition-all duration-300 hover:-translate-y-1 hover:border-[#c8a96a]/50 hover:shadow-[0_24px_48px_-24px_rgba(0,0,0,0.55)]"
       style={{ animationDelay: `${Math.min(index, 11) * 40}ms` }}
     >
       <div className="relative aspect-[4/3] overflow-hidden bg-[radial-gradient(120%_100%_at_50%_0%,rgba(255,255,255,0.24)_0%,rgba(255,255,255,0.06)_75%)]">
         <div className="absolute inset-0 p-6 transition-transform duration-500 ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-105">
-          <div className="mp-hover-float h-full w-full">
+          <div className="h-full w-full">
             <ProductVisual visual={product.visual} uid={`p-${product.id}`} label={product.name} />
           </div>
         </div>
-        <span className="mp-shine" aria-hidden="true" />
         {(product.badge || discount > 0) && (
           <div className="absolute left-3 top-3 flex gap-1.5">
             {discount > 0 && (
-              <span className="mp-num rounded-full bg-[#25d366] px-2 py-0.5 text-[11px] font-bold text-[#04260f]">−{discount}%</span>
+              <span className="mp-num rounded-full bg-[#c8a96a] px-2 py-0.5 text-[11px] font-bold text-[#1e3a32]">−{discount}%</span>
             )}
             {product.badge && (
-              <span className="rounded-full bg-[#1e1b4b]/80 px-2.5 py-0.5 text-[11px] font-medium text-[#f6e3b4] backdrop-blur">
+              <span className="rounded-full bg-[#1e3a32]/80 px-2.5 py-0.5 text-[11px] font-medium text-[#f6e3b4] backdrop-blur">
                 {product.badge}
               </span>
             )}
@@ -822,17 +765,17 @@ function ProductCard({ product, index, inCart, onAdd }) {
       </div>
 
       <div className="flex flex-1 flex-col p-4">
-        <h3 className="line-clamp-2 min-h-[2.75rem] text-[15px] font-semibold leading-snug text-white">{product.name}</h3>
-        <p className="mt-1 truncate text-[13px] text-slate-200">{product.spec}</p>
+        <h3 className="line-clamp-2 min-h-[2.75rem] text-[15px] font-semibold leading-snug text-[#f5f1e8]">{product.name}</h3>
+        <p className="mt-1 truncate text-[13px] text-[#d3d9cf]">{product.spec}</p>
 
         <div className="mt-3 flex items-end justify-between gap-2">
           <div className="flex items-baseline gap-2">
-            <span className="mp-num text-xl font-bold tracking-tight text-white">{formatPrice(product.price)}</span>
-            {product.oldPrice && <span className="mp-num text-xs text-slate-300 line-through">{formatPrice(product.oldPrice)}</span>}
+            <span className="mp-num text-xl font-bold tracking-tight text-[#f5f1e8]">{formatPrice(product.price)}</span>
+            {product.oldPrice && <span className="mp-num text-xs text-[#b8c3b8] line-through">{formatPrice(product.oldPrice)}</span>}
           </div>
-          <span className="flex items-center gap-1 text-xs text-slate-200">
-            <Star className="h-3.5 w-3.5 fill-[#fcd34d] text-[#fcd34d]" />
-            <span className="mp-num font-medium text-white">{product.rating.toFixed(1)}</span>
+          <span className="flex items-center gap-1 text-xs text-[#d3d9cf]">
+            <Star className="h-3.5 w-3.5 fill-[#c8a96a] text-[#c8a96a]" />
+            <span className="mp-num font-medium text-[#f5f1e8]">{product.rating.toFixed(1)}</span>
             <span className="mp-num">({product.reviews})</span>
           </span>
         </div>
@@ -842,9 +785,8 @@ function ProductCard({ product, index, inCart, onAdd }) {
             href={productWhatsAppLink(product)}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex h-11 min-w-0 flex-1 items-center justify-center gap-2 whitespace-nowrap rounded-xl bg-[#25d366] px-3 text-[13px] font-bold text-[#04260f] transition-colors hover:bg-[#5ee38f] active:scale-[0.98] group/cta relative overflow-hidden shadow-lg shadow-green-500/25"
+            className="inline-flex h-11 min-w-0 flex-1 items-center justify-center gap-2 whitespace-nowrap rounded-xl bg-[#f5f1e8] px-3 text-[13px] font-bold text-[#1e3a32] transition-colors hover:bg-white active:scale-[0.98]"
           >
-            <span className="absolute inset-y-0 -left-1/2 w-1/3 -skew-x-12 bg-white/40 blur-md transition-all duration-700 group-hover/cta:left-[120%]" aria-hidden="true" />
             <MessageCircle className="relative h-4 w-4 shrink-0" strokeWidth={2.2} />
             <span className="relative">შესაკვეთად დაგვიკავშირდით</span>
           </a>
@@ -852,7 +794,7 @@ function ProductCard({ product, index, inCart, onAdd }) {
             type="button"
             onClick={() => onAdd(product.id)}
             className={`grid h-11 w-11 shrink-0 place-items-center rounded-xl border transition-colors ${
-              inCart ? "border-[#fcd34d] bg-[#fcd34d] text-[#1e1b4b]" : "border-white/[0.16] text-white hover:border-[#fcd34d] hover:text-[#fcd34d]"
+              inCart ? "border-[#c8a96a] bg-[#c8a96a] text-[#1e3a32]" : "border-white/[0.16] text-[#f5f1e8] hover:border-[#c8a96a] hover:text-[#c8a96a]"
             }`}
             aria-label={inCart ? `კალათაშია: ${product.name}. კიდევ ერთის დამატება` : `კალათაში დამატება: ${product.name}`}
             title={inCart ? "კალათაშია" : "კალათაში დამატება"}
@@ -883,8 +825,8 @@ function Shop({ filter, cart }) {
 
         <div className="mt-4 flex items-center justify-between gap-3 lg:mt-0">
           <div className="min-w-0">
-            <h1 className="text-lg font-bold leading-tight text-white sm:text-2xl">{title}</h1>
-            <p className="mp-num text-sm text-slate-200" aria-live="polite">
+            <h1 className="mp-serif text-lg font-semibold leading-tight text-[#f5f1e8] sm:text-2xl">{title}</h1>
+            <p className="mp-num text-sm text-[#d3d9cf]" aria-live="polite">
               {visible.length} პროდუქტი
             </p>
           </div>
@@ -894,7 +836,7 @@ function Shop({ filter, cart }) {
               id="mp-sort"
               value={sort}
               onChange={(e) => setSort(e.target.value)}
-              className="h-10 max-w-[10.5rem] appearance-none truncate rounded-full border border-white/[0.14] bg-[#43359e] pl-4 pr-9 text-[13px] text-white transition-colors focus:border-[#fcd34d]/70 focus:outline-none"
+              className="h-10 max-w-[10.5rem] appearance-none truncate rounded-full border border-white/[0.14] bg-[#2c5247] pl-4 pr-9 text-[13px] text-[#f5f1e8] transition-colors focus:border-[#c8a96a]/70 focus:outline-none"
             >
               {SORTS.map((s) => (
                 <option key={s.id} value={s.id}>
@@ -902,7 +844,7 @@ function Shop({ filter, cart }) {
                 </option>
               ))}
             </select>
-            <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-300" />
+            <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#b8c3b8]" />
           </label>
         </div>
 
@@ -914,14 +856,14 @@ function Shop({ filter, cart }) {
           </div>
         ) : (
           <div className="mp-fade mt-5 flex flex-col items-center rounded-2xl border border-dashed border-white/[0.18] px-6 py-16 text-center">
-            <Search className="h-6 w-6 text-slate-300" />
-            <p className="mt-3 font-semibold text-white">პროდუქტი ვერ მოიძებნა</p>
-            <p className="mt-1 text-sm text-slate-200">სცადეთ სხვა სიტყვა ან შეცვალეთ ფილტრი.</p>
+            <Search className="h-6 w-6 text-[#b8c3b8]" />
+            <p className="mt-3 font-semibold text-[#f5f1e8]">პროდუქტი ვერ მოიძებნა</p>
+            <p className="mt-1 text-sm text-[#d3d9cf]">სცადეთ სხვა სიტყვა ან შეცვალეთ ფილტრი.</p>
             {hasFilters && (
               <button
                 type="button"
                 onClick={reset}
-                className="mt-5 rounded-full bg-white px-5 py-2 text-sm font-semibold text-[#1e1b4b] transition-colors hover:bg-slate-100"
+                className="mt-5 rounded-full bg-white px-5 py-2 text-sm font-semibold text-[#1e3a32] transition-colors hover:bg-white"
               >
                 ფილტრების გასუფთავება
               </button>
@@ -954,16 +896,16 @@ function CartDrawer({ open, onClose, cart }) {
   return (
     <div className="fixed inset-0 z-50" role="dialog" aria-modal="true" aria-label="კალათა">
       <button type="button" className="mp-fade absolute inset-0 bg-[#1e2530]/50 backdrop-blur-sm" onClick={onClose} aria-label="დახურვა" />
-      <aside className="mp-slide-in absolute inset-y-0 right-0 flex w-full max-w-md flex-col border-l border-white/[0.14] bg-[#33298a]/95 backdrop-blur-xl pb-[env(safe-area-inset-bottom,0px)] pt-[env(safe-area-inset-top,0px)] shadow-2xl">
+      <aside className="mp-slide-in absolute inset-y-0 right-0 flex w-full max-w-md flex-col border-l border-white/[0.14] bg-[#24443a]/95 backdrop-blur-xl pb-[env(safe-area-inset-bottom,0px)] pt-[env(safe-area-inset-top,0px)] shadow-2xl">
         <div className="flex items-center justify-between border-b border-white/[0.08] px-5 py-4">
           <div>
-            <h2 className="text-lg font-bold text-white">კალათა</h2>
-            <p className="mp-num text-xs text-slate-200">{cart.count} ნივთი</p>
+            <h2 className="text-lg font-bold text-[#f5f1e8]">კალათა</h2>
+            <p className="mp-num text-xs text-[#d3d9cf]">{cart.count} ნივთი</p>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="grid h-10 w-10 place-items-center rounded-full text-slate-100 transition-colors hover:bg-white/[0.08]"
+            className="grid h-10 w-10 place-items-center rounded-full text-[#ece8de] transition-colors hover:bg-white/[0.08]"
             aria-label="კალათის დახურვა"
           >
             <X className="h-5 w-5" />
@@ -972,10 +914,10 @@ function CartDrawer({ open, onClose, cart }) {
 
         {cart.lines.length === 0 ? (
           <div className="flex flex-1 flex-col items-center justify-center px-8 text-center">
-            <ShoppingBag className="h-8 w-8 text-slate-300" strokeWidth={1.5} />
-            <p className="mt-4 font-semibold text-white">კალათა ცარიელია</p>
-            <p className="mt-1 text-sm text-slate-200">დაამატეთ პროდუქტები და გამოგვიგზავნეთ ერთი შეტყობინებით.</p>
-            <button type="button" onClick={onClose} className="mt-6 rounded-full bg-white px-5 py-2 text-sm font-semibold text-[#1e1b4b] hover:bg-slate-100">
+            <ShoppingBag className="h-8 w-8 text-[#b8c3b8]" strokeWidth={1.5} />
+            <p className="mt-4 font-semibold text-[#f5f1e8]">კალათა ცარიელია</p>
+            <p className="mt-1 text-sm text-[#d3d9cf]">დაამატეთ პროდუქტები და გამოგვიგზავნეთ ერთი შეტყობინებით.</p>
+            <button type="button" onClick={onClose} className="mt-6 rounded-full bg-white px-5 py-2 text-sm font-semibold text-[#1e3a32] hover:bg-white">
               შოპინგის გაგრძელება
             </button>
           </div>
@@ -988,33 +930,33 @@ function CartDrawer({ open, onClose, cart }) {
                     <ProductVisual visual={product.visual} uid={`c-${product.id}`} label={product.name} />
                   </div>
                   <div className="flex min-w-0 flex-1 flex-col">
-                    <p className="line-clamp-2 text-[13px] font-medium leading-snug text-white">{product.name}</p>
+                    <p className="line-clamp-2 text-[13px] font-medium leading-snug text-[#f5f1e8]">{product.name}</p>
                     <div className="mt-auto flex items-center justify-between pt-2">
                       <div className="flex items-center rounded-full border border-white/[0.16]">
                         <button
                           type="button"
                           onClick={() => cart.decrement(product.id)}
-                          className="grid h-8 w-8 place-items-center text-slate-100 hover:text-white"
+                          className="grid h-8 w-8 place-items-center text-[#ece8de] hover:text-[#f5f1e8]"
                           aria-label="რაოდენობის შემცირება"
                         >
                           <Minus className="h-3.5 w-3.5" />
                         </button>
-                        <span className="mp-num w-5 text-center text-[13px] font-semibold text-white">{qty}</span>
+                        <span className="mp-num w-5 text-center text-[13px] font-semibold text-[#f5f1e8]">{qty}</span>
                         <button
                           type="button"
                           onClick={() => cart.add(product.id)}
-                          className="grid h-8 w-8 place-items-center text-slate-100 hover:text-white"
+                          className="grid h-8 w-8 place-items-center text-[#ece8de] hover:text-[#f5f1e8]"
                           aria-label="რაოდენობის გაზრდა"
                         >
                           <Plus className="h-3.5 w-3.5" />
                         </button>
                       </div>
                       <div className="flex items-center gap-3">
-                        <span className="mp-num text-sm font-bold text-white">{formatPrice(product.price * qty)}</span>
+                        <span className="mp-num text-sm font-bold text-[#f5f1e8]">{formatPrice(product.price * qty)}</span>
                         <button
                           type="button"
                           onClick={() => cart.remove(product.id)}
-                          className="text-slate-300 transition-colors hover:text-red-300"
+                          className="text-[#b8c3b8] transition-colors hover:text-red-300"
                           aria-label={`წაშლა: ${product.name}`}
                         >
                           <Trash2 className="h-4 w-4" />
@@ -1028,20 +970,20 @@ function CartDrawer({ open, onClose, cart }) {
 
             <div className="border-t border-white/[0.08] px-5 py-5">
               <div className="flex items-baseline justify-between">
-                <span className="text-sm text-slate-200">ჯამი</span>
-                <span className="mp-num text-2xl font-bold text-white">{formatPrice(cart.total)}</span>
+                <span className="text-sm text-[#d3d9cf]">ჯამი</span>
+                <span className="mp-num text-2xl font-bold text-[#f5f1e8]">{formatPrice(cart.total)}</span>
               </div>
               <a
                 href={cartWhatsAppLink(cart.lines, cart.total)}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mt-4 inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-[#25d366] text-sm font-bold text-[#04260f] transition-colors hover:bg-[#5ee38f]"
+                className="mt-4 inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-[#f5f1e8] text-sm font-bold text-[#1e3a32] transition-colors hover:bg-white"
               >
                 <MessageCircle className="h-4 w-4" />
                 შესაკვეთად დაგვიკავშირდით
               </a>
-              <p className="mt-3 text-center text-xs text-slate-300">ონლაინ გადახდა მალე დაემატება</p>
-              <button type="button" onClick={cart.clear} className="mt-2 w-full text-xs text-slate-300 transition-colors hover:text-white">
+              <p className="mt-3 text-center text-xs text-[#b8c3b8]">ონლაინ გადახდა მალე დაემატება</p>
+              <button type="button" onClick={cart.clear} className="mt-2 w-full text-xs text-[#b8c3b8] transition-colors hover:text-[#f5f1e8]">
                 კალათის გასუფთავება
               </button>
             </div>
@@ -1058,20 +1000,20 @@ function CartDrawer({ open, onClose, cart }) {
 function Footer() {
   return (
     <footer className="border-t border-white/[0.1] bg-black/10 backdrop-blur-md">
-      <div className="mx-auto flex max-w-[1400px] flex-col gap-4 px-4 py-6 text-sm text-slate-200 sm:flex-row sm:items-center sm:justify-between sm:px-6">
+      <div className="mx-auto flex max-w-[1400px] flex-col gap-4 px-4 py-6 text-sm text-[#d3d9cf] sm:flex-row sm:items-center sm:justify-between sm:px-6">
         <div className="flex items-center gap-3">
           <LogoMark size={24} />
           <span className="text-xs">© {new Date().getFullYear()} mypoker.ge · აზარტული თამაში მხოლოდ 18 წლიდან</span>
         </div>
         <div className="flex flex-wrap items-center gap-4">
-          <a href={`tel:${CONFIG.phoneTel}`} className="mp-num select-all font-semibold text-white hover:text-[#25d366]">
+          <a href={`tel:${CONFIG.phoneTel}`} className="mp-num select-all font-semibold text-[#f5f1e8] hover:text-[#c8a96a]">
             {CONFIG.phoneDisplay}
           </a>
           <a
             href={buildWhatsAppLink("გამარჯობა, mypoker.ge-დან გწერთ.")}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 font-semibold text-[#25d366] hover:text-[#5ee38f]"
+            className="inline-flex items-center gap-1.5 font-semibold text-[#c8a96a] hover:text-[#dcc28c]"
           >
             <MessageCircle className="h-4 w-4" />
             WhatsApp
@@ -1112,9 +1054,8 @@ function App() {
   };
 
   return (
-    <div id="top" className="mp-sans relative isolate flex min-h-screen flex-col bg-[#2f2675] text-white antialiased selection:bg-[#fcd34d]/40">
+    <div id="top" className="mp-sans relative isolate flex min-h-screen flex-col bg-[#24443a] text-[#f5f1e8] antialiased selection:bg-[#c8a96a]/40">
       <style>{GLOBAL_CSS}</style>
-      <Aurora />
       <Header cartCount={cart.count} onOpenCart={openCart} query={filter.query} onQuery={filter.setQuery} />
       <div className="flex-1">
         <Shop filter={filter} cart={cartApi} />
@@ -1125,14 +1066,14 @@ function App() {
       {toast && (
         <div
           key={toast.id}
-          className="mp-toast fixed bottom-[calc(1.25rem+env(safe-area-inset-bottom,0px))] left-1/2 z-50 flex w-[calc(100%-2rem)] max-w-sm items-center gap-3 rounded-2xl border border-white/[0.12] bg-[#241c5e]/95 py-2.5 pl-3 pr-4 shadow-2xl backdrop-blur-xl"
+          className="mp-toast fixed bottom-[calc(1.25rem+env(safe-area-inset-bottom,0px))] left-1/2 z-50 flex w-[calc(100%-2rem)] max-w-sm items-center gap-3 rounded-2xl border border-white/[0.12] bg-[#1b332b]/95 py-2.5 pl-3 pr-4 shadow-2xl backdrop-blur-xl"
           role="status"
         >
-          <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-[#fcd34d] text-[#1e1b4b]">
+          <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-[#c8a96a] text-[#1e3a32]">
             <Check className="h-4 w-4" />
           </span>
-          <p className="min-w-0 flex-1 truncate text-[13px] text-white">კალათაში დაემატა: {toast.name}</p>
-          <button type="button" onClick={openCart} className="shrink-0 text-[13px] font-bold text-[#fcd34d] hover:text-[#fde68a]">
+          <p className="min-w-0 flex-1 truncate text-[13px] text-[#f5f1e8]">კალათაში დაემატა: {toast.name}</p>
+          <button type="button" onClick={openCart} className="shrink-0 text-[13px] font-bold text-[#c8a96a] hover:text-[#dcc28c]">
             ნახვა
           </button>
         </div>
