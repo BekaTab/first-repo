@@ -83,8 +83,9 @@ export function applyContent(html, content, base = '') {
     html = html.replace(re, (m, open, close) => open + renderBlocks(content.blocks, lang, slot, (p) => (safeUrl(p) ? resolve(safeUrl(p)) : '')) + close);
   }
 
-  if (typeof t['seo.title'] === 'string') html = html.replace(/<title>[^<]*<\/title>/, `<title>${esc(t['seo.title'])}</title>`);
-  if (typeof t['seo.description'] === 'string') html = html.replace(/(<meta name="description" content=")[^"]*(")/, `$1${escAttr(t['seo.description'])}$2`);
+  // function replacements: a "$&" or "$1" typed in the admin must stay literal text
+  if (typeof t['seo.title'] === 'string') html = html.replace(/<title>[^<]*<\/title>/, () => `<title>${esc(t['seo.title'])}</title>`);
+  if (typeof t['seo.description'] === 'string') html = html.replace(/(<meta name="description" content=")[^"]*(")/, (m, a, b) => a + escAttr(t['seo.description']) + b);
   return { html, missing };
 }
 
