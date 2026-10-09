@@ -269,7 +269,9 @@ textarea.input{resize:vertical;min-height:84px;line-height:1.6}
       { k: 'email', l: 'ელ-ფოსტა', t: 't', check: 'email' },
       { k: '__logo', l: 'ლოგო' },
       { k: 'formEndpoint', l: 'ფორმის მიმღები მისამართი (Formspree)', t: 't', check: 'url',
-        h: 'ფორმიდან შეტყობინებების მისაღებად შექმენით უფასო ფორმა formspree.io-ზე და ჩასვით მისი მისამართი (მაგ. https://formspree.io/f/abcd1234). ცარიელის შემთხვევაში საიტი სთხოვს ვიზიტორს დარეკვას.' } ] },
+        h: 'ფორმიდან შეტყობინებების მისაღებად შექმენით უფასო ფორმა formspree.io-ზე და ჩასვით მისი მისამართი (მაგ. https://formspree.io/f/abcd1234). ცარიელის შემთხვევაში საიტი სთხოვს ვიზიტორს დარეკვას.' },
+      { k: 'gaId', l: 'Google Analytics (Measurement ID)', t: 't', check: 'ga',
+        h: 'analytics.google.com → Admin → Data streams → eib.ge → Measurement ID (იწყება G-ით). ცარიელის შემთხვევაში ვიზიტები არ აღირიცხება.' } ] },
     { id: 'colors', title: 'ფერები', lead: 'საიტის ძირითადი ფერები. ცვლილება მაშინვე ჩანს გადახედვაში; ნეიტრალური ნაცრისფერები და თეთრი უცვლელი რჩება.', shared: true, custom: 'colors', fields: [] },
     { id: 'structure', title: 'გვერდის სტრუქტურა', lead: 'სექციების ჩვენება/დამალვა და დამატებითი ბლოკები სურათით.', custom: 'structure', fields: [] },
     { id: 'menu', title: 'მენიუ', lead: 'ჰედერის ბმულები და ღილაკი.', fields: [
@@ -384,7 +386,7 @@ textarea.input{resize:vertical;min-height:84px;line-height:1.6}
   var draft = null;       // content being edited
   var publishedSha = null;
   var pending = {};       // images uploaded here but not yet published: { 'media/uploads/x.png': {b64, dataUrl} }
-  var SHARED_SCALARS = ['phone', 'email', 'logo', 'logoDark', 'showWordmark', 'formEndpoint'];
+  var SHARED_SCALARS = ['phone', 'email', 'logo', 'logoDark', 'showWordmark', 'formEndpoint', 'gaId'];
   var COLORS = [
     ['navy', 'მთავარი მუქი', '#0B1628', 'ტექსტი, მუქი სექციები, ღილაკები, ფუტერი'],
     ['accent', 'აქცენტი (ლურჯი)', '#3E6DA6', 'მცირე სათაურები, ბმულები, ლოგო'],
@@ -479,7 +481,7 @@ textarea.input{resize:vertical;min-height:84px;line-height:1.6}
   }
   function normalise(c) {
     c = c || {}; c.version = 1; c.shared = c.shared || {}; c.ka = c.ka || {}; c.en = c.en || {};
-    ['phone', 'email', 'logo', 'logoDark', 'formEndpoint'].forEach(function (k) { if (typeof c.shared[k] !== 'string') c.shared[k] = ''; });
+    ['phone', 'email', 'logo', 'logoDark', 'formEndpoint', 'gaId'].forEach(function (k) { if (typeof c.shared[k] !== 'string') c.shared[k] = ''; });
     if (typeof c.shared.showWordmark !== 'boolean') c.shared.showWordmark = true;
     var cols = (c.shared.colors && typeof c.shared.colors === 'object') ? c.shared.colors : {};
     c.shared.colors = {}; COLORS.forEach(function (x) { if (/^#[0-9a-f]{6}$/i.test(cols[x[0]] || '')) c.shared.colors[x[0]] = cols[x[0]].toUpperCase(); });
@@ -528,7 +530,8 @@ textarea.input{resize:vertical;min-height:84px;line-height:1.6}
     if (f.check === 'phone' && v.replace(/\D/g, '').length < 9) return { warn: 'ნომერში 9-ზე ნაკლები ციფრია.' };
     if (f.check === 'email' && v && !/^[^\s@\[\]]+@[^\s@\[\]]+\.[^\s@\[\]]+$/.test(v)) return { warn: 'ეს არ ჰგავს ელ-ფოსტას. საიტზე ტექსტად გამოჩნდება, დაჭერით არ გაიხსნება.' };
     if (f.check === 'url' && v && !/^https:\/\/[^\s"<>]+$/.test(v)) return { err: 'მისამართი უნდა იწყებოდეს https://-ით.' };
-    if (!v.trim() && f.check !== 'url' && f.k !== 'email') return { warn: 'ცარიელი ველი საიტზე ცარიელ ადგილს დატოვებს.' };
+    if (f.check === 'ga' && v && !/^G-[A-Z0-9]{4,15}$/.test(v)) return { err: 'კოდი უნდა იწყებოდეს G--ით, მაგ. G-AB12CD34EF.' };
+    if (!v.trim() && f.check !== 'url' && f.check !== 'ga' && f.k !== 'email') return { warn: 'ცარიელი ველი საიტზე ცარიელ ადგილს დატოვებს.' };
     return null;
   }
   function fieldRow(sec, f) {

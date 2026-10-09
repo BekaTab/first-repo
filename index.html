@@ -750,7 +750,7 @@ a[data-tel],a[data-mail]{display:inline-block;padding-block:10px;margin-block:-1
     var ctl = window.AbortController ? new AbortController() : null, timer = ctl && setTimeout(function () { ctl.abort(); }, 15000);
     fetch(endpoint, { method: 'POST', signal: ctl ? ctl.signal : undefined, headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
       body: JSON.stringify({ _subject: (document.documentElement.lang === 'en' ? 'New request from the website' : 'ახალი მოთხოვნა საიტიდან') + ' — ' + v('name'), _replyto: v('email') || undefined, name: v('name'), company: v('company'), phone: v('phone'), email: v('email'), message: v('message'), page: location.href }) })
-      .then(function (r) { if (!r.ok) throw new Error(r.status); show('sent'); form.reset(); })
+      .then(function (r) { if (!r.ok) throw new Error(r.status); show('sent'); form.reset(); if (window.gtag) gtag('event', 'generate_lead', { method: 'form' }); })
       .catch(function () { show('fail'); })
       .then(function () { clearTimeout(timer); btn.disabled = false; btn.removeAttribute('aria-busy'); });
   });
