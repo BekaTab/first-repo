@@ -18,7 +18,7 @@ const icons = (raw.match(/import\s*\{([^}]*)\}\s*from\s*"lucide-react"/) || [, "
 
 const head = `<title>mypoker.ge</title>
 <meta name="description" content="პოკერის პრემიუმ აქსესუარები საქართველოში — ჩიპები, კარტები, მაგიდები და აქსესუარები.">
-<style>html,body{background:#07080b;color:#e7e5e4;margin:0}</style>
+<style>html,body{background:#fff;color:#111827;margin:0}</style>
 <script src="https://cdn.tailwindcss.com/3.4.17"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
