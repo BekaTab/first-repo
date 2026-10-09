@@ -84,6 +84,26 @@ export function applyContent(html, content, base = '') {
   }
 
   // function replacements: a "$&" or "$1" typed in the admin must stay literal text
+  // Google Analytics (GA4): loaded only on the live page, never inside the admin preview.
+  // Counts calls, WhatsApp, email and form submissions as "generate_lead".
+  const gaId = /^G-[A-Z0-9]{4,15}$/.test(sh.gaId || '') ? sh.gaId : '';
+  const gaTag = gaId ? `<!--ga--><script>
+(function () {
+  if (window.parent !== window || /[?&]preview\\b/.test(location.search)) return;
+  var s = document.createElement('script'); s.async = true; s.src = 'https://www.googletagmanager.com/gtag/js?id=${gaId}'; document.head.appendChild(s);
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); } window.gtag = gtag;
+  gtag('js', new Date()); gtag('config', '${gaId}');
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest && e.target.closest('a[href]'); if (!a) return;
+    var h = a.getAttribute('href'), m = /^tel:/.test(h) ? 'phone' : /wa\\.me/.test(h) ? 'whatsapp' : /^mailto:/.test(h) ? 'email' : '';
+    if (m) gtag('event', 'generate_lead', { method: m });
+  }, true);
+})();
+</script><!--/ga-->` : '';
+  html = html.replace(/<!--ga-->[\s\S]*?<!--\/ga-->/, '');
+  if (gaTag) html = html.replace('</head>', () => gaTag + '\n</head>');
+
   if (typeof t['seo.title'] === 'string') html = html.replace(/<title>[^<]*<\/title>/, () => `<title>${esc(t['seo.title'])}</title>`);
   if (typeof t['seo.description'] === 'string') html = html.replace(/(<meta name="description" content=")[^"]*(")/, (m, a, b) => a + escAttr(t['seo.description']) + b);
   return { html, missing };
