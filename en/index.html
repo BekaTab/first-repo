@@ -296,6 +296,23 @@ a[data-tel],a[data-mail]{display:inline-block;padding-block:10px;margin-block:-1
 @media (max-width: 900px){#eib-stats .stats-panel .stats-note{border-top-color:rgba(255,255,255,.14) !important}}
 #eib-stats .stats-panel{grid-template-columns:minmax(0,1fr) minmax(0,1fr) !important}
 @media (max-width: 900px){#eib-stats .stats-panel{grid-template-columns:minmax(0,1fr) !important}}
+/* ---- experience header: centred, symmetric ---- */
+#eib-stats .stats-panel{grid-template-columns:minmax(0,1fr) !important;justify-items:center;text-align:center;row-gap:0 !important}
+#eib-stats .stats-panel > div{grid-column:1 !important;padding-right:0 !important;align-items:center !important}
+#eib-stats .stats-panel .hero-tag{align-self:center}
+#eib-stats .stats-panel h2{max-width:22em;margin-inline:auto !important}
+#eib-stats .stats-panel .stats-note{grid-column:1 !important;max-width:40em;margin-top:clamp(26px,2.6vw,36px) !important;padding:clamp(26px,2.6vw,36px) 0 0 !important;border-left:0 !important;border-top:1px solid rgba(255,255,255,.14) !important}
+#eib-stats .stats-panel .stats-note::before{left:calc(50% - 4px) !important;top:-4.5px !important}
+#eib-stats .stat-card{align-items:center !important;text-align:center}
+#eib-stats .stat-card:first-child{padding-left:clamp(20px,2.6vw,40px) !important}
+@media (max-width: 900px){#eib-stats .stat-card:first-child{padding-left:0 !important}}
+/* ---- contact heading as the same navy card ---- */
+.contact-panel .contact-head{position:relative;overflow:hidden;max-width:none;background:var(--c-navy);border-radius:var(--r);box-shadow:inset 0 2px 0 var(--c-gold),0 30px 60px -40px color-mix(in srgb,var(--c-navy) 70%,transparent);padding:clamp(32px,4vw,60px) clamp(24px,4vw,64px) !important;border-bottom:0 !important;margin-bottom:clamp(40px,5vw,64px) !important}
+.contact-panel .contact-head::after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(60% 120% at 100% 0%,color-mix(in srgb,var(--c-accent) 28%,transparent),transparent 70%)}
+.contact-panel .contact-head > *{position:relative;z-index:1}
+.contact-panel .contact-head h2{color:#FFFFFF}
+.contact-panel .contact-head .hero-tag{border-color:rgba(255,255,255,.2) !important;color:var(--c-gold) !important}
+.contact-panel .contact-head .orn::before,.contact-panel .contact-head .orn::after{background:rgba(255,255,255,.22)}
 /* ---- scroll reveals (only when JS + IntersectionObserver are available) ---- */
 .js-rv .rv{opacity:0;translate:0 32px;transition:opacity 1s ease,translate 1.1s cubic-bezier(.16,.84,.24,1)}
 .js-rv .rv.in{opacity:1;translate:none}
@@ -595,8 +612,8 @@ a[data-tel],a[data-mail]{display:inline-block;padding-block:10px;margin-block:-1
     if (!panel) { if (Nt.l > T.r + 40) links.push([T.r + 18, T.cy, Nt.l, Nt.cy, 'h']); else links.push([T.l + 12, T.b + 14, Nt.l + 28, Nt.t, 'v']); }
     var stacked = C.length > 1 && C[1].t > C[0].b - 4;
     if (stacked) {
-      links.push([Nt.l + 28, Nt.b, C[0].l + 28, C[0].t, 'v']);
-      for (var i = 1; i < C.length; i++) links.push([C[i - 1].l + 28, C[i - 1].b, C[i].l + 28, C[i].t, 'v']);
+      links.push([Nt.cx, Nt.b, C[0].cx, C[0].t, 'v']);
+      for (var i = 1; i < C.length; i++) links.push([C[i - 1].cx, C[i - 1].b, C[i].cx, C[i].t, 'v']);
     } else {
       C.forEach(function (c) { links.push([Nt.cx, Nt.b, c.cx, c.t, 'v']); });
     }
