@@ -1,0 +1,4 @@
+{"result": {"items": [
+  {"stockNumber": 34567893, "vin": "1FTEW1EP7JFA00003", "year": 2018, "makeDesc": "Ford", "modelDesc": "F-150", "auctionType": "Timed Auction", "auctionDate": "2026-10-09"},
+  {"stockNumber": 34567890, "vin": "4T1B11HK5JU123456", "year": 2018, "makeDesc": "Toyota", "modelDesc": "Camry", "auctionDate": "2026-10-08"}
+]}}
