@@ -1,25 +1,25 @@
-import React, { useEffect, useMemo, useReducer, useState } from "react";
+import React, { useEffect, useLayoutEffect, useMemo, useReducer, useRef, useState } from "react";
 import {
-  Spade,
   Phone,
-  ChevronDown,
+  Search,
   ShoppingBag,
   MessageCircle,
   Plus,
   Minus,
   X,
   Star,
-  Search,
-  ShieldCheck,
-  Truck,
-  Gem,
-  Sparkles,
+  ArrowRight,
+  ArrowUpRight,
+  ChevronDown,
   Trash2,
   Check,
+  Truck,
+  ShieldCheck,
+  BadgeCheck,
 } from "lucide-react";
 
 /* ------------------------------------------------------------------ */
-/*  კონფიგურაცია — შეცვალეთ რეალური ნომრებით გამოქვეყნებამდე           */
+/*  კონფიგურაცია — შეცვალეთ რეალური ნომრებით                          */
 /* ------------------------------------------------------------------ */
 const CONFIG = {
   phoneDisplay: "+995 555 12 34 56", // [YOUR_PHONE_NUMBER]
@@ -40,11 +40,13 @@ const CATEGORIES = [
   { id: "accessories", label: "აქსესუარები" },
 ];
 
+const CATEGORY_LABEL = Object.fromEntries(CATEGORIES.map((c) => [c.id, c.label]));
+
 const SORTS = [
   { id: "featured", label: "რეკომენდებული" },
-  { id: "price-asc", label: "ფასი: ზრდადობით" },
-  { id: "price-desc", label: "ფასი: კლებადობით" },
-  { id: "rating", label: "რეიტინგი" },
+  { id: "price-asc", label: "ჯერ იაფი" },
+  { id: "price-desc", label: "ჯერ ძვირი" },
+  { id: "rating", label: "საუკეთესო შეფასება" },
 ];
 
 const PRODUCTS = [
@@ -57,9 +59,8 @@ const PRODUCTS = [
     rating: 4.9,
     reviews: 128,
     badge: "ბესტსელერი",
-    spec: "11.5 გ · თიხის კომპოზიტი",
-    description: "ალუმინის კეისი, 2 დასტა კარტი, დილერის ღილაკი და 5 კამათელი.",
-    visual: { kind: "chips", colors: ["#b91c1c", "#0f172a", "#d4a64a"] },
+    spec: "11.5 გ · თიხის კომპოზიტი · ალუმინის კეისი",
+    visual: { kind: "chips", colors: ["#c2410c", "#1f2937", "#d6b25e"] },
   },
   {
     id: "bicycle-standard",
@@ -69,8 +70,7 @@ const PRODUCTS = [
     rating: 4.8,
     reviews: 342,
     spec: "სტანდარტული ინდექსი · ჰაერის ბალიში",
-    description: "კლასიკური დასტა რბილი სრიალით, ყოველდღიური თამაშისთვის.",
-    visual: { kind: "cards", colors: ["#1e3a8a", "#f8fafc", "#b91c1c"] },
+    visual: { kind: "cards", colors: ["#1e40af", "#fff", "#b91c1c"] },
   },
   {
     id: "ceramic-300",
@@ -80,8 +80,7 @@ const PRODUCTS = [
     rating: 5.0,
     reviews: 64,
     badge: "პრემიუმი",
-    spec: "10 გ · სრული კერამიკა",
-    description: "კაზინოს ხარისხის ჩიპები ნომინალებით და ორმხრივი ბეჭდვით.",
+    spec: "10 გ · სრული კერამიკა · ორმხრივი ბეჭდვა",
     visual: { kind: "chips", colors: ["#047857", "#f5f5f4", "#1d4ed8"] },
   },
   {
@@ -92,20 +91,18 @@ const PRODUCTS = [
     rating: 4.9,
     reviews: 211,
     spec: "100% პლასტიკი · წყალგაუმტარი",
-    description: "ტურნირების სტანდარტი — არ იღუნება და წლობით ინარჩუნებს ფორმას.",
-    visual: { kind: "cards", colors: ["#7f1d1d", "#f8fafc", "#0f172a"] },
+    visual: { kind: "cards", colors: ["#991b1b", "#fff", "#111827"] },
   },
   {
     id: "oval-table-8",
-    name: "ჰოლდემის ოვალური მაგიდა — მწვანე მაუდი (8 მოთამაშე)",
+    name: "ჰოლდემის ოვალური მაგიდა (8 მოთამაშე)",
     category: "tables",
     price: 1890,
     rating: 4.9,
     reviews: 37,
     badge: "ახალი",
-    spec: "213 × 107 სმ · მუხის კიდე",
-    description: "ჭიქის სადგამები, რბილი სახელური და ტურნირის ხარისხის მაუდი.",
-    visual: { kind: "table", colors: ["#065f46", "#7c4a1e", "#d4a64a"] },
+    spec: "213 × 107 სმ · მწვანე მაუდი · მუხის კიდე",
+    visual: { kind: "table", colors: ["#047857", "#7c4a1e", "#d6b25e"] },
   },
   {
     id: "folding-top-10",
@@ -115,8 +112,7 @@ const PRODUCTS = [
     rating: 4.7,
     reviews: 89,
     spec: "180 × 90 სმ · ჩანთით",
-    description: "ნებისმიერი მაგიდა წამებში იქცევა პოკერის მაგიდად.",
-    visual: { kind: "table", colors: ["#1e3a8a", "#18181b", "#a3a3a3"] },
+    visual: { kind: "table", colors: ["#1e40af", "#1f2937", "#cbd5e1"] },
   },
   {
     id: "octagon-table",
@@ -126,8 +122,7 @@ const PRODUCTS = [
     rating: 4.8,
     reviews: 22,
     spec: "Ø 120 სმ · დასაკეცი ფეხები",
-    description: "კომპაქტური მაგიდა სახლის თამაშებისთვის, 8 მოთამაშემდე.",
-    visual: { kind: "table", colors: ["#7f1d1d", "#292524", "#d4a64a"], octagon: true },
+    visual: { kind: "table", colors: ["#991b1b", "#3f3f46", "#d6b25e"], octagon: true },
   },
   {
     id: "dealer-button",
@@ -137,7 +132,6 @@ const PRODUCTS = [
     rating: 4.8,
     reviews: 156,
     spec: "Ø 76 მმ · 12 მმ სისქე",
-    description: "მძიმე, მქრქალი აკრილი ოქროსფერი ამოტვიფრული წარწერით.",
     visual: { kind: "dealer" },
   },
   {
@@ -145,10 +139,10 @@ const PRODUCTS = [
     name: "კარტების ავტომატური მრევი",
     category: "accessories",
     price: 159,
+    oldPrice: 189,
     rating: 4.6,
     reviews: 73,
     spec: "1–6 დასტა · USB კვება",
-    description: "ჩუმი ძრავა და სწრაფი არევა — დილერს ხელები თავისუფალი აქვს.",
     visual: { kind: "shuffler" },
   },
   {
@@ -160,7 +154,6 @@ const PRODUCTS = [
     reviews: 98,
     badge: "საჩუქრად",
     spec: "თუთიის შენადნობი · 40 მმ",
-    description: "ხელით გაპრიალებული მონეტა ყვავის ემბლემით და ხავერდის ქისით.",
     visual: { kind: "guard" },
   },
   {
@@ -170,9 +163,8 @@ const PRODUCTS = [
     price: 279,
     rating: 4.7,
     reviews: 51,
-    spec: "13.5 გ · ხის ყუთი",
-    description: "ნამდვილი თიხის შეგრძნება და მუქი კაკლის ხის ყუთი.",
-    visual: { kind: "chips", colors: ["#7e22ce", "#0f172a", "#d4a64a"] },
+    spec: "13.5 გ · კაკლის ხის ყუთი",
+    visual: { kind: "chips", colors: ["#6d28d9", "#1f2937", "#d6b25e"] },
   },
   {
     id: "kem-arrow",
@@ -182,8 +174,7 @@ const PRODUCTS = [
     rating: 4.8,
     reviews: 119,
     spec: "100% პლასტიკი · დიდი ინდექსი",
-    description: "ლეგენდარული კარტი, რომელსაც მსოფლიო სერიის მაგიდებზე ენდობიან.",
-    visual: { kind: "cards", colors: ["#065f46", "#f8fafc", "#0f172a"] },
+    visual: { kind: "cards", colors: ["#065f46", "#fff", "#111827"] },
   },
 ];
 
@@ -191,7 +182,7 @@ const PRODUCTS = [
 /*  დამხმარე ფუნქციები                                                */
 /* ------------------------------------------------------------------ */
 const formatPrice = (value) =>
-  `${new Intl.NumberFormat("ka-GE", { maximumFractionDigits: 0 }).format(value)}${CONFIG.currency}`;
+  `${new Intl.NumberFormat("ka-GE", { maximumFractionDigits: 0 }).format(value)} ${CONFIG.currency}`;
 
 const buildWhatsAppLink = (text) =>
   `https://wa.me/${CONFIG.whatsappNumber}?text=${encodeURIComponent(text)}`;
@@ -205,22 +196,27 @@ const cartWhatsAppLink = (lines, total) =>
   buildWhatsAppLink(
     [
       "გამარჯობა, mypoker.ge-დან გწერთ, მაინტერესებს ეს პროდუქტები:",
-      ...lines.map(
-        (l, i) => `${i + 1}. ${l.product.name} × ${l.qty} (ფასი: ${l.product.price * l.qty}₾)`
-      ),
+      ...lines.map((l, i) => `${i + 1}. ${l.product.name} × ${l.qty} (ფასი: ${l.product.price * l.qty}₾)`),
       `ჯამი: ${total}₾`,
     ].join("\n")
   );
+
+const scrollToShop = () => document.getElementById("shop")?.scrollIntoView({ behavior: "smooth" });
+
+/* მაუსის მიმდევარი შუქი ბარათებზე */
+const trackSpotlight = (e) => {
+  const r = e.currentTarget.getBoundingClientRect();
+  e.currentTarget.style.setProperty("--mx", `${e.clientX - r.left}px`);
+  e.currentTarget.style.setProperty("--my", `${e.clientY - r.top}px`);
+};
 
 /* ------------------------------------------------------------------ */
 /*  კალათის მდგომარეობა (მზადაა მომავალი ონლაინ გადახდისთვის)          */
 /* ------------------------------------------------------------------ */
 function cartReducer(state, action) {
   switch (action.type) {
-    case "add": {
-      const qty = (state[action.id] || 0) + 1;
-      return { ...state, [action.id]: Math.min(qty, 99) };
-    }
+    case "add":
+      return { ...state, [action.id]: Math.min((state[action.id] || 0) + 1, 99) };
     case "decrement": {
       const qty = (state[action.id] || 0) - 1;
       const next = { ...state };
@@ -302,7 +298,7 @@ function useProductFilter(products) {
     const list = products.filter(
       (p) =>
         (category === "all" || p.category === category) &&
-        (!q || `${p.name} ${p.spec} ${p.description}`.toLowerCase().includes(q))
+        (!q || `${p.name} ${p.spec}`.toLowerCase().includes(q))
     );
     const sorted = [...list];
     if (sort === "price-asc") sorted.sort((a, b) => a.price - b.price);
@@ -315,53 +311,55 @@ function useProductFilter(products) {
 }
 
 /* ------------------------------------------------------------------ */
-/*  გლობალური სტილები და ანიმაციები                                   */
+/*  გლობალური სტილები                                                 */
 /* ------------------------------------------------------------------ */
 const GLOBAL_CSS = `
-  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600&family=Noto+Sans+Georgian:wght@300;400;500;600;700&family=Noto+Serif+Georgian:wght@400;500;600;700&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Georgian:wght@400;500;600;700&family=Manrope:wght@500;600;700&display=swap');
   :root { color-scheme: dark; }
   html { scroll-behavior: smooth; }
-  body { margin: 0; background: #37414f; color: #f1f5f9; }
+  body { margin: 0; background: #343d4a; color: #f5f7fa; }
   .mp-sans { font-family: 'Noto Sans Georgian', system-ui, -apple-system, 'Segoe UI', sans-serif; }
-  .mp-serif { font-family: 'Noto Serif Georgian', 'Noto Sans Georgian', Georgia, serif; }
-  .mp-logo { font-family: 'Cormorant Garamond', 'Noto Serif Georgian', Georgia, serif; }
+  .mp-brand { font-family: 'Manrope', 'Noto Sans Georgian', system-ui, sans-serif; }
   .mp-num { font-variant-numeric: tabular-nums; }
   .mp-balance { text-wrap: balance; }
-  .mp-gold-text {
-    background: linear-gradient(100deg, #f3dfa2 0%, #d4a64a 35%, #fff4cf 50%, #c8922f 65%, #f3dfa2 100%);
-    background-size: 200% auto;
-    -webkit-background-clip: text; background-clip: text; color: transparent;
-    animation: mp-sheen 7s linear infinite;
-  }
-  .mp-felt {
+
+  .mp-page {
     background:
-      radial-gradient(1200px 500px at 50% -10%, rgba(16,185,129,0.22), transparent 60%),
-      radial-gradient(700px 400px at 90% 10%, rgba(212,166,74,0.10), transparent 60%),
-      radial-gradient(600px 400px at 0% 60%, rgba(16,185,129,0.06), transparent 60%);
+      radial-gradient(900px 480px at 50% -120px, rgba(232,199,122,0.13), transparent 70%),
+      radial-gradient(700px 420px at 100% 20%, rgba(52,211,153,0.07), transparent 70%),
+      #343d4a;
   }
-  .mp-grain::after {
-    content: ""; position: absolute; inset: 0; pointer-events: none; opacity: .05;
-    background-image: radial-gradient(rgba(255,255,255,.7) 1px, transparent 1px);
-    background-size: 3px 3px;
+  .mp-champagne {
+    background: linear-gradient(100deg, #f6e3b4 0%, #e8c77a 40%, #fff1cc 55%, #d9b25f 75%, #f6e3b4 100%);
+    background-size: 220% auto;
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    animation: mp-sheen 8s linear infinite;
   }
-  @keyframes mp-sheen { to { background-position: -200% center; } }
-  @keyframes mp-rise { from { opacity: 0; transform: translateY(14px) scale(.985); } to { opacity: 1; transform: none; } }
+
+  .mp-spot { position: relative; isolation: isolate; }
+  .mp-spot::before {
+    content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; z-index: -1;
+    opacity: 0; transition: opacity .35s ease;
+    background: radial-gradient(420px circle at var(--mx, 50%) var(--my, 0%), rgba(232,199,122,0.12), transparent 45%);
+  }
+  .mp-spot:hover::before { opacity: 1; }
+
+  @keyframes mp-sheen { to { background-position: -220% center; } }
+  @keyframes mp-rise { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
   @keyframes mp-fade { from { opacity: 0; } to { opacity: 1; } }
-  @keyframes mp-float { 0%,100% { transform: translateY(0) rotate(var(--r,0deg)); } 50% { transform: translateY(-10px) rotate(var(--r,0deg)); } }
-  @keyframes mp-glow { 0%,100% { box-shadow: 0 0 0 0 rgba(16,185,129,.55); } 70% { box-shadow: 0 0 0 12px rgba(16,185,129,0); } }
-  @keyframes mp-bob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(6px); } }
+  @keyframes mp-ping { 0% { transform: scale(1); opacity: .7; } 80%,100% { transform: scale(2.4); opacity: 0; } }
   @keyframes mp-slide-in { from { transform: translateX(100%); } to { transform: none; } }
-  @keyframes mp-toast { from { opacity: 0; transform: translate(-50%, 12px); } to { opacity: 1; transform: translate(-50%, 0); } }
-  .mp-rise { animation: mp-rise .6s cubic-bezier(.2,.7,.2,1) both; }
-  .mp-fade { animation: mp-fade .3s ease both; }
+  @keyframes mp-toast { from { opacity: 0; transform: translate(-50%, 10px); } to { opacity: 1; transform: translate(-50%, 0); } }
+  @keyframes mp-float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+  .mp-rise { animation: mp-rise .6s cubic-bezier(.16,1,.3,1) both; }
+  .mp-fade { animation: mp-fade .25s ease both; }
+  .mp-ping { animation: mp-ping 1.8s cubic-bezier(0,0,.2,1) infinite; }
+  .mp-slide-in { animation: mp-slide-in .35s cubic-bezier(.16,1,.3,1) both; }
+  .mp-toast { animation: mp-toast .3s cubic-bezier(.16,1,.3,1) both; }
   .mp-float { animation: mp-float 6s ease-in-out infinite; }
-  .mp-glow { animation: mp-glow 2.2s ease-out infinite; }
-  .mp-bob { animation: mp-bob 1.8s ease-in-out infinite; }
-  .mp-slide-in { animation: mp-slide-in .35s cubic-bezier(.2,.7,.2,1) both; }
-  .mp-toast { animation: mp-toast .3s ease both; }
   .mp-scroll::-webkit-scrollbar { display: none; }
   .mp-scroll { scrollbar-width: none; }
-  :focus-visible { outline: 2px solid #d4a64a; outline-offset: 3px; }
+  :focus-visible { outline: 2px solid #e8c77a; outline-offset: 3px; border-radius: 8px; }
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; }
     html { scroll-behavior: auto; }
@@ -369,32 +367,70 @@ const GLOBAL_CSS = `
 `;
 
 /* ------------------------------------------------------------------ */
-/*  პროდუქტის ილუსტრაციები (SVG, სურათების გარეშე)                    */
+/*  ლოგო — „ყვავის ფირფიტა“                                           */
+/* ------------------------------------------------------------------ */
+function LogoMark({ size = 34 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 40 40" aria-hidden="true" className="shrink-0">
+      <defs>
+        <linearGradient id="mp-logo-fill" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stopColor="#f6e3b4" />
+          <stop offset="0.55" stopColor="#e8c77a" />
+          <stop offset="1" stopColor="#c9a24f" />
+        </linearGradient>
+        <linearGradient id="mp-logo-gloss" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#fff" stopOpacity="0.55" />
+          <stop offset="0.5" stopColor="#fff" stopOpacity="0" />
+        </linearGradient>
+      </defs>
+      {/* სკვირკლი */}
+      <path d="M20 1.5c11.2 0 18.5 7.3 18.5 18.5S31.2 38.5 20 38.5 1.5 31.2 1.5 20 8.8 1.5 20 1.5Z" fill="url(#mp-logo-fill)" />
+      <path d="M20 1.5c11.2 0 18.5 7.3 18.5 18.5S31.2 38.5 20 38.5 1.5 31.2 1.5 20 8.8 1.5 20 1.5Z" fill="url(#mp-logo-gloss)" />
+      {/* ჩიპის კიდის ჭდეები */}
+      {[0, 90, 180, 270].map((a) => (
+        <rect key={a} x="18.6" y="3.6" width="2.8" height="4.2" rx="1.2" fill="#2b3340" opacity="0.28" transform={`rotate(${a + 45} 20 20)`} />
+      ))}
+      {/* ყვავი */}
+      <path
+        d="M20 9.2c0 0-8.4 6.3-8.4 11.3 0 2.8 2.1 4.7 4.6 4.7 1.4 0 2.6-.6 3.1-1.5l-1.2 5.1h3.8l-1.2-5.1c.5.9 1.7 1.5 3.1 1.5 2.5 0 4.6-1.9 4.6-4.7 0-5-8.4-11.3-8.4-11.3Z"
+        fill="#2b3340"
+      />
+    </svg>
+  );
+}
+
+function Logo() {
+  return (
+    <a href="#top" className="group flex shrink-0 items-center gap-2.5" aria-label="mypoker.ge — მთავარი">
+      <span className="transition-transform duration-500 ease-[cubic-bezier(.16,1,.3,1)] group-hover:rotate-[-8deg] group-hover:scale-105">
+        <LogoMark />
+      </span>
+      <span className="mp-brand text-[19px] font-semibold leading-none tracking-[-0.02em] text-white">
+        mypoker<span className="text-[#e8c77a]">.ge</span>
+      </span>
+    </a>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  პროდუქტის ილუსტრაციები (SVG — ჩაანაცვლეთ რეალური ფოტოებით)        */
 /* ------------------------------------------------------------------ */
 function ChipStack({ x, baseY, count, color, uid }) {
   return (
     <g>
+      <ellipse cx={x} cy={baseY + 6} rx="30" ry="8" fill="#0f172a" opacity="0.3" />
       {Array.from({ length: count }).map((_, i) => {
         const cy = baseY - i * 7;
         return (
           <g key={i}>
-            <ellipse cx={x} cy={cy + 3} rx="26" ry="9" fill="#000" opacity="0.35" />
+            <ellipse cx={x} cy={cy + 2.5} rx="26" ry="9" fill={color} />
+            <ellipse cx={x} cy={cy + 2.5} rx="26" ry="9" fill="#000" opacity="0.22" />
             <ellipse cx={x} cy={cy} rx="26" ry="9" fill={color} />
-            <ellipse
-              cx={x}
-              cy={cy}
-              rx="26"
-              ry="9"
-              fill="none"
-              stroke="#fff"
-              strokeOpacity="0.85"
-              strokeWidth="2.4"
-              strokeDasharray="7 9"
-            />
+            <ellipse cx={x} cy={cy} rx="26" ry="9" fill="none" stroke="#fff" strokeOpacity="0.85" strokeWidth="2.4" strokeDasharray="7 9" />
             {i === count - 1 && (
               <>
                 <ellipse cx={x} cy={cy} rx="16" ry="5.4" fill={`url(#${uid}-shine)`} />
-                <ellipse cx={x} cy={cy} rx="16" ry="5.4" fill="none" stroke="#fff" strokeOpacity="0.5" />
+                <ellipse cx={x} cy={cy} rx="16" ry="5.4" fill="none" stroke="#fff" strokeOpacity="0.55" />
               </>
             )}
           </g>
@@ -407,7 +443,7 @@ function ChipStack({ x, baseY, count, color, uid }) {
 function PlayingCard({ x, y, rotate, back, ink, suit, uid }) {
   return (
     <g transform={`translate(${x} ${y}) rotate(${rotate})`}>
-      <rect x="-30" y="-44" width="60" height="88" rx="7" fill="#000" opacity="0.35" transform="translate(3 4)" />
+      <rect x="-30" y="-44" width="60" height="88" rx="7" fill="#0f172a" opacity="0.3" transform="translate(3 5)" />
       {suit ? (
         <>
           <rect x="-30" y="-44" width="60" height="88" rx="7" fill="#fafaf9" />
@@ -418,16 +454,15 @@ function PlayingCard({ x, y, rotate, back, ink, suit, uid }) {
       ) : (
         <>
           <rect x="-30" y="-44" width="60" height="88" rx="7" fill={back} />
-          <rect x="-25" y="-39" width="50" height="78" rx="4" fill={`url(#${uid}-diamond)`} stroke="#fff" strokeOpacity="0.6" />
+          <rect x="-25" y="-39" width="50" height="78" rx="4" fill={`url(#${uid}-diamond)`} stroke="#fff" strokeOpacity="0.65" />
         </>
       )}
     </g>
   );
 }
 
-function ProductVisual({ product }) {
-  const { kind, colors = [], octagon } = product.visual;
-  const uid = `v-${product.id}`;
+function ProductVisual({ visual, uid, label }) {
+  const { kind, colors = [], octagon } = visual;
 
   const defs = (
     <defs>
@@ -436,17 +471,17 @@ function ProductVisual({ product }) {
         <stop offset="1" stopColor="#fff" stopOpacity="0" />
       </radialGradient>
       <pattern id={`${uid}-diamond`} width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
-        <rect width="8" height="8" fill={colors[0] || "#1e3a8a"} />
+        <rect width="8" height="8" fill={colors[0] || "#1e40af"} />
         <rect width="4" height="4" fill="#fff" opacity="0.18" />
       </pattern>
       <linearGradient id={`${uid}-gold`} x1="0" y1="0" x2="1" y2="1">
-        <stop offset="0" stopColor="#fff1c1" />
-        <stop offset="0.45" stopColor="#d4a64a" />
-        <stop offset="1" stopColor="#8a6421" />
+        <stop offset="0" stopColor="#fff1cc" />
+        <stop offset="0.45" stopColor="#e8c77a" />
+        <stop offset="1" stopColor="#9a7430" />
       </linearGradient>
-      <radialGradient id={`${uid}-felt`} cx="50%" cy="45%" r="65%">
-        <stop offset="0" stopColor={colors[0] || "#065f46"} stopOpacity="1" />
-        <stop offset="1" stopColor="#022c22" />
+      <radialGradient id={`${uid}-felt`} cx="50%" cy="42%" r="68%">
+        <stop offset="0" stopColor={colors[0] || "#047857"} />
+        <stop offset="1" stopColor="#0b2a22" />
       </radialGradient>
     </defs>
   );
@@ -455,45 +490,44 @@ function ProductVisual({ product }) {
   if (kind === "chips") {
     art = (
       <g>
-        <ChipStack x={62} baseY={122} count={7} color={colors[0]} uid={uid} />
-        <ChipStack x={118} baseY={128} count={10} color={colors[1]} uid={uid} />
-        <ChipStack x={170} baseY={118} count={5} color={colors[2]} uid={uid} />
-        <ChipStack x={92} baseY={142} count={2} color={colors[2]} uid={uid} />
+        <ChipStack x={64} baseY={120} count={7} color={colors[0]} uid={uid} />
+        <ChipStack x={118} baseY={126} count={10} color={colors[1]} uid={uid} />
+        <ChipStack x={170} baseY={116} count={5} color={colors[2]} uid={uid} />
       </g>
     );
   } else if (kind === "cards") {
     art = (
       <g>
-        <PlayingCard x={78} y={84} rotate={-16} back={colors[0]} uid={uid} />
-        <PlayingCard x={114} y={78} rotate={-2} ink="#0f172a" suit="♠" uid={uid} />
-        <PlayingCard x={150} y={86} rotate={14} ink="#b91c1c" suit="♥" uid={uid} />
+        <PlayingCard x={80} y={82} rotate={-16} back={colors[0]} uid={uid} />
+        <PlayingCard x={116} y={76} rotate={-2} ink="#111827" suit="♠" uid={uid} />
+        <PlayingCard x={152} y={84} rotate={14} ink="#b91c1c" suit="♥" uid={uid} />
       </g>
     );
   } else if (kind === "table") {
     art = (
       <g>
-        <ellipse cx="116" cy="128" rx="92" ry="12" fill="#000" opacity="0.4" />
+        <ellipse cx="116" cy="132" rx="96" ry="10" fill="#0f172a" opacity="0.35" />
         {octagon ? (
           <>
-            <polygon points="66,40 166,40 204,72 204,100 166,128 66,128 28,100 28,72" fill={colors[1]} />
-            <polygon points="74,50 158,50 190,76 190,96 158,118 74,118 42,96 42,76" fill={`url(#${uid}-felt)`} />
+            <polygon points="66,36 166,36 206,70 206,98 166,128 66,128 26,98 26,70" fill={colors[1]} />
+            <polygon points="74,46 158,46 192,74 192,94 158,118 74,118 40,94 40,74" fill={`url(#${uid}-felt)`} />
           </>
         ) : (
           <>
-            <rect x="20" y="36" width="192" height="92" rx="46" fill={colors[1]} />
-            <rect x="32" y="46" width="168" height="72" rx="36" fill={`url(#${uid}-felt)`} />
-            <rect x="52" y="58" width="128" height="48" rx="24" fill="none" stroke={colors[2]} strokeOpacity="0.55" strokeDasharray="4 5" />
+            <rect x="18" y="34" width="196" height="94" rx="47" fill={colors[1]} />
+            <rect x="30" y="44" width="172" height="74" rx="37" fill={`url(#${uid}-felt)`} />
+            <rect x="52" y="58" width="128" height="46" rx="23" fill="none" stroke={colors[2]} strokeOpacity="0.5" strokeDasharray="4 5" />
           </>
         )}
-        <circle cx="96" cy="82" r="7" fill="#b91c1c" stroke="#fff" strokeDasharray="3 3" strokeWidth="1.5" />
-        <circle cx="116" cy="88" r="7" fill="#0f172a" stroke="#fff" strokeDasharray="3 3" strokeWidth="1.5" />
-        <circle cx="136" cy="80" r="7" fill={colors[2]} stroke="#fff" strokeDasharray="3 3" strokeWidth="1.5" />
+        <circle cx="96" cy="81" r="7" fill="#b91c1c" stroke="#fff" strokeDasharray="3 3" strokeWidth="1.5" />
+        <circle cx="116" cy="87" r="7" fill="#1f2937" stroke="#fff" strokeDasharray="3 3" strokeWidth="1.5" />
+        <circle cx="136" cy="79" r="7" fill={colors[2]} stroke="#fff" strokeDasharray="3 3" strokeWidth="1.5" />
       </g>
     );
   } else if (kind === "dealer") {
     art = (
       <g>
-        <ellipse cx="116" cy="132" rx="54" ry="9" fill="#000" opacity="0.45" />
+        <ellipse cx="116" cy="134" rx="52" ry="8" fill="#0f172a" opacity="0.35" />
         <circle cx="116" cy="84" r="50" fill="#f5f5f4" />
         <circle cx="116" cy="84" r="50" fill={`url(#${uid}-shine)`} />
         <circle cx="116" cy="84" r="40" fill="none" stroke={`url(#${uid}-gold)`} strokeWidth="3" />
@@ -505,21 +539,21 @@ function ProductVisual({ product }) {
   } else if (kind === "shuffler") {
     art = (
       <g>
-        <ellipse cx="116" cy="134" rx="78" ry="9" fill="#000" opacity="0.45" />
-        <rect x="44" y="62" width="144" height="66" rx="12" fill="#18181b" stroke="#3f3f46" />
-        <rect x="56" y="74" width="50" height="42" rx="6" fill="#0a0a0a" />
-        <rect x="126" y="74" width="50" height="42" rx="6" fill="#0a0a0a" />
-        <rect x="62" y="44" width="38" height="50" rx="4" fill="#1e3a8a" stroke="#fff" strokeOpacity="0.5" transform="rotate(-8 81 69)" />
-        <rect x="132" y="44" width="38" height="50" rx="4" fill="#7f1d1d" stroke="#fff" strokeOpacity="0.5" transform="rotate(8 151 69)" />
-        <circle cx="116" cy="112" r="6" fill="#10b981" />
+        <ellipse cx="116" cy="134" rx="78" ry="8" fill="#0f172a" opacity="0.35" />
+        <rect x="44" y="62" width="144" height="66" rx="12" fill="#1f2937" stroke="#475569" />
+        <rect x="56" y="74" width="50" height="42" rx="6" fill="#0b1220" />
+        <rect x="126" y="74" width="50" height="42" rx="6" fill="#0b1220" />
+        <rect x="62" y="44" width="38" height="50" rx="4" fill="#1e40af" stroke="#fff" strokeOpacity="0.55" transform="rotate(-8 81 69)" />
+        <rect x="132" y="44" width="38" height="50" rx="4" fill="#991b1b" stroke="#fff" strokeOpacity="0.55" transform="rotate(8 151 69)" />
+        <circle cx="116" cy="112" r="6" fill="#34d399" />
       </g>
     );
   } else if (kind === "guard") {
     art = (
       <g>
-        <ellipse cx="116" cy="132" rx="50" ry="8" fill="#000" opacity="0.45" />
+        <ellipse cx="116" cy="134" rx="48" ry="7" fill="#0f172a" opacity="0.35" />
         <circle cx="116" cy="82" r="48" fill={`url(#${uid}-gold)`} />
-        <circle cx="116" cy="82" r="39" fill="none" stroke="#7a5418" strokeOpacity="0.6" strokeWidth="2" />
+        <circle cx="116" cy="82" r="39" fill="none" stroke="#7a5418" strokeOpacity="0.55" strokeWidth="2" />
         <circle cx="116" cy="82" r="48" fill={`url(#${uid}-shine)`} />
         <text x="116" y="99" textAnchor="middle" fontSize="46" fill="#5b3d0f" opacity="0.85">♠</text>
       </g>
@@ -527,32 +561,10 @@ function ProductVisual({ product }) {
   }
 
   return (
-    <svg viewBox="0 0 232 160" className="h-full w-full" role="img" aria-label={product.name}>
+    <svg viewBox="0 0 232 160" className="h-full w-full" role="img" aria-label={label}>
       {defs}
       {art}
     </svg>
-  );
-}
-
-/* ------------------------------------------------------------------ */
-/*  ლოგო                                                               */
-/* ------------------------------------------------------------------ */
-function Logo() {
-  return (
-    <a href="#top" className="group flex items-center gap-3" aria-label="mypoker.ge — მთავარი">
-      <span className="relative grid h-10 w-10 place-items-center rounded-full bg-gradient-to-br from-amber-200 via-amber-500 to-amber-800 p-[1.5px] shadow-[0_0_24px_-6px_rgba(212,166,74,0.7)] transition-transform duration-500 group-hover:rotate-[30deg]">
-        <span className="grid h-full w-full place-items-center rounded-full bg-[#37414f] [background-image:repeating-conic-gradient(from_0deg,rgba(212,166,74,0.0)_0deg_20deg,rgba(212,166,74,0.22)_20deg_30deg)]">
-          <span className="grid h-6 w-6 place-items-center rounded-full bg-[#37414f]">
-            <Spade className="h-3.5 w-3.5 fill-amber-300 text-amber-300" strokeWidth={1.5} />
-          </span>
-        </span>
-      </span>
-      <span className="mp-logo flex items-baseline text-[1.65rem] leading-none tracking-tight">
-        <span className="italic text-stone-300">my</span>
-        <span className="font-semibold text-stone-50">poker</span>
-        <span className="mp-gold-text font-semibold">.ge</span>
-      </span>
-    </a>
   );
 }
 
@@ -562,7 +574,7 @@ function Logo() {
 function Header({ cartCount, onOpenCart }) {
   const [scrolled, setScrolled] = useState(false);
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 12);
+    const onScroll = () => setScrolled(window.scrollY > 8);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
@@ -570,186 +582,220 @@ function Header({ cartCount, onOpenCart }) {
 
   return (
     <header
-      className={`sticky top-[env(safe-area-inset-top,0px)] z-40 border-b backdrop-blur-xl backdrop-saturate-150 transition-all duration-500 ${
-        scrolled ? "border-white/10 bg-[#37414f]/70 shadow-[0_10px_40px_-20px_rgba(15,23,42,0.45)]" : "border-transparent bg-[#37414f]/30"
+      className={`sticky top-[env(safe-area-inset-top,0px)] z-40 border-b backdrop-blur-xl backdrop-saturate-150 transition-colors duration-500 ${
+        scrolled ? "border-white/[0.08] bg-[#343d4a]/75" : "border-transparent bg-[#343d4a]/0"
       }`}
     >
-      <div className="mx-auto flex h-[72px] max-w-7xl items-center justify-between gap-3 px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto flex h-16 max-w-6xl items-center gap-6 px-4 sm:px-6">
         <Logo />
 
-        <div className="flex items-center gap-2 sm:gap-3">
+        <nav className="ml-4 hidden items-center gap-1 text-[13px] text-slate-300 md:flex" aria-label="მთავარი მენიუ">
+          {[
+            { href: "#shop", label: "კატალოგი" },
+            { href: "#how", label: "როგორ შევუკვეთო" },
+            { href: "#contact", label: "კონტაქტი" },
+          ].map((l) => (
+            <a key={l.href} href={l.href} className="rounded-full px-3 py-1.5 transition-colors hover:bg-white/[0.06] hover:text-white">
+              {l.label}
+            </a>
+          ))}
+        </nav>
+
+        <div className="ml-auto flex items-center gap-2">
           <a
             href={`tel:${CONFIG.phoneTel}`}
-            className="group relative flex items-center gap-3 rounded-full border border-emerald-400/25 bg-gradient-to-r from-emerald-500/15 via-emerald-400/5 to-transparent py-1.5 pl-1.5 pr-1.5 transition-all duration-300 hover:border-emerald-300/50 hover:from-emerald-500/25 sm:pr-5"
+            className="group flex h-10 items-center gap-2.5 rounded-full border border-white/[0.1] bg-white/[0.04] pl-3 pr-3 transition-all duration-300 hover:border-[#34d399]/40 hover:bg-[#34d399]/[0.08] sm:pr-4"
             aria-label={`დაგვირეკეთ: ${CONFIG.phoneDisplay}`}
           >
-            <span className="mp-glow relative grid h-9 w-9 shrink-0 place-items-center rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 text-[#03140d]">
-              <Phone className="h-4 w-4 transition-transform duration-300 group-hover:rotate-12" strokeWidth={2.4} />
+            <span className="relative grid h-5 w-5 place-items-center">
+              <span className="mp-ping absolute inset-0 rounded-full bg-[#34d399]/50" />
+              <span className="relative grid h-5 w-5 place-items-center rounded-full bg-[#34d399] text-[#052e1f]">
+                <Phone className="h-3 w-3" strokeWidth={2.6} />
+              </span>
             </span>
-            <span className="hidden flex-col leading-tight sm:flex">
-              <span className="text-[10px] font-medium uppercase tracking-[0.18em] text-emerald-300/80">დაგვირეკეთ</span>
-              <span className="mp-num whitespace-nowrap text-[15px] font-semibold text-stone-50">{CONFIG.phoneDisplay}</span>
-            </span>
+            <span className="mp-num hidden whitespace-nowrap text-[13px] font-semibold text-white sm:inline">{CONFIG.phoneDisplay}</span>
           </a>
 
           <button
             type="button"
             onClick={onOpenCart}
-            className="relative grid h-11 w-11 place-items-center rounded-full border border-white/10 bg-white/[0.04] text-stone-200 transition-all duration-300 hover:border-amber-300/40 hover:text-amber-200"
+            className="relative grid h-10 w-10 place-items-center rounded-full border border-white/[0.1] bg-white/[0.04] text-slate-100 transition-all duration-300 hover:border-[#e8c77a]/40 hover:text-[#e8c77a]"
             aria-label={`კალათა, ${cartCount} ნივთი`}
           >
-            <ShoppingBag className="h-5 w-5" strokeWidth={1.8} />
+            <ShoppingBag className="h-[18px] w-[18px]" strokeWidth={1.8} />
             {cartCount > 0 && (
-              <span className="mp-num mp-fade absolute -right-1 -top-1 grid h-5 min-w-5 place-items-center rounded-full bg-amber-400 px-1 text-[11px] font-bold text-black">
+              <span className="mp-num mp-fade absolute -right-1 -top-1 grid h-[18px] min-w-[18px] place-items-center rounded-full bg-[#e8c77a] px-1 text-[10px] font-bold text-[#2b3340]">
                 {cartCount}
               </span>
             )}
           </button>
         </div>
       </div>
-      <div className="mx-auto flex max-w-7xl justify-center px-4 pb-2 sm:hidden">
-        <a href={`tel:${CONFIG.phoneTel}`} className="mp-num select-all text-xs font-medium text-emerald-300/90">
-          {CONFIG.phoneDisplay}
-        </a>
-      </div>
     </header>
   );
 }
 
 /* ------------------------------------------------------------------ */
-/*  ჰირო სექცია                                                       */
+/*  ჰირო                                                               */
 /* ------------------------------------------------------------------ */
 function Hero() {
   return (
-    <section className="relative overflow-hidden">
-      <div className="mp-felt absolute inset-0" aria-hidden="true" />
-      <div
-        className="pointer-events-none absolute -right-24 top-10 hidden h-[420px] w-[420px] rounded-full border border-amber-300/10 lg:block"
-        aria-hidden="true"
-      />
-      <div className="relative mx-auto grid max-w-7xl items-center gap-12 px-4 pb-16 pt-14 sm:px-6 sm:pt-20 lg:grid-cols-[1.15fr_0.85fr] lg:px-8 lg:pb-24 lg:pt-24">
-        <div className="mp-rise">
-          <span className="inline-flex items-center gap-2 rounded-full border border-amber-300/20 bg-amber-300/[0.06] px-4 py-1.5 text-xs font-medium tracking-wide text-amber-200/90">
-            <Sparkles className="h-3.5 w-3.5" />
-            პოკერის პრემიუმ აქსესუარები საქართველოში
-          </span>
-          <h1 className="mp-serif mp-balance mt-6 text-4xl font-semibold leading-[1.15] text-stone-50 sm:text-5xl lg:text-[3.6rem]">
-            თამაში, რომელიც <span className="mp-gold-text">სრულყოფილ დეტალებს</span> იმსახურებს
-          </h1>
-          <p className="mt-6 max-w-xl text-base leading-relaxed text-slate-200 sm:text-lg">
-            კაზინოს ხარისხის ჩიპები, ტურნირის კარტები და ხელნაკეთი მაგიდები — შერჩეული მათთვის, ვისთვისაც ყოველი ხელი მნიშვნელოვანია.
-          </p>
-          <div className="mt-9 flex flex-wrap items-center gap-4">
-            <a
-              href="#shop"
-              className="group inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-amber-200 via-amber-400 to-amber-600 px-7 py-3.5 text-sm font-semibold text-black shadow-[0_10px_40px_-10px_rgba(212,166,74,0.7)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_18px_50px_-12px_rgba(212,166,74,0.9)]"
-            >
-              კოლექციის ნახვა
-              <ChevronDown className="h-4 w-4 transition-transform duration-300 group-hover:translate-y-0.5" />
-            </a>
-            <a
-              href={buildWhatsAppLink("გამარჯობა, mypoker.ge-დან გწერთ, მჭირდება კონსულტაცია.")}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 rounded-full border border-white/15 px-6 py-3.5 text-sm font-medium text-stone-200 transition-all duration-300 hover:border-emerald-300/50 hover:text-emerald-200"
-            >
-              <MessageCircle className="h-4 w-4" />
-              კონსულტაცია
-            </a>
-          </div>
+    <section className="mx-auto max-w-6xl px-4 pb-12 pt-16 text-center sm:px-6 sm:pt-24">
+      <a
+        href={buildWhatsAppLink("გამარჯობა, mypoker.ge-დან გწერთ, მჭირდება კონსულტაცია.")}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="mp-rise group inline-flex items-center gap-2 rounded-full border border-white/[0.1] bg-white/[0.04] py-1 pl-1 pr-3 text-xs text-slate-200 transition-colors hover:border-white/20"
+      >
+        <span className="rounded-full bg-[#e8c77a] px-2 py-0.5 text-[11px] font-semibold text-[#2b3340]">ახალი</span>
+        უფასო კონსულტაცია WhatsApp-ში
+        <ArrowRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-0.5" />
+      </a>
 
-          <dl className="mt-12 grid max-w-xl grid-cols-3 gap-4 border-t border-white/10 pt-8">
-            {[
-              { icon: Gem, title: "ორიგინალი", text: "მხოლოდ სანდო ბრენდები" },
-              { icon: Truck, title: "მიწოდება", text: "მთელ საქართველოში" },
-              { icon: ShieldCheck, title: "გარანტია", text: "ხარისხზე პასუხს ვაგებთ" },
-            ].map(({ icon: Icon, title, text }) => (
-              <div key={title} className="min-w-0">
-                <dt className="flex items-center gap-2 text-sm font-semibold text-stone-100">
-                  <Icon className="h-4 w-4 shrink-0 text-amber-300" strokeWidth={1.8} />
-                  {title}
-                </dt>
-                <dd className="mt-1 text-xs leading-relaxed text-slate-300">{text}</dd>
-              </div>
-            ))}
-          </dl>
-        </div>
+      <h1 className="mp-rise mp-balance mx-auto mt-7 max-w-3xl text-[2.4rem] font-semibold leading-[1.15] tracking-[-0.02em] text-white [animation-delay:60ms] sm:text-6xl">
+        პოკერი, როგორც <span className="mp-champagne">ხელოვნება</span>
+      </h1>
 
-        {/* დეკორატიული კომპოზიცია */}
-        <div className="relative mx-auto hidden aspect-square w-full max-w-[440px] lg:block" aria-hidden="true">
-          <div className="absolute inset-6 rounded-full bg-[radial-gradient(circle_at_50%_40%,#0f5c43_0%,#063527_55%,#03130e_100%)] shadow-[inset_0_0_80px_rgba(15,23,42,0.5),0_40px_100px_-30px_rgba(16,185,129,0.35)] ring-[14px] ring-[#3b2412] ring-offset-0" />
-          <div className="absolute inset-[72px] rounded-full border border-dashed border-amber-200/25" />
-          <div className="mp-float absolute left-[18%] top-[22%] [--r:-14deg]">
-            <div className="flex h-36 w-24 flex-col justify-between rounded-xl bg-stone-50 p-3 text-slate-900 shadow-2xl">
-              <span className="text-xl leading-none">♠</span>
-              <span className="self-center text-5xl leading-none">♠</span>
-              <span className="rotate-180 text-xl leading-none">♠</span>
-            </div>
-          </div>
-          <div className="mp-float absolute right-[18%] top-[26%] [--r:12deg] [animation-delay:-2s]">
-            <div className="flex h-36 w-24 flex-col justify-between rounded-xl bg-stone-50 p-3 text-red-700 shadow-2xl">
-              <span className="text-xl leading-none">♥</span>
-              <span className="self-center text-5xl leading-none">♥</span>
-              <span className="rotate-180 text-xl leading-none">♥</span>
-            </div>
-          </div>
-          {[
-            { c: "from-red-600 to-red-800", pos: "left-[24%] bottom-[20%]", d: "-1s" },
-            { c: "from-slate-800 to-black", pos: "left-[42%] bottom-[14%]", d: "-3s" },
-            { c: "from-amber-300 to-amber-600", pos: "right-[24%] bottom-[22%]", d: "-4s" },
-          ].map((chip) => (
-            <div key={chip.pos} className={`mp-float absolute ${chip.pos}`} style={{ animationDelay: chip.d }}>
-              <div className={`grid h-16 w-16 place-items-center rounded-full bg-gradient-to-br ${chip.c} shadow-xl ring-4 ring-white/80 [background-clip:padding-box]`}>
-                <div className="h-10 w-10 rounded-full border-2 border-dashed border-white/80" />
-              </div>
-            </div>
-          ))}
-        </div>
+      <p className="mp-rise mx-auto mt-6 max-w-xl text-base leading-relaxed text-slate-300 [animation-delay:120ms] sm:text-lg">
+        კაზინოს ხარისხის ჩიპები, ტურნირის კარტები და მაგიდები. შეკვეთა — ერთი შეტყობინებით.
+      </p>
+
+      <div className="mp-rise mt-9 flex flex-wrap items-center justify-center gap-3 [animation-delay:180ms]">
+        <a
+          href="#shop"
+          className="group inline-flex h-12 items-center gap-2 rounded-full bg-[#f5f7fa] px-6 text-sm font-semibold text-[#2b3340] shadow-[0_8px_30px_-10px_rgba(232,199,122,0.6)] transition-all duration-300 hover:bg-white hover:shadow-[0_12px_40px_-10px_rgba(232,199,122,0.8)]"
+        >
+          კატალოგის ნახვა
+          <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5" />
+        </a>
+        <a
+          href={`tel:${CONFIG.phoneTel}`}
+          className="inline-flex h-12 items-center gap-2 rounded-full border border-white/[0.14] px-6 text-sm font-medium text-white transition-colors hover:bg-white/[0.06]"
+        >
+          <Phone className="h-4 w-4" />
+          <span className="mp-num">{CONFIG.phoneDisplay}</span>
+        </a>
       </div>
 
-      <a
-        href="#shop"
-        className="mp-bob relative mx-auto mb-6 flex w-fit flex-col items-center gap-1 text-[11px] tracking-[0.2em] text-slate-300 transition-colors hover:text-amber-200"
-      >
-        ჩამოსქროლეთ
-        <ChevronDown className="h-4 w-4" />
-      </a>
+      <ul className="mp-rise mt-10 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs text-slate-300 [animation-delay:240ms]">
+        {[
+          { icon: BadgeCheck, text: "ორიგინალი ბრენდები" },
+          { icon: Truck, text: "მიწოდება მთელ საქართველოში" },
+          { icon: ShieldCheck, text: "ხარისხის გარანტია" },
+        ].map(({ icon: Icon, text }) => (
+          <li key={text} className="flex items-center gap-1.5">
+            <Icon className="h-4 w-4 text-[#e8c77a]" strokeWidth={1.8} />
+            {text}
+          </li>
+        ))}
+      </ul>
     </section>
   );
 }
 
 /* ------------------------------------------------------------------ */
-/*  ფილტრები                                                           */
+/*  კატეგორიების ბენტო                                                */
 /* ------------------------------------------------------------------ */
-function CategoryPills({ active, counts, onChange }) {
+const BENTO = [
+  {
+    id: "chips",
+    title: "ჩიპები",
+    text: "თიხის და კერამიკული ნაკრები 200–500 ჩიპით.",
+    visual: PRODUCTS[0].visual,
+    span: "sm:col-span-2 lg:row-span-2",
+    tall: true,
+  },
+  { id: "cards", title: "კარტები", text: "Bicycle, Copag, KEM.", visual: PRODUCTS[3].visual },
+  { id: "tables", title: "მაგიდები", text: "ოვალური, რვაკუთხა და დასაკეცი.", visual: PRODUCTS[4].visual },
+  { id: "accessories", title: "აქსესუარები", text: "დილერის ღილაკი, მრევი, დამცველი.", visual: PRODUCTS[9].visual, span: "sm:col-span-2" },
+];
+
+function CategoryBento({ counts, onPick }) {
   return (
-    <div className="mp-scroll -mx-4 flex gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:flex-wrap sm:px-0" role="tablist" aria-label="კატეგორიები">
-      {CATEGORIES.map((cat) => {
-        const isActive = active === cat.id;
-        return (
+    <section className="mx-auto max-w-6xl px-4 pb-20 sm:px-6" aria-label="კატეგორიები">
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 lg:grid-rows-2">
+        {BENTO.map((tile, i) => (
           <button
-            key={cat.id}
+            key={tile.id}
             type="button"
-            role="tab"
-            aria-selected={isActive}
-            onClick={() => onChange(cat.id)}
-            className={`group inline-flex shrink-0 items-center gap-2 rounded-full border px-5 py-2.5 text-sm font-medium transition-all duration-300 ease-out ${
-              isActive
-                ? "border-amber-300 bg-gradient-to-b from-amber-200 to-amber-400 text-black shadow-[0_8px_30px_-8px_rgba(212,166,74,0.7)]"
-                : "border-white/10 bg-white/[0.02] text-stone-300 hover:-translate-y-0.5 hover:border-amber-300/40 hover:text-amber-100"
-            }`}
+            onClick={() => onPick(tile.id)}
+            onMouseMove={trackSpotlight}
+            className={`mp-spot mp-rise group flex overflow-hidden rounded-3xl border border-white/[0.08] bg-white/[0.04] p-6 text-left transition-colors duration-300 hover:border-white/[0.16] flex-col ${tile.span || ""}`}
+            style={{ animationDelay: `${300 + i * 70}ms` }}
           >
-            {cat.label}
+            <span className="flex w-full items-start justify-between gap-3">
+              <span>
+                <span className="block text-lg font-semibold text-white">{tile.title}</span>
+                <span className="mt-1 block text-sm text-slate-300">{tile.text}</span>
+              </span>
+              <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-white/[0.12] text-slate-200 transition-all duration-300 group-hover:border-[#e8c77a]/50 group-hover:bg-[#e8c77a] group-hover:text-[#2b3340]">
+                <ArrowUpRight className="h-4 w-4" />
+              </span>
+            </span>
             <span
-              className={`mp-num rounded-full px-1.5 py-0.5 text-[10px] font-semibold transition-colors duration-300 ${
-                isActive ? "bg-black/15 text-black/70" : "bg-white/[0.06] text-slate-300 group-hover:text-amber-200/80"
+              className={`mx-auto mt-4 block w-full transition-transform duration-700 ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-[1.06] ${
+                tile.tall ? "max-w-md flex-1 lg:mt-10" : "max-w-[220px]"
               }`}
             >
-              {counts[cat.id] || 0}
+              <span className={`block aspect-[232/160] ${tile.tall ? "mp-float" : ""}`}>
+                <ProductVisual visual={tile.visual} uid={`bento-${tile.id}`} label={tile.title} />
+              </span>
             </span>
+            <span className="mp-num mt-4 text-xs text-slate-400">{counts[tile.id] || 0} პროდუქტი</span>
           </button>
-        );
-      })}
+        ))}
+      </div>
+    </section>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  სეგმენტური ფილტრი (მოძრავი ინდიკატორით)                           */
+/* ------------------------------------------------------------------ */
+function Segmented({ value, counts, onChange }) {
+  const refs = useRef({});
+  const [indicator, setIndicator] = useState({ left: 0, width: 0, ready: false });
+
+  useLayoutEffect(() => {
+    const measure = () => {
+      const el = refs.current[value];
+      if (el) setIndicator({ left: el.offsetLeft, width: el.offsetWidth, ready: true });
+    };
+    measure();
+    window.addEventListener("resize", measure);
+    return () => window.removeEventListener("resize", measure);
+  }, [value]);
+
+  return (
+    <div className="mp-scroll -mx-4 overflow-x-auto px-4 sm:mx-0 sm:px-0">
+      <div className="relative inline-flex rounded-full border border-white/[0.08] bg-white/[0.04] p-1" role="tablist" aria-label="კატეგორიები">
+        <span
+          className={`absolute bottom-1 top-1 rounded-full bg-[#f5f7fa] shadow-sm transition-all duration-500 ease-[cubic-bezier(.16,1,.3,1)] ${
+            indicator.ready ? "opacity-100" : "opacity-0"
+          }`}
+          style={{ left: indicator.left, width: indicator.width }}
+          aria-hidden="true"
+        />
+        {CATEGORIES.map((cat) => {
+          const active = value === cat.id;
+          return (
+            <button
+              key={cat.id}
+              ref={(el) => (refs.current[cat.id] = el)}
+              type="button"
+              role="tab"
+              aria-selected={active}
+              onClick={() => onChange(cat.id)}
+              className={`relative z-10 inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full px-4 py-2 text-[13px] font-medium transition-colors duration-300 ${
+                active ? "text-[#2b3340]" : "text-slate-300 hover:text-white"
+              }`}
+            >
+              {cat.label}
+              <span className={`mp-num text-[11px] ${active ? "text-[#2b3340]/55" : "text-slate-400"}`}>{counts[cat.id] || 0}</span>
+            </button>
+          );
+        })}
+      </div>
     </div>
   );
 }
@@ -757,70 +803,59 @@ function CategoryPills({ active, counts, onChange }) {
 /* ------------------------------------------------------------------ */
 /*  პროდუქტის ბარათი                                                   */
 /* ------------------------------------------------------------------ */
-const CATEGORY_LABEL = Object.fromEntries(CATEGORIES.map((c) => [c.id, c.label]));
-
 function ProductCard({ product, index, inCart, onAdd }) {
   const discount = product.oldPrice ? Math.round((1 - product.price / product.oldPrice) * 100) : 0;
 
   return (
     <article
-      className="mp-rise group relative flex flex-col overflow-hidden rounded-[22px] border border-white/[0.07] bg-gradient-to-b from-white/[0.09] to-white/[0.05] transition-all duration-500 ease-out hover:-translate-y-1.5 hover:scale-[1.015] hover:border-amber-300/25 hover:shadow-[0_30px_70px_-30px_rgba(212,166,74,0.35),0_20px_40px_-20px_rgba(15,23,42,0.45)]"
-      style={{ animationDelay: `${Math.min(index, 11) * 55}ms` }}
+      onMouseMove={trackSpotlight}
+      className="mp-spot mp-rise group flex flex-col overflow-hidden rounded-3xl border border-white/[0.08] bg-white/[0.04] transition-all duration-500 ease-[cubic-bezier(.16,1,.3,1)] hover:-translate-y-1 hover:border-white/[0.16] hover:shadow-[0_24px_60px_-28px_rgba(15,23,42,0.7)]"
+      style={{ animationDelay: `${Math.min(index, 11) * 50}ms` }}
     >
-      {/* ვიზუალი */}
-      <div className="mp-grain relative aspect-[4/3] overflow-hidden bg-[radial-gradient(120%_90%_at_50%_0%,#5d6d83_0%,#4a586c_55%,#424f62_100%)]">
-        <div className="absolute inset-0 bg-[radial-gradient(60%_50%_at_50%_100%,rgba(212,166,74,0.10),transparent)] opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-        <div className="absolute inset-0 p-6 transition-transform duration-700 ease-out group-hover:scale-[1.07]">
-          <ProductVisual product={product} />
+      <div className="relative m-2 aspect-[4/3] overflow-hidden rounded-[20px] bg-[radial-gradient(120%_100%_at_50%_0%,#4f5d70_0%,#3d4858_70%)]">
+        <div className="absolute inset-0 p-7 transition-transform duration-700 ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-[1.06]">
+          <ProductVisual visual={product.visual} uid={`p-${product.id}`} label={product.name} />
         </div>
-        <div className="absolute left-4 top-4 flex flex-wrap gap-2">
-          {product.badge && (
-            <span className="rounded-full bg-black/55 px-3 py-1 text-[11px] font-semibold text-amber-200 ring-1 ring-amber-300/30 backdrop-blur-md">
-              {product.badge}
-            </span>
-          )}
-          {discount > 0 && (
-            <span className="mp-num rounded-full bg-emerald-500/90 px-2.5 py-1 text-[11px] font-bold text-[#03140d]">−{discount}%</span>
-          )}
-        </div>
-        <span className="absolute right-4 top-4 rounded-full bg-black/45 px-3 py-1 text-[11px] text-stone-300 ring-1 ring-white/10 backdrop-blur-md">
-          {CATEGORY_LABEL[product.category]}
-        </span>
+        {(product.badge || discount > 0) && (
+          <div className="absolute left-3 top-3 flex gap-1.5">
+            {discount > 0 && (
+              <span className="mp-num rounded-full bg-[#34d399] px-2 py-0.5 text-[11px] font-semibold text-[#052e1f]">−{discount}%</span>
+            )}
+            {product.badge && (
+              <span className="rounded-full bg-[#2b3340]/70 px-2.5 py-0.5 text-[11px] font-medium text-[#f6e3b4] backdrop-blur-md">
+                {product.badge}
+              </span>
+            )}
+          </div>
+        )}
       </div>
 
-      {/* შინაარსი */}
-      <div className="flex flex-1 flex-col gap-4 p-5 sm:p-6">
-        <div className="flex items-center gap-1.5 text-xs text-slate-200">
-          <Star className="h-3.5 w-3.5 fill-amber-300 text-amber-300" />
-          <span className="mp-num font-semibold text-stone-200">{product.rating.toFixed(1)}</span>
-          <span className="mp-num text-slate-300">({product.reviews} შეფასება)</span>
+      <div className="flex flex-1 flex-col px-5 pb-5 pt-3">
+        <div className="flex items-center gap-1 text-xs text-slate-300">
+          <Star className="h-3.5 w-3.5 fill-[#e8c77a] text-[#e8c77a]" />
+          <span className="mp-num font-medium text-white">{product.rating.toFixed(1)}</span>
+          <span className="mp-num text-slate-400">· {product.reviews} შეფასება</span>
         </div>
 
-        <div className="min-w-0">
-          <h3 className="mp-balance text-[17px] font-semibold leading-snug text-stone-50">{product.name}</h3>
-          <p className="mt-2 text-sm leading-relaxed text-slate-200">{product.description}</p>
-        </div>
+        <h3 className="mp-balance mt-2 text-[15px] font-semibold leading-snug text-white">{product.name}</h3>
+        <p className="mt-1.5 text-[13px] leading-relaxed text-slate-300">{product.spec}</p>
 
-        <p className="text-[11px] font-medium tracking-wide text-emerald-300/80">{product.spec}</p>
-
-        <div className="mt-auto flex items-end justify-between gap-3 border-t border-white/[0.06] pt-4">
-          <div className="flex flex-col">
-            {product.oldPrice && (
-              <span className="mp-num text-xs text-slate-300 line-through">{formatPrice(product.oldPrice)}</span>
-            )}
-            <span className="mp-num mp-serif text-2xl font-semibold text-stone-50">{formatPrice(product.price)}</span>
+        <div className="mt-auto flex items-end justify-between gap-3 pt-5">
+          <div className="flex items-baseline gap-2">
+            <span className="mp-num text-xl font-semibold tracking-tight text-white">{formatPrice(product.price)}</span>
+            {product.oldPrice && <span className="mp-num text-xs text-slate-400 line-through">{formatPrice(product.oldPrice)}</span>}
           </div>
           <button
             type="button"
             onClick={() => onAdd(product.id)}
-            className={`grid h-11 w-11 shrink-0 place-items-center rounded-full border transition-all duration-300 ${
+            className={`grid h-9 w-9 shrink-0 place-items-center rounded-full border transition-all duration-300 ${
               inCart
-                ? "border-amber-300/60 bg-amber-300/15 text-amber-200"
-                : "border-white/10 text-stone-300 hover:border-amber-300/50 hover:bg-amber-300/10 hover:text-amber-200"
+                ? "border-[#e8c77a] bg-[#e8c77a] text-[#2b3340]"
+                : "border-white/[0.14] text-slate-200 hover:border-[#e8c77a]/60 hover:text-[#e8c77a]"
             }`}
-            aria-label={inCart ? `კალათაში დამატებულია: ${product.name}. კიდევ ერთის დამატება` : `კალათაში დამატება: ${product.name}`}
+            aria-label={inCart ? `კალათაშია: ${product.name}. კიდევ ერთის დამატება` : `კალათაში დამატება: ${product.name}`}
           >
-            {inCart ? <Check className="h-4 w-4" /> : <ShoppingBag className="h-4 w-4" />}
+            {inCart ? <Check className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
           </button>
         </div>
 
@@ -828,11 +863,10 @@ function ProductCard({ product, index, inCart, onAdd }) {
           href={productWhatsAppLink(product)}
           target="_blank"
           rel="noopener noreferrer"
-          className="group/cta relative inline-flex w-full items-center justify-center gap-2 overflow-hidden whitespace-nowrap rounded-full bg-gradient-to-r from-emerald-500 to-emerald-600 px-4 py-3.5 text-[13px] font-semibold text-[#03140d] shadow-[0_10px_30px_-12px_rgba(16,185,129,0.7)] transition-all duration-300 hover:from-emerald-400 hover:to-emerald-500 hover:shadow-[0_16px_40px_-12px_rgba(16,185,129,0.9)] active:scale-[0.98]"
+          className="group/cta mt-4 inline-flex h-11 w-full items-center justify-center gap-2 whitespace-nowrap rounded-full bg-[#34d399] px-4 text-[13px] font-semibold text-[#052e1f] transition-all duration-300 hover:bg-[#4ade80] hover:shadow-[0_10px_30px_-10px_rgba(52,211,153,0.8)] active:scale-[0.98]"
         >
-          <span className="absolute inset-y-0 -left-1/2 w-1/3 -skew-x-12 bg-white/30 blur-md transition-all duration-700 group-hover/cta:left-[120%]" />
-          <MessageCircle className="relative h-4 w-4" strokeWidth={2.2} />
-          <span className="relative">შესაკვეთად დაგვიკავშირდით</span>
+          <MessageCircle className="h-4 w-4" strokeWidth={2.2} />
+          შესაკვეთად დაგვიკავშირდით
         </a>
       </div>
     </article>
@@ -842,43 +876,42 @@ function ProductCard({ product, index, inCart, onAdd }) {
 /* ------------------------------------------------------------------ */
 /*  მაღაზია                                                            */
 /* ------------------------------------------------------------------ */
-function Shop({ cart }) {
-  const { category, setCategory, query, setQuery, sort, setSort, counts, visible } = useProductFilter(PRODUCTS);
+function Shop({ filter, cart }) {
+  const { category, setCategory, query, setQuery, sort, setSort, counts, visible } = filter;
   const inCart = useMemo(() => new Set(cart.lines.map((l) => l.product.id)), [cart.lines]);
   const gridKey = `${category}|${sort}|${query.trim()}`;
 
   return (
-    <section id="shop" className="relative scroll-mt-24 border-t border-white/[0.06] bg-[#3d4857]">
-      <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-20 lg:px-8">
-        <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-amber-300/80">კოლექცია</p>
-            <h2 className="mp-serif mp-balance mt-3 text-3xl font-semibold text-stone-50 sm:text-4xl">აირჩიეთ თქვენი მაგიდის ხასიათი</h2>
-            <p className="mt-3 max-w-xl text-sm leading-relaxed text-slate-200">
-              შეკვეთა მარტივია: დააჭირეთ ღილაკს და ჩვენი კონსულტანტი WhatsApp-ში წუთებში გიპასუხებთ.
-            </p>
-          </div>
+    <section id="shop" className="scroll-mt-20 border-t border-white/[0.06]">
+      <div className="mx-auto max-w-6xl px-4 py-20 sm:px-6">
+        <div className="max-w-xl">
+          <p className="text-xs font-medium tracking-[0.04em] text-[#e8c77a]">კატალოგი</p>
+          <h2 className="mp-balance mt-3 text-3xl font-semibold tracking-[-0.02em] text-white sm:text-4xl">აირჩიეთ თქვენი მაგიდისთვის</h2>
+        </div>
 
-          <div className="flex w-full flex-col gap-3 sm:flex-row lg:w-auto">
-            <label className="relative flex-1 lg:w-72" htmlFor="mp-search">
+        <div className="mt-8 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+          <Segmented value={category} counts={counts} onChange={setCategory} />
+
+          <div className="flex gap-2">
+            <label className="relative min-w-0 flex-1 lg:w-64" htmlFor="mp-search">
               <span className="sr-only">ძიება</span>
-              <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-300" />
+              <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
               <input
                 id="mp-search"
                 type="search"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder="მოძებნეთ პროდუქტი…"
-                className="h-11 w-full rounded-full border border-white/10 bg-white/[0.03] pl-11 pr-4 text-sm text-stone-100 placeholder:text-slate-300 transition-colors focus:border-amber-300/50 focus:bg-white/[0.05] focus:outline-none"
+                placeholder="ძიება…"
+                className="h-10 w-full rounded-full border border-white/[0.08] bg-white/[0.04] pl-10 pr-4 text-[13px] text-white placeholder:text-slate-400 transition-colors focus:border-[#e8c77a]/50 focus:bg-white/[0.06] focus:outline-none"
               />
             </label>
-            <label className="relative" htmlFor="mp-sort">
+            <label className="relative shrink-0" htmlFor="mp-sort">
               <span className="sr-only">დალაგება</span>
               <select
                 id="mp-sort"
                 value={sort}
                 onChange={(e) => setSort(e.target.value)}
-                className="h-11 w-full appearance-none rounded-full border border-white/10 bg-[#46525f] pl-5 pr-10 text-sm text-stone-200 transition-colors focus:border-amber-300/50 focus:outline-none sm:w-56"
+                className="h-10 appearance-none rounded-full border border-white/[0.08] bg-[#3b4554] pl-4 pr-9 text-[13px] text-slate-100 transition-colors focus:border-[#e8c77a]/50 focus:outline-none"
               >
                 {SORTS.map((s) => (
                   <option key={s.id} value={s.id}>
@@ -886,42 +919,96 @@ function Shop({ cart }) {
                   </option>
                 ))}
               </select>
-              <ChevronDown className="pointer-events-none absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-300" />
+              <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
             </label>
           </div>
         </div>
 
-        <div className="mt-10">
-          <CategoryPills active={category} counts={counts} onChange={setCategory} />
-        </div>
-
-        <p className="mp-num mt-6 text-xs text-slate-300" aria-live="polite">
-          ნაჩვენებია {visible.length} პროდუქტი
-        </p>
-
         {visible.length > 0 ? (
-          <div key={gridKey} className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          <div key={gridKey} className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {visible.map((product, i) => (
               <ProductCard key={product.id} product={product} index={i} inCart={inCart.has(product.id)} onAdd={cart.add} />
             ))}
           </div>
         ) : (
-          <div className="mp-fade mt-6 flex flex-col items-center rounded-3xl border border-dashed border-white/10 px-6 py-20 text-center">
-            <Spade className="h-8 w-8 text-slate-400" />
-            <p className="mt-4 text-base font-medium text-stone-200">ამ ძიებით პროდუქტი ვერ მოიძებნა</p>
-            <p className="mt-1 text-sm text-slate-300">სცადეთ სხვა სიტყვა ან აირჩიეთ კატეგორია „ყველა“.</p>
+          <div className="mp-fade mt-8 flex flex-col items-center rounded-3xl border border-dashed border-white/[0.12] px-6 py-20 text-center">
+            <Search className="h-6 w-6 text-slate-400" />
+            <p className="mt-4 font-medium text-white">ვერაფერი მოიძებნა</p>
+            <p className="mt-1 text-sm text-slate-300">სცადეთ სხვა სიტყვა ან აირჩიეთ „ყველა“.</p>
             <button
               type="button"
               onClick={() => {
                 setQuery("");
                 setCategory("all");
               }}
-              className="mt-6 rounded-full border border-amber-300/40 px-5 py-2.5 text-sm font-medium text-amber-200 transition-colors hover:bg-amber-300/10"
+              className="mt-6 rounded-full border border-white/[0.14] px-5 py-2 text-sm text-white transition-colors hover:bg-white/[0.06]"
             >
               ფილტრების გასუფთავება
             </button>
           </div>
         )}
+      </div>
+    </section>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  როგორ შევუკვეთო                                                    */
+/* ------------------------------------------------------------------ */
+function HowToOrder() {
+  const steps = [
+    { title: "აირჩიეთ", text: "იპოვეთ სასურველი პროდუქტი კატალოგში." },
+    { title: "მოგვწერეთ", text: "ღილაკი თავად შეავსებს WhatsApp-ის შეტყობინებას." },
+    { title: "მიიღეთ", text: "დავადასტურებთ დეტალებს და გამოგიგზავნით." },
+  ];
+  return (
+    <section id="how" className="scroll-mt-20 border-t border-white/[0.06]">
+      <div className="mx-auto max-w-6xl px-4 py-20 sm:px-6">
+        <p className="text-xs font-medium tracking-[0.04em] text-[#e8c77a]">შეკვეთა</p>
+        <h2 className="mt-3 text-3xl font-semibold tracking-[-0.02em] text-white sm:text-4xl">სამი ნაბიჯი</h2>
+        <ol className="mt-10 grid gap-px overflow-hidden rounded-3xl border border-white/[0.08] bg-white/[0.08] md:grid-cols-3">
+          {steps.map((s, i) => (
+            <li key={s.title} className="bg-[#38424f] p-7">
+              <span className="mp-num text-sm font-medium text-[#e8c77a]">0{i + 1}</span>
+              <p className="mt-4 text-lg font-semibold text-white">{s.title}</p>
+              <p className="mt-1.5 text-sm leading-relaxed text-slate-300">{s.text}</p>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  საკონტაქტო CTA                                                    */
+/* ------------------------------------------------------------------ */
+function ContactCTA() {
+  return (
+    <section id="contact" className="scroll-mt-20 px-4 pb-20 sm:px-6">
+      <div className="relative mx-auto max-w-6xl overflow-hidden rounded-[32px] border border-white/[0.1] bg-[radial-gradient(120%_140%_at_50%_0%,#3f5a56_0%,#3a4553_55%)] px-6 py-14 text-center sm:px-12">
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#e8c77a]/60 to-transparent" aria-hidden="true" />
+        <h2 className="mp-balance text-3xl font-semibold tracking-[-0.02em] text-white sm:text-4xl">გაქვთ კითხვა?</h2>
+        <p className="mx-auto mt-3 max-w-md text-slate-200">დაგვირეკეთ ან მოგვწერეთ — დაგეხმარებით სწორი არჩევანის გაკეთებაში.</p>
+        <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+          <a
+            href={buildWhatsAppLink("გამარჯობა, mypoker.ge-დან გწერთ.")}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex h-12 items-center gap-2 rounded-full bg-[#34d399] px-6 text-sm font-semibold text-[#052e1f] transition-all duration-300 hover:bg-[#4ade80]"
+          >
+            <MessageCircle className="h-4 w-4" />
+            მოგვწერეთ WhatsApp-ში
+          </a>
+          <a
+            href={`tel:${CONFIG.phoneTel}`}
+            className="mp-num inline-flex h-12 select-all items-center gap-2 rounded-full border border-white/[0.16] px-6 text-sm font-semibold text-white transition-colors hover:bg-white/[0.06]"
+          >
+            <Phone className="h-4 w-4" />
+            {CONFIG.phoneDisplay}
+          </a>
+        </div>
+        <p className="mt-5 text-xs text-slate-300">ყოველდღე, 10:00 – 22:00</p>
       </div>
     </section>
   );
@@ -947,73 +1034,72 @@ function CartDrawer({ open, onClose, cart }) {
 
   return (
     <div className="fixed inset-0 z-50" role="dialog" aria-modal="true" aria-label="კალათა">
-      <button type="button" className="mp-fade absolute inset-0 bg-slate-900/50 backdrop-blur-sm" onClick={onClose} aria-label="დახურვა" />
-      <aside className="mp-slide-in absolute inset-y-0 right-0 flex w-full max-w-md flex-col border-l border-white/10 bg-[#3d4857] pb-[env(safe-area-inset-bottom,0px)] pt-[env(safe-area-inset-top,0px)]">
-        <div className="flex items-center justify-between border-b border-white/[0.07] px-6 py-5">
+      <button type="button" className="mp-fade absolute inset-0 bg-[#1e2530]/60 backdrop-blur-sm" onClick={onClose} aria-label="დახურვა" />
+      <aside className="mp-slide-in absolute inset-y-0 right-0 flex w-full max-w-md flex-col border-l border-white/[0.08] bg-[#38424f] pb-[env(safe-area-inset-bottom,0px)] pt-[env(safe-area-inset-top,0px)] shadow-2xl">
+        <div className="flex items-center justify-between px-6 py-5">
           <div>
-            <h2 className="mp-serif text-xl font-semibold text-stone-50">თქვენი კალათა</h2>
-            <p className="mp-num mt-0.5 text-xs text-slate-300">{cart.count} ნივთი</p>
+            <h2 className="text-lg font-semibold text-white">კალათა</h2>
+            <p className="mp-num text-xs text-slate-300">{cart.count} ნივთი</p>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="grid h-10 w-10 place-items-center rounded-full border border-white/10 text-stone-300 transition-colors hover:text-stone-50"
+            className="grid h-9 w-9 place-items-center rounded-full text-slate-300 transition-colors hover:bg-white/[0.06] hover:text-white"
             aria-label="კალათის დახურვა"
           >
-            <X className="h-4 w-4" />
+            <X className="h-5 w-5" />
           </button>
         </div>
 
         {cart.lines.length === 0 ? (
           <div className="flex flex-1 flex-col items-center justify-center px-8 text-center">
-            <ShoppingBag className="h-10 w-10 text-slate-400" strokeWidth={1.4} />
-            <p className="mt-4 font-medium text-stone-200">კალათა ცარიელია</p>
+            <ShoppingBag className="h-8 w-8 text-slate-400" strokeWidth={1.5} />
+            <p className="mt-4 font-medium text-white">კალათა ცარიელია</p>
             <p className="mt-1 text-sm text-slate-300">დაამატეთ პროდუქტები და გამოგვიგზავნეთ ერთი შეტყობინებით.</p>
             <button
               type="button"
               onClick={onClose}
-              className="mt-6 rounded-full border border-amber-300/40 px-5 py-2.5 text-sm font-medium text-amber-200 transition-colors hover:bg-amber-300/10"
+              className="mt-6 rounded-full border border-white/[0.14] px-5 py-2 text-sm text-white transition-colors hover:bg-white/[0.06]"
             >
-              კოლექციაზე დაბრუნება
+              კატალოგში დაბრუნება
             </button>
           </div>
         ) : (
           <>
-            <ul className="flex-1 divide-y divide-white/[0.06] overflow-y-auto px-6">
+            <ul className="flex-1 space-y-2 overflow-y-auto px-4">
               {cart.lines.map(({ product, qty }) => (
-                <li key={product.id} className="mp-fade flex gap-4 py-5">
-                  <div className="h-20 w-24 shrink-0 overflow-hidden rounded-2xl bg-[radial-gradient(120%_90%_at_50%_0%,#5d6d83_0%,#4a586c_60%)] p-2">
-                    <ProductVisual product={product} />
+                <li key={product.id} className="mp-fade flex gap-4 rounded-2xl border border-white/[0.06] bg-white/[0.03] p-3">
+                  <div className="h-16 w-20 shrink-0 overflow-hidden rounded-xl bg-[radial-gradient(120%_100%_at_50%_0%,#4f5d70_0%,#3d4858_70%)] p-1.5">
+                    <ProductVisual visual={product.visual} uid={`c-${product.id}`} label={product.name} />
                   </div>
                   <div className="flex min-w-0 flex-1 flex-col">
-                    <p className="text-sm font-medium leading-snug text-stone-100">{product.name}</p>
-                    <p className="mp-num mt-1 text-xs text-slate-300">{formatPrice(product.price)} / ცალი</p>
-                    <div className="mt-auto flex items-center justify-between pt-3">
-                      <div className="flex items-center rounded-full border border-white/10">
+                    <p className="text-[13px] font-medium leading-snug text-white">{product.name}</p>
+                    <div className="mt-auto flex items-center justify-between pt-2">
+                      <div className="flex items-center rounded-full border border-white/[0.1]">
                         <button
                           type="button"
                           onClick={() => cart.decrement(product.id)}
-                          className="grid h-8 w-8 place-items-center text-slate-200 hover:text-stone-100"
+                          className="grid h-7 w-7 place-items-center text-slate-300 hover:text-white"
                           aria-label="რაოდენობის შემცირება"
                         >
                           <Minus className="h-3.5 w-3.5" />
                         </button>
-                        <span className="mp-num w-6 text-center text-sm text-stone-100">{qty}</span>
+                        <span className="mp-num w-5 text-center text-[13px] text-white">{qty}</span>
                         <button
                           type="button"
                           onClick={() => cart.add(product.id)}
-                          className="grid h-8 w-8 place-items-center text-slate-200 hover:text-stone-100"
+                          className="grid h-7 w-7 place-items-center text-slate-300 hover:text-white"
                           aria-label="რაოდენობის გაზრდა"
                         >
                           <Plus className="h-3.5 w-3.5" />
                         </button>
                       </div>
                       <div className="flex items-center gap-3">
-                        <span className="mp-num text-sm font-semibold text-stone-50">{formatPrice(product.price * qty)}</span>
+                        <span className="mp-num text-[13px] font-semibold text-white">{formatPrice(product.price * qty)}</span>
                         <button
                           type="button"
                           onClick={() => cart.remove(product.id)}
-                          className="text-slate-300 transition-colors hover:text-red-400"
+                          className="text-slate-400 transition-colors hover:text-red-300"
                           aria-label={`წაშლა: ${product.name}`}
                         >
                           <Trash2 className="h-4 w-4" />
@@ -1025,32 +1111,22 @@ function CartDrawer({ open, onClose, cart }) {
               ))}
             </ul>
 
-            <div className="border-t border-white/[0.07] px-6 py-6">
+            <div className="border-t border-white/[0.08] px-6 py-6">
               <div className="flex items-baseline justify-between">
-                <span className="text-sm text-slate-200">ჯამი</span>
-                <span className="mp-num mp-serif text-2xl font-semibold text-stone-50">{formatPrice(cart.total)}</span>
+                <span className="text-sm text-slate-300">ჯამი</span>
+                <span className="mp-num text-2xl font-semibold tracking-tight text-white">{formatPrice(cart.total)}</span>
               </div>
-              <p className="mt-2 text-xs leading-relaxed text-slate-300">
-                ონლაინ გადახდა მალე დაემატება. ამ ეტაპზე შეკვეთას ვადასტურებთ WhatsApp-ით ან ტელეფონით.
-              </p>
               <a
                 href={cartWhatsAppLink(cart.lines, cart.total)}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-full bg-gradient-to-r from-emerald-500 to-emerald-600 px-5 py-3.5 text-sm font-semibold text-[#03140d] transition-all duration-300 hover:from-emerald-400 hover:to-emerald-500"
+                className="mt-5 inline-flex h-12 w-full items-center justify-center gap-2 rounded-full bg-[#34d399] text-sm font-semibold text-[#052e1f] transition-all duration-300 hover:bg-[#4ade80]"
               >
                 <MessageCircle className="h-4 w-4" />
                 შესაკვეთად დაგვიკავშირდით
               </a>
-              <button
-                type="button"
-                disabled
-                className="mt-3 w-full cursor-not-allowed rounded-full border border-white/10 px-5 py-3 text-sm text-slate-300"
-                title="ონლაინ გადახდა დროებით გათიშულია"
-              >
-                ონლაინ გადახდა — მალე
-              </button>
-              <button type="button" onClick={cart.clear} className="mt-4 w-full text-xs text-slate-300 transition-colors hover:text-stone-300">
+              <p className="mt-3 text-center text-xs text-slate-400">ონლაინ გადახდა მალე დაემატება</p>
+              <button type="button" onClick={cart.clear} className="mt-3 w-full text-xs text-slate-400 transition-colors hover:text-white">
                 კალათის გასუფთავება
               </button>
             </div>
@@ -1066,26 +1142,13 @@ function CartDrawer({ open, onClose, cart }) {
 /* ------------------------------------------------------------------ */
 function Footer() {
   return (
-    <footer className="border-t border-white/[0.06] bg-[#323b48]">
-      <div className="mx-auto flex max-w-7xl flex-col gap-8 px-4 py-12 sm:px-6 md:flex-row md:items-center md:justify-between lg:px-8">
-        <div className="max-w-sm">
-          <Logo />
-          <p className="mt-4 text-sm leading-relaxed text-slate-300">
-            პოკერის პრემიუმ აქსესუარები სახლის თამაშებისთვის, კლუბებისა და ტურნირებისთვის.
-          </p>
+    <footer className="border-t border-white/[0.06]">
+      <div className="mx-auto flex max-w-6xl flex-col gap-4 px-4 py-8 text-xs text-slate-400 sm:flex-row sm:items-center sm:justify-between sm:px-6">
+        <div className="flex items-center gap-3">
+          <LogoMark size={22} />
+          <span>© {new Date().getFullYear()} mypoker.ge</span>
         </div>
-        <div className="flex flex-col gap-2 text-sm md:items-end">
-          <span className="text-xs uppercase tracking-[0.18em] text-slate-300">დაგვიკავშირდით</span>
-          <a href={`tel:${CONFIG.phoneTel}`} className="mp-num select-all text-lg font-semibold text-stone-100 transition-colors hover:text-emerald-300">
-            {CONFIG.phoneDisplay}
-          </a>
-          <span className="text-slate-300">ყოველდღე, 10:00 – 22:00</span>
-        </div>
-      </div>
-      <div className="border-t border-white/[0.05]">
-        <p className="mx-auto max-w-7xl px-4 py-6 text-xs text-slate-400 sm:px-6 lg:px-8">
-          © {new Date().getFullYear()} mypoker.ge — ყველა უფლება დაცულია. აზარტული თამაში მხოლოდ 18 წლიდან.
-        </p>
+        <span>აზარტული თამაში მხოლოდ 18 წლიდან.</span>
       </div>
     </footer>
   );
@@ -1096,6 +1159,7 @@ function Footer() {
 /* ------------------------------------------------------------------ */
 export default function App() {
   const cart = useCart();
+  const filter = useProductFilter(PRODUCTS);
   const [cartOpen, setCartOpen] = useState(false);
   const [toast, setToast] = useState(null);
 
@@ -1114,16 +1178,26 @@ export default function App() {
     },
   };
 
+  const openCart = () => {
+    setToast(null);
+    setCartOpen(true);
+  };
+
+  const pickCategory = (id) => {
+    filter.setCategory(id);
+    scrollToShop();
+  };
+
   return (
-    <div id="top" className="mp-sans min-h-screen bg-[#37414f] text-stone-200 antialiased selection:bg-amber-300/30 selection:text-white">
+    <div id="top" className="mp-sans mp-page min-h-screen text-slate-100 antialiased selection:bg-[#e8c77a]/30 selection:text-white">
       <style>{GLOBAL_CSS}</style>
-      <Header cartCount={cart.count} onOpenCart={() => {
-          setToast(null);
-          setCartOpen(true);
-        }} />
+      <Header cartCount={cart.count} onOpenCart={openCart} />
       <main>
         <Hero />
-        <Shop cart={cartApi} />
+        <CategoryBento counts={filter.counts} onPick={pickCategory} />
+        <Shop filter={filter} cart={cartApi} />
+        <HowToOrder />
+        <ContactCTA />
       </main>
       <Footer />
       <CartDrawer open={cartOpen} onClose={() => setCartOpen(false)} cart={cartApi} />
@@ -1131,23 +1205,14 @@ export default function App() {
       {toast && (
         <div
           key={toast.id}
-          className="mp-toast fixed bottom-[calc(1.5rem+env(safe-area-inset-bottom,0px))] left-1/2 z-50 flex w-[calc(100%-2rem)] max-w-md items-center gap-3 rounded-2xl border border-white/10 bg-[#46525f]/95 px-4 py-3 shadow-2xl backdrop-blur-xl"
+          className="mp-toast fixed bottom-[calc(1.25rem+env(safe-area-inset-bottom,0px))] left-1/2 z-50 flex w-[calc(100%-2rem)] max-w-sm items-center gap-3 rounded-full border border-white/[0.1] bg-[#2b3340]/90 py-2 pl-2 pr-4 shadow-2xl backdrop-blur-xl"
           role="status"
         >
-          <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-amber-300/15 text-amber-200">
+          <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-[#e8c77a] text-[#2b3340]">
             <Check className="h-4 w-4" />
           </span>
-          <p className="min-w-0 flex-1 truncate text-sm text-stone-200">
-            კალათაში დაემატა: <span className="text-stone-50">{toast.name}</span>
-          </p>
-          <button
-            type="button"
-            onClick={() => {
-              setToast(null);
-              setCartOpen(true);
-            }}
-            className="shrink-0 text-sm font-semibold text-amber-200 hover:text-amber-100"
-          >
+          <p className="min-w-0 flex-1 truncate text-[13px] text-slate-100">კალათაში დაემატა</p>
+          <button type="button" onClick={openCart} className="shrink-0 text-[13px] font-semibold text-[#e8c77a] hover:text-[#f6e3b4]">
             ნახვა
           </button>
         </div>

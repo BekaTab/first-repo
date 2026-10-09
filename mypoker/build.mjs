@@ -14,11 +14,12 @@ const source = raw
   .replace("export default function App", "function App")
   .replace(/<\/script/gi, "<\\/script");
 
+const hooks = (raw.match(/import\s+React\s*,\s*\{([^}]*)\}\s*from\s*"react"/) || [, ""])[1];
 const icons = (raw.match(/import\s*\{([^}]*)\}\s*from\s*"lucide-react"/) || [, ""])[1];
 
 const head = `<title>mypoker.ge</title>
 <meta name="description" content="პოკერის პრემიუმ აქსესუარები საქართველოში — ჩიპები, კარტები, მაგიდები და აქსესუარები.">
-<style>html,body{background:#37414f;color:#f1f5f9;margin:0}</style>
+<style>html,body{background:#343d4a;color:#f5f7fa;margin:0}</style>
 <script src="https://cdn.tailwindcss.com/3.4.17"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
@@ -27,7 +28,7 @@ const head = `<title>mypoker.ge</title>
 
 const body = `<div id="root"></div>
 <script type="text/babel" data-presets="react">
-const { useEffect, useMemo, useReducer, useState } = React;
+const { ${hooks.trim().replace(/\s+/g, " ")} } = React;
 const __icons = window.LucideReact || {};
 const { ${icons.trim().replace(/\s+/g, " ")} } = new Proxy(__icons, { get: (t, k) => t[k] || (() => null) });
 ${source}
