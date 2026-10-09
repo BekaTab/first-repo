@@ -9,6 +9,7 @@ import { fileURLToPath } from 'node:url';
 const here = fileURLToPath(new URL('.', import.meta.url));
 new Function(readFileSync(join(here, 'render-blocks.js'), 'utf8'))();
 const renderBlocks = globalThis.eibRenderBlocks;
+const hyph = globalThis.eibHyphenate;
 const COLOR_KEYS = ['navy', 'accent', 'gold', 'ice', 'mist'];
 const SECTION_KEYS = ['video', 'services', 'experience'];
 
@@ -44,7 +45,7 @@ export function applyContent(html, content, base = '') {
   html = html.replace(/(<([a-zA-Z0-9]+)\b[^>]*\sdata-edit="([^"]+)"[^>]*>)([^<]*)(<\/\2>)/g, (m, open, _tag, key, _text, close) => {
     const v = key.startsWith('shared.') ? sh[key.slice(7)] : t[key];
     if (typeof v !== 'string') { missing++; return m; }
-    return open + esc(v) + close;
+    return open + esc(hyph(key, v)) + close;
   });
 
   if (typeof sh.phone === 'string' && digits(sh.phone)) html = eachTag(html, 'data-tel', (tag) => setAttr(tag, 'href', 'tel:' + digits(sh.phone)));
