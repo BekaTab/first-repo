@@ -195,6 +195,18 @@ const productWhatsAppLink = (product) =>
     `გამარჯობა, mypoker.ge-დან გწერთ, მაინტერესებს ეს პროდუქტი: ${product.name} (ფასი: ${product.price}₾)`
   );
 
+/* ბარათის 3D დახრა მაუსის მიხედვით */
+const tilt = (e) => {
+  const el = e.currentTarget;
+  const r = el.getBoundingClientRect();
+  const x = (e.clientX - r.left) / r.width - 0.5;
+  const y = (e.clientY - r.top) / r.height - 0.5;
+  el.style.setProperty("--rx", `${(-y * 6).toFixed(2)}deg`);
+  el.style.setProperty("--ry", `${(x * 8).toFixed(2)}deg`);
+  el.style.setProperty("--ty", "-6px");
+};
+const untilt = (e) => ["--rx", "--ry", "--ty"].forEach((v) => e.currentTarget.style.removeProperty(v));
+
 const cartWhatsAppLink = (lines, total) =>
   buildWhatsAppLink(
     [
@@ -322,11 +334,22 @@ function useProductFilter(products) {
 const GLOBAL_CSS = `
   @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Georgian:wght@400;500;600;700&family=Manrope:wght@600;700&display=swap');
   :root { color-scheme: dark; }
-  body { margin: 0; background: #465163; color: #ffffff; }
+  body { margin: 0; background: #2f2675; color: #ffffff; }
   .mp-sans { font-family: 'Noto Sans Georgian', system-ui, -apple-system, 'Segoe UI', sans-serif; }
   .mp-brand { font-family: 'Manrope', 'Noto Sans Georgian', system-ui, sans-serif; }
   .mp-num { font-variant-numeric: tabular-nums; }
-  @keyframes mp-rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+  @keyframes mp-rise { from { opacity: 0; translate: 0 14px; scale: .97; } to { opacity: 1; translate: 0 0; scale: 1; } }
+  @keyframes mp-pop { 0% { scale: .4; } 60% { scale: 1.35; } 100% { scale: 1; } }
+  @keyframes mp-float { 0%,100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-8px) rotate(-1.5deg); } }
+  @keyframes mp-blob { 0% { transform: translate(0,0) scale(1); } 33% { transform: translate(8vw,6vh) scale(1.15); } 66% { transform: translate(-6vw,10vh) scale(.92); } 100% { transform: translate(0,0) scale(1); } }
+  @keyframes mp-marquee { to { transform: translateX(-50%); } }
+  .mp-pop { animation: mp-pop .45s cubic-bezier(.16,1,.3,1) both; }
+  .mp-blob { animation: mp-blob 21s ease-in-out infinite; will-change: transform; }
+  .mp-marquee { animation: mp-marquee 32s linear infinite; }
+  .mp-tilt { transform: perspective(1000px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateY(var(--ty, 0px)); transition: transform .3s cubic-bezier(.16,1,.3,1), border-color .3s, box-shadow .3s; }
+  .group:hover .mp-hover-float { animation: mp-float 2.8s ease-in-out infinite; }
+  .mp-shine { position: absolute; inset: 0; pointer-events: none; background: linear-gradient(115deg, transparent 35%, rgba(255,255,255,.16) 50%, transparent 65%); transform: translateX(-110%); }
+  .group:hover .mp-shine { transform: translateX(110%); transition: transform 1s cubic-bezier(.16,1,.3,1); }
   @keyframes mp-fade { from { opacity: 0; } to { opacity: 1; } }
   @keyframes mp-ping { 0% { transform: scale(1); opacity: .7; } 80%,100% { transform: scale(2.2); opacity: 0; } }
   @keyframes mp-slide-in { from { transform: translateX(100%); } to { transform: none; } }
@@ -384,7 +407,7 @@ function Logo() {
         <LogoMark />
       </span>
       <span className="mp-brand text-[19px] font-semibold leading-none tracking-[-0.02em] text-white">
-        mypoker<span className="text-[#ecd08c]">.ge</span>
+        mypoker<span className="text-[#fcd34d]">.ge</span>
       </span>
     </a>
   );
@@ -548,6 +571,38 @@ function ProductVisual({ visual, uid, label }) {
 
 
 /* ------------------------------------------------------------------ */
+/*  მოძრავი ფერადი ფონი                                               */
+/* ------------------------------------------------------------------ */
+function Aurora() {
+  return (
+    <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden" aria-hidden="true">
+      <div className="mp-blob absolute -left-48 -top-48 h-[38rem] w-[38rem] rounded-full bg-fuchsia-500/40 blur-[120px]" />
+      <div className="mp-blob absolute -right-40 top-1/4 h-[34rem] w-[34rem] rounded-full bg-cyan-400/35 blur-[120px] [animation-delay:-7s]" />
+      <div className="mp-blob absolute -bottom-48 left-1/4 h-[36rem] w-[36rem] rounded-full bg-emerald-400/30 blur-[120px] [animation-delay:-14s]" />
+    </div>
+  );
+}
+
+const MARQUEE = ["ორიგინალი ბრენდები", "მიწოდება მთელ საქართველოში", "შეკვეთა WhatsApp-ით", "−13% ჩიპების ნაკრებზე", "ახალი მაგიდები მარაგშია"];
+const SUITS = ["♠", "♥", "♦", "♣"];
+
+function Marquee() {
+  const items = [...MARQUEE, ...MARQUEE];
+  return (
+    <div className="h-8 overflow-hidden border-t border-white/[0.1]" aria-hidden="true">
+      <div className="mp-marquee flex h-full w-max items-center gap-8 pl-8 text-[12px] font-medium text-white/85">
+        {items.map((t, i) => (
+          <span key={i} className="flex items-center gap-8 whitespace-nowrap">
+            {t}
+            <span className={i % 2 ? "text-[#fb7185]" : "text-[#fcd34d]"}>{SUITS[i % 4]}</span>
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
 /*  ჰედერი                                                             */
 /* ------------------------------------------------------------------ */
 function SearchField({ id, query, onQuery }) {
@@ -561,7 +616,7 @@ function SearchField({ id, query, onQuery }) {
         value={query}
         onChange={(e) => onQuery(e.target.value)}
         placeholder="მოძებნეთ პროდუქტი"
-        className="h-11 w-full rounded-full border border-white/[0.12] bg-white/[0.07] pl-11 pr-4 text-sm text-white placeholder:text-slate-300 transition-colors focus:border-[#ecd08c]/70 focus:bg-white/[0.1] focus:outline-none"
+        className="h-11 w-full rounded-full border border-white/[0.12] bg-white/[0.07] pl-11 pr-4 text-sm text-white placeholder:text-slate-300 transition-colors focus:border-[#fcd34d]/70 focus:bg-white/[0.1] focus:outline-none"
       />
     </label>
   );
@@ -569,7 +624,7 @@ function SearchField({ id, query, onQuery }) {
 
 function Header({ cartCount, onOpenCart, query, onQuery }) {
   return (
-    <header className="sticky top-[env(safe-area-inset-top,0px)] z-40 border-b border-white/[0.08] bg-[#465163]/90 backdrop-blur-xl backdrop-saturate-150">
+    <header className="sticky top-[env(safe-area-inset-top,0px)] z-40 border-b border-white/[0.08] bg-[#2f2675]/75 backdrop-blur-xl backdrop-saturate-150">
       <div className="mx-auto flex h-16 max-w-[1400px] items-center gap-4 px-4 sm:px-6 lg:gap-8">
         <Logo />
 
@@ -580,12 +635,12 @@ function Header({ cartCount, onOpenCart, query, onQuery }) {
         <div className="ml-auto flex items-center gap-2">
           <a
             href={`tel:${CONFIG.phoneTel}`}
-            className="group flex h-11 items-center gap-2.5 rounded-full border border-white/[0.12] bg-white/[0.07] px-3 transition-colors hover:border-[#34d399]/50 hover:bg-[#34d399]/10 sm:pr-4"
+            className="group flex h-11 items-center gap-2.5 rounded-full border border-white/[0.12] bg-white/[0.07] px-3 transition-colors hover:border-[#25d366]/50 hover:bg-[#25d366]/10 sm:pr-4"
             aria-label={`დაგვირეკეთ: ${CONFIG.phoneDisplay}`}
           >
             <span className="relative grid h-6 w-6 place-items-center">
-              <span className="mp-ping absolute inset-0 rounded-full bg-[#34d399]/50" />
-              <span className="relative grid h-6 w-6 place-items-center rounded-full bg-[#34d399] text-[#052e1f]">
+              <span className="mp-ping absolute inset-0 rounded-full bg-[#25d366]/50" />
+              <span className="relative grid h-6 w-6 place-items-center rounded-full bg-[#25d366] text-[#04260f]">
                 <Phone className="h-3.5 w-3.5" strokeWidth={2.5} />
               </span>
             </span>
@@ -598,12 +653,12 @@ function Header({ cartCount, onOpenCart, query, onQuery }) {
           <button
             type="button"
             onClick={onOpenCart}
-            className="relative grid h-11 w-11 place-items-center rounded-full border border-white/[0.12] bg-white/[0.07] text-white transition-colors hover:border-[#ecd08c]/60 hover:text-[#ecd08c]"
+            className="relative grid h-11 w-11 place-items-center rounded-full border border-white/[0.12] bg-white/[0.07] text-white transition-colors hover:border-[#fcd34d]/60 hover:text-[#fcd34d]"
             aria-label={`კალათა, ${cartCount} ნივთი`}
           >
             <ShoppingBag className="h-5 w-5" strokeWidth={1.8} />
             {cartCount > 0 && (
-              <span className="mp-num mp-fade absolute -right-1 -top-1 grid h-5 min-w-5 place-items-center rounded-full bg-[#ecd08c] px-1 text-[11px] font-bold text-[#2b3340]">
+              <span key={cartCount} className="mp-num mp-pop absolute -right-1 -top-1 grid h-5 min-w-5 place-items-center rounded-full bg-[#fcd34d] px-1 text-[11px] font-bold text-[#1e1b4b]">
                 {cartCount}
               </span>
             )}
@@ -614,6 +669,7 @@ function Header({ cartCount, onOpenCart, query, onQuery }) {
       <div className="px-4 pb-3 md:hidden">
         <SearchField id="mp-search-mobile" query={query} onQuery={onQuery} />
       </div>
+      <Marquee />
     </header>
   );
 }
@@ -637,12 +693,12 @@ function FilterOption({ active, onClick, label, count }) {
       onClick={onClick}
       aria-pressed={active}
       className={`flex items-center justify-between rounded-xl px-3 py-2 text-left text-sm transition-colors ${
-        active ? "bg-white font-semibold text-[#2b3340]" : "text-slate-100 hover:bg-white/[0.08]"
+        active ? "bg-gradient-to-r from-[#fcd34d] to-[#fb923c] font-semibold text-[#1e1b4b] shadow-lg shadow-orange-500/20" : "text-slate-100 hover:bg-white/[0.08]"
       }`}
     >
       {label}
       {count !== undefined && (
-        <span className={`mp-num text-xs ${active ? "text-[#2b3340]/60" : "text-slate-300"}`}>{count}</span>
+        <span className={`mp-num text-xs ${active ? "text-[#1e1b4b]/60" : "text-slate-300"}`}>{count}</span>
       )}
     </button>
   );
@@ -652,7 +708,7 @@ function Sidebar({ filter }) {
   const { category, setCategory, price, setPrice, counts, hasFilters, reset } = filter;
   return (
     <aside className="hidden lg:block">
-      <div className="sticky top-24 flex flex-col gap-7">
+      <div className="sticky top-28 flex flex-col gap-7">
         <FilterGroup title="კატეგორია">
           {CATEGORIES.map((c) => (
             <FilterOption key={c.id} active={category === c.id} onClick={() => setCategory(c.id)} label={c.label} count={counts[c.id] || 0} />
@@ -664,14 +720,14 @@ function Sidebar({ filter }) {
           ))}
         </FilterGroup>
         {hasFilters && (
-          <button type="button" onClick={reset} className="px-3 text-left text-sm text-[#ecd08c] hover:underline">
+          <button type="button" onClick={reset} className="px-3 text-left text-sm text-[#fcd34d] hover:underline">
             ფილტრების გასუფთავება
           </button>
         )}
         <div className="rounded-2xl border border-white/[0.1] bg-white/[0.05] p-4">
           <p className="text-sm font-semibold text-white">შეკვეთა WhatsApp-ით</p>
           <p className="mt-1 text-xs leading-relaxed text-slate-200">აირჩიეთ პროდუქტი და მოგვწერეთ — გიპასუხებთ რამდენიმე წუთში.</p>
-          <a href={`tel:${CONFIG.phoneTel}`} className="mp-num mt-3 block select-all text-sm font-semibold text-white hover:text-[#34d399]">
+          <a href={`tel:${CONFIG.phoneTel}`} className="mp-num mt-3 block select-all text-sm font-semibold text-white hover:text-[#25d366]">
             {CONFIG.phoneDisplay}
           </a>
         </div>
@@ -683,7 +739,7 @@ function Sidebar({ filter }) {
 function MobileFilters({ filter }) {
   const { category, setCategory, price, setPrice, counts } = filter;
   return (
-    <div className="sticky top-[calc(env(safe-area-inset-top,0px)+7.5rem+1px)] z-30 -mx-4 border-b border-white/[0.08] bg-[#465163]/95 px-4 py-3 backdrop-blur-xl md:top-[calc(env(safe-area-inset-top,0px)+4rem+1px)] lg:hidden">
+    <div className="sticky top-[calc(env(safe-area-inset-top,0px)+9.5rem+2px)] z-30 -mx-4 border-b border-white/[0.08] bg-[#2f2675]/85 px-4 py-3 backdrop-blur-xl md:top-[calc(env(safe-area-inset-top,0px)+6rem+2px)] lg:hidden">
       <div className="mp-scroll flex gap-2 overflow-x-auto" role="tablist" aria-label="კატეგორიები">
         {CATEGORIES.map((c) => {
           const active = category === c.id;
@@ -695,11 +751,11 @@ function MobileFilters({ filter }) {
               aria-selected={active}
               onClick={() => setCategory(c.id)}
               className={`inline-flex shrink-0 items-center gap-1.5 rounded-full border px-4 py-2 text-[13px] transition-colors ${
-                active ? "border-white bg-white font-semibold text-[#2b3340]" : "border-white/[0.14] text-slate-100"
+                active ? "border-transparent bg-gradient-to-r from-[#fcd34d] to-[#fb923c] font-semibold text-[#1e1b4b] shadow-lg shadow-orange-500/25" : "border-white/[0.14] text-slate-100"
               }`}
             >
               {c.label}
-              <span className={`mp-num text-[11px] ${active ? "text-[#2b3340]/60" : "text-slate-300"}`}>{counts[c.id] || 0}</span>
+              <span className={`mp-num text-[11px] ${active ? "text-[#1e1b4b]/60" : "text-slate-300"}`}>{counts[c.id] || 0}</span>
             </button>
           );
         })}
@@ -710,7 +766,7 @@ function MobileFilters({ filter }) {
           id="mp-price-mobile"
           value={price}
           onChange={(e) => setPrice(e.target.value)}
-          className="h-9 w-full appearance-none rounded-full border border-white/[0.14] bg-[#505c6e] pl-4 pr-9 text-[13px] text-white focus:outline-none"
+          className="h-9 w-full appearance-none rounded-full border border-white/[0.14] bg-[#43359e] pl-4 pr-9 text-[13px] text-white focus:outline-none"
         >
           {PRICE_RANGES.map((r) => (
             <option key={r.id} value={r.id}>
@@ -732,20 +788,25 @@ function ProductCard({ product, index, inCart, onAdd }) {
 
   return (
     <article
-      className="mp-rise group flex flex-col overflow-hidden rounded-2xl border border-white/[0.08] bg-[#505c6e] transition-all duration-300 hover:-translate-y-0.5 hover:border-white/[0.2] hover:shadow-[0_20px_40px_-20px_rgba(15,23,42,0.6)]"
+      onMouseMove={tilt}
+      onMouseLeave={untilt}
+      className="mp-rise mp-tilt group relative flex flex-col overflow-hidden rounded-3xl border border-white/[0.16] bg-white/[0.09] backdrop-blur-md hover:border-white/[0.34] hover:shadow-[0_30px_60px_-25px_rgba(124,58,237,0.7)]"
       style={{ animationDelay: `${Math.min(index, 11) * 40}ms` }}
     >
-      <div className="relative aspect-[4/3] overflow-hidden bg-[radial-gradient(120%_100%_at_50%_0%,#6a788d_0%,#5a677a_70%)]">
+      <div className="relative aspect-[4/3] overflow-hidden bg-[radial-gradient(120%_100%_at_50%_0%,rgba(255,255,255,0.24)_0%,rgba(255,255,255,0.06)_75%)]">
         <div className="absolute inset-0 p-6 transition-transform duration-500 ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-105">
-          <ProductVisual visual={product.visual} uid={`p-${product.id}`} label={product.name} />
+          <div className="mp-hover-float h-full w-full">
+            <ProductVisual visual={product.visual} uid={`p-${product.id}`} label={product.name} />
+          </div>
         </div>
+        <span className="mp-shine" aria-hidden="true" />
         {(product.badge || discount > 0) && (
           <div className="absolute left-3 top-3 flex gap-1.5">
             {discount > 0 && (
-              <span className="mp-num rounded-full bg-[#34d399] px-2 py-0.5 text-[11px] font-bold text-[#052e1f]">−{discount}%</span>
+              <span className="mp-num rounded-full bg-[#25d366] px-2 py-0.5 text-[11px] font-bold text-[#04260f]">−{discount}%</span>
             )}
             {product.badge && (
-              <span className="rounded-full bg-[#2b3340]/80 px-2.5 py-0.5 text-[11px] font-medium text-[#f6e3b4] backdrop-blur">
+              <span className="rounded-full bg-[#1e1b4b]/80 px-2.5 py-0.5 text-[11px] font-medium text-[#f6e3b4] backdrop-blur">
                 {product.badge}
               </span>
             )}
@@ -763,7 +824,7 @@ function ProductCard({ product, index, inCart, onAdd }) {
             {product.oldPrice && <span className="mp-num text-xs text-slate-300 line-through">{formatPrice(product.oldPrice)}</span>}
           </div>
           <span className="flex items-center gap-1 text-xs text-slate-200">
-            <Star className="h-3.5 w-3.5 fill-[#ecd08c] text-[#ecd08c]" />
+            <Star className="h-3.5 w-3.5 fill-[#fcd34d] text-[#fcd34d]" />
             <span className="mp-num font-medium text-white">{product.rating.toFixed(1)}</span>
             <span className="mp-num">({product.reviews})</span>
           </span>
@@ -774,16 +835,17 @@ function ProductCard({ product, index, inCart, onAdd }) {
             href={productWhatsAppLink(product)}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex h-11 min-w-0 flex-1 items-center justify-center gap-2 whitespace-nowrap rounded-xl bg-[#34d399] px-3 text-[13px] font-bold text-[#052e1f] transition-colors hover:bg-[#4ade80] active:scale-[0.98]"
+            className="inline-flex h-11 min-w-0 flex-1 items-center justify-center gap-2 whitespace-nowrap rounded-xl bg-[#25d366] px-3 text-[13px] font-bold text-[#04260f] transition-colors hover:bg-[#5ee38f] active:scale-[0.98] group/cta relative overflow-hidden shadow-lg shadow-green-500/25"
           >
-            <MessageCircle className="h-4 w-4 shrink-0" strokeWidth={2.2} />
-            შესაკვეთად დაგვიკავშირდით
+            <span className="absolute inset-y-0 -left-1/2 w-1/3 -skew-x-12 bg-white/40 blur-md transition-all duration-700 group-hover/cta:left-[120%]" aria-hidden="true" />
+            <MessageCircle className="relative h-4 w-4 shrink-0" strokeWidth={2.2} />
+            <span className="relative">შესაკვეთად დაგვიკავშირდით</span>
           </a>
           <button
             type="button"
             onClick={() => onAdd(product.id)}
             className={`grid h-11 w-11 shrink-0 place-items-center rounded-xl border transition-colors ${
-              inCart ? "border-[#ecd08c] bg-[#ecd08c] text-[#2b3340]" : "border-white/[0.16] text-white hover:border-[#ecd08c] hover:text-[#ecd08c]"
+              inCart ? "border-[#fcd34d] bg-[#fcd34d] text-[#1e1b4b]" : "border-white/[0.16] text-white hover:border-[#fcd34d] hover:text-[#fcd34d]"
             }`}
             aria-label={inCart ? `კალათაშია: ${product.name}. კიდევ ერთის დამატება` : `კალათაში დამატება: ${product.name}`}
             title={inCart ? "კალათაშია" : "კალათაში დამატება"}
@@ -825,7 +887,7 @@ function Shop({ filter, cart }) {
               id="mp-sort"
               value={sort}
               onChange={(e) => setSort(e.target.value)}
-              className="h-10 max-w-[10.5rem] appearance-none truncate rounded-full border border-white/[0.14] bg-[#505c6e] pl-4 pr-9 text-[13px] text-white transition-colors focus:border-[#ecd08c]/70 focus:outline-none"
+              className="h-10 max-w-[10.5rem] appearance-none truncate rounded-full border border-white/[0.14] bg-[#43359e] pl-4 pr-9 text-[13px] text-white transition-colors focus:border-[#fcd34d]/70 focus:outline-none"
             >
               {SORTS.map((s) => (
                 <option key={s.id} value={s.id}>
@@ -852,7 +914,7 @@ function Shop({ filter, cart }) {
               <button
                 type="button"
                 onClick={reset}
-                className="mt-5 rounded-full bg-white px-5 py-2 text-sm font-semibold text-[#2b3340] transition-colors hover:bg-slate-100"
+                className="mt-5 rounded-full bg-white px-5 py-2 text-sm font-semibold text-[#1e1b4b] transition-colors hover:bg-slate-100"
               >
                 ფილტრების გასუფთავება
               </button>
@@ -885,7 +947,7 @@ function CartDrawer({ open, onClose, cart }) {
   return (
     <div className="fixed inset-0 z-50" role="dialog" aria-modal="true" aria-label="კალათა">
       <button type="button" className="mp-fade absolute inset-0 bg-[#1e2530]/50 backdrop-blur-sm" onClick={onClose} aria-label="დახურვა" />
-      <aside className="mp-slide-in absolute inset-y-0 right-0 flex w-full max-w-md flex-col border-l border-white/[0.1] bg-[#465163] pb-[env(safe-area-inset-bottom,0px)] pt-[env(safe-area-inset-top,0px)] shadow-2xl">
+      <aside className="mp-slide-in absolute inset-y-0 right-0 flex w-full max-w-md flex-col border-l border-white/[0.14] bg-[#33298a]/95 backdrop-blur-xl pb-[env(safe-area-inset-bottom,0px)] pt-[env(safe-area-inset-top,0px)] shadow-2xl">
         <div className="flex items-center justify-between border-b border-white/[0.08] px-5 py-4">
           <div>
             <h2 className="text-lg font-bold text-white">კალათა</h2>
@@ -906,7 +968,7 @@ function CartDrawer({ open, onClose, cart }) {
             <ShoppingBag className="h-8 w-8 text-slate-300" strokeWidth={1.5} />
             <p className="mt-4 font-semibold text-white">კალათა ცარიელია</p>
             <p className="mt-1 text-sm text-slate-200">დაამატეთ პროდუქტები და გამოგვიგზავნეთ ერთი შეტყობინებით.</p>
-            <button type="button" onClick={onClose} className="mt-6 rounded-full bg-white px-5 py-2 text-sm font-semibold text-[#2b3340] hover:bg-slate-100">
+            <button type="button" onClick={onClose} className="mt-6 rounded-full bg-white px-5 py-2 text-sm font-semibold text-[#1e1b4b] hover:bg-slate-100">
               შოპინგის გაგრძელება
             </button>
           </div>
@@ -914,8 +976,8 @@ function CartDrawer({ open, onClose, cart }) {
           <>
             <ul className="flex-1 space-y-2 overflow-y-auto p-4">
               {cart.lines.map(({ product, qty }) => (
-                <li key={product.id} className="mp-fade flex gap-3 rounded-2xl bg-[#505c6e] p-3">
-                  <div className="h-16 w-20 shrink-0 overflow-hidden rounded-xl bg-[radial-gradient(120%_100%_at_50%_0%,#6a788d_0%,#5a677a_70%)] p-1.5">
+                <li key={product.id} className="mp-fade flex gap-3 rounded-2xl border border-white/[0.1] bg-white/[0.08] p-3">
+                  <div className="h-16 w-20 shrink-0 overflow-hidden rounded-xl bg-[radial-gradient(120%_100%_at_50%_0%,rgba(255,255,255,0.24)_0%,rgba(255,255,255,0.06)_75%)] p-1.5">
                     <ProductVisual visual={product.visual} uid={`c-${product.id}`} label={product.name} />
                   </div>
                   <div className="flex min-w-0 flex-1 flex-col">
@@ -966,7 +1028,7 @@ function CartDrawer({ open, onClose, cart }) {
                 href={cartWhatsAppLink(cart.lines, cart.total)}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mt-4 inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-[#34d399] text-sm font-bold text-[#052e1f] transition-colors hover:bg-[#4ade80]"
+                className="mt-4 inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-[#25d366] text-sm font-bold text-[#04260f] transition-colors hover:bg-[#5ee38f]"
               >
                 <MessageCircle className="h-4 w-4" />
                 შესაკვეთად დაგვიკავშირდით
@@ -988,21 +1050,21 @@ function CartDrawer({ open, onClose, cart }) {
 /* ------------------------------------------------------------------ */
 function Footer() {
   return (
-    <footer className="border-t border-white/[0.08] bg-[#414b5c]">
+    <footer className="border-t border-white/[0.1] bg-black/10 backdrop-blur-md">
       <div className="mx-auto flex max-w-[1400px] flex-col gap-4 px-4 py-6 text-sm text-slate-200 sm:flex-row sm:items-center sm:justify-between sm:px-6">
         <div className="flex items-center gap-3">
           <LogoMark size={24} />
           <span className="text-xs">© {new Date().getFullYear()} mypoker.ge · აზარტული თამაში მხოლოდ 18 წლიდან</span>
         </div>
         <div className="flex flex-wrap items-center gap-4">
-          <a href={`tel:${CONFIG.phoneTel}`} className="mp-num select-all font-semibold text-white hover:text-[#34d399]">
+          <a href={`tel:${CONFIG.phoneTel}`} className="mp-num select-all font-semibold text-white hover:text-[#25d366]">
             {CONFIG.phoneDisplay}
           </a>
           <a
             href={buildWhatsAppLink("გამარჯობა, mypoker.ge-დან გწერთ.")}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 font-semibold text-[#34d399] hover:text-[#4ade80]"
+            className="inline-flex items-center gap-1.5 font-semibold text-[#25d366] hover:text-[#5ee38f]"
           >
             <MessageCircle className="h-4 w-4" />
             WhatsApp
@@ -1043,8 +1105,9 @@ export default function App() {
   };
 
   return (
-    <div id="top" className="mp-sans flex min-h-screen flex-col bg-[#465163] text-white antialiased selection:bg-[#ecd08c]/40">
+    <div id="top" className="mp-sans relative isolate flex min-h-screen flex-col bg-[#2f2675] text-white antialiased selection:bg-[#fcd34d]/40">
       <style>{GLOBAL_CSS}</style>
+      <Aurora />
       <Header cartCount={cart.count} onOpenCart={openCart} query={filter.query} onQuery={filter.setQuery} />
       <div className="flex-1">
         <Shop filter={filter} cart={cartApi} />
@@ -1055,14 +1118,14 @@ export default function App() {
       {toast && (
         <div
           key={toast.id}
-          className="mp-toast fixed bottom-[calc(1.25rem+env(safe-area-inset-bottom,0px))] left-1/2 z-50 flex w-[calc(100%-2rem)] max-w-sm items-center gap-3 rounded-2xl border border-white/[0.12] bg-[#2f3845]/95 py-2.5 pl-3 pr-4 shadow-2xl backdrop-blur-xl"
+          className="mp-toast fixed bottom-[calc(1.25rem+env(safe-area-inset-bottom,0px))] left-1/2 z-50 flex w-[calc(100%-2rem)] max-w-sm items-center gap-3 rounded-2xl border border-white/[0.12] bg-[#241c5e]/95 py-2.5 pl-3 pr-4 shadow-2xl backdrop-blur-xl"
           role="status"
         >
-          <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-[#ecd08c] text-[#2b3340]">
+          <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-[#fcd34d] text-[#1e1b4b]">
             <Check className="h-4 w-4" />
           </span>
           <p className="min-w-0 flex-1 truncate text-[13px] text-white">კალათაში დაემატა: {toast.name}</p>
-          <button type="button" onClick={openCart} className="shrink-0 text-[13px] font-bold text-[#ecd08c] hover:text-[#f6e3b4]">
+          <button type="button" onClick={openCart} className="shrink-0 text-[13px] font-bold text-[#fcd34d] hover:text-[#fde68a]">
             ნახვა
           </button>
         </div>
