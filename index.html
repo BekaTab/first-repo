@@ -163,7 +163,7 @@ a[data-tel],a[data-mail]{display:inline-block;padding-block:10px;margin-block:-1
 .svc-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:clamp(18px,2.4vw,36px)}
 .svc-ico{width:40px;height:40px;fill:none;stroke:var(--c-accent);stroke-width:1.2;stroke-linecap:round;stroke-linejoin:round;transition:stroke .45s ease}
 .svc-no{font-size:13px;letter-spacing:.16em;color:var(--c-gold)}
-.svc-label{font-family:'Bodoni Moda',serif;font-style:italic;font-size:15px;color:var(--c-accent);transition:color .45s ease}
+.svc-label{font-family:'Hanken Grotesk','Noto Sans Georgian',sans-serif;font-weight:600;font-size:13.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--c-accent);transition:color .45s ease}
 .svc-title{margin:0;font-family:var(--f-display);font-weight:400;font-size:clamp(22px,2vw,29px);line-height:1.25;letter-spacing:-.01em;text-wrap:balance}
 .svc-text{margin:0;font-size:15px;line-height:1.8;color:#3C4658;transition:color .45s ease}
 .svc-more{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:auto;padding-top:22px;border-top:1px solid color-mix(in srgb,var(--c-navy) 12%,transparent);font-size:14px;font-weight:500;letter-spacing:.02em;transition:border-color .45s ease}
@@ -355,9 +355,8 @@ a[data-tel],a[data-mail]{display:inline-block;padding-block:10px;margin-block:-1
 @keyframes gflow{to{stroke-dashoffset:-22}}
 @keyframes gpulse{0%{opacity:.9;transform:scale(.5)}100%{opacity:0;transform:scale(2.8)}}
 @media (prefers-reduced-motion: reduce){.svc-globe .g-route,.svc-globe .g-pulse{animation:none}}
-/* statement as a pull quote: gold rail, large quote mark, navy-to-blue text */
-.svc-copy .svc-statement{position:relative;margin:6px 0 0;padding:clamp(26px,2.6vw,36px) clamp(24px,3.6vw,60px) clamp(24px,2.4vw,34px) clamp(24px,2.8vw,40px);border-radius:var(--r);background:linear-gradient(120deg,var(--c-ice) 0%,#FFFFFF 85%);box-shadow:inset 3px 0 0 var(--c-gold);font-size:clamp(20px,1.75vw,26px);line-height:1.55;color:var(--c-navy);background-clip:padding-box}
-.svc-copy .svc-statement::before{content:"";position:absolute;top:-14px;right:22px;width:clamp(40px,3.4vw,52px);aspect-ratio:48/36;background:no-repeat center/contain url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 36'%3E%3Cpath fill='%23C2A57A' d='M0 36V22C0 9 7 2 19 0l2 5C13 7 10 12 10 18h9v18zm27 0V22C27 9 34 2 46 0l2 5c-8 2-11 7-11 13h9v18z'/%3E%3C/svg%3E");opacity:.9;pointer-events:none}
+/* statement as a pull quote: gold rail on a soft panel */
+.svc-copy .svc-statement{position:relative;margin:6px 0 0;padding:clamp(24px,2.4vw,34px) clamp(24px,3vw,44px);border-radius:var(--r);background:linear-gradient(120deg,var(--c-ice) 0%,#FFFFFF 85%);box-shadow:inset 3px 0 0 var(--c-gold);font-size:clamp(20px,1.75vw,26px);line-height:1.55;color:var(--c-navy);background-clip:padding-box}
 .svc-copy .svc-h2{display:flex;align-items:center;gap:.32em}
 .svc-copy .svc-h2::after{content:"";flex:none;width:.42em;height:.42em;margin-top:.12em;background:no-repeat center/contain url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 20'%3E%3Cpath d='M2 2l8 8-8 8' fill='none' stroke='%23C2A57A' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")}
 @media (max-width: 900px){.svc-intro{grid-template-columns:minmax(0,1fr);row-gap:36px}.svc-globe{order:-1;min-height:0;aspect-ratio:1/1;max-height:420px}}
@@ -475,8 +474,7 @@ a[data-tel],a[data-mail]{display:inline-block;padding-block:10px;margin-block:-1
 <div class="wrap">
 <div class="svc-panel">
 <div class="svc-intro">
-<div class="svc-copy"><span class="hero-tag"><span data-edit="about.eyebrow">ჩვენ შესახებ</span></span>
-<h2 data-edit="services.title" class="svc-h2">სერვისები</h2>
+<div class="svc-copy"><h2 data-edit="services.title" class="svc-h2">სერვისები</h2>
 <p data-edit="about.statement" class="svc-statement rv">გაგვიზიარეთ თქვენი მოთხოვნა და ჩვენ უზრუნველვყოფთ სასურველი პროდუქციის მოძიებასა და მოწოდებას.</p>
 <ul class="svc-feats"><li><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M5 21V8l7-4 7 4v13M9 21v-6h6v6M9 11h.01M15 11h.01"/></svg></span><p data-edit="about.text" class="about-text">EIB GROUP სავაჭრო და მომარაგების კომპანიაა. ბიზნესებს საზღვარგარეთისა და ადგილობრივი მწარმოებლებისგან ვაწვდით მათთვის სასურველ პროდუქციას.</p></li>
 <li><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><path d="M4 7.5l8 4.5 8-4.5M12 12v9"/></svg></span><p data-edit="about.statement2" class="svc-detail rv">თითოეულ ეტაპს, ლოგისტიკიდან საბაჟო გაფორმებამდე, სრულად ჩვენ ვმართავთ. თქვენ იღებთ პროდუქციას დანიშნულების ადგილზე, მაქსიმალური კომფორტითა და უმოკლეს ვადებში.</p></li></ul></div>
