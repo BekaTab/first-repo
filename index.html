@@ -256,6 +256,35 @@ a[data-tel],a[data-mail]{display:inline-block;padding-block:10px;margin-block:-1
 .net-node-o{fill:var(--c-navy);stroke:var(--c-gold);stroke-width:1.2}
 @keyframes net-flow{to{stroke-dashoffset:-32}}
 @media (prefers-reduced-motion: reduce){.net-flow{animation:none}}
+/* ---- stats header panel ---- */
+.stats-panel{display:grid !important;grid-template-columns:minmax(0,5fr) minmax(0,7fr) !important;align-items:center;column-gap:0 !important;padding:clamp(32px,4.2vw,68px);border-radius:var(--r);border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.035);box-shadow:inset 0 2px 0 var(--c-gold)}
+.stats-panel > div{grid-column:1 !important;padding-right:clamp(0px,4.4vw,80px)}
+.stats-panel h2{font-size:clamp(32px,3.3vw,50px) !important;line-height:1.15 !important;text-wrap:balance}
+.stats-panel .stats-note{grid-column:2 !important;align-self:center;margin:0;padding:6px 0 6px clamp(36px,4.4vw,80px) !important;border:0 !important;border-left:1px solid rgba(255,255,255,.12) !important;border-radius:0 !important;background:none !important;box-shadow:none !important;font-size:16.5px}
+.stats-panel .stats-note::before{left:-4.5px !important;top:calc(50% - 4px) !important}
+@media (max-width: 900px){.stats-panel{grid-template-columns:minmax(0,1fr) !important;row-gap:28px !important}.stats-panel > div{padding-right:0}.stats-panel .stats-note{grid-column:1 !important;padding:24px 0 0 !important;border-left:0 !important;border-top:1px solid rgba(255,255,255,.12) !important}.stats-panel .stats-note::before{left:0 !important;top:-4.5px !important}}
+/* ---- experience: light, one panel ---- */
+#experience{background:var(--c-mist) !important;color:var(--c-navy) !important}
+.exp-panel{background:#FFFFFF;border-radius:var(--r);box-shadow:inset 0 2px 0 var(--c-gold),0 34px 70px -50px color-mix(in srgb,var(--c-navy) 55%,transparent);padding:clamp(32px,4.6vw,76px)}
+#eib-stats .stats-panel{margin-bottom:clamp(72px,8vw,120px) !important;padding:0;border:0;background:none;box-shadow:none;border-radius:0}
+#eib-stats .stats-panel h2{color:var(--c-navy)}
+#eib-stats .stats-panel .stats-note{color:#3C4658;border-left-color:color-mix(in srgb,var(--c-navy) 10%,transparent) !important}
+#eib-stats .tag-dark{border-color:color-mix(in srgb,var(--c-navy) 16%,transparent) !important;color:#5A6475 !important}
+#eib-stats .stats3{gap:0;align-items:stretch !important;border-top:1px solid color-mix(in srgb,var(--c-navy) 10%,transparent)}
+#eib-stats .stat-card{margin-top:0 !important;transform:none !important;border:0 !important;border-radius:0;background:none;box-shadow:none;padding:clamp(28px,3vw,40px) clamp(20px,2.6vw,40px) 0 !important}
+#eib-stats .stat-card + .stat-card{border-left:1px solid color-mix(in srgb,var(--c-navy) 10%,transparent) !important}
+#eib-stats .stat-card:first-child{padding-left:0 !important}
+#eib-stats [data-edit="stat3.text"]{color:#5A6475 !important}
+#eib-stats .net-node-o{fill:#FFFFFF}
+@media (max-width: 900px){#eib-stats .stat-card{padding:28px 0 !important}#eib-stats .stat-card + .stat-card{border-left:0 !important;border-top:1px solid color-mix(in srgb,var(--c-navy) 10%,transparent) !important}#eib-stats .stats-panel{margin-bottom:48px !important}}
+#eib-stats .net{z-index:2}
+#eib-stats .stats-panel h2{font-size:clamp(30px,2.9vw,44px) !important}
+#eib-stats .stat-card > span:first-child{font-size:clamp(76px,8vw,132px) !important}
+#eib-stats .stat-card > span[data-edit="stat3.word"]{font-size:clamp(48px,4.6vw,76px) !important}
+/* ---- contact: one panel ---- */
+#contact{background:var(--c-ice) !important}
+.contact-panel{background:#FFFFFF;border-radius:var(--r);box-shadow:inset 0 2px 0 var(--c-gold),0 34px 70px -50px color-mix(in srgb,var(--c-navy) 55%,transparent);padding:clamp(32px,4.6vw,76px)}
+.contact-panel .contact-head{margin-bottom:clamp(40px,5vw,72px);padding-bottom:clamp(32px,4vw,52px);border-bottom:1px solid color-mix(in srgb,var(--c-navy) 10%,transparent)}
 /* ---- scroll reveals (only when JS + IntersectionObserver are available) ---- */
 .js-rv .rv{opacity:0;translate:0 32px;transition:opacity 1s ease,translate 1.1s cubic-bezier(.16,.84,.24,1)}
 .js-rv .rv.in{opacity:1;translate:none}
@@ -400,7 +429,8 @@ a[data-tel],a[data-mail]{display:inline-block;padding-block:10px;margin-block:-1
 <section id="experience" data-section="experience" class="layer" style="background: var(--c-navy); color: #FFFFFF; padding: clamp(96px, 13vw, 200px) 0 clamp(120px, 15vw, 240px); overflow: hidden">
 <div class="wrap" id="eib-stats">
 <svg class="net" aria-hidden="true"></svg>
-<div class="g" style="row-gap: 32px; margin-bottom: clamp(72px, 9vw, 140px)">
+<div class="exp-panel">
+<div class="g stats-panel" style="row-gap: 32px; margin-bottom: clamp(72px, 9vw, 140px)">
 <div class="c-1-5 rv" style="display: flex; flex-direction: column; gap: 20px">
 <span class="hero-tag tag-dark"><span data-edit="stats.eyebrow">გამოცდილება და ციფრები</span></span>
 <h2 data-edit="stats.title" style="margin: 0; font-family: 'Noto Serif Georgian', Georgia, serif; font-weight: 300; font-size: clamp(34px, 4vw, 58px); line-height: 1.15; letter-spacing: -0.02em">ნდობა, რომელიც ციფრებით იზომება</h2>
@@ -409,18 +439,19 @@ a[data-tel],a[data-mail]{display:inline-block;padding-block:10px;margin-block:-1
 </div>
 
 <div class="stats3" style="align-items: start">
-<div data-px="s1" class="stat-card" style="will-change: transform; border-top: 1px solid rgba(255,255,255,0.18); padding-top: 28px; display: flex; flex-direction: column; gap: 18px">
+<div data-fixed class="stat-card" style="will-change: transform; border-top: 1px solid rgba(255,255,255,0.18); padding-top: 28px; display: flex; flex-direction: column; gap: 18px">
 <span style="font-family: 'Bodoni Moda', Didot, serif; font-weight: 400; font-size: clamp(96px, 11vw, 168px); line-height: 0.9; letter-spacing: -0.03em; font-variant-numeric: lining-nums"><span data-edit="stat1.num">7</span><span style="color: var(--c-gold)">+</span></span>
 <span class="rv" data-edit="stat1.label" style="font-size: 16px; font-weight: 500">წლიანი გამოცდილება</span>
 </div>
-<div data-px="s2" class="stat-card" style="will-change: transform; border-top: 1px solid rgba(255,255,255,0.18); padding-top: 28px; display: flex; flex-direction: column; gap: 18px; margin-top: clamp(0px, 8vw, 120px)">
+<div data-fixed class="stat-card" style="will-change: transform; border-top: 1px solid rgba(255,255,255,0.18); padding-top: 28px; display: flex; flex-direction: column; gap: 18px; margin-top: clamp(0px, 8vw, 120px)">
 <span style="font-family: 'Bodoni Moda', Didot, serif; font-weight: 400; font-size: clamp(96px, 11vw, 168px); line-height: 0.9; letter-spacing: -0.03em; font-variant-numeric: lining-nums"><span data-edit="stat2.num">150</span><span style="color: var(--c-gold)">+</span></span>
 <span class="rv" data-edit="stat2.label" style="font-size: 16px; font-weight: 500">წარმატებული პროექტი</span>
 </div>
-<div data-px="s3" class="stat-card" style="will-change: transform; border-top: 1px solid rgba(255,255,255,0.18); padding-top: 28px; display: flex; flex-direction: column; gap: 18px; margin-top: clamp(0px, 4vw, 60px)">
+<div data-fixed class="stat-card" style="will-change: transform; border-top: 1px solid rgba(255,255,255,0.18); padding-top: 28px; display: flex; flex-direction: column; gap: 18px; margin-top: clamp(0px, 4vw, 60px)">
 <span data-edit="stat3.word" style="font-family: 'Bodoni Moda', Didot, serif; font-style: italic; font-weight: 400; font-size: clamp(56px, 6vw, 92px); line-height: 1.05; letter-spacing: -0.02em; color: var(--c-gold)">Trusted</span>
 <span class="rv" data-edit="stat3.label" style="font-size: 16px; font-weight: 500">სანდო პარტნიორი</span>
 <span data-edit="stat3.text" style="font-size: 14px; line-height: 1.7; color: #AEB7C6">ვიცავთ შეთანხმებულ ვადას, ფასსა და ხარისხს.</span>
+</div>
 </div>
 </div>
 </div>
@@ -430,6 +461,7 @@ a[data-tel],a[data-mail]{display:inline-block;padding-block:10px;margin-block:-1
 <!-- CONTACT -->
 <section id="contact" class="layer" style="background: #FFFFFF; padding: clamp(96px, 13vw, 200px) 0">
 <div class="wrap">
+<div class="contact-panel">
 <div class="contact-head rv">
 <span class="hero-tag"><span data-edit="contact.eyebrow">კონტაქტი</span></span>
 <h2 data-edit="contact.title">მოგვიყევით, რა გჭირდებათ</h2>
@@ -485,6 +517,7 @@ a[data-tel],a[data-mail]{display:inline-block;padding-block:10px;margin-block:-1
 <span data-edit="form.required" style="font-size: 13px; color: #5A6475">* სავალდებულო ველი</span>
 </div>
 </form>
+</div>
 </div>
 </div>
 </section>
@@ -546,10 +579,9 @@ a[data-tel],a[data-mail]{display:inline-block;padding-block:10px;margin-block:-1
     svg.setAttribute('viewBox', '0 0 ' + b.width + ' ' + b.height);
     while (svg.firstChild) svg.removeChild(svg.firstChild);
     var r = function (e) { var q = e.getBoundingClientRect(); return { l: q.left - b.left, r: q.right - b.left, t: q.top - b.top, b: q.bottom - b.top, cx: q.left - b.left + q.width / 2, cy: q.top - b.top + q.height / 2 }; };
-    var T = r(title), Nt = r(note), C = cards.map(r), links = [];
-    var side = Nt.l > T.r + 40;                       // desktop: note sits to the right of the title
-    if (side) links.push([T.r + 18, T.cy, Nt.l, Nt.cy, 'h']);
-    else links.push([T.l + 12, T.b + 14, Nt.l + 28, Nt.t, 'v']);
+    var panel = box.querySelector('.stats-panel');
+    var T = r(title), Nt = r(panel || note), C = cards.map(r), links = [];
+    if (!panel) { if (Nt.l > T.r + 40) links.push([T.r + 18, T.cy, Nt.l, Nt.cy, 'h']); else links.push([T.l + 12, T.b + 14, Nt.l + 28, Nt.t, 'v']); }
     var stacked = C.length > 1 && C[1].t > C[0].b - 4;
     if (stacked) {
       links.push([Nt.l + 28, Nt.b, C[0].l + 28, C[0].t, 'v']);
