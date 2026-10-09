@@ -1,6 +1,6 @@
 // Builds a standalone preview page from MyPokerStore.jsx (React, Tailwind and Lucide from CDNs).
 // Usage: node mypoker/build.mjs [out.html] [--fragment]
-import { readFileSync, writeFileSync } from "node:fs";
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -38,5 +38,6 @@ const html = fragment
   ? `${head}\n${body}\n`
   : `<!doctype html>\n<html lang="ka">\n<head>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">\n${head}\n</head>\n<body>\n${body}\n</body>\n</html>\n`;
 
+mkdirSync(dirname(out), { recursive: true });
 writeFileSync(out, html);
 console.log(`wrote ${out}`);
