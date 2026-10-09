@@ -367,6 +367,9 @@ a[data-tel],a[data-mail]{display:inline-block;padding-block:10px;margin-block:-1
 .hp-field{position:absolute !important;left:-10000px;width:1px;height:1px;overflow:hidden}
 @media (max-width: 374px){.hdr-row{gap:8px !important}.hdr-row > div{gap:8px !important}.hdr-row > div > span{gap:6px !important;letter-spacing:.06em !important}.hdr-cta{padding:0 9px !important;font-size:11.5px !important;letter-spacing:0 !important}.hdr-logo span[data-wordmark]:first-of-type{font-size:34px !important;letter-spacing:.12em !important}}
 @media (max-width: 400px){.scrub-chip{letter-spacing:.14em;padding:8px 10px;gap:8px}.scrub-hint > span:first-child{display:none}}
+/* ---- body text justified to both edges (last line follows the block's own alignment) ---- */
+[data-edit="hero.lead"],[data-edit$=".text"],[data-edit="about.statement2"],.blk-text{text-align:justify !important;text-justify:inter-word;hyphens:auto;-webkit-hyphens:auto}
+[data-edit="stats.text"],[data-edit="stat3.text"]{text-align-last:center}
 /* ---- scroll reveals (only when JS + IntersectionObserver are available) ---- */
 .js-rv .rv{opacity:0;translate:0 32px;transition:opacity 1s ease,translate 1.1s cubic-bezier(.16,.84,.24,1)}
 .js-rv .rv.in{opacity:1;translate:none}
@@ -973,6 +976,18 @@ a[data-tel],a[data-mail]{display:inline-block;padding-block:10px;margin-block:-1
   function esc(s) {
     return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   }
+  // Georgian has no browser hyphenation: insert soft hyphens at syllable starts (consonant + vowel)
+  // so justified text can break long words instead of opening wide gaps. Shared by deploy and preview.
+  var HYPH_KEYS = /^(hero\.lead|about\.statement2|.+\.text)$/;
+  function hyphenate(s) {
+    return String(s).replace(/[ა-ჿ]{7,}/g, function (w) {
+      var V = 'აეიოუ', out = '', last = 0;
+      for (var i = 2; i < w.length - 2; i++) {
+        if (V.indexOf(w[i]) < 0 && V.indexOf(w[i + 1]) >= 0 && i - last >= 2 && /[აეიოუ]/.test(w.slice(last, i))) { out += w.slice(last, i) + '­'; last = i; }
+      }
+      return out + w.slice(last);
+    });
+  }
   function renderBlocks(blocks, lang, slot, resolve) {
     if (!Array.isArray(blocks)) return '';
     return blocks.filter(function (b) {
@@ -982,7 +997,7 @@ a[data-tel],a[data-mail]{display:inline-block;padding-block:10px;margin-block:-1
       var bg = BG[b.bg] || BG.white;
       var img = typeof b.image === 'string' && b.image ? resolve(b.image) : '';
       var paras = String(t.text || '').split(/\n\s*\n/).map(function (x) { return x.trim(); }).filter(Boolean)
-        .map(function (x) { return '<p class="blk-text">' + esc(x).replace(/\n/g, '<br>') + '</p>'; }).join('');
+        .map(function (x) { return '<p class="blk-text">' + esc(hyphenate(x)).replace(/\n/g, '<br>') + '</p>'; }).join('');
       var head = (t.eyebrow ? '<span class="blk-eyebrow">' + esc(t.eyebrow) + '</span>' : '') +
                  (t.title ? '<h2 class="blk-title">' + esc(t.title) + '</h2>' : '');
       if (!head && !paras && !img) return '';   // nothing to show in this language
@@ -994,6 +1009,7 @@ a[data-tel],a[data-mail]{display:inline-block;padding-block:10px;margin-block:-1
     }).filter(Boolean).join('\n');
   }
   root.eibRenderBlocks = renderBlocks;
+  root.eibHyphenate = function (key, s) { return HYPH_KEYS.test(key) ? hyphenate(s) : s; };
 })(typeof window !== 'undefined' ? window : globalThis);
 
 (function () {
@@ -1003,7 +1019,7 @@ a[data-tel],a[data-mail]{display:inline-block;padding-block:10px;margin-block:-1
     var lang = document.documentElement.lang, t = c[lang] || {}, sh = c.shared || {};
     document.querySelectorAll('[data-edit]').forEach(function (el) {
       var k = el.getAttribute('data-edit'), v = k.indexOf('shared.') === 0 ? sh[k.slice(7)] : t[k];
-      if (typeof v === 'string') el.textContent = v;
+      if (typeof v === 'string') el.textContent = window.eibHyphenate ? window.eibHyphenate(k, v) : v;
     });
     document.querySelectorAll('[data-tel]').forEach(function (a) { a.setAttribute('href', 'tel:' + digits(sh.phone)); });
     var wa = (sh.phone || '').replace(/\D/g, '');
