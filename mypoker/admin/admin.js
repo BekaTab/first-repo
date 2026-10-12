@@ -83,20 +83,30 @@
   // ---------------------------------------------------------------- state
   var published = null, draft = null, publishedSha = null, busy = false;
   var pending = {}; // images uploaded here, not yet published: { 'images/x.webp': { b64, dataUrl } }
-  var editingId = null, editImage = '';
+  var editingId = null, editImages = [];
+  var MAX_IMAGES = 10;
 
+  // ფოტოები: [{ src: 'images/x.webp' (დიდი), thumb: 'images/x-sm.webp' (ბარათისთვის) }]; ძველი ფორმატი — ერთი `image`
+  function normaliseImages(p) {
+    var list = Array.isArray(p.images) ? p.images : (typeof p.image === 'string' && p.image ? [p.image] : []);
+    return list.map(function (x) {
+      if (typeof x === 'string') return { src: x, thumb: x };
+      return x && typeof x.src === 'string' ? { src: x.src, thumb: typeof x.thumb === 'string' ? x.thumb : x.src } : null;
+    }).filter(function (x) { return x && x.src; }).slice(0, MAX_IMAGES);
+  }
   function normalise(d) {
     d = d && typeof d === 'object' ? d : {};
     var s = d.settings || {};
-    var out = { settings: { phoneDisplay: String(s.phoneDisplay || ''), phoneTel: String(s.phoneTel || ''), whatsappNumber: String(s.whatsappNumber || '') }, products: [] };
+    var free = Math.round(Number(s.freeShippingFrom) || 0);
+    var out = { settings: { phoneDisplay: String(s.phoneDisplay || ''), phoneTel: String(s.phoneTel || ''), whatsappNumber: String(s.whatsappNumber || ''), freeShippingFrom: free > 0 ? free : null }, products: [] };
     (Array.isArray(d.products) ? d.products : []).forEach(function (p) {
       if (!p || !p.id) return;
       var price = Math.round(Number(p.price) || 0), sale = Math.round(Number(p.salePrice) || 0);
       var o = {
         id: String(p.id), name: String(p.name || ''), category: CAT_LABEL[p.category] ? p.category : 'accessories', price: price,
         salePrice: sale > 0 ? sale : null, saleEnds: /^\d{4}-\d{2}-\d{2}$/.test(p.saleEnds || '') ? p.saleEnds : '',
-        badge: String(p.badge || ''), spec: String(p.spec || ''), image: typeof p.image === 'string' ? p.image : '',
-        inStock: p.inStock !== false, visible: p.visible !== false
+        badge: String(p.badge || ''), spec: String(p.spec || ''), description: String(p.description || ''),
+        images: normaliseImages(p), inStock: p.inStock !== false, visible: p.visible !== false
       };
       if (p.visual) o.visual = p.visual;
       out.products.push(o);
@@ -207,8 +217,8 @@
 
   // ---------------------------------------------------------------- products list
   function imageSrc(path) { return pending[path] ? pending[path].dataUrl : (path ? '../' + path : ''); }
-  function thumb(p, img) {
-    var src = imageSrc(img !== undefined ? img : p.image);
+  function thumb(p) {
+    var src = p.images && p.images[0] ? imageSrc(p.images[0].thumb) : '';
     return el('div', { class: 'thumb' }, [src ? el('img', { src: src, alt: '' }) : (CAT_ICON[p.category] || '♠')]);
   }
   function priceCell(p) {
@@ -272,11 +282,23 @@
   }
   fillCats($('qCat'), true, 'ყველა კატეგორია'); fillCats($('fCat'), false); fillCats($('saleScope'), true, 'ყველა პროდუქტი');
 
-  function renderEditThumb() {
-    var box = $('fThumb'); box.innerHTML = '';
-    var src = imageSrc(editImage);
-    box.appendChild(src ? el('img', { src: src, alt: '' }) : document.createTextNode(CAT_ICON[$('fCat').value] || '♠'));
-    $('fImageRemove').hidden = !editImage;
+  function renderEditImages() {
+    var box = $('fImages'); box.innerHTML = '';
+    if (!editImages.length) box.appendChild(el('div', { class: 'thumb empty' }, [CAT_ICON[$('fCat').value] || '♠']));
+    editImages.forEach(function (img, i) {
+      var moveImg = function (d) { var j = i + d; if (j < 0 || j >= editImages.length) return; var t = editImages[i]; editImages[i] = editImages[j]; editImages[j] = t; renderEditImages(); };
+      box.appendChild(el('div', { class: 'gimg' }, [
+        el('div', { class: 'thumb' }, [el('img', { src: imageSrc(img.thumb), alt: '' })]),
+        i === 0 ? el('span', { class: 'tag dark gmain', text: 'მთავარი' }) : null,
+        el('div', { class: 'gact' }, [
+          el('button', { class: 'btn ghost icon', type: 'button', title: 'მარცხნივ', 'aria-label': 'მარცხნივ', disabled: i === 0, onclick: function () { moveImg(-1); } }, ['←']),
+          el('button', { class: 'btn ghost icon danger', type: 'button', title: 'წაშლა', 'aria-label': 'ფოტოს წაშლა', onclick: function () { editImages.splice(i, 1); renderEditImages(); } }, ['✕']),
+          el('button', { class: 'btn ghost icon', type: 'button', title: 'მარჯვნივ', 'aria-label': 'მარჯვნივ', disabled: i === editImages.length - 1, onclick: function () { moveImg(1); } }, ['→'])
+        ])
+      ]));
+    });
+    $('fImageCount').textContent = editImages.length + ' / ' + MAX_IMAGES;
+    $('fImageAdd').hidden = editImages.length >= MAX_IMAGES;
   }
   function openEditor(id) {
     editingId = id;
@@ -286,45 +308,60 @@
     $('fCat').value = p ? p.category : ($('qCat').value !== 'all' ? $('qCat').value : 'chips');
     $('fBadge').value = p ? p.badge : '';
     $('fSpec').value = p ? p.spec : '';
+    $('fDesc').value = p ? p.description : '';
     $('fPrice').value = p ? p.price : '';
     $('fSale').value = p && p.salePrice ? p.salePrice : '';
     $('fSaleEnds').value = p ? p.saleEnds : '';
     $('fStock').checked = p ? p.inStock : true;
     $('fVisible').checked = p ? p.visible : true;
-    editImage = p ? p.image : '';
+    editImages = p ? clone(p.images) : [];
     $('fErr').hidden = true;
-    renderEditThumb();
+    renderEditImages();
     $('dlg').showModal();
     setTimeout(function () { $('fName').focus(); }, 30);
   }
   $('addProduct').addEventListener('click', function () { openEditor(null); });
   $('dlgClose').addEventListener('click', function () { $('dlg').close(); });
   $('dlgCancel').addEventListener('click', function () { $('dlg').close(); });
-  $('fCat').addEventListener('change', renderEditThumb);
-  $('fImageRemove').addEventListener('click', function () { editImage = ''; renderEditThumb(); });
+  $('fCat').addEventListener('change', renderEditImages);
 
-  // ფოტო მცირდება 1200 პიქსელამდე და ინახება WebP-ად (ან JPEG-ად, თუ ბრაუზერი WebP-ს ვერ ქმნის)
+  // თითო ფოტო ინახება ორ ზომად WebP-ში (ან JPEG-ში, თუ ბრაუზერი WebP-ს ვერ ქმნის):
+  // დიდი — 2000 პიქსელამდე, პროდუქტის გვერდისთვის; პატარა — 640 პიქსელამდე, მაღაზიის ბარათისთვის
+  function encode(img, max, quality) {
+    var scale = Math.min(1, max / Math.max(img.width, img.height));
+    var c = document.createElement('canvas'); c.width = Math.max(1, Math.round(img.width * scale)); c.height = Math.max(1, Math.round(img.height * scale));
+    var ctx = c.getContext('2d'); ctx.imageSmoothingQuality = 'high'; ctx.drawImage(img, 0, 0, c.width, c.height);
+    var dataUrl = c.toDataURL('image/webp', quality);
+    if (dataUrl.indexOf('data:image/webp') === 0) return { dataUrl: dataUrl, ext: 'webp' };
+    ctx.globalCompositeOperation = 'destination-over'; ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, c.width, c.height);
+    return { dataUrl: c.toDataURL('image/jpeg', quality), ext: 'jpg' };
+  }
+  function loadImage(file) {
+    return new Promise(function (resolve, reject) {
+      var img = new Image(), url = URL.createObjectURL(file);
+      img.onload = function () { URL.revokeObjectURL(url); resolve(img); };
+      img.onerror = function () { URL.revokeObjectURL(url); reject(new Error('bad image')); };
+      img.src = url;
+    });
+  }
   $('fImage').addEventListener('change', function () {
-    var file = this.files && this.files[0]; this.value = '';
-    if (!file) return;
-    if (!/^image\//.test(file.type)) { showErr('აირჩიეთ სურათის ფაილი.'); return; }
-    var img = new Image(), url = URL.createObjectURL(file);
-    img.onload = function () {
-      var max = 1200, scale = Math.min(1, max / Math.max(img.width, img.height));
-      var c = document.createElement('canvas'); c.width = Math.round(img.width * scale); c.height = Math.round(img.height * scale);
-      var ctx = c.getContext('2d'); ctx.drawImage(img, 0, 0, c.width, c.height);
-      URL.revokeObjectURL(url);
-      var dataUrl = c.toDataURL('image/webp', 0.86), ext = 'webp';
-      if (dataUrl.indexOf('data:image/webp') !== 0) {
-        ctx.globalCompositeOperation = 'destination-over'; ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, c.width, c.height);
-        dataUrl = c.toDataURL('image/jpeg', 0.86); ext = 'jpg';
-      }
-      var path = 'images/' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 6) + '.' + ext;
-      pending[path] = { b64: dataUrl.split(',')[1], dataUrl: dataUrl };
-      editImage = path; renderEditThumb();
-    };
-    img.onerror = function () { URL.revokeObjectURL(url); showErr('სურათი ვერ წაიკითხა. სცადეთ სხვა ფაილი.'); };
-    img.src = url;
+    var files = Array.prototype.slice.call(this.files || []); this.value = '';
+    var room = MAX_IMAGES - editImages.length;
+    if (!files.length) return;
+    if (files.some(function (f) { return !/^image\//.test(f.type); })) { showErr('აირჩიეთ მხოლოდ სურათის ფაილები.'); return; }
+    if (files.length > room) showErr('პროდუქტზე მაქსიმუმ ' + MAX_IMAGES + ' ფოტოა. დაემატა პირველი ' + room + '.');
+    files = files.slice(0, room);
+    $('fImageAdd').classList.add('busy');
+    files.reduce(function (chain, file) {
+      return chain.then(function () { return loadImage(file); }).then(function (img) {
+        var base = 'images/' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 6);
+        var big = encode(img, 2000, 0.9), small = encode(img, 640, 0.82);
+        var src = base + '.' + big.ext, th = base + '-sm.' + small.ext;
+        pending[src] = { b64: big.dataUrl.split(',')[1], dataUrl: big.dataUrl };
+        pending[th] = { b64: small.dataUrl.split(',')[1], dataUrl: small.dataUrl };
+        editImages.push({ src: src, thumb: th }); renderEditImages();
+      }, function () { showErr('ერთი ან მეტი სურათი ვერ წაიკითხა. სცადეთ სხვა ფაილი.'); });
+    }, Promise.resolve()).then(function () { $('fImageAdd').classList.remove('busy'); });
   });
   function showErr(m) { var e = $('fErr'); e.textContent = m; e.hidden = false; }
   $('pform').addEventListener('input', function () { $('fErr').hidden = true; });
@@ -339,9 +376,10 @@
     var p = editingId ? draft.products.find(function (x) { return x.id === editingId; }) : null;
     if (!p) { p = { id: slug(name) }; draft.products.unshift(p); }
     p.name = name; p.category = $('fCat').value; p.badge = $('fBadge').value.trim(); p.spec = $('fSpec').value.trim();
+    p.description = $('fDesc').value.replace(/\s+$/, '');
     p.price = price; p.salePrice = sale; p.saleEnds = sale ? $('fSaleEnds').value : '';
-    p.image = editImage; p.inStock = $('fStock').checked; p.visible = $('fVisible').checked;
-    if (p.image) delete p.visual;
+    p.images = clone(editImages); delete p.image; p.inStock = $('fStock').checked; p.visible = $('fVisible').checked;
+    if (p.images.length) delete p.visual;
     $('dlg').close(); refresh();
   });
 
@@ -378,7 +416,7 @@
   }
 
   // ---------------------------------------------------------------- settings
-  function fillSettings() { $('setPhone').value = draft.settings.phoneDisplay; $('setWa').value = draft.settings.whatsappNumber; }
+  function fillSettings() { $('setPhone').value = draft.settings.phoneDisplay; $('setWa').value = draft.settings.whatsappNumber; $('setFree').value = draft.settings.freeShippingFrom || ''; }
   function settingsError() {
     if (!draft) return '';
     var wa = draft.settings.whatsappNumber;
@@ -389,11 +427,13 @@
     draft.settings.phoneDisplay = $('setPhone').value.trim();
     draft.settings.phoneTel = draft.settings.phoneDisplay.replace(/[^\d+]/g, '');
     draft.settings.whatsappNumber = $('setWa').value.trim();
+    var free = Math.round(Number($('setFree').value) || 0); draft.settings.freeShippingFrom = free > 0 ? free : null;
     var m = settingsError(), box = $('setMsg'); box.textContent = m; box.hidden = !m;
     refresh();
   }
   $('setPhone').addEventListener('input', onSettings);
   $('setWa').addEventListener('input', onSettings);
+  $('setFree').addEventListener('input', onSettings);
 
   // ---------------------------------------------------------------- discard / publish
   $('discard').addEventListener('click', function () {
@@ -424,7 +464,7 @@
       var parent = ref.object.sha;
       return gh('GET', repoPath('/git/commits/' + parent)).then(function (commit) {
         var files = [{ path: DATA_PATH, b64: b64FromBytes(enc.encode(JSON.stringify(finalData, null, 2) + '\n')) }];
-        var used = finalData.products.map(function (p) { return p.image; });
+        var used = []; finalData.products.forEach(function (p) { (p.images || []).forEach(function (im) { used.push(im.src, im.thumb); }); });
         Object.keys(pending).forEach(function (path) { if (used.indexOf(path) >= 0) files.push({ path: IMAGE_DIR + '/' + path.replace(/^images\//, ''), b64: pending[path].b64 }); });
         return Promise.all(files.map(function (f) {
           return gh('POST', repoPath('/git/blobs'), { content: f.b64, encoding: 'base64' }).then(function (blob) { return { path: f.path, mode: '100644', type: 'blob', sha: blob.sha }; });

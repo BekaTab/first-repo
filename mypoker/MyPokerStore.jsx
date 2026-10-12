@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useReducer, useState } from "react";
+import React, { useEffect, useMemo, useReducer, useRef, useState } from "react";
 import {
   Phone,
   Search,
@@ -10,6 +10,11 @@ import {
   ChevronDown,
   Trash2,
   Check,
+  ChevronLeft,
+  ChevronRight,
+  ArrowLeft,
+  Maximize2,
+  Truck,
 } from "lucide-react";
 
 /* ------------------------------------------------------------------ */
@@ -31,6 +36,7 @@ const CONFIG = {
   phoneDisplay: DATA.settings.phoneDisplay || "",
   phoneTel: DATA.settings.phoneTel || "",
   whatsappNumber: String(DATA.settings.whatsappNumber || "").replace(/\D/g, ""),
+  freeShippingFrom: Math.round(Number(DATA.settings.freeShippingFrom) || 0),
   currency: "₾",
   storageKey: "mypoker.cart.v1",
 };
@@ -73,6 +79,18 @@ const DEFAULT_VISUAL = {
 /* დღევანდელი თარიღი თბილისის დროით, ფორმატში YYYY-MM-DD */
 const todayInTbilisi = () => new Date().toLocaleDateString("sv-SE", { timeZone: "Asia/Tbilisi" });
 
+/* ატვირთული ფაილის მისამართი საიტის ძირიდან (ასე მუშაობს პროდუქტის გვერდზეც) */
+const assetUrl = (path) => (/^(https?:|data:|\/)/.test(path) ? path : `/${path}`);
+
+/* ფოტოები: ახალი ფორმატი [{ src, thumb }]; ძველი — ერთი `image` ველი */
+function normalizeImages(p) {
+  const list = Array.isArray(p.images) ? p.images : p.image ? [p.image] : [];
+  return list
+    .map((x) => (typeof x === "string" ? { src: x, thumb: x } : x && typeof x.src === "string" ? { src: x.src, thumb: x.thumb || x.src } : null))
+    .filter((x) => x && x.src)
+    .map((x) => ({ src: assetUrl(x.src), thumb: assetUrl(x.thumb) }));
+}
+
 /* ფასდაკლება აქტიურია, თუ ფასი დაბალია ძველზე და ვადა (თუ მითითებულია) ჯერ არ გასულა */
 function normalizeProduct(p, today) {
   const regular = Number(p.price) || 0;
@@ -82,7 +100,10 @@ function normalizeProduct(p, today) {
     ...p,
     price: onSale ? sale : regular,
     oldPrice: onSale ? regular : null,
+    saleEnds: onSale ? p.saleEnds || "" : "",
     inStock: p.inStock !== false,
+    images: normalizeImages(p),
+    description: typeof p.description === "string" ? p.description : "",
     visual: p.visual || DEFAULT_VISUAL[p.category] || DEFAULT_VISUAL.accessories,
   };
 }
@@ -116,6 +137,57 @@ const cartWhatsAppLink = (lines, total) =>
       `ჯამი: ${total}₾`,
     ].join("\n")
   );
+
+/* ------------------------------------------------------------------ */
+/*  გვერდები: მაღაზია „/“ და პროდუქტი „/p/<id>/“                        */
+/* ------------------------------------------------------------------ */
+const productPath = (id) => `/p/${encodeURIComponent(id)}/`;
+
+function routeFromLocation() {
+  if (typeof window === "undefined") return { productId: null };
+  const m = window.location.pathname.match(/^\/p\/([^/]+)\/?$/);
+  return { productId: m ? decodeURIComponent(m[1]) : null };
+}
+
+/* ბმულზე დაჭერა გვერდის გადატვირთვის გარეშე; Cmd/Ctrl+დაჭერა ახალ ჩანართში ხსნის */
+const handleNav = (navigate, productId) => (e) => {
+  if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+  e.preventDefault();
+  navigate(productId);
+};
+
+function useRoute() {
+  const [route, setRoute] = useState(routeFromLocation);
+  const shopScroll = useRef(0);
+
+  useEffect(() => {
+    try {
+      window.history.scrollRestoration = "manual";
+    } catch {
+      /* ზოგ ბრაუზერში მიუწვდომელია */
+    }
+    const onPop = () => setRoute(routeFromLocation());
+    window.addEventListener("popstate", onPop);
+    return () => window.removeEventListener("popstate", onPop);
+  }, []);
+
+  useEffect(() => {
+    window.scrollTo(0, route.productId ? 0 : shopScroll.current);
+  }, [route.productId]);
+
+  const navigate = (productId) => {
+    if (productId === route.productId) return;
+    if (!route.productId) shopScroll.current = window.scrollY;
+    try {
+      window.history.pushState({}, "", productId ? productPath(productId) : "/");
+    } catch {
+      /* გადახედვის ფანჯარაში მისამართი არ იცვლება — გვერდი მაინც იცვლება */
+    }
+    setRoute({ productId });
+  };
+
+  return [route, navigate];
+}
 
 /* ------------------------------------------------------------------ */
 /*  კალათის მდგომარეობა (მზადაა მომავალი ონლაინ გადახდისთვის)          */
@@ -232,6 +304,24 @@ function useProductFilter(products) {
 /* ------------------------------------------------------------------ */
 /*  გლობალური სტილები                                                 */
 /* ------------------------------------------------------------------ */
+/* ფონის პატერნი: კარტის ოთხი ნიშანი, ძალიან მკრთალად (♠ ♥ ♦ ♣) */
+const SUIT = {
+  spade: "M12 2s-8 6-8 11c0 2.7 2 4.5 4.4 4.5 1.3 0 2.5-.6 3-1.4L10.2 21h3.6l-1.2-4.9c.5.8 1.7 1.4 3 1.4 2.4 0 4.4-1.8 4.4-4.5 0-5-8-11-8-11z",
+  heart: "M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3.1 4.5 6.9 4.5c2.1 0 3.6 1.1 5.1 3 1.5-1.9 3-3 5.1-3 3.8 0 6 3.9 4.5 7.3C19.5 16.4 12 21 12 21z",
+  diamond: "M12 2l7.5 10L12 22 4.5 12z",
+  club: "M12 2.8a4.2 4.2 0 0 1 3.6 6.4 4.2 4.2 0 1 1-2.4 7.2L14.5 21h-5l1.3-4.6a4.2 4.2 0 1 1-2.4-7.2A4.2 4.2 0 0 1 12 2.8z",
+};
+const suitAt = (d, x, y, r, fill, opacity) =>
+  `<path d="${d}" fill="${fill}" fill-opacity="${opacity}" transform="translate(${x} ${y}) rotate(${r} 12 12) scale(.75)"/>`;
+const PATTERN_SVG =
+  `<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 120 120">` +
+  suitAt(SUIT.spade, 10, 12, -12, "#18191c", 0.05) +
+  suitAt(SUIT.heart, 72, 8, 10, "#c8102e", 0.06) +
+  suitAt(SUIT.diamond, 40, 70, 8, "#c8102e", 0.06) +
+  suitAt(SUIT.club, 92, 76, -10, "#18191c", 0.05) +
+  `</svg>`;
+const PATTERN_URL = `url("data:image/svg+xml,${encodeURIComponent(PATTERN_SVG)}")`;
+
 const GLOBAL_CSS = `
   @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Georgian:wght@400;500;600;700&family=Manrope:wght@600;700&display=swap');
   :root { color-scheme: light; }
@@ -239,6 +329,7 @@ const GLOBAL_CSS = `
   .mp-sans { font-family: 'Noto Sans Georgian', system-ui, -apple-system, 'Segoe UI', sans-serif; }
   .mp-brand { font-family: 'Manrope', 'Noto Sans Georgian', system-ui, sans-serif; }
   .mp-num { font-variant-numeric: tabular-nums; }
+  .mp-pattern { background-color: #f3f2ef; background-image: ${PATTERN_URL}; background-size: 120px 120px; }
   @keyframes mp-rise { from { opacity: 0; translate: 0 14px; scale: .97; } to { opacity: 1; translate: 0 0; scale: 1; } }
   @keyframes mp-pop { 0% { scale: .4; } 60% { scale: 1.35; } 100% { scale: 1; } }
   .mp-pop { animation: mp-pop .45s cubic-bezier(.16,1,.3,1) both; }
@@ -251,6 +342,15 @@ const GLOBAL_CSS = `
   .mp-ping { animation: mp-ping 2s cubic-bezier(0,0,.2,1) infinite; }
   .mp-slide-in { animation: mp-slide-in .3s cubic-bezier(.16,1,.3,1) both; }
   .mp-toast { animation: mp-toast .3s cubic-bezier(.16,1,.3,1) both; }
+  .mp-shimmer, .mp-shimmer-red {
+    background-size: 300% 100%; -webkit-background-clip: text; background-clip: text; color: transparent;
+    animation: mp-shimmer 4.5s ease-in-out infinite;
+  }
+  .mp-shimmer { background-image: linear-gradient(110deg, #ffffff 42%, #ffc2cb 50%, #ffffff 58%); }
+  .mp-shimmer-red { background-image: linear-gradient(110deg, #ff5a6e 42%, #ffd6dc 50%, #ff5a6e 58%); }
+  @keyframes mp-shimmer { 0% { background-position: 100% 0; } 55%, 100% { background-position: 0 0; } }
+  .mp-drive { animation: mp-drive 1.8s ease-in-out infinite; }
+  @keyframes mp-drive { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(4px); } }
   .mp-scroll::-webkit-scrollbar { display: none; }
   .mp-scroll { scrollbar-width: none; }
   :focus-visible { outline: 2px solid #c8102e; outline-offset: 2px; }
@@ -292,9 +392,14 @@ function LogoMark({ size = 34 }) {
   );
 }
 
-function Logo() {
+function Logo({ onNavigate }) {
   return (
-    <a href="#top" className="group flex shrink-0 items-center gap-2.5" aria-label="mypoker.ge — მთავარი">
+    <a
+      href="/"
+      onClick={onNavigate ? handleNav(onNavigate, null) : undefined}
+      className="group flex shrink-0 items-center gap-2.5"
+      aria-label="mypoker.ge — მთავარი"
+    >
       <span className="transition-transform duration-500 ease-[cubic-bezier(.16,1,.3,1)] group-hover:rotate-[-8deg] group-hover:scale-105">
         <LogoMark />
       </span>
@@ -465,9 +570,9 @@ function ProductVisual({ visual, uid, label }) {
 /* ------------------------------------------------------------------ */
 /*  ჰედერი                                                             */
 /* ------------------------------------------------------------------ */
-function SearchField({ id, query, onQuery }) {
+function SearchField({ id, query, onQuery, className = "" }) {
   return (
-    <label htmlFor={id} className="relative block w-full">
+    <label htmlFor={id} className={`relative block ${className}`}>
       <span className="sr-only">ძიება</span>
       <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-white/60" />
       <input
@@ -475,24 +580,43 @@ function SearchField({ id, query, onQuery }) {
         type="search"
         value={query}
         onChange={(e) => onQuery(e.target.value)}
-        placeholder="მოძებნეთ პროდუქტი"
-        className="h-11 w-full rounded-full border border-white/10 bg-white/10 pl-11 pr-4 text-sm text-white placeholder:text-white/60 transition-colors focus:border-white/40 focus:bg-white/15 focus:outline-none"
+        placeholder="ძებნა"
+        className="h-11 w-full rounded-full border border-white/10 bg-white/10 pl-11 pr-4 text-[13px] text-white placeholder:text-white/60 transition-colors focus:border-white/40 focus:bg-white/15 focus:outline-none"
       />
     </label>
   );
 }
 
-function Header({ cartCount, onOpenCart, query, onQuery }) {
+/* „უფასო მიწოდება N ₾-დან“ — ზედა ზოლის შუაში (დიდ ეკრანზე) ან ცალკე ზოლად (ტელეფონზე) */
+function FreeShipping({ strip = false }) {
+  if (!CONFIG.freeShippingFrom) return null;
+  return (
+    <p className={`flex items-center justify-center gap-2.5 whitespace-nowrap font-extrabold tracking-tight ${strip ? "text-[13px]" : "text-[21px]"}`}>
+      <Truck className={`mp-drive shrink-0 ${strip ? "h-4 w-4 text-white" : "h-7 w-7 text-[#ff5a6e]"}`} strokeWidth={2.2} aria-hidden="true" />
+      <span className="mp-shimmer">უფასო მიწოდება</span>
+      <span className={`mp-num ${strip ? "mp-shimmer" : "mp-shimmer-red"}`}>{CONFIG.freeShippingFrom} ₾-დან</span>
+    </p>
+  );
+}
+
+function Header({ cartCount, onOpenCart, query, onQuery, onNavigate }) {
   return (
     <header className="sticky top-[env(safe-area-inset-top,0px)] z-40 bg-[#18191c] text-white shadow-[0_1px_0_rgba(0,0,0,0.2)]">
-      <div className="mx-auto flex h-16 max-w-[1400px] items-center gap-4 px-4 sm:px-6 lg:gap-8">
-        <Logo />
+      {CONFIG.freeShippingFrom > 0 && (
+        <div className="flex h-9 items-center justify-center bg-[#c8102e] px-4 lg:hidden">
+          <FreeShipping strip />
+        </div>
+      )}
+      <div className="mx-auto flex h-16 max-w-[1400px] items-center gap-4 px-4 sm:px-6 lg:gap-6">
+        <Logo onNavigate={onNavigate} />
 
-        <div className="hidden max-w-xl flex-1 md:block">
-          <SearchField id="mp-search" query={query} onQuery={onQuery} />
+        <div className="hidden min-w-0 flex-1 justify-center lg:flex">
+          <FreeShipping />
         </div>
 
-        <div className="ml-auto flex items-center gap-2">
+        <div className="ml-auto flex items-center gap-2 lg:ml-0">
+          <SearchField id="mp-search" query={query} onQuery={onQuery} className="hidden w-44 md:block xl:w-52" />
+
           <a
             href={`tel:${CONFIG.phoneTel}`}
             className="group flex h-11 items-center gap-2.5 rounded-full border border-white/10 bg-white/10 px-3 transition-colors hover:bg-white/15 sm:pr-4"
@@ -523,8 +647,8 @@ function Header({ cartCount, onOpenCart, query, onQuery }) {
         </div>
       </div>
 
-      <div className="px-4 pb-3 md:hidden">
-        <SearchField id="mp-search-mobile" query={query} onQuery={onQuery} />
+      <div className="h-[3.25rem] px-4 md:hidden">
+        <SearchField id="mp-search-mobile" query={query} onQuery={onQuery} className="w-full" />
       </div>
     </header>
   );
@@ -593,7 +717,13 @@ function Sidebar({ filter }) {
 function MobileFilters({ filter }) {
   const { category, setCategory, price, setPrice, counts } = filter;
   return (
-    <div className="sticky top-[calc(env(safe-area-inset-top,0px)+7.5rem)] z-30 -mx-4 border-b border-[#e4e2dd] bg-[#f3f2ef]/95 px-4 py-3 backdrop-blur-md md:top-[calc(env(safe-area-inset-top,0px)+4rem)] lg:hidden">
+    <div
+      className={`sticky z-30 -mx-4 border-b border-[#e4e2dd] bg-[#f3f2ef]/95 px-4 py-3 backdrop-blur-md lg:hidden ${
+        CONFIG.freeShippingFrom > 0
+          ? "top-[calc(env(safe-area-inset-top,0px)+9.5rem)] md:top-[calc(env(safe-area-inset-top,0px)+6.25rem)]"
+          : "top-[calc(env(safe-area-inset-top,0px)+7.25rem)] md:top-[calc(env(safe-area-inset-top,0px)+4rem)]"
+      }`}
+    >
       <div className="mp-scroll flex gap-2 overflow-x-auto" role="tablist" aria-label="კატეგორიები">
         {CATEGORIES.map((c) => {
           const active = category === c.id;
@@ -638,8 +768,9 @@ function MobileFilters({ filter }) {
 /*  პროდუქტის სურათი: ატვირთული ფოტო ან ილუსტრაცია                     */
 /* ------------------------------------------------------------------ */
 function ProductMedia({ product, uid }) {
-  if (product.image) {
-    return <img src={product.image} alt={product.name} loading="lazy" className="h-full w-full object-contain" />;
+  const first = product.images[0];
+  if (first) {
+    return <img src={first.thumb} alt={product.name} loading="lazy" decoding="async" className="h-full w-full object-contain" />;
   }
   return <ProductVisual visual={product.visual} uid={uid} label={product.name} />;
 }
@@ -647,7 +778,7 @@ function ProductMedia({ product, uid }) {
 /* ------------------------------------------------------------------ */
 /*  პროდუქტის ბარათი                                                   */
 /* ------------------------------------------------------------------ */
-function ProductCard({ product, index, inCart, onAdd }) {
+function ProductCard({ product, index, inCart, onAdd, onOpen }) {
   const discount = product.oldPrice ? Math.round((1 - product.price / product.oldPrice) * 100) : 0;
 
   return (
@@ -655,7 +786,13 @@ function ProductCard({ product, index, inCart, onAdd }) {
       className="mp-rise group flex flex-col overflow-hidden rounded-2xl border border-[#e4e2dd] bg-white transition-all duration-300 hover:-translate-y-1 hover:border-[#d2cfc8] hover:shadow-[0_18px_40px_-20px_rgba(24,25,28,0.28)]"
       style={{ animationDelay: `${Math.min(index, 11) * 40}ms` }}
     >
-      <div className="relative aspect-[4/3] overflow-hidden bg-gradient-to-b from-[#f7f6f3] to-[#ebe9e4]">
+      <a
+        href={productPath(product.id)}
+        onClick={handleNav(onOpen, product.id)}
+        className="relative block aspect-[4/3] overflow-hidden bg-gradient-to-b from-[#f7f6f3] to-[#ebe9e4]"
+        aria-label={`${product.name} — დეტალურად`}
+        tabIndex={-1}
+      >
         <div className="absolute inset-0 p-6 transition-transform duration-500 ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-105">
           <ProductMedia product={product} uid={`p-${product.id}`} />
         </div>
@@ -667,10 +804,14 @@ function ProductCard({ product, index, inCart, onAdd }) {
             {product.badge && <span className="rounded-md bg-[#18191c] px-2 py-0.5 text-[11px] font-medium text-white">{product.badge}</span>}
           </div>
         )}
-      </div>
+      </a>
 
       <div className="flex flex-1 flex-col p-4">
-        <h3 className="line-clamp-2 min-h-[2.75rem] text-[15px] font-semibold leading-snug text-[#18191c]">{product.name}</h3>
+        <h3 className="line-clamp-2 min-h-[2.75rem] text-[15px] font-semibold leading-snug text-[#18191c]">
+          <a href={productPath(product.id)} onClick={handleNav(onOpen, product.id)} className="transition-colors hover:text-[#c8102e]">
+            {product.name}
+          </a>
+        </h3>
         <p className="mt-1 truncate text-[13px] text-[#5c5d61]">{product.spec}</p>
 
         <div className="mt-3 flex items-end justify-between gap-2">
@@ -715,7 +856,7 @@ function ProductCard({ product, index, inCart, onAdd }) {
 /* ------------------------------------------------------------------ */
 /*  მაღაზია                                                            */
 /* ------------------------------------------------------------------ */
-function Shop({ filter, cart }) {
+function Shop({ filter, cart, onOpen }) {
   const { category, query, sort, setSort, price, visible, hasFilters, reset } = filter;
   const inCart = useMemo(() => new Set(cart.lines.map((l) => l.product.id)), [cart.lines]);
   const gridKey = `${category}|${sort}|${price}|${query.trim()}`;
@@ -756,7 +897,7 @@ function Shop({ filter, cart }) {
         {visible.length > 0 ? (
           <div key={gridKey} className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
             {visible.map((product, i) => (
-              <ProductCard key={product.id} product={product} index={i} inCart={inCart.has(product.id)} onAdd={cart.add} />
+              <ProductCard key={product.id} product={product} index={i} inCart={inCart.has(product.id)} onAdd={cart.add} onOpen={onOpen} />
             ))}
           </div>
         ) : (
@@ -781,9 +922,307 @@ function Shop({ filter, cart }) {
 }
 
 /* ------------------------------------------------------------------ */
+/*  ფოტო-გალერეა: მთავარი ფოტო, მინიატურები, გადაფურცვლა, სრული ეკრანი    */
+/* ------------------------------------------------------------------ */
+function Gallery({ product }) {
+  const images = product.images;
+  const [index, setIndex] = useState(0);
+  const [zoom, setZoom] = useState(false);
+  const touch = useRef(null);
+  const count = images.length;
+  const go = (d) => setIndex((i) => (i + d + count) % count);
+
+  useEffect(() => {
+    if (!zoom) return undefined;
+    const onKey = (e) => {
+      if (e.key === "Escape") setZoom(false);
+      if (e.key === "ArrowRight") go(1);
+      if (e.key === "ArrowLeft") go(-1);
+    };
+    window.addEventListener("keydown", onKey);
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      document.body.style.overflow = prev;
+    };
+  }, [zoom, count]);
+
+  if (!count) {
+    return (
+      <div className="aspect-square overflow-hidden rounded-3xl border border-[#e4e2dd] bg-gradient-to-b from-[#f7f6f3] to-[#ebe9e4] p-10">
+        <ProductVisual visual={product.visual} uid={`g-${product.id}`} label={product.name} />
+      </div>
+    );
+  }
+
+  const swipe = {
+    onTouchStart: (e) => (touch.current = e.touches[0].clientX),
+    onTouchEnd: (e) => {
+      if (touch.current === null) return;
+      const dx = e.changedTouches[0].clientX - touch.current;
+      touch.current = null;
+      if (Math.abs(dx) > 40 && count > 1) go(dx < 0 ? 1 : -1);
+    },
+  };
+  const arrow = "absolute top-1/2 grid h-10 w-10 -translate-y-1/2 place-items-center rounded-full bg-white/90 text-[#18191c] shadow-md transition hover:bg-white";
+
+  return (
+    <div className="flex flex-col gap-3">
+      <div className="group relative aspect-square overflow-hidden rounded-3xl border border-[#e4e2dd] bg-white" {...swipe}>
+        <button type="button" onClick={() => setZoom(true)} className="absolute inset-0 cursor-zoom-in" aria-label="ფოტოს გადიდება">
+          <img
+            key={images[index].src}
+            src={images[index].src}
+            alt={`${product.name} — ფოტო ${index + 1}`}
+            className="mp-fade h-full w-full object-contain p-4"
+          />
+        </button>
+        <span className="pointer-events-none absolute right-3 top-3 grid h-9 w-9 place-items-center rounded-full bg-white/90 text-[#18191c] opacity-0 shadow-sm transition-opacity group-hover:opacity-100">
+          <Maximize2 className="h-4 w-4" />
+        </span>
+        {count > 1 && (
+          <>
+            <button type="button" onClick={() => go(-1)} className={`${arrow} left-3`} aria-label="წინა ფოტო">
+              <ChevronLeft className="h-5 w-5" />
+            </button>
+            <button type="button" onClick={() => go(1)} className={`${arrow} right-3`} aria-label="შემდეგი ფოტო">
+              <ChevronRight className="h-5 w-5" />
+            </button>
+            <span className="mp-num absolute bottom-3 left-1/2 -translate-x-1/2 rounded-full bg-[#18191c]/75 px-2.5 py-0.5 text-xs text-white">
+              {index + 1} / {count}
+            </span>
+          </>
+        )}
+      </div>
+
+      {count > 1 && (
+        <div className="mp-scroll flex gap-2 overflow-x-auto pb-1">
+          {images.map((img, i) => (
+            <button
+              key={img.src}
+              type="button"
+              onClick={() => setIndex(i)}
+              className={`h-20 w-20 shrink-0 overflow-hidden rounded-xl border-2 bg-white p-1 transition-colors ${
+                i === index ? "border-[#18191c]" : "border-[#e4e2dd] hover:border-[#b9b6af]"
+              }`}
+              aria-label={`ფოტო ${i + 1}`}
+              aria-current={i === index}
+            >
+              <img src={img.thumb} alt="" loading="lazy" className="h-full w-full object-contain" />
+            </button>
+          ))}
+        </div>
+      )}
+
+      {zoom && (
+        <div className="mp-fade fixed inset-0 z-[60] flex items-center justify-center bg-[#0b0c0e]/95" role="dialog" aria-modal="true" aria-label={product.name} {...swipe}>
+          <button type="button" className="absolute inset-0 cursor-zoom-out" onClick={() => setZoom(false)} aria-label="დახურვა" />
+          <img src={images[index].src} alt={`${product.name} — ფოტო ${index + 1}`} className="relative max-h-[92vh] max-w-[94vw] object-contain" />
+          <button
+            type="button"
+            onClick={() => setZoom(false)}
+            className="absolute right-4 top-[calc(1rem+env(safe-area-inset-top,0px))] grid h-11 w-11 place-items-center rounded-full bg-white/10 text-white hover:bg-white/20"
+            aria-label="დახურვა"
+          >
+            <X className="h-5 w-5" />
+          </button>
+          {count > 1 && (
+            <>
+              <button type="button" onClick={() => go(-1)} className="absolute left-3 grid h-12 w-12 place-items-center rounded-full bg-white/10 text-white hover:bg-white/20" aria-label="წინა ფოტო">
+                <ChevronLeft className="h-6 w-6" />
+              </button>
+              <button type="button" onClick={() => go(1)} className="absolute right-3 grid h-12 w-12 place-items-center rounded-full bg-white/10 text-white hover:bg-white/20" aria-label="შემდეგი ფოტო">
+                <ChevronRight className="h-6 w-6" />
+              </button>
+              <span className="mp-num absolute bottom-[calc(1.25rem+env(safe-area-inset-bottom,0px))] text-sm text-white/80">
+                {index + 1} / {count}
+              </span>
+            </>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  აღწერა: ცარიელი ხაზი — ახალი აბზაცი, „-“ ან „•“ — სიის პუნქტი        */
+/* ------------------------------------------------------------------ */
+function Description({ text }) {
+  const blocks = text
+    .replace(/\r\n/g, "\n")
+    .split(/\n\s*\n/)
+    .map((b) => b.split("\n").map((l) => l.trim()).filter(Boolean))
+    .filter((lines) => lines.length);
+  return (
+    <div className="flex max-w-3xl flex-col gap-4 text-[15px] leading-relaxed text-[#2c2d31]">
+      {blocks.map((lines, i) =>
+        lines.every((l) => /^[-•*]\s*/.test(l)) ? (
+          <ul key={i} className="flex flex-col gap-1.5">
+            {lines.map((l, j) => (
+              <li key={j} className="flex gap-2.5">
+                <span className="mt-[0.6em] h-1.5 w-1.5 shrink-0 rounded-full bg-[#c8102e]" />
+                <span>{l.replace(/^[-•*]\s*/, "")}</span>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p key={i}>
+            {lines.map((l, j) => (
+              <React.Fragment key={j}>
+                {j > 0 && <br />}
+                {l}
+              </React.Fragment>
+            ))}
+          </p>
+        )
+      )}
+    </div>
+  );
+}
+
+const formatDate = (iso) => {
+  const [y, m, d] = iso.split("-").map(Number);
+  const months = ["იანვრამდე", "თებერვლამდე", "მარტამდე", "აპრილამდე", "მაისამდე", "ივნისამდე", "ივლისამდე", "აგვისტომდე", "სექტემბრამდე", "ოქტომბრამდე", "ნოემბრამდე", "დეკემბრამდე"];
+  return y && m && d ? `${d} ${months[m - 1]}` : iso;
+};
+
+/* ------------------------------------------------------------------ */
+/*  პროდუქტის გვერდი                                                   */
+/* ------------------------------------------------------------------ */
+function ProductPage({ product, cart, onNavigate }) {
+  const discount = product.oldPrice ? Math.round((1 - product.price / product.oldPrice) * 100) : 0;
+  const inCart = cart.lines.some((l) => l.product.id === product.id);
+  const related = useMemo(() => {
+    const same = PRODUCTS.filter((p) => p.id !== product.id && p.category === product.category);
+    const others = PRODUCTS.filter((p) => p.id !== product.id && p.category !== product.category);
+    return [...same, ...others].slice(0, 4);
+  }, [product.id]);
+  const cartIds = useMemo(() => new Set(cart.lines.map((l) => l.product.id)), [cart.lines]);
+
+  return (
+    <main className="mx-auto max-w-[1200px] px-4 pb-16 pt-5 sm:px-6 lg:pt-8">
+      <nav className="flex flex-wrap items-center gap-1.5 text-sm text-[#5c5d61]" aria-label="ნავიგაცია">
+        <a href="/" onClick={handleNav(onNavigate, null)} className="inline-flex items-center gap-1.5 font-medium text-[#18191c] hover:text-[#c8102e]">
+          <ArrowLeft className="h-4 w-4" />
+          მაღაზია
+        </a>
+        <span aria-hidden="true">/</span>
+        <span>{CATEGORY_LABEL[product.category]}</span>
+      </nav>
+
+      <div className="mp-rise mt-5 grid gap-8 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] lg:gap-12">
+        <Gallery key={product.id} product={product} />
+
+        <div className="flex min-w-0 flex-col">
+          {(product.badge || discount > 0) && (
+            <div className="flex flex-wrap gap-1.5">
+              {discount > 0 && <span className="mp-num rounded-md bg-[#c8102e] px-2 py-0.5 text-xs font-bold text-white">−{discount}%</span>}
+              {product.badge && <span className="rounded-md bg-[#18191c] px-2 py-0.5 text-xs font-medium text-white">{product.badge}</span>}
+            </div>
+          )}
+          <h1 className="mt-3 text-2xl font-bold leading-tight text-[#18191c] sm:text-3xl">{product.name}</h1>
+          {product.spec && <p className="mt-2 text-[15px] text-[#5c5d61]">{product.spec}</p>}
+
+          <div className="mt-6 flex flex-wrap items-baseline gap-3">
+            <span className={`mp-num text-3xl font-bold tracking-tight ${product.oldPrice ? "text-[#c8102e]" : "text-[#18191c]"}`}>
+              {formatPrice(product.price)}
+            </span>
+            {product.oldPrice && <span className="mp-num text-lg text-[#8a8b90] line-through">{formatPrice(product.oldPrice)}</span>}
+          </div>
+          {product.oldPrice && product.saleEnds && (
+            <p className="mt-1 text-sm font-medium text-[#c8102e]">ფასდაკლება მოქმედებს {formatDate(product.saleEnds)}</p>
+          )}
+          <p className={`mt-3 inline-flex items-center gap-1.5 text-sm font-medium ${product.inStock ? "text-[#15803d]" : "text-[#b45309]"}`}>
+            <span className={`h-2 w-2 rounded-full ${product.inStock ? "bg-[#15803d]" : "bg-[#b45309]"}`} />
+            {product.inStock ? "მარაგშია" : "შეკვეთით — მიწოდების ვადას დაგიზუსტებთ"}
+          </p>
+
+          <div className="mt-6 flex gap-2">
+            <a
+              href={productWhatsAppLink(product)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex h-12 min-w-0 flex-1 items-center justify-center gap-2 rounded-xl bg-[#15803d] px-4 text-sm font-bold text-white transition-colors hover:bg-[#166534] active:scale-[0.98]"
+            >
+              <MessageCircle className="h-5 w-5 shrink-0" strokeWidth={2.2} />
+              შესაკვეთად დაგვიკავშირდით
+            </a>
+            <button
+              type="button"
+              onClick={() => cart.add(product.id)}
+              className={`grid h-12 w-12 shrink-0 place-items-center rounded-xl border transition-colors ${
+                inCart ? "border-[#18191c] bg-[#18191c] text-white" : "border-[#d9d6d0] bg-white text-[#18191c] hover:border-[#18191c]"
+              }`}
+              aria-label={inCart ? "კალათაშია. კიდევ ერთის დამატება" : "კალათაში დამატება"}
+              title={inCart ? "კალათაშია" : "კალათაში დამატება"}
+            >
+              {inCart ? <Check className="h-5 w-5" /> : <ShoppingBag className="h-5 w-5" />}
+            </button>
+          </div>
+          {CONFIG.phoneDisplay && (
+            <p className="mt-3 text-sm text-[#5c5d61]">
+              ან დაგვირეკეთ:{" "}
+              <a href={`tel:${CONFIG.phoneTel}`} className="mp-num select-all font-semibold text-[#18191c] hover:text-[#15803d]">
+                {CONFIG.phoneDisplay}
+              </a>
+            </p>
+          )}
+          <ul className="mt-6 flex flex-col gap-2 border-t border-[#e4e2dd] pt-5 text-sm text-[#5c5d61]">
+            <li>✓ მიწოდება მთელ საქართველოში</li>
+            <li>✓ შეკვეთის დადასტურება WhatsApp-ით ან ტელეფონით</li>
+          </ul>
+        </div>
+      </div>
+
+      {product.description.trim() && (
+        <section className="mt-12 border-t border-[#e4e2dd] pt-8" aria-labelledby="mp-desc">
+          <h2 id="mp-desc" className="text-xl font-bold text-[#18191c]">აღწერა</h2>
+          <div className="mt-4">
+            <Description text={product.description} />
+          </div>
+        </section>
+      )}
+
+      {related.length > 0 && (
+        <section className="mt-12 border-t border-[#e4e2dd] pt-8" aria-labelledby="mp-related">
+          <h2 id="mp-related" className="text-xl font-bold text-[#18191c]">შეიძლება დაგაინტერესოთ</h2>
+          <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {related.map((p, i) => (
+              /* 4 ბარათი ორ სვეტად, 3 — სამ სვეტად; მეოთხე დიდ ეკრანზე იმალება, რომ რიგი სრული იყოს */
+              <div key={p.id} className={`grid ${i === 3 ? "lg:hidden" : ""}`}>
+                <ProductCard product={p} index={i} inCart={cartIds.has(p.id)} onAdd={cart.add} onOpen={onNavigate} />
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+    </main>
+  );
+}
+
+function NotFound({ onNavigate }) {
+  return (
+    <main className="mx-auto flex max-w-xl flex-col items-center px-4 py-24 text-center">
+      <p className="text-5xl">♠</p>
+      <h1 className="mt-4 text-2xl font-bold text-[#18191c]">პროდუქტი ვერ მოიძებნა</h1>
+      <p className="mt-2 text-[#5c5d61]">შესაძლოა, ის აღარ იყიდება ან ბმული შეიცვალა.</p>
+      <a
+        href="/"
+        onClick={handleNav(onNavigate, null)}
+        className="mt-6 rounded-full bg-[#18191c] px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#2c2d31]"
+      >
+        მაღაზიაში დაბრუნება
+      </a>
+    </main>
+  );
+}
+
+/* ------------------------------------------------------------------ */
 /*  კალათის პანელი                                                     */
 /* ------------------------------------------------------------------ */
-function CartDrawer({ open, onClose, cart }) {
+function CartDrawer({ open, onClose, cart, onOpenProduct }) {
   useEffect(() => {
     if (!open) return undefined;
     const onKey = (e) => e.key === "Escape" && onClose();
@@ -835,7 +1274,13 @@ function CartDrawer({ open, onClose, cart }) {
                     <ProductMedia product={product} uid={`c-${product.id}`} />
                   </div>
                   <div className="flex min-w-0 flex-1 flex-col">
-                    <p className="line-clamp-2 text-[13px] font-medium leading-snug text-[#18191c]">{product.name}</p>
+                    <a
+                      href={productPath(product.id)}
+                      onClick={handleNav(onOpenProduct, product.id)}
+                      className="line-clamp-2 text-[13px] font-medium leading-snug text-[#18191c] hover:text-[#c8102e]"
+                    >
+                      {product.name}
+                    </a>
                     <div className="mt-auto flex items-center justify-between pt-2">
                       <div className="flex items-center rounded-full border border-[#d9d6d0]">
                         <button
@@ -935,6 +1380,12 @@ function Footer() {
 export default function App() {
   const cart = useCart();
   const filter = useProductFilter(PRODUCTS);
+  const [route, navigate] = useRoute();
+  const product = route.productId ? PRODUCTS.find((p) => p.id === route.productId) : null;
+
+  useEffect(() => {
+    document.title = product ? `${product.name} — mypoker.ge` : "mypoker.ge — პოკერის აქსესუარების მაღაზია";
+  }, [product]);
   const [cartOpen, setCartOpen] = useState(false);
   const [toast, setToast] = useState(null);
 
@@ -959,14 +1410,37 @@ export default function App() {
   };
 
   return (
-    <div id="top" className="mp-sans flex min-h-screen flex-col bg-[#f3f2ef] text-[#18191c] antialiased selection:bg-[#c8102e]/15">
+    <div id="top" className="mp-sans mp-pattern flex min-h-screen flex-col text-[#18191c] antialiased selection:bg-[#c8102e]/15">
       <style>{GLOBAL_CSS}</style>
-      <Header cartCount={cart.count} onOpenCart={openCart} query={filter.query} onQuery={filter.setQuery} />
+      <Header
+        cartCount={cart.count}
+        onOpenCart={openCart}
+        query={filter.query}
+        onQuery={(q) => {
+          filter.setQuery(q);
+          if (route.productId) navigate(null);
+        }}
+        onNavigate={navigate}
+      />
       <div className="flex-1">
-        <Shop filter={filter} cart={cartApi} />
+        {!route.productId ? (
+          <Shop filter={filter} cart={cartApi} onOpen={navigate} />
+        ) : product ? (
+          <ProductPage product={product} cart={cartApi} onNavigate={navigate} />
+        ) : (
+          <NotFound onNavigate={navigate} />
+        )}
       </div>
       <Footer />
-      <CartDrawer open={cartOpen} onClose={() => setCartOpen(false)} cart={cartApi} />
+      <CartDrawer
+        open={cartOpen}
+        onClose={() => setCartOpen(false)}
+        cart={cartApi}
+        onOpenProduct={(id) => {
+          setCartOpen(false);
+          navigate(id);
+        }}
+      />
 
       {toast && (
         <div

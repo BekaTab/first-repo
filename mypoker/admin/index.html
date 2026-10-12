@@ -116,8 +116,17 @@
   .dlg-head { display: flex; align-items: center; justify-content: space-between; padding: 18px 20px; border-bottom: 1px solid var(--line); position: sticky; top: 0; background: #fff; z-index: 1; }
   .dlg-body { padding: 20px; display: flex; flex-direction: column; gap: 14px; }
   .dlg-foot { display: flex; justify-content: flex-end; gap: 8px; padding: 14px 20px; border-top: 1px solid var(--line); position: sticky; bottom: 0; background: #fff; }
-  .imgbox { display: flex; gap: 14px; align-items: center; }
-  .imgbox .thumb { width: 96px; height: 96px; font-size: 36px; }
+  .gallery { display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-start; }
+  .gallery-list { display: contents; }
+  .gimg { position: relative; display: flex; flex-direction: column; gap: 4px; }
+  .gimg .thumb, .gallery .thumb.empty { width: 96px; height: 96px; font-size: 36px; }
+  .gmain { position: absolute; top: 4px; left: 4px; }
+  .gact { display: flex; justify-content: space-between; }
+  .gact .btn.icon { width: 30px; height: 26px; font-size: 13px; }
+  .gadd { width: 96px; height: 96px; border: 2px dashed #cfccc5; border-radius: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; cursor: pointer; color: var(--muted); font-size: 12px; font-weight: 600; }
+  .gadd:hover { border-color: var(--ink); color: var(--ink); }
+  .gadd.busy { opacity: .5; pointer-events: none; }
+  .gadd-plus { font-size: 26px; line-height: 1; }
 
   .sale-list { list-style: none; margin: 0; padding: 0; }
   .sale-list li { display: flex; justify-content: space-between; gap: 10px; padding: 8px 0; border-top: 1px solid var(--line); font-size: 13px; }
@@ -235,9 +244,10 @@
     <!-- პარამეტრები -->
     <section id="tab-settings" hidden>
       <div class="panel"><div class="panel-pad">
-        <h2>კონტაქტი</h2>
-        <p class="lead">ეს ნომრები ჩანს საიტის ზედა ზოლში და ფუტერში. შეკვეთის ღილაკები WhatsApp-ს ამ ნომერზე ხსნის.</p>
+        <h2>კონტაქტი და მიწოდება</h2>
+        <p class="lead">ნომრები ჩანს საიტის ზედა ზოლში და ფუტერში. შეკვეთის ღილაკები WhatsApp-ს ამ ნომერზე ხსნის.</p>
         <label class="field"><span>ტელეფონი (როგორც საიტზე ჩანს)</span><input id="setPhone" class="input num" placeholder="+995 555 12 34 56"></label>
+        <label class="field"><span>უფასო მიწოდება, ₾-დან</span><input id="setFree" class="input num" type="number" min="1" step="1" placeholder="80"><small>ეს თანხა ჩანს საიტის ზედა ზოლში („უფასო მიწოდება 80 ₾-დან“). ცარიელი = წარწერა არ ჩანს.</small></label>
         <label class="field"><span>WhatsApp ნომერი</span><input id="setWa" class="input num" placeholder="995555123456"><small>ქვეყნის კოდით, მხოლოდ ციფრები. მაგალითად: 995555123456</small></label>
         <div id="setMsg" class="msg err" hidden></div>
       </div></div>
@@ -258,20 +268,24 @@
   <form id="pform" method="dialog" novalidate>
     <div class="dlg-head"><h2 id="dlgTitle">პროდუქტი</h2><button class="btn ghost icon" type="button" id="dlgClose" aria-label="დახურვა">✕</button></div>
     <div class="dlg-body">
-      <div class="imgbox">
-        <div id="fThumb" class="thumb"></div>
-        <div style="display:flex;flex-direction:column;gap:6px">
-          <label class="btn" style="cursor:pointer">ფოტოს ატვირთვა<input id="fImage" type="file" accept="image/*" hidden></label>
-          <button id="fImageRemove" class="btn ghost danger" type="button">ფოტოს წაშლა</button>
-          <small style="color:var(--subtle)">საუკეთესოა კვადრატული ან 4:3 ფოტო, თეთრ ფონზე.</small>
+      <div class="field">
+        <span>ფოტოები <span id="fImageCount" class="num" style="font-weight:400;color:var(--subtle)"></span></span>
+        <div class="gallery">
+          <div id="fImages" class="gallery-list"></div>
+          <label id="fImageAdd" class="gadd" title="ფოტოების დამატება">
+            <span class="gadd-plus">+</span><span>დამატება</span>
+            <input id="fImage" type="file" accept="image/*" multiple hidden>
+          </label>
         </div>
+        <small>შეგიძლიათ რამდენიმე ფოტოს ერთად არჩევა. პირველი ფოტო მთავარია: ის ჩანს მაღაზიაში. რიგს ისრებით შეცვლით. ფოტო ინახება მაღალი ხარისხით (2000 პიქსელამდე).</small>
       </div>
       <label class="field"><span>სახელი *</span><input id="fName" class="input" required></label>
       <div class="row2">
         <label class="field"><span>კატეგორია</span><select id="fCat" class="input"></select></label>
         <label class="field"><span>ნიშანი (არ არის აუცილებელი)</span><input id="fBadge" class="input" placeholder="მაგ. ახალი, ბესტსელერი"></label>
       </div>
-      <label class="field"><span>მოკლე აღწერა</span><input id="fSpec" class="input" placeholder="მაგ. 11.5 გ · თიხის კომპოზიტი · ალუმინის კეისი"></label>
+      <label class="field"><span>მოკლე აღწერა (ჩანს ბარათზე)</span><input id="fSpec" class="input" placeholder="მაგ. 11.5 გ · თიხის კომპოზიტი · ალუმინის კეისი"></label>
+      <label class="field"><span>დეტალური აღწერა (პროდუქტის გვერდზე)</span><textarea id="fDesc" class="input" rows="7" placeholder="რა შედის ნაკრებში, მასალა, ზომები, ვისთვის არის…&#10;&#10;- სიის პუნქტი იწყება ტირეთი&#10;- ცარიელი ხაზი ახალ აბზაცს იწყებს"></textarea></label>
       <div class="row2">
         <label class="field"><span>ფასი, ₾ *</span><input id="fPrice" class="input num" type="number" min="1" step="1" required></label>
         <label class="field"><span>ფასდაკლებული ფასი, ₾</span><input id="fSale" class="input num" type="number" min="1" step="1"><small>ცარიელი = ფასდაკლება არ არის</small></label>
