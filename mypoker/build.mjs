@@ -5,6 +5,7 @@
 //   dist/admin/       admin panel (products, prices, sales, settings)
 //   dist/images/      product photos uploaded from the admin panel
 //   dist/p/<id>/      one page per visible product (own title, description, preview image)
+//   dist/en/...       the same pages in English (products use nameEn/specEn/badgeEn/descriptionEn when set)
 //   dist/404.html, sitemap.xml, robots.txt
 // Usage: node build.mjs [--fragment <file>]   (--fragment also writes a page body without <html>/<head>, for previews)
 import { build } from "esbuild";
@@ -62,20 +63,29 @@ const iconSvg = (outline = true) =>
 writeFileSync(join(dist, "favicon.svg"), iconSvg());
 const favicon = "data:image/svg+xml," + encodeURIComponent(iconSvg());
 const SITE = "https://mypoker.ge";
-const storeTitle = "mypoker.ge — პოკერის აქსესუარების მაღაზია";
-const storeDescription = "პოკერის ჩიპები, კარტები, მაგიდები და აქსესუარები. შეკვეთა WhatsApp-ით, მიწოდება მთელ საქართველოში.";
+const STORE = {
+  ka: { title: "mypoker.ge — პოკერის აქსესუარების მაღაზია", description: "პოკერის ჩიპები, კარტები, მაგიდები და აქსესუარები. შეკვეთა WhatsApp-ით, მიწოდება მთელ საქართველოში.", notFound: "გვერდი ვერ მოიძებნა — mypoker.ge" },
+  en: { title: "mypoker.ge — poker accessories store", description: "Poker chips, cards, tables and accessories. Order via WhatsApp, delivery across Georgia.", notFound: "Page not found — mypoker.ge" },
+};
+const LANGS = { ka: "", en: "/en" }; // URL prefix per language
 const inlineData = JSON.stringify(data).replace(/</g, "\\u003c");
 const esc = (v) => String(v).replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 const clip = (v, n) => (v.length > n ? v.slice(0, n - 1).trimEnd() + "…" : v);
 const SAFE_ID = /^[a-z0-9][a-z0-9-]{0,79}$/i;
+const pick = (p, field, lang) => (lang === "en" && typeof p[`${field}En`] === "string" && p[`${field}En`].trim() ? p[`${field}En`] : p[field] || "");
 
-// Every page is the same app shell; only the title, description, canonical URL and preview image differ.
-const pageHead = ({ title, description, path, image }) => `<title>${esc(title)}</title>
+// Every page is the same app shell; only the language, title, description, URLs and preview image differ.
+// `path` is the language-neutral path ("/" or "/p/<id>/"); each page links to its twin in the other language.
+const pageHead = ({ lang, title, description, path, image }) => `<title>${esc(title)}</title>
 <meta name="description" content="${esc(description)}">
-<link rel="canonical" href="${SITE}${path}">
+<link rel="canonical" href="${SITE}${LANGS[lang]}${path}">
+<link rel="alternate" hreflang="ka" href="${SITE}${path}">
+<link rel="alternate" hreflang="en" href="${SITE}/en${path}">
+<link rel="alternate" hreflang="x-default" href="${SITE}${path}">
 <meta property="og:type" content="${path === "/" ? "website" : "product"}">
 <meta property="og:site_name" content="mypoker.ge">
-<meta property="og:url" content="${SITE}${path}">
+<meta property="og:locale" content="${lang === "en" ? "en_US" : "ka_GE"}">
+<meta property="og:url" content="${SITE}${LANGS[lang]}${path}">
 <meta property="og:title" content="${esc(title)}">
 <meta property="og:description" content="${esc(description)}">${image ? `\n<meta property="og:image" content="${SITE}/${esc(image.replace(/^\//, ""))}">` : ""}
 <meta name="theme-color" content="#18191c">
@@ -87,33 +97,37 @@ const pageHead = ({ title, description, path, image }) => `<title>${esc(title)}<
 const body = `<div id="root"></div>
 <script type="application/json" id="mp-data">${inlineData}</script>
 <script src="/app.js" defer></script>`;
-const page = (head) =>
-  `<!doctype html>\n<html lang="ka">\n<head>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">\n${head}\n</head>\n<body>\n${body}\n</body>\n</html>\n`;
+const page = (lang, head) =>
+  `<!doctype html>\n<html lang="${lang}">\n<head>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">\n${head}\n</head>\n<body>\n${body}\n</body>\n</html>\n`;
+const write = (lang, path, html) => {
+  const dir = join(dist, LANGS[lang].slice(1), path);
+  mkdirSync(dir, { recursive: true });
+  writeFileSync(join(dir, "index.html"), html);
+};
 
-const head = pageHead({ title: storeTitle, description: storeDescription, path: "/" });
-writeFileSync(join(dist, "index.html"), page(head));
+const head = pageHead({ lang: "ka", title: STORE.ka.title, description: STORE.ka.description, path: "/" });
 // unknown addresses get the app too; it shows "product not found" with a link back to the shop
-writeFileSync(join(dist, "404.html"), page(pageHead({ title: "გვერდი ვერ მოიძებნა — mypoker.ge", description: storeDescription, path: "/" })));
+writeFileSync(join(dist, "404.html"), page("ka", pageHead({ lang: "ka", title: STORE.ka.notFound, description: STORE.ka.description, path: "/" })));
 
-const urls = [`${SITE}/`];
+const urls = [];
 let pages = 0;
-for (const p of data.products) {
-  if (!p || p.visible === false || !p.name) continue;
-  if (!SAFE_ID.test(String(p.id))) {
-    console.warn(`skipped product page for unsafe id: ${JSON.stringify(p.id)}`);
-    continue;
+for (const lang of Object.keys(LANGS)) {
+  write(lang, "/", page(lang, lang === "ka" ? head : pageHead({ lang, title: STORE[lang].title, description: STORE[lang].description, path: "/" })));
+  urls.push(`${SITE}${LANGS[lang]}/`);
+  for (const p of data.products) {
+    if (!p || p.visible === false || !p.name) continue;
+    if (!SAFE_ID.test(String(p.id))) {
+      if (lang === "ka") console.warn(`skipped product page for unsafe id: ${JSON.stringify(p.id)}`);
+      continue;
+    }
+    const first = Array.isArray(p.images) && p.images[0] ? p.images[0] : p.image || null;
+    const image = first ? (typeof first === "string" ? first : first.src) : null;
+    const text = [pick(p, "spec", lang), String(pick(p, "description", lang)).replace(/\s+/g, " ")].filter(Boolean).join(" — ");
+    const path = `/p/${p.id}/`;
+    write(lang, path, page(lang, pageHead({ lang, title: `${pick(p, "name", lang)} — mypoker.ge`, description: clip(text || STORE[lang].description, 160), path, image })));
+    urls.push(`${SITE}${LANGS[lang]}${path}`);
+    pages++;
   }
-  const first = Array.isArray(p.images) && p.images[0] ? p.images[0] : p.image || null;
-  const image = first ? (typeof first === "string" ? first : first.src) : null;
-  const text = [p.spec, String(p.description || "").replace(/\s+/g, " ")].filter(Boolean).join(" — ");
-  const path = `/p/${p.id}/`;
-  mkdirSync(join(dist, "p", p.id), { recursive: true });
-  writeFileSync(
-    join(dist, "p", p.id, "index.html"),
-    page(pageHead({ title: `${p.name} — mypoker.ge`, description: clip(text || storeDescription, 160), path, image }))
-  );
-  urls.push(SITE + path);
-  pages++;
 }
 writeFileSync(
   join(dist, "sitemap.xml"),

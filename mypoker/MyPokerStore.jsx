@@ -32,6 +32,178 @@ function readData() {
 }
 const DATA = readData();
 
+/* ------------------------------------------------------------------ */
+/*  ენა: ქართული — „/“, ინგლისური — „/en/“ (ენის შეცვლა გვერდს ხელახლა ხსნის) */
+/* ------------------------------------------------------------------ */
+const LANG = typeof window !== "undefined" && /^\/en(\/|$)/.test(window.location.pathname) ? "en" : "ka";
+const BASE = LANG === "en" ? "/en" : "";
+
+const TEXT = {
+  ka: {
+    homeAria: "mypoker.ge — მთავარი",
+    dealer: "დილერი",
+    search: "ძიება",
+    searchPh: "ძებნა",
+    freeDelivery: "უფასო მიწოდება",
+    freeFrom: (n) => `${n} ₾-დან`,
+    callUs: "დაგვირეკეთ",
+    callAria: (p) => `დაგვირეკეთ: ${p}`,
+    cartAria: (n) => `კალათა, ${n} ნივთი`,
+    category: "კატეგორია",
+    price: "ფასი",
+    pricePrefix: (l) => `ფასი: ${l}`,
+    clearFilters: "ფილტრების გასუფთავება",
+    waBoxTitle: "შეკვეთა WhatsApp-ით",
+    waBoxText: "აირჩიეთ პროდუქტი და მოგვწერეთ — გიპასუხებთ რამდენიმე წუთში.",
+    categoriesAria: "კატეგორიები",
+    detailsAria: (n) => `${n} — დეტალურად`,
+    inStock: "მარაგშია",
+    onOrder: "შეკვეთით",
+    onOrderLong: "შეკვეთით — მიწოდების ვადას დაგიზუსტებთ",
+    orderCta: "შესაკვეთად დაგვიკავშირდით",
+    inCart: "კალათაშია",
+    addToCart: "კალათაში დამატება",
+    inCartMore: "კალათაშია. კიდევ ერთის დამატება",
+    inCartAria: (n) => `კალათაშია: ${n}. კიდევ ერთის დამატება`,
+    addAria: (n) => `კალათაში დამატება: ${n}`,
+    searchTitle: (q) => `ძიება: „${q}“`,
+    allProducts: "ყველა პროდუქტი",
+    productsAria: "პროდუქტები",
+    productCount: (n) => `${n} პროდუქტი`,
+    sort: "დალაგება",
+    noResults: "პროდუქტი ვერ მოიძებნა",
+    noResultsHint: "სცადეთ სხვა სიტყვა ან შეცვალეთ ფილტრი.",
+    zoom: "ფოტოს გადიდება",
+    photoAlt: (n, i) => `${n} — ფოტო ${i}`,
+    photo: (i) => `ფოტო ${i}`,
+    prevPhoto: "წინა ფოტო",
+    nextPhoto: "შემდეგი ფოტო",
+    close: "დახურვა",
+    saleUntil: (d) => `ფასდაკლება მოქმედებს ${d}`,
+    months: ["იანვრამდე", "თებერვლამდე", "მარტამდე", "აპრილამდე", "მაისამდე", "ივნისამდე", "ივლისამდე", "აგვისტომდე", "სექტემბრამდე", "ოქტომბრამდე", "ნოემბრამდე", "დეკემბრამდე"],
+    dateFmt: (d, m) => `${d} ${m}`,
+    breadcrumb: "ნავიგაცია",
+    shop: "მაღაზია",
+    orCall: "ან დაგვირეკეთ:",
+    perkDelivery: "მიწოდება მთელ საქართველოში",
+    perkConfirm: "შეკვეთის დადასტურება WhatsApp-ით ან ტელეფონით",
+    description: "აღწერა",
+    related: "შეიძლება დაგაინტერესოთ",
+    notFound: "პროდუქტი ვერ მოიძებნა",
+    notFoundText: "შესაძლოა, ის აღარ იყიდება ან ბმული შეიცვალა.",
+    backToShop: "მაღაზიაში დაბრუნება",
+    cart: "კალათა",
+    items: (n) => `${n} ნივთი`,
+    closeCart: "კალათის დახურვა",
+    cartEmpty: "კალათა ცარიელია",
+    cartEmptyText: "დაამატეთ პროდუქტები და გამოგვიგზავნეთ ერთი შეტყობინებით.",
+    continueShopping: "შოპინგის გაგრძელება",
+    decrease: "რაოდენობის შემცირება",
+    increase: "რაოდენობის გაზრდა",
+    removeAria: (n) => `წაშლა: ${n}`,
+    perUnit: "ცალი",
+    total: "ჯამი",
+    paySoon: "ონლაინ გადახდა მალე დაემატება",
+    clearCart: "კალათის გასუფთავება",
+    rights: "ყველა უფლება დაცულია",
+    added: "კალათაში დაემატა:",
+    view: "ნახვა",
+    siteTitle: "mypoker.ge — პოკერის აქსესუარების მაღაზია",
+    language: "ენა",
+    waHello: "გამარჯობა, mypoker.ge-დან გწერთ.",
+    waProduct: (n, p) => `გამარჯობა, mypoker.ge-დან გწერთ, მაინტერესებს ეს პროდუქტი: ${n} (ფასი: ${p}₾)`,
+    waCartHead: "გამარჯობა, mypoker.ge-დან გწერთ, მაინტერესებს ეს პროდუქტები:",
+    waCartLine: (i, n, q, p) => `${i}. ${n} × ${q} (ფასი: ${p}₾)`,
+    waCartTotal: (t) => `ჯამი: ${t}₾`,
+    cat: { all: "ყველა", cards: "კარტები", chips: "ჩიპები", tables: "მაგიდები", accessories: "აქსესუარები" },
+    priceAny: "ნებისმიერი",
+    priceOver: (n) => `${n} ₾-ზე მეტი`,
+    sorts: { featured: "რეკომენდებული", "price-asc": "ჯერ იაფი", "price-desc": "ჯერ ძვირი", sale: "ჯერ ფასდაკლებული" },
+  },
+  en: {
+    homeAria: "mypoker.ge — home",
+    dealer: "DEALER",
+    search: "Search",
+    searchPh: "Search",
+    freeDelivery: "Free delivery",
+    freeFrom: (n) => `from ${n} ₾`,
+    callUs: "Call us",
+    callAria: (p) => `Call us: ${p}`,
+    cartAria: (n) => `Cart, ${n} ${n === 1 ? "item" : "items"}`,
+    category: "Category",
+    price: "Price",
+    pricePrefix: (l) => `Price: ${l}`,
+    clearFilters: "Clear filters",
+    waBoxTitle: "Order via WhatsApp",
+    waBoxText: "Pick a product and message us — we reply within minutes.",
+    categoriesAria: "Categories",
+    detailsAria: (n) => `${n} — details`,
+    inStock: "In stock",
+    onOrder: "On order",
+    onOrderLong: "On order — we'll confirm the delivery time",
+    orderCta: "Contact us to order",
+    inCart: "In cart",
+    addToCart: "Add to cart",
+    inCartMore: "In cart. Add one more",
+    inCartAria: (n) => `In cart: ${n}. Add one more`,
+    addAria: (n) => `Add to cart: ${n}`,
+    searchTitle: (q) => `Search: “${q}”`,
+    allProducts: "All products",
+    productsAria: "Products",
+    productCount: (n) => `${n} ${n === 1 ? "product" : "products"}`,
+    sort: "Sort",
+    noResults: "No products found",
+    noResultsHint: "Try another word or change the filters.",
+    zoom: "Enlarge photo",
+    photoAlt: (n, i) => `${n} — photo ${i}`,
+    photo: (i) => `Photo ${i}`,
+    prevPhoto: "Previous photo",
+    nextPhoto: "Next photo",
+    close: "Close",
+    saleUntil: (d) => `Sale price until ${d}`,
+    months: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+    dateFmt: (d, m) => `${d} ${m}`,
+    breadcrumb: "Breadcrumb",
+    shop: "Shop",
+    orCall: "Or call us:",
+    perkDelivery: "Delivery across Georgia",
+    perkConfirm: "Orders confirmed by WhatsApp or phone",
+    description: "Description",
+    related: "You may also like",
+    notFound: "Product not found",
+    notFoundText: "It may no longer be on sale, or the link has changed.",
+    backToShop: "Back to the shop",
+    cart: "Cart",
+    items: (n) => `${n} ${n === 1 ? "item" : "items"}`,
+    closeCart: "Close cart",
+    cartEmpty: "Your cart is empty",
+    cartEmptyText: "Add products and send them to us in one message.",
+    continueShopping: "Continue shopping",
+    decrease: "Decrease quantity",
+    increase: "Increase quantity",
+    removeAria: (n) => `Remove ${n}`,
+    perUnit: "each",
+    total: "Total",
+    paySoon: "Online payment coming soon",
+    clearCart: "Clear cart",
+    rights: "All rights reserved",
+    added: "Added to cart:",
+    view: "View",
+    siteTitle: "mypoker.ge — poker accessories store",
+    language: "Language",
+    waHello: "Hello, I'm writing from mypoker.ge.",
+    waProduct: (n, p) => `Hello, I'm writing from mypoker.ge. I'm interested in this product: ${n} (price: ${p}₾)`,
+    waCartHead: "Hello, I'm writing from mypoker.ge. I'm interested in these products:",
+    waCartLine: (i, n, q, p) => `${i}. ${n} × ${q} (price: ${p}₾)`,
+    waCartTotal: (t) => `Total: ${t}₾`,
+    cat: { all: "All", cards: "Cards", chips: "Chips", tables: "Tables", accessories: "Accessories" },
+    priceAny: "Any",
+    priceOver: (n) => `Over ${n} ₾`,
+    sorts: { featured: "Recommended", "price-asc": "Price: low to high", "price-desc": "Price: high to low", sale: "Biggest discount" },
+  },
+};
+const T = TEXT[LANG];
+
 const CONFIG = {
   phoneDisplay: DATA.settings.phoneDisplay || "",
   phoneTel: DATA.settings.phoneTel || "",
@@ -44,29 +216,18 @@ const CONFIG = {
 /* ------------------------------------------------------------------ */
 /*  მონაცემები                                                         */
 /* ------------------------------------------------------------------ */
-const CATEGORIES = [
-  { id: "all", label: "ყველა" },
-  { id: "cards", label: "კარტები" },
-  { id: "chips", label: "ჩიპები" },
-  { id: "tables", label: "მაგიდები" },
-  { id: "accessories", label: "აქსესუარები" },
-];
+const CATEGORIES = ["all", "cards", "chips", "tables", "accessories"].map((id) => ({ id, label: T.cat[id] }));
 
 const CATEGORY_LABEL = Object.fromEntries(CATEGORIES.map((c) => [c.id, c.label]));
 
 const PRICE_RANGES = [
-  { id: "any", label: "ნებისმიერი", min: 0, max: Infinity },
+  { id: "any", label: T.priceAny, min: 0, max: Infinity },
   { id: "50-100", label: "50 – 100 ₾", min: 50, max: 100 },
   { id: "100-200", label: "100 – 200 ₾", min: 100, max: 200 },
-  { id: "200+", label: "200 ₾-ზე მეტი", min: 200, max: Infinity },
+  { id: "200+", label: T.priceOver(200), min: 200, max: Infinity },
 ];
 
-const SORTS = [
-  { id: "featured", label: "რეკომენდებული" },
-  { id: "price-asc", label: "ჯერ იაფი" },
-  { id: "price-desc", label: "ჯერ ძვირი" },
-  { id: "sale", label: "ჯერ ფასდაკლებული" },
-];
+const SORTS = ["featured", "price-asc", "price-desc", "sale"].map((id) => ({ id, label: T.sorts[id] }));
 
 const DEFAULT_VISUAL = {
   chips: { kind: "chips", colors: ["#c2410c", "#1f2937", "#d6b25e"] },
@@ -95,14 +256,19 @@ function normalizeProduct(p, today) {
   const regular = Number(p.price) || 0;
   const sale = Number(p.salePrice) || 0;
   const onSale = sale > 0 && sale < regular && (!p.saleEnds || p.saleEnds >= today);
+  const en = LANG === "en";
+  const pick = (field) => (en && typeof p[`${field}En`] === "string" && p[`${field}En`].trim() ? p[`${field}En`] : p[field]);
   return {
     ...p,
+    name: pick("name"),
+    spec: pick("spec") || "",
+    badge: pick("badge") || "",
     price: onSale ? sale : regular,
     oldPrice: onSale ? regular : null,
     saleEnds: onSale ? p.saleEnds || "" : "",
     inStock: p.inStock !== false,
     images: normalizeImages(p),
-    description: typeof p.description === "string" ? p.description : "",
+    description: typeof pick("description") === "string" ? pick("description") : "",
     visual: p.visual || DEFAULT_VISUAL[p.category] || DEFAULT_VISUAL.accessories,
   };
 }
@@ -125,26 +291,33 @@ const buildWhatsAppLink = (text) =>
 
 const productWhatsAppLink = (product) =>
   buildWhatsAppLink(
-    `გამარჯობა, mypoker.ge-დან გწერთ, მაინტერესებს ეს პროდუქტი: ${product.name} (ფასი: ${product.price}₾)`
+    T.waProduct(product.name, product.price)
   );
 
 const cartWhatsAppLink = (lines, total) =>
   buildWhatsAppLink(
     [
-      "გამარჯობა, mypoker.ge-დან გწერთ, მაინტერესებს ეს პროდუქტები:",
-      ...lines.map((l, i) => `${i + 1}. ${l.product.name} × ${l.qty} (ფასი: ${l.product.price * l.qty}₾)`),
-      `ჯამი: ${total}₾`,
+      T.waCartHead,
+      ...lines.map((l, i) => T.waCartLine(i + 1, l.product.name, l.qty, l.product.price * l.qty)),
+      T.waCartTotal(total),
     ].join("\n")
   );
 
 /* ------------------------------------------------------------------ */
 /*  გვერდები: მაღაზია „/“ და პროდუქტი „/p/<id>/“                        */
 /* ------------------------------------------------------------------ */
-const productPath = (id) => `/p/${encodeURIComponent(id)}/`;
+const productPath = (id) => `${BASE}/p/${encodeURIComponent(id)}/`;
+const HOME_PATH = `${BASE}/`;
+
+/* იმავე გვერდის მისამართი მეორე ენაზე */
+const otherLangPath = (productId) => {
+  const tail = productId ? `/p/${encodeURIComponent(productId)}/` : "/";
+  return LANG === "en" ? tail : `/en${tail}`;
+};
 
 function routeFromLocation() {
   if (typeof window === "undefined") return { productId: null };
-  const m = window.location.pathname.match(/^\/p\/([^/]+)\/?$/);
+  const m = window.location.pathname.match(/^(?:\/en)?\/p\/([^/]+)\/?$/);
   return { productId: m ? decodeURIComponent(m[1]) : null };
 }
 
@@ -178,7 +351,7 @@ function useRoute() {
     if (productId === route.productId) return;
     if (!route.productId) shopScroll.current = window.scrollY;
     try {
-      window.history.pushState({}, "", productId ? productPath(productId) : "/");
+      window.history.pushState({}, "", productId ? productPath(productId) : HOME_PATH);
     } catch {
       /* გადახედვის ფანჯარაში მისამართი არ იცვლება — გვერდი მაინც იცვლება */
     }
@@ -401,10 +574,10 @@ function LogoMark({ size = 34 }) {
 function Logo({ onNavigate }) {
   return (
     <a
-      href="/"
+      href={HOME_PATH}
       onClick={onNavigate ? handleNav(onNavigate, null) : undefined}
       className="group flex shrink-0 items-center gap-2.5"
-      aria-label="mypoker.ge — მთავარი"
+      aria-label={T.homeAria}
     >
       <span className="transition-transform duration-500 ease-[cubic-bezier(.16,1,.3,1)] group-hover:rotate-[-8deg] group-hover:scale-105">
         <LogoMark />
@@ -413,6 +586,26 @@ function Logo({ onNavigate }) {
         mypoker<span className="text-[#ff5a6e]">.ge</span>
       </span>
     </a>
+  );
+}
+
+/* ენის გადამრთველი: იმავე გვერდს ხსნის მეორე ენაზე */
+function LangSwitch({ productId, className = "" }) {
+  const item = (code, label) =>
+    code === LANG ? (
+      <span aria-current="true" className="rounded-full bg-white px-2.5 py-1 text-[#18191c]">
+        {label}
+      </span>
+    ) : (
+      <a href={otherLangPath(productId)} hrefLang={code} lang={code} className="rounded-full px-2.5 py-1 text-white/70 transition-colors hover:text-white">
+        {label}
+      </a>
+    );
+  return (
+    <div className={`shrink-0 items-center rounded-full border border-white/10 bg-white/10 p-0.5 text-[12px] font-semibold ${className}`} role="group" aria-label={T.language}>
+      {item("ka", "ქარ")}
+      {item("en", "EN")}
+    </div>
   );
 }
 
@@ -536,7 +729,7 @@ function ProductVisual({ visual, uid, label }) {
         <circle cx="116" cy="84" r="50" fill={`url(#${uid}-shine)`} />
         <circle cx="116" cy="84" r="40" fill="none" stroke={`url(#${uid}-gold)`} strokeWidth="3" />
         <text x="116" y="91" textAnchor="middle" fontSize="19" fontWeight="700" fill="#18181b" fontFamily="'Noto Sans Georgian', sans-serif">
-          დილერი
+          {T.dealer}
         </text>
       </g>
     );
@@ -579,14 +772,14 @@ function ProductVisual({ visual, uid, label }) {
 function SearchField({ id, query, onQuery, className = "" }) {
   return (
     <label htmlFor={id} className={`relative block ${className}`}>
-      <span className="sr-only">ძიება</span>
+      <span className="sr-only">{T.search}</span>
       <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-white/60" />
       <input
         id={id}
         type="search"
         value={query}
         onChange={(e) => onQuery(e.target.value)}
-        placeholder="ძებნა"
+        placeholder={T.searchPh}
         className="h-11 w-full rounded-full border border-white/10 bg-white/10 pl-11 pr-4 text-[13px] text-white placeholder:text-white/60 transition-colors focus:border-white/40 focus:bg-white/15 focus:outline-none"
       />
     </label>
@@ -603,15 +796,15 @@ function FreeShipping({ strip = false }) {
       }`}
     >
       <Truck className={`mp-drive shrink-0 ${strip ? "h-4 w-4 text-white" : "h-8 w-8 text-[#ff5a6e]"}`} strokeWidth={2.2} aria-hidden="true" />
-      <span className="mp-shimmer">უფასო მიწოდება</span>
+      <span className="mp-shimmer">{T.freeDelivery}</span>
       <span className="mp-beat">
-        <span className={`mp-num ${strip ? "mp-shimmer" : "mp-shimmer-red"}`}>{CONFIG.freeShippingFrom} ₾-დან</span>
+        <span className={`mp-num ${strip ? "mp-shimmer" : "mp-shimmer-red"}`}>{T.freeFrom(CONFIG.freeShippingFrom)}</span>
       </span>
     </p>
   );
 }
 
-function Header({ cartCount, onOpenCart, query, onQuery, onNavigate }) {
+function Header({ cartCount, onOpenCart, query, onQuery, onNavigate, productId }) {
   return (
     <header className="sticky top-[env(safe-area-inset-top,0px)] z-40 bg-[#18191c] text-white shadow-[0_1px_0_rgba(0,0,0,0.2)]">
       {CONFIG.freeShippingFrom > 0 && (
@@ -621,8 +814,9 @@ function Header({ cartCount, onOpenCart, query, onQuery, onNavigate }) {
       )}
       {/* სამი სვეტი: ლოგო | მიწოდება ზუსტად შუაში | ძიება, ტელეფონი, კალათა */}
       <div className="mx-auto flex h-16 max-w-[1400px] items-center gap-4 px-4 sm:px-6 xl:grid xl:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] xl:gap-6">
-        <div className="flex min-w-0 items-center">
+        <div className="flex min-w-0 items-center gap-3 sm:gap-4">
           <Logo onNavigate={onNavigate} />
+          <LangSwitch productId={productId} className="hidden sm:flex" />
         </div>
 
         <div className="hidden justify-center xl:flex">
@@ -635,13 +829,13 @@ function Header({ cartCount, onOpenCart, query, onQuery, onNavigate }) {
           <a
             href={`tel:${CONFIG.phoneTel}`}
             className="group flex h-11 items-center gap-2.5 rounded-full border border-white/10 bg-white/10 px-3 transition-colors hover:bg-white/15 sm:pr-4"
-            aria-label={`დაგვირეკეთ: ${CONFIG.phoneDisplay}`}
+            aria-label={T.callAria(CONFIG.phoneDisplay)}
           >
             <span className="grid h-6 w-6 place-items-center rounded-full bg-[#15803d] text-white">
               <Phone className="h-3.5 w-3.5 transition-transform duration-300 group-hover:rotate-12" strokeWidth={2.5} />
             </span>
             <span className="hidden flex-col leading-tight sm:flex">
-              <span className="text-[10px] text-white/60">დაგვირეკეთ</span>
+              <span className="text-[10px] text-white/60">{T.callUs}</span>
               <span className="mp-num whitespace-nowrap text-[13px] font-semibold">{CONFIG.phoneDisplay}</span>
             </span>
           </a>
@@ -650,7 +844,7 @@ function Header({ cartCount, onOpenCart, query, onQuery, onNavigate }) {
             type="button"
             onClick={onOpenCart}
             className="relative grid h-11 w-11 place-items-center rounded-full border border-white/10 bg-white/10 transition-colors hover:bg-white/15"
-            aria-label={`კალათა, ${cartCount} ნივთი`}
+            aria-label={T.cartAria(cartCount)}
           >
             <ShoppingBag className="h-5 w-5" strokeWidth={1.8} />
             {cartCount > 0 && (
@@ -662,8 +856,9 @@ function Header({ cartCount, onOpenCart, query, onQuery, onNavigate }) {
         </div>
       </div>
 
-      <div className="h-[3.25rem] px-4 md:hidden">
-        <SearchField id="mp-search-mobile" query={query} onQuery={onQuery} className="w-full" />
+      <div className="flex h-[3.25rem] items-start gap-2 px-4 md:hidden">
+        <SearchField id="mp-search-mobile" query={query} onQuery={onQuery} className="min-w-0 flex-1" />
+        <LangSwitch productId={productId} className="mt-1.5 flex sm:hidden" />
       </div>
     </header>
   );
@@ -702,24 +897,24 @@ function Sidebar({ filter }) {
   return (
     <aside className="hidden lg:block">
       <div className={`sticky flex flex-col gap-7 ${CONFIG.freeShippingFrom > 0 ? "top-[7.25rem] xl:top-24" : "top-24"}`}>
-        <FilterGroup title="კატეგორია">
+        <FilterGroup title={T.category}>
           {CATEGORIES.map((c) => (
             <FilterOption key={c.id} active={category === c.id} onClick={() => setCategory(c.id)} label={c.label} count={counts[c.id] || 0} />
           ))}
         </FilterGroup>
-        <FilterGroup title="ფასი">
+        <FilterGroup title={T.price}>
           {PRICE_RANGES.map((r) => (
             <FilterOption key={r.id} active={price === r.id} onClick={() => setPrice(r.id)} label={r.label} />
           ))}
         </FilterGroup>
         {hasFilters && (
           <button type="button" onClick={reset} className="px-3 text-left text-sm font-medium text-[#c8102e] hover:underline">
-            ფილტრების გასუფთავება
+            {T.clearFilters}
           </button>
         )}
         <div className="rounded-2xl border border-[#e4e2dd] bg-white p-4">
-          <p className="text-sm font-semibold text-[#18191c]">შეკვეთა WhatsApp-ით</p>
-          <p className="mt-1 text-xs leading-relaxed text-[#5c5d61]">აირჩიეთ პროდუქტი და მოგვწერეთ — გიპასუხებთ რამდენიმე წუთში.</p>
+          <p className="text-sm font-semibold text-[#18191c]">{T.waBoxTitle}</p>
+          <p className="mt-1 text-xs leading-relaxed text-[#5c5d61]">{T.waBoxText}</p>
           <a href={`tel:${CONFIG.phoneTel}`} className="mp-num mt-3 block select-all text-sm font-semibold text-[#18191c] hover:text-[#15803d]">
             {CONFIG.phoneDisplay}
           </a>
@@ -739,7 +934,7 @@ function MobileFilters({ filter }) {
           : "top-[calc(env(safe-area-inset-top,0px)+7.25rem)] md:top-[calc(env(safe-area-inset-top,0px)+4rem)]"
       }`}
     >
-      <div className="mp-scroll flex gap-2 overflow-x-auto" role="tablist" aria-label="კატეგორიები">
+      <div className="mp-scroll flex gap-2 overflow-x-auto" role="tablist" aria-label={T.categoriesAria}>
         {CATEGORIES.map((c) => {
           const active = category === c.id;
           return (
@@ -760,7 +955,7 @@ function MobileFilters({ filter }) {
         })}
       </div>
       <label className="relative mt-2 block" htmlFor="mp-price-mobile">
-        <span className="sr-only">ფასი</span>
+        <span className="sr-only">{T.price}</span>
         <select
           id="mp-price-mobile"
           value={price}
@@ -769,7 +964,7 @@ function MobileFilters({ filter }) {
         >
           {PRICE_RANGES.map((r) => (
             <option key={r.id} value={r.id}>
-              ფასი: {r.label}
+              {T.pricePrefix(r.label)}
             </option>
           ))}
         </select>
@@ -805,7 +1000,7 @@ function ProductCard({ product, index, inCart, onAdd, onOpen }) {
         href={productPath(product.id)}
         onClick={handleNav(onOpen, product.id)}
         className="relative block aspect-[4/3] overflow-hidden bg-gradient-to-b from-[#f7f6f3] to-[#ebe9e4]"
-        aria-label={`${product.name} — დეტალურად`}
+        aria-label={T.detailsAria(product.name)}
         tabIndex={-1}
       >
         <div className="absolute inset-0 p-6 transition-transform duration-500 ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-105">
@@ -837,7 +1032,7 @@ function ProductCard({ product, index, inCart, onAdd, onOpen }) {
             {product.oldPrice && <span className="mp-num text-xs text-[#8a8b90] line-through">{formatPrice(product.oldPrice)}</span>}
           </div>
           <span className={`text-xs font-medium ${product.inStock ? "text-[#15803d]" : "text-[#b45309]"}`}>
-            {product.inStock ? "მარაგშია" : "შეკვეთით"}
+            {product.inStock ? T.inStock : T.onOrder}
           </span>
         </div>
 
@@ -849,7 +1044,7 @@ function ProductCard({ product, index, inCart, onAdd, onOpen }) {
             className="inline-flex h-11 min-w-0 flex-1 items-center justify-center gap-2 whitespace-nowrap rounded-xl bg-[#15803d] px-3 text-[13px] font-bold text-white transition-colors duration-200 hover:bg-[#166534] active:scale-[0.98]"
           >
             <MessageCircle className="h-4 w-4 shrink-0" strokeWidth={2.2} />
-            შესაკვეთად დაგვიკავშირდით
+            {T.orderCta}
           </a>
           <button
             type="button"
@@ -857,8 +1052,8 @@ function ProductCard({ product, index, inCart, onAdd, onOpen }) {
             className={`grid h-11 w-11 shrink-0 place-items-center rounded-xl border transition-colors duration-200 ${
               inCart ? "border-[#18191c] bg-[#18191c] text-white" : "border-[#d9d6d0] text-[#18191c] hover:border-[#18191c]"
             }`}
-            aria-label={inCart ? `კალათაშია: ${product.name}. კიდევ ერთის დამატება` : `კალათაში დამატება: ${product.name}`}
-            title={inCart ? "კალათაშია" : "კალათაში დამატება"}
+            aria-label={inCart ? T.inCartAria(product.name) : T.addAria(product.name)}
+            title={inCart ? T.inCart : T.addToCart}
           >
             {inCart ? <Check className="h-4 w-4" /> : <ShoppingBag className="h-4 w-4" />}
           </button>
@@ -875,24 +1070,24 @@ function Shop({ filter, cart, onOpen }) {
   const { category, query, sort, setSort, price, visible, hasFilters, reset } = filter;
   const inCart = useMemo(() => new Set(cart.lines.map((l) => l.product.id)), [cart.lines]);
   const gridKey = `${category}|${sort}|${price}|${query.trim()}`;
-  const title = query.trim() ? `ძიება: „${query.trim()}“` : category === "all" ? "ყველა პროდუქტი" : CATEGORY_LABEL[category];
+  const title = query.trim() ? T.searchTitle(query.trim()) : category === "all" ? T.allProducts : CATEGORY_LABEL[category];
 
   return (
     <main id="shop" className="mx-auto grid max-w-[1400px] gap-8 px-4 pb-16 sm:px-6 lg:grid-cols-[220px_1fr] lg:pt-6">
       <Sidebar filter={filter} />
 
-      <section className="min-w-0" aria-label="პროდუქტები">
+      <section className="min-w-0" aria-label={T.productsAria}>
         <MobileFilters filter={filter} />
 
         <div className="mt-4 flex items-center justify-between gap-3 lg:mt-0">
           <div className="min-w-0">
             <h1 className="text-lg font-bold leading-tight text-[#18191c] sm:text-2xl">{title}</h1>
             <p className="mp-num text-sm text-[#5c5d61]" aria-live="polite">
-              {visible.length} პროდუქტი
+              {T.productCount(visible.length)}
             </p>
           </div>
           <label className="relative shrink-0" htmlFor="mp-sort">
-            <span className="sr-only">დალაგება</span>
+            <span className="sr-only">{T.sort}</span>
             <select
               id="mp-sort"
               value={sort}
@@ -918,15 +1113,15 @@ function Shop({ filter, cart, onOpen }) {
         ) : (
           <div className="mp-fade mt-5 flex flex-col items-center rounded-2xl border border-dashed border-[#d2cfc8] bg-white px-6 py-16 text-center">
             <Search className="h-6 w-6 text-[#8a8b90]" />
-            <p className="mt-3 font-semibold text-[#18191c]">პროდუქტი ვერ მოიძებნა</p>
-            <p className="mt-1 text-sm text-[#5c5d61]">სცადეთ სხვა სიტყვა ან შეცვალეთ ფილტრი.</p>
+            <p className="mt-3 font-semibold text-[#18191c]">{T.noResults}</p>
+            <p className="mt-1 text-sm text-[#5c5d61]">{T.noResultsHint}</p>
             {hasFilters && (
               <button
                 type="button"
                 onClick={reset}
                 className="mt-5 rounded-full bg-[#18191c] px-5 py-2 text-sm font-semibold text-white transition-colors hover:bg-[#2c2d31]"
               >
-                ფილტრების გასუფთავება
+                {T.clearFilters}
               </button>
             )}
           </div>
@@ -985,11 +1180,11 @@ function Gallery({ product }) {
   return (
     <div className="flex flex-col gap-3">
       <div className="group relative aspect-square overflow-hidden rounded-3xl border border-[#e4e2dd] bg-white" {...swipe}>
-        <button type="button" onClick={() => setZoom(true)} className="absolute inset-0 cursor-zoom-in" aria-label="ფოტოს გადიდება">
+        <button type="button" onClick={() => setZoom(true)} className="absolute inset-0 cursor-zoom-in" aria-label={T.zoom}>
           <img
             key={images[index].src}
             src={images[index].src}
-            alt={`${product.name} — ფოტო ${index + 1}`}
+            alt={T.photoAlt(product.name, index + 1)}
             className="mp-fade h-full w-full object-contain p-4"
           />
         </button>
@@ -998,10 +1193,10 @@ function Gallery({ product }) {
         </span>
         {count > 1 && (
           <>
-            <button type="button" onClick={() => go(-1)} className={`${arrow} left-3`} aria-label="წინა ფოტო">
+            <button type="button" onClick={() => go(-1)} className={`${arrow} left-3`} aria-label={T.prevPhoto}>
               <ChevronLeft className="h-5 w-5" />
             </button>
-            <button type="button" onClick={() => go(1)} className={`${arrow} right-3`} aria-label="შემდეგი ფოტო">
+            <button type="button" onClick={() => go(1)} className={`${arrow} right-3`} aria-label={T.nextPhoto}>
               <ChevronRight className="h-5 w-5" />
             </button>
             <span className="mp-num absolute bottom-3 left-1/2 -translate-x-1/2 rounded-full bg-[#18191c]/75 px-2.5 py-0.5 text-xs text-white">
@@ -1021,7 +1216,7 @@ function Gallery({ product }) {
               className={`h-20 w-20 shrink-0 overflow-hidden rounded-xl border-2 bg-white p-1 transition-colors ${
                 i === index ? "border-[#18191c]" : "border-[#e4e2dd] hover:border-[#b9b6af]"
               }`}
-              aria-label={`ფოტო ${i + 1}`}
+              aria-label={T.photo(i + 1)}
               aria-current={i === index}
             >
               <img src={img.thumb} alt="" loading="lazy" className="h-full w-full object-contain" />
@@ -1032,22 +1227,22 @@ function Gallery({ product }) {
 
       {zoom && (
         <div className="mp-fade fixed inset-0 z-[60] flex items-center justify-center bg-[#0b0c0e]/95" role="dialog" aria-modal="true" aria-label={product.name} {...swipe}>
-          <button type="button" className="absolute inset-0 cursor-zoom-out" onClick={() => setZoom(false)} aria-label="დახურვა" />
-          <img src={images[index].src} alt={`${product.name} — ფოტო ${index + 1}`} className="relative max-h-[92vh] max-w-[94vw] object-contain" />
+          <button type="button" className="absolute inset-0 cursor-zoom-out" onClick={() => setZoom(false)} aria-label={T.close} />
+          <img src={images[index].src} alt={T.photoAlt(product.name, index + 1)} className="relative max-h-[92vh] max-w-[94vw] object-contain" />
           <button
             type="button"
             onClick={() => setZoom(false)}
             className="absolute right-4 top-[calc(1rem+env(safe-area-inset-top,0px))] grid h-11 w-11 place-items-center rounded-full bg-white/10 text-white hover:bg-white/20"
-            aria-label="დახურვა"
+            aria-label={T.close}
           >
             <X className="h-5 w-5" />
           </button>
           {count > 1 && (
             <>
-              <button type="button" onClick={() => go(-1)} className="absolute left-3 grid h-12 w-12 place-items-center rounded-full bg-white/10 text-white hover:bg-white/20" aria-label="წინა ფოტო">
+              <button type="button" onClick={() => go(-1)} className="absolute left-3 grid h-12 w-12 place-items-center rounded-full bg-white/10 text-white hover:bg-white/20" aria-label={T.prevPhoto}>
                 <ChevronLeft className="h-6 w-6" />
               </button>
-              <button type="button" onClick={() => go(1)} className="absolute right-3 grid h-12 w-12 place-items-center rounded-full bg-white/10 text-white hover:bg-white/20" aria-label="შემდეგი ფოტო">
+              <button type="button" onClick={() => go(1)} className="absolute right-3 grid h-12 w-12 place-items-center rounded-full bg-white/10 text-white hover:bg-white/20" aria-label={T.nextPhoto}>
                 <ChevronRight className="h-6 w-6" />
               </button>
               <span className="mp-num absolute bottom-[calc(1.25rem+env(safe-area-inset-bottom,0px))] text-sm text-white/80">
@@ -1099,8 +1294,7 @@ function Description({ text }) {
 
 const formatDate = (iso) => {
   const [y, m, d] = iso.split("-").map(Number);
-  const months = ["იანვრამდე", "თებერვლამდე", "მარტამდე", "აპრილამდე", "მაისამდე", "ივნისამდე", "ივლისამდე", "აგვისტომდე", "სექტემბრამდე", "ოქტომბრამდე", "ნოემბრამდე", "დეკემბრამდე"];
-  return y && m && d ? `${d} ${months[m - 1]}` : iso;
+  return y && m && d ? T.dateFmt(d, T.months[m - 1]) : iso;
 };
 
 /* ------------------------------------------------------------------ */
@@ -1118,10 +1312,10 @@ function ProductPage({ product, cart, onNavigate }) {
 
   return (
     <main className="mx-auto max-w-[1200px] px-4 pb-16 pt-5 sm:px-6 lg:pt-8">
-      <nav className="flex flex-wrap items-center gap-1.5 text-sm text-[#5c5d61]" aria-label="ნავიგაცია">
-        <a href="/" onClick={handleNav(onNavigate, null)} className="inline-flex items-center gap-1.5 font-medium text-[#18191c] hover:text-[#c8102e]">
+      <nav className="flex flex-wrap items-center gap-1.5 text-sm text-[#5c5d61]" aria-label={T.breadcrumb}>
+        <a href={HOME_PATH} onClick={handleNav(onNavigate, null)} className="inline-flex items-center gap-1.5 font-medium text-[#18191c] hover:text-[#c8102e]">
           <ArrowLeft className="h-4 w-4" />
-          მაღაზია
+          {T.shop}
         </a>
         <span aria-hidden="true">/</span>
         <span>{CATEGORY_LABEL[product.category]}</span>
@@ -1147,11 +1341,11 @@ function ProductPage({ product, cart, onNavigate }) {
             {product.oldPrice && <span className="mp-num text-lg text-[#8a8b90] line-through">{formatPrice(product.oldPrice)}</span>}
           </div>
           {product.oldPrice && product.saleEnds && (
-            <p className="mt-1 text-sm font-medium text-[#c8102e]">ფასდაკლება მოქმედებს {formatDate(product.saleEnds)}</p>
+            <p className="mt-1 text-sm font-medium text-[#c8102e]">{T.saleUntil(formatDate(product.saleEnds))}</p>
           )}
           <p className={`mt-3 inline-flex items-center gap-1.5 text-sm font-medium ${product.inStock ? "text-[#15803d]" : "text-[#b45309]"}`}>
             <span className={`h-2 w-2 rounded-full ${product.inStock ? "bg-[#15803d]" : "bg-[#b45309]"}`} />
-            {product.inStock ? "მარაგშია" : "შეკვეთით — მიწოდების ვადას დაგიზუსტებთ"}
+            {product.inStock ? T.inStock : T.onOrderLong}
           </p>
 
           <div className="mt-6 flex gap-2">
@@ -1162,7 +1356,7 @@ function ProductPage({ product, cart, onNavigate }) {
               className="inline-flex h-12 min-w-0 flex-1 items-center justify-center gap-2 rounded-xl bg-[#15803d] px-4 text-sm font-bold text-white transition-colors hover:bg-[#166534] active:scale-[0.98]"
             >
               <MessageCircle className="h-5 w-5 shrink-0" strokeWidth={2.2} />
-              შესაკვეთად დაგვიკავშირდით
+              {T.orderCta}
             </a>
             <button
               type="button"
@@ -1170,30 +1364,30 @@ function ProductPage({ product, cart, onNavigate }) {
               className={`grid h-12 w-12 shrink-0 place-items-center rounded-xl border transition-colors ${
                 inCart ? "border-[#18191c] bg-[#18191c] text-white" : "border-[#d9d6d0] bg-white text-[#18191c] hover:border-[#18191c]"
               }`}
-              aria-label={inCart ? "კალათაშია. კიდევ ერთის დამატება" : "კალათაში დამატება"}
-              title={inCart ? "კალათაშია" : "კალათაში დამატება"}
+              aria-label={inCart ? T.inCartMore : T.addToCart}
+              title={inCart ? T.inCart : T.addToCart}
             >
               {inCart ? <Check className="h-5 w-5" /> : <ShoppingBag className="h-5 w-5" />}
             </button>
           </div>
           {CONFIG.phoneDisplay && (
             <p className="mt-3 text-sm text-[#5c5d61]">
-              ან დაგვირეკეთ:{" "}
+              {T.orCall}{" "}
               <a href={`tel:${CONFIG.phoneTel}`} className="mp-num select-all font-semibold text-[#18191c] hover:text-[#15803d]">
                 {CONFIG.phoneDisplay}
               </a>
             </p>
           )}
           <ul className="mt-6 flex flex-col gap-2 border-t border-[#e4e2dd] pt-5 text-sm text-[#5c5d61]">
-            <li>✓ მიწოდება მთელ საქართველოში</li>
-            <li>✓ შეკვეთის დადასტურება WhatsApp-ით ან ტელეფონით</li>
+            <li>✓ {T.perkDelivery}</li>
+            <li>✓ {T.perkConfirm}</li>
           </ul>
         </div>
       </div>
 
       {product.description.trim() && (
         <section className="mt-12 border-t border-[#e4e2dd] pt-8" aria-labelledby="mp-desc">
-          <h2 id="mp-desc" className="text-xl font-bold text-[#18191c]">აღწერა</h2>
+          <h2 id="mp-desc" className="text-xl font-bold text-[#18191c]">{T.description}</h2>
           <div className="mt-4">
             <Description text={product.description} />
           </div>
@@ -1202,7 +1396,7 @@ function ProductPage({ product, cart, onNavigate }) {
 
       {related.length > 0 && (
         <section className="mt-12 border-t border-[#e4e2dd] pt-8" aria-labelledby="mp-related">
-          <h2 id="mp-related" className="text-xl font-bold text-[#18191c]">შეიძლება დაგაინტერესოთ</h2>
+          <h2 id="mp-related" className="text-xl font-bold text-[#18191c]">{T.related}</h2>
           <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {related.map((p, i) => (
               /* 4 ბარათი ორ სვეტად, 3 — სამ სვეტად; მეოთხე დიდ ეკრანზე იმალება, რომ რიგი სრული იყოს */
@@ -1221,14 +1415,14 @@ function NotFound({ onNavigate }) {
   return (
     <main className="mx-auto flex max-w-xl flex-col items-center px-4 py-24 text-center">
       <p className="text-5xl">♠</p>
-      <h1 className="mt-4 text-2xl font-bold text-[#18191c]">პროდუქტი ვერ მოიძებნა</h1>
-      <p className="mt-2 text-[#5c5d61]">შესაძლოა, ის აღარ იყიდება ან ბმული შეიცვალა.</p>
+      <h1 className="mt-4 text-2xl font-bold text-[#18191c]">{T.notFound}</h1>
+      <p className="mt-2 text-[#5c5d61]">{T.notFoundText}</p>
       <a
-        href="/"
+        href={HOME_PATH}
         onClick={handleNav(onNavigate, null)}
         className="mt-6 rounded-full bg-[#18191c] px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#2c2d31]"
       >
-        მაღაზიაში დაბრუნება
+        {T.backToShop}
       </a>
     </main>
   );
@@ -1253,19 +1447,19 @@ function CartDrawer({ open, onClose, cart, onOpenProduct }) {
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-50" role="dialog" aria-modal="true" aria-label="კალათა">
-      <button type="button" className="mp-fade absolute inset-0 bg-[#18191c]/40 backdrop-blur-[2px]" onClick={onClose} aria-label="დახურვა" />
+    <div className="fixed inset-0 z-50" role="dialog" aria-modal="true" aria-label={T.cart}>
+      <button type="button" className="mp-fade absolute inset-0 bg-[#18191c]/40 backdrop-blur-[2px]" onClick={onClose} aria-label={T.close} />
       <aside className="mp-slide-in absolute inset-y-0 right-0 flex w-full max-w-md flex-col bg-white pb-[env(safe-area-inset-bottom,0px)] pt-[env(safe-area-inset-top,0px)] shadow-2xl">
         <div className="flex items-center justify-between border-b border-[#e4e2dd] px-5 py-4">
           <div>
-            <h2 className="text-lg font-bold text-[#18191c]">კალათა</h2>
-            <p className="mp-num text-xs text-[#5c5d61]">{cart.count} ნივთი</p>
+            <h2 className="text-lg font-bold text-[#18191c]">{T.cart}</h2>
+            <p className="mp-num text-xs text-[#5c5d61]">{T.items(cart.count)}</p>
           </div>
           <button
             type="button"
             onClick={onClose}
             className="grid h-10 w-10 place-items-center rounded-full text-[#5c5d61] transition-colors hover:bg-[#f3f2ef] hover:text-[#18191c]"
-            aria-label="კალათის დახურვა"
+            aria-label={T.closeCart}
           >
             <X className="h-5 w-5" />
           </button>
@@ -1274,10 +1468,10 @@ function CartDrawer({ open, onClose, cart, onOpenProduct }) {
         {cart.lines.length === 0 ? (
           <div className="flex flex-1 flex-col items-center justify-center px-8 text-center">
             <ShoppingBag className="h-8 w-8 text-[#8a8b90]" strokeWidth={1.5} />
-            <p className="mt-4 font-semibold text-[#18191c]">კალათა ცარიელია</p>
-            <p className="mt-1 text-sm text-[#5c5d61]">დაამატეთ პროდუქტები და გამოგვიგზავნეთ ერთი შეტყობინებით.</p>
+            <p className="mt-4 font-semibold text-[#18191c]">{T.cartEmpty}</p>
+            <p className="mt-1 text-sm text-[#5c5d61]">{T.cartEmptyText}</p>
             <button type="button" onClick={onClose} className="mt-6 rounded-full bg-[#18191c] px-5 py-2 text-sm font-semibold text-white hover:bg-[#2c2d31]">
-              შოპინგის გაგრძელება
+              {T.continueShopping}
             </button>
           </div>
         ) : (
@@ -1302,7 +1496,7 @@ function CartDrawer({ open, onClose, cart, onOpenProduct }) {
                           type="button"
                           onClick={() => cart.decrement(product.id)}
                           className="grid h-8 w-8 place-items-center text-[#5c5d61] hover:text-[#18191c]"
-                          aria-label="რაოდენობის შემცირება"
+                          aria-label={T.decrease}
                         >
                           <Minus className="h-3.5 w-3.5" />
                         </button>
@@ -1311,7 +1505,7 @@ function CartDrawer({ open, onClose, cart, onOpenProduct }) {
                           type="button"
                           onClick={() => cart.add(product.id)}
                           className="grid h-8 w-8 place-items-center text-[#5c5d61] hover:text-[#18191c]"
-                          aria-label="რაოდენობის გაზრდა"
+                          aria-label={T.increase}
                         >
                           <Plus className="h-3.5 w-3.5" />
                         </button>
@@ -1322,7 +1516,7 @@ function CartDrawer({ open, onClose, cart, onOpenProduct }) {
                           type="button"
                           onClick={() => cart.remove(product.id)}
                           className="text-[#8a8b90] transition-colors hover:text-[#c8102e]"
-                          aria-label={`წაშლა: ${product.name}`}
+                          aria-label={T.removeAria(product.name)}
                         >
                           <Trash2 className="h-4 w-4" />
                         </button>
@@ -1335,7 +1529,7 @@ function CartDrawer({ open, onClose, cart, onOpenProduct }) {
 
             <div className="border-t border-[#e4e2dd] bg-[#f8f7f5] px-5 py-5">
               <div className="flex items-baseline justify-between">
-                <span className="text-sm text-[#5c5d61]">ჯამი</span>
+                <span className="text-sm text-[#5c5d61]">{T.total}</span>
                 <span className="mp-num text-2xl font-bold text-[#18191c]">{formatPrice(cart.total)}</span>
               </div>
               <a
@@ -1345,11 +1539,11 @@ function CartDrawer({ open, onClose, cart, onOpenProduct }) {
                 className="mt-4 inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-[#15803d] text-sm font-bold text-white transition-colors hover:bg-[#166534]"
               >
                 <MessageCircle className="h-4 w-4" />
-                შესაკვეთად დაგვიკავშირდით
+                {T.orderCta}
               </a>
-              <p className="mt-3 text-center text-xs text-[#8a8b90]">ონლაინ გადახდა მალე დაემატება</p>
+              <p className="mt-3 text-center text-xs text-[#8a8b90]">{T.paySoon}</p>
               <button type="button" onClick={cart.clear} className="mt-2 w-full text-xs text-[#5c5d61] transition-colors hover:text-[#c8102e]">
-                კალათის გასუფთავება
+                {T.clearCart}
               </button>
             </div>
           </>
@@ -1368,14 +1562,14 @@ function Footer() {
       <div className="mx-auto flex max-w-[1400px] flex-col gap-4 px-4 py-6 text-sm sm:flex-row sm:items-center sm:justify-between sm:px-6">
         <div className="flex items-center gap-3">
           <LogoMark size={24} />
-          <span className="text-xs text-white/70">© {new Date().getFullYear()} mypoker.ge · ყველა უფლება დაცულია</span>
+          <span className="text-xs text-white/70">© {new Date().getFullYear()} mypoker.ge · {T.rights}</span>
         </div>
         <div className="flex flex-wrap items-center gap-4">
           <a href={`tel:${CONFIG.phoneTel}`} className="mp-num select-all font-semibold hover:text-white/80">
             {CONFIG.phoneDisplay}
           </a>
           <a
-            href={buildWhatsAppLink("გამარჯობა, mypoker.ge-დან გწერთ.")}
+            href={buildWhatsAppLink(T.waHello)}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-1.5 font-semibold text-[#4ade80] hover:text-[#86efac]"
@@ -1399,7 +1593,8 @@ export default function App() {
   const product = route.productId ? PRODUCTS.find((p) => p.id === route.productId) : null;
 
   useEffect(() => {
-    document.title = product ? `${product.name} — mypoker.ge` : "mypoker.ge — პოკერის აქსესუარების მაღაზია";
+    document.documentElement.lang = LANG;
+    document.title = product ? `${product.name} — mypoker.ge` : T.siteTitle;
   }, [product]);
   const [cartOpen, setCartOpen] = useState(false);
   const [toast, setToast] = useState(null);
@@ -1436,6 +1631,7 @@ export default function App() {
           if (route.productId) navigate(null);
         }}
         onNavigate={navigate}
+        productId={route.productId}
       />
       <div className="flex-1">
         {!route.productId ? (
@@ -1466,9 +1662,9 @@ export default function App() {
           <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-[#15803d]">
             <Check className="h-4 w-4" />
           </span>
-          <p className="min-w-0 flex-1 truncate text-[13px]">კალათაში დაემატა: {toast.name}</p>
+          <p className="min-w-0 flex-1 truncate text-[13px]">{T.added} {toast.name}</p>
           <button type="button" onClick={openCart} className="shrink-0 text-[13px] font-bold text-[#4ade80] hover:text-[#86efac]">
-            ნახვა
+            {T.view}
           </button>
         </div>
       )}

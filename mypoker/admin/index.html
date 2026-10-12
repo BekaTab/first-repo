@@ -127,6 +127,9 @@
   .gadd:hover { border-color: var(--ink); color: var(--ink); }
   .gadd.busy { opacity: .5; pointer-events: none; }
   .gadd-plus { font-size: 26px; line-height: 1; }
+  .en-box { border: 1px solid var(--line); border-radius: 12px; padding: 10px 14px; background: #faf9f7; }
+  .en-box summary { font-weight: 600; color: var(--ink); font-size: 13px; }
+  .en-fields { display: flex; flex-direction: column; gap: 12px; margin-top: 12px; }
 
   .sale-list { list-style: none; margin: 0; padding: 0; }
   .sale-list li { display: flex; justify-content: space-between; gap: 10px; padding: 8px 0; border-top: 1px solid var(--line); font-size: 13px; }
@@ -286,6 +289,17 @@
       </div>
       <label class="field"><span>მოკლე აღწერა (ჩანს ბარათზე)</span><input id="fSpec" class="input" placeholder="მაგ. 11.5 გ · თიხის კომპოზიტი · ალუმინის კეისი"></label>
       <label class="field"><span>დეტალური აღწერა (პროდუქტის გვერდზე)</span><textarea id="fDesc" class="input" rows="7" placeholder="რა შედის ნაკრებში, მასალა, ზომები, ვისთვის არის…&#10;&#10;- სიის პუნქტი იწყება ტირეთი&#10;- ცარიელი ხაზი ახალ აბზაცს იწყებს"></textarea></label>
+      <details id="fEn" class="en-box">
+        <summary>ინგლისური ვერსია (mypoker.ge/en) — ცარიელი ველის ნაცვლად ქართული ტექსტი ჩანს</summary>
+        <div class="en-fields">
+          <label class="field"><span>Name</span><input id="fNameEn" class="input" lang="en" placeholder="e.g. Professional Poker Chip Set (500 pcs)"></label>
+          <div class="row2">
+            <label class="field"><span>Short description</span><input id="fSpecEn" class="input" lang="en" placeholder="e.g. 11.5 g · clay composite"></label>
+            <label class="field"><span>Badge</span><input id="fBadgeEn" class="input" lang="en" placeholder="e.g. New, Bestseller"></label>
+          </div>
+          <label class="field"><span>Detailed description</span><textarea id="fDescEn" class="input" rows="6" lang="en"></textarea></label>
+        </div>
+      </details>
       <div class="row2">
         <label class="field"><span>ფასი, ₾ *</span><input id="fPrice" class="input num" type="number" min="1" step="1" required></label>
         <label class="field"><span>ფასდაკლებული ფასი, ₾</span><input id="fSale" class="input num" type="number" min="1" step="1"><small>ცარიელი = ფასდაკლება არ არის</small></label>

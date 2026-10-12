@@ -103,9 +103,10 @@
       if (!p || !p.id) return;
       var price = Math.round(Number(p.price) || 0), sale = Math.round(Number(p.salePrice) || 0);
       var o = {
-        id: String(p.id), name: String(p.name || ''), category: CAT_LABEL[p.category] ? p.category : 'accessories', price: price,
+        id: String(p.id), name: String(p.name || ''), nameEn: String(p.nameEn || ''), category: CAT_LABEL[p.category] ? p.category : 'accessories', price: price,
         salePrice: sale > 0 ? sale : null, saleEnds: /^\d{4}-\d{2}-\d{2}$/.test(p.saleEnds || '') ? p.saleEnds : '',
-        badge: String(p.badge || ''), spec: String(p.spec || ''), description: String(p.description || ''),
+        badge: String(p.badge || ''), badgeEn: String(p.badgeEn || ''), spec: String(p.spec || ''), specEn: String(p.specEn || ''),
+        description: String(p.description || ''), descriptionEn: String(p.descriptionEn || ''),
         images: normaliseImages(p), inStock: p.inStock !== false, visible: p.visible !== false
       };
       if (p.visual) o.visual = p.visual;
@@ -309,6 +310,9 @@
     $('fBadge').value = p ? p.badge : '';
     $('fSpec').value = p ? p.spec : '';
     $('fDesc').value = p ? p.description : '';
+    $('fNameEn').value = p ? p.nameEn : ''; $('fSpecEn').value = p ? p.specEn : '';
+    $('fBadgeEn').value = p ? p.badgeEn : ''; $('fDescEn').value = p ? p.descriptionEn : '';
+    $('fEn').open = !!(p && (p.nameEn || p.specEn || p.descriptionEn));
     $('fPrice').value = p ? p.price : '';
     $('fSale').value = p && p.salePrice ? p.salePrice : '';
     $('fSaleEnds').value = p ? p.saleEnds : '';
@@ -377,6 +381,8 @@
     if (!p) { p = { id: slug(name) }; draft.products.unshift(p); }
     p.name = name; p.category = $('fCat').value; p.badge = $('fBadge').value.trim(); p.spec = $('fSpec').value.trim();
     p.description = $('fDesc').value.replace(/\s+$/, '');
+    p.nameEn = $('fNameEn').value.trim(); p.specEn = $('fSpecEn').value.trim(); p.badgeEn = $('fBadgeEn').value.trim();
+    p.descriptionEn = $('fDescEn').value.replace(/\s+$/, '');
     p.price = price; p.salePrice = sale; p.saleEnds = sale ? $('fSaleEnds').value : '';
     p.images = clone(editImages); delete p.image; p.inStock = $('fStock').checked; p.visible = $('fVisible').checked;
     if (p.images.length) delete p.visual;
