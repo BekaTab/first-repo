@@ -695,10 +695,9 @@
   });
 
   function pollDeploy(sha, started) {
-    return gh('GET', repoPath('/commits/' + sha + '/status')).then(function (r) {
-      var st = (r.statuses || []).filter(function (s) { return /vercel/i.test(s.context); });
-      var mine = st.filter(function (s) { return /mypoker/i.test(s.context); });
-      var s = (mine.length ? mine : st.length === 1 ? st : [])[0];
+    // სტატუსების სრული სია (უახლესი პირველია); ორივე Vercel პროექტი „Vercel“ სახელით წერს, ამიტომ ვარჩევთ ბმულით
+    return gh('GET', repoPath('/commits/' + sha + '/statuses?per_page=100')).then(function (list) {
+      var s = (list || []).filter(function (x) { return /vercel/i.test(x.context) && /\/mypoker\//.test(x.target_url || ''); })[0];
       if (s && s.state === 'success') return 'success';
       if (s && (s.state === 'failure' || s.state === 'error')) return 'failure';
       if (Date.now() - started > 4 * 60 * 1000) return 'timeout';
