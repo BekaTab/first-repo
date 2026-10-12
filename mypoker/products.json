@@ -2,7 +2,8 @@
   "settings": {
     "phoneDisplay": "+995 555 12 34 56",
     "phoneTel": "+995555123456",
-    "whatsappNumber": "995555123456"
+    "whatsappNumber": "995555123456",
+    "freeShippingFrom": 80
   },
   "products": [
     {
