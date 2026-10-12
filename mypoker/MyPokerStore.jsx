@@ -792,10 +792,10 @@ function FreeShipping({ strip = false }) {
   return (
     <p
       className={`flex items-center justify-center whitespace-nowrap font-extrabold ${
-        strip ? "gap-2 text-[13px] tracking-[0.02em]" : "gap-3 text-[22px] tracking-[0.05em] min-[1400px]:gap-3.5 min-[1400px]:text-[26px]"
+        strip ? "gap-2 text-[13px] tracking-[0.02em]" : "gap-3 text-[17px] tracking-[0.14em] min-[1400px]:text-[18px] min-[1400px]:tracking-[0.18em]"
       }`}
     >
-      <Truck className={`mp-drive shrink-0 ${strip ? "h-4 w-4 text-white" : "h-8 w-8 text-[#ff5a6e]"}`} strokeWidth={2.2} aria-hidden="true" />
+      <Truck className={`mp-drive shrink-0 ${strip ? "h-4 w-4 text-white" : "h-6 w-6 text-[#ff5a6e]"}`} strokeWidth={2.2} aria-hidden="true" />
       <span className="mp-shimmer">{T.freeDelivery}</span>
       <span className="mp-beat">
         <span className={`mp-num ${strip ? "mp-shimmer" : "mp-shimmer-red"}`}>{T.freeFrom(CONFIG.freeShippingFrom)}</span>
@@ -812,14 +812,14 @@ function Header({ cartCount, onOpenCart, query, onQuery, onNavigate, productId }
           <FreeShipping strip />
         </div>
       )}
-      {/* სამი სვეტი: ლოგო | მიწოდება ზუსტად შუაში | ძიება, ტელეფონი, კალათა */}
-      <div className="mx-auto flex h-16 max-w-[1400px] items-center gap-4 px-4 sm:px-6 xl:grid xl:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] xl:gap-6">
+      {/* ლოგო | მიწოდება — მათ შორის დარჩენილი ადგილის შუაში | ძიება, ტელეფონი, კალათა */}
+      <div className="mx-auto flex h-16 max-w-[1400px] items-center gap-4 px-4 sm:px-6 xl:gap-6">
         <div className="flex min-w-0 items-center gap-3 sm:gap-4">
           <Logo onNavigate={onNavigate} />
           <LangSwitch productId={productId} className="hidden sm:flex" />
         </div>
 
-        <div className="hidden justify-center xl:flex">
+        <div className="hidden min-w-0 flex-1 justify-center xl:flex">
           <FreeShipping />
         </div>
 
