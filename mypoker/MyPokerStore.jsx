@@ -56,10 +56,9 @@ const CATEGORY_LABEL = Object.fromEntries(CATEGORIES.map((c) => [c.id, c.label])
 
 const PRICE_RANGES = [
   { id: "any", label: "ნებისმიერი", min: 0, max: Infinity },
-  { id: "u50", label: "50 ₾-მდე", min: 0, max: 50 },
-  { id: "50-300", label: "50 – 300 ₾", min: 50, max: 300 },
-  { id: "300-1000", label: "300 – 1000 ₾", min: 300, max: 1000 },
-  { id: "1000+", label: "1000 ₾-ზე მეტი", min: 1000, max: Infinity },
+  { id: "50-100", label: "50 – 100 ₾", min: 50, max: 100 },
+  { id: "100-200", label: "100 – 200 ₾", min: 100, max: 200 },
+  { id: "200+", label: "200 ₾-ზე მეტი", min: 200, max: Infinity },
 ];
 
 const SORTS = [
@@ -315,10 +314,10 @@ const suitAt = (d, x, y, r, fill, opacity) =>
   `<path d="${d}" fill="${fill}" fill-opacity="${opacity}" transform="translate(${x} ${y}) rotate(${r} 12 12) scale(.75)"/>`;
 const PATTERN_SVG =
   `<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 120 120">` +
-  suitAt(SUIT.spade, 10, 12, -12, "#18191c", 0.05) +
-  suitAt(SUIT.heart, 72, 8, 10, "#c8102e", 0.06) +
-  suitAt(SUIT.diamond, 40, 70, 8, "#c8102e", 0.06) +
-  suitAt(SUIT.club, 92, 76, -10, "#18191c", 0.05) +
+  suitAt(SUIT.spade, 10, 12, -12, "#18191c", 0.058) +
+  suitAt(SUIT.heart, 72, 8, 10, "#c8102e", 0.07) +
+  suitAt(SUIT.diamond, 40, 70, 8, "#c8102e", 0.07) +
+  suitAt(SUIT.club, 92, 76, -10, "#18191c", 0.058) +
   `</svg>`;
 const PATTERN_URL = `url("data:image/svg+xml,${encodeURIComponent(PATTERN_SVG)}")`;
 
@@ -344,13 +343,20 @@ const GLOBAL_CSS = `
   .mp-toast { animation: mp-toast .3s cubic-bezier(.16,1,.3,1) both; }
   .mp-shimmer, .mp-shimmer-red {
     background-size: 300% 100%; -webkit-background-clip: text; background-clip: text; color: transparent;
-    animation: mp-shimmer 4.5s ease-in-out infinite;
+    animation: mp-shimmer 3s ease-in-out infinite;
   }
   .mp-shimmer { background-image: linear-gradient(110deg, #ffffff 42%, #ffc2cb 50%, #ffffff 58%); }
   .mp-shimmer-red { background-image: linear-gradient(110deg, #ff5a6e 42%, #ffd6dc 50%, #ff5a6e 58%); }
   @keyframes mp-shimmer { 0% { background-position: 100% 0; } 55%, 100% { background-position: 0 0; } }
-  .mp-drive { animation: mp-drive 1.8s ease-in-out infinite; }
-  @keyframes mp-drive { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(4px); } }
+  .mp-drive { animation: mp-drive 1.2s ease-in-out infinite; }
+  @keyframes mp-drive {
+    0%, 100% { transform: translateX(-3px) translateY(0); }
+    25% { transform: translateX(0) translateY(-1.5px); }
+    50% { transform: translateX(4px) translateY(0); }
+    75% { transform: translateX(0) translateY(-1px); }
+  }
+  .mp-beat { display: inline-block; animation: mp-beat 3s ease-in-out infinite; }
+  @keyframes mp-beat { 0%, 70%, 100% { transform: scale(1); } 80% { transform: scale(1.08); } 90% { transform: scale(.98); } }
   .mp-scroll::-webkit-scrollbar { display: none; }
   .mp-scroll { scrollbar-width: none; }
   :focus-visible { outline: 2px solid #c8102e; outline-offset: 2px; }
@@ -591,10 +597,16 @@ function SearchField({ id, query, onQuery, className = "" }) {
 function FreeShipping({ strip = false }) {
   if (!CONFIG.freeShippingFrom) return null;
   return (
-    <p className={`flex items-center justify-center gap-2.5 whitespace-nowrap font-extrabold tracking-tight ${strip ? "text-[13px]" : "text-[21px]"}`}>
-      <Truck className={`mp-drive shrink-0 ${strip ? "h-4 w-4 text-white" : "h-7 w-7 text-[#ff5a6e]"}`} strokeWidth={2.2} aria-hidden="true" />
+    <p
+      className={`flex items-center justify-center whitespace-nowrap font-extrabold ${
+        strip ? "gap-2 text-[13px] tracking-[0.02em]" : "gap-3 text-[22px] tracking-[0.05em] min-[1400px]:gap-3.5 min-[1400px]:text-[26px]"
+      }`}
+    >
+      <Truck className={`mp-drive shrink-0 ${strip ? "h-4 w-4 text-white" : "h-8 w-8 text-[#ff5a6e]"}`} strokeWidth={2.2} aria-hidden="true" />
       <span className="mp-shimmer">უფასო მიწოდება</span>
-      <span className={`mp-num ${strip ? "mp-shimmer" : "mp-shimmer-red"}`}>{CONFIG.freeShippingFrom} ₾-დან</span>
+      <span className="mp-beat">
+        <span className={`mp-num ${strip ? "mp-shimmer" : "mp-shimmer-red"}`}>{CONFIG.freeShippingFrom} ₾-დან</span>
+      </span>
     </p>
   );
 }
@@ -603,19 +615,22 @@ function Header({ cartCount, onOpenCart, query, onQuery, onNavigate }) {
   return (
     <header className="sticky top-[env(safe-area-inset-top,0px)] z-40 bg-[#18191c] text-white shadow-[0_1px_0_rgba(0,0,0,0.2)]">
       {CONFIG.freeShippingFrom > 0 && (
-        <div className="flex h-9 items-center justify-center bg-[#c8102e] px-4 lg:hidden">
+        <div className="flex h-9 items-center justify-center bg-[#c8102e] px-4 xl:hidden">
           <FreeShipping strip />
         </div>
       )}
-      <div className="mx-auto flex h-16 max-w-[1400px] items-center gap-4 px-4 sm:px-6 lg:gap-6">
-        <Logo onNavigate={onNavigate} />
+      {/* სამი სვეტი: ლოგო | მიწოდება ზუსტად შუაში | ძიება, ტელეფონი, კალათა */}
+      <div className="mx-auto flex h-16 max-w-[1400px] items-center gap-4 px-4 sm:px-6 xl:grid xl:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] xl:gap-6">
+        <div className="flex min-w-0 items-center">
+          <Logo onNavigate={onNavigate} />
+        </div>
 
-        <div className="hidden min-w-0 flex-1 justify-center lg:flex">
+        <div className="hidden justify-center xl:flex">
           <FreeShipping />
         </div>
 
-        <div className="ml-auto flex items-center gap-2 lg:ml-0">
-          <SearchField id="mp-search" query={query} onQuery={onQuery} className="hidden w-44 md:block xl:w-52" />
+        <div className="ml-auto flex items-center justify-end gap-2 xl:ml-0">
+          <SearchField id="mp-search" query={query} onQuery={onQuery} className="hidden w-44 md:block xl:w-36 min-[1400px]:w-44" />
 
           <a
             href={`tel:${CONFIG.phoneTel}`}
@@ -686,7 +701,7 @@ function Sidebar({ filter }) {
   const { category, setCategory, price, setPrice, counts, hasFilters, reset } = filter;
   return (
     <aside className="hidden lg:block">
-      <div className="sticky top-24 flex flex-col gap-7">
+      <div className={`sticky flex flex-col gap-7 ${CONFIG.freeShippingFrom > 0 ? "top-[7.25rem] xl:top-24" : "top-24"}`}>
         <FilterGroup title="კატეგორია">
           {CATEGORIES.map((c) => (
             <FilterOption key={c.id} active={category === c.id} onClick={() => setCategory(c.id)} label={c.label} count={counts[c.id] || 0} />
@@ -1353,7 +1368,7 @@ function Footer() {
       <div className="mx-auto flex max-w-[1400px] flex-col gap-4 px-4 py-6 text-sm sm:flex-row sm:items-center sm:justify-between sm:px-6">
         <div className="flex items-center gap-3">
           <LogoMark size={24} />
-          <span className="text-xs text-white/70">© {new Date().getFullYear()} mypoker.ge · აზარტული თამაში მხოლოდ 18 წლიდან</span>
+          <span className="text-xs text-white/70">© {new Date().getFullYear()} mypoker.ge · ყველა უფლება დაცულია</span>
         </div>
         <div className="flex flex-wrap items-center gap-4">
           <a href={`tel:${CONFIG.phoneTel}`} className="mp-num select-all font-semibold hover:text-white/80">
