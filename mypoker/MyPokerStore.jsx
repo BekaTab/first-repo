@@ -553,17 +553,24 @@ function LogoMark({ size = 34 }) {
     <svg width={size} height={size} viewBox="0 0 40 40" aria-hidden="true" className="shrink-0">
       <defs>
         <linearGradient id="mp-logo-fill" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stopColor="#ff4d63" />
-          <stop offset="0.55" stopColor="#e0193a" />
-          <stop offset="1" stopColor="#a50d26" />
+          <stop offset="0" stopColor="#e3324d" />
+          <stop offset="0.55" stopColor="#c8102e" />
+          <stop offset="1" stopColor="#9e0c24" />
         </linearGradient>
         <linearGradient id="mp-logo-gloss" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#fff" stopOpacity="0.45" />
+          <stop offset="0" stopColor="#fff" stopOpacity="0.55" />
           <stop offset="0.5" stopColor="#fff" stopOpacity="0" />
         </linearGradient>
       </defs>
-      <path d={DIAMOND_PATH} fill="url(#mp-logo-fill)" />
-      <path d={DIAMOND_PATH} fill="url(#mp-logo-gloss)" />
+      {/* მომრგვალებული ფირფიტა ბზინვარებით */}
+      <path d="M20 1.5c11.2 0 18.5 7.3 18.5 18.5S31.2 38.5 20 38.5 1.5 31.2 1.5 20 8.8 1.5 20 1.5Z" fill="url(#mp-logo-fill)" />
+      <path d="M20 1.5c11.2 0 18.5 7.3 18.5 18.5S31.2 38.5 20 38.5 1.5 31.2 1.5 20 8.8 1.5 20 1.5Z" fill="url(#mp-logo-gloss)" />
+      {/* ჩიპის კიდის ჭდეები */}
+      {[0, 90, 180, 270].map((a) => (
+        <rect key={a} x="18.6" y="3.6" width="2.8" height="4.2" rx="1.2" fill="#ffffff" opacity="0.4" transform={`rotate(${a + 45} 20 20)`} />
+      ))}
+      {/* აგური */}
+      <path d={DIAMOND_PATH} fill="#ffffff" transform="translate(20 20) scale(.52) translate(-20 -20)" />
     </svg>
   );
 }
@@ -909,35 +916,47 @@ function Sidebar({ filter }) {
             {T.clearFilters}
           </button>
         )}
-        <div className="relative overflow-hidden rounded-2xl bg-[#18191c] p-5 text-white shadow-[0_18px_40px_-24px_rgba(24,25,28,0.6)]">
-          {/* მკრთალი აგური ფონზე */}
-          <svg viewBox="0 0 40 40" className="pointer-events-none absolute -bottom-6 -right-5 h-28 w-28 text-white/[0.06]" aria-hidden="true">
+        <div className="relative overflow-hidden rounded-2xl bg-[#18191c] px-5 pb-5 pt-6 text-center text-white shadow-[0_18px_40px_-24px_rgba(24,25,28,0.6)]">
+          {/* ზედა წითელი ხაზი და მკრთალი აგური ფონზე, ცენტრში */}
+          <span className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-[#a50d26] via-[#ff4d63] to-[#a50d26]" aria-hidden="true" />
+          <svg viewBox="0 0 40 40" className="pointer-events-none absolute -bottom-10 left-1/2 h-40 w-40 -translate-x-1/2 text-white/[0.04]" aria-hidden="true">
             <path d={DIAMOND_PATH} fill="currentColor" />
           </svg>
-          <span className="relative grid h-9 w-9 place-items-center rounded-full bg-[#15803d]">
-            <MessageCircle className="h-[18px] w-[18px]" strokeWidth={2.2} />
+
+          <span className="relative mx-auto grid h-11 w-11 place-items-center rounded-full bg-[#15803d] ring-4 ring-[#15803d]/20">
+            <MessageCircle className="h-5 w-5" strokeWidth={2.2} />
           </span>
-          <p className="relative mt-3 text-[15px] font-bold leading-snug">{T.waBoxTitle}</p>
-          <p className="relative mt-1.5 text-xs leading-relaxed text-white/70">{T.waBoxText}</p>
-          <a href={`tel:${CONFIG.phoneTel}`} className="mp-num relative mt-3 block select-all text-[17px] font-bold tracking-wide">
+          <p className="relative mt-4 text-[15px] font-bold leading-snug [text-wrap:balance]">{T.waBoxTitle}</p>
+          <p className="relative mt-2 text-xs leading-relaxed text-white/65 [text-wrap:balance]">{T.waBoxText}</p>
+
+          <div className="relative mt-4 flex items-center gap-2" aria-hidden="true">
+            <span className="h-px flex-1 bg-white/15" />
+            <svg viewBox="0 0 40 40" className="h-3 w-3 text-[#ff4d63]">
+              <path d={DIAMOND_PATH} fill="currentColor" />
+            </svg>
+            <span className="h-px flex-1 bg-white/15" />
+          </div>
+
+          <a href={`tel:${CONFIG.phoneTel}`} className="mp-num relative mt-3 block select-all text-[18px] font-bold tracking-wide hover:text-white/85">
             {CONFIG.phoneDisplay}
           </a>
-          <div className="relative mt-4 grid grid-cols-2 gap-2">
-            <a
-              href={`tel:${CONFIG.phoneTel}`}
-              className="inline-flex h-10 items-center justify-center gap-1 px-1 rounded-xl border border-white/15 bg-white/10 text-[12px] font-semibold transition-colors hover:bg-white/15"
-            >
-              <Phone className="h-4 w-4" />
-              {T.callBtn}
-            </a>
+
+          <div className="relative mt-4 flex flex-col gap-2">
             <a
               href={buildWhatsAppLink(T.waHello)}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex h-10 items-center justify-center gap-1 px-1 rounded-xl bg-[#15803d] text-[12px] font-semibold transition-colors hover:bg-[#166534]"
+              className="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-[#15803d] text-[13px] font-semibold transition-colors hover:bg-[#166534]"
             >
               <MessageCircle className="h-4 w-4" />
               WhatsApp
+            </a>
+            <a
+              href={`tel:${CONFIG.phoneTel}`}
+              className="inline-flex h-10 items-center justify-center gap-2 rounded-xl border border-white/15 bg-[#232428] text-[13px] font-semibold transition-colors hover:bg-[#2c2d31]"
+            >
+              <Phone className="h-4 w-4" />
+              {T.callBtn}
             </a>
           </div>
         </div>
