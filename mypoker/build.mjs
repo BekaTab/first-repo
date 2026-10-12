@@ -54,12 +54,12 @@ rmSync(cssIn);
 if (existsSync(join(here, "public"))) cpSync(join(here, "public"), dist, { recursive: true });
 cpSync(join(here, "admin"), join(dist, "admin"), { recursive: true });
 
-// Tab icon: big red spade on white with a red outline (readable at 16px on light and dark tab bars)
-const SPADE = "M20 9.2c0 0-8.4 6.3-8.4 11.3 0 2.8 2.1 4.7 4.6 4.7 1.4 0 2.6-.6 3.1-1.5l-1.2 5.1h3.8l-1.2-5.1c.5.9 1.7 1.5 3.1 1.5 2.5 0 4.6-1.9 4.6-4.7 0-5-8.4-11.3-8.4-11.3Z";
+// Tab icon: big red diamond (♦) on white with a red outline (readable at 16px on light and dark tab bars)
+const DIAMOND = "M20 2.5C23.4 8.7 28 14.7 34 20c-6 5.3-10.6 11.3-14 17.5C16.6 31.3 12 25.3 6 20c6-5.3 10.6-11.3 14-17.5Z";
 const iconSvg = (outline = true) =>
   `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect x="1" y="1" width="30" height="30" rx="7" fill="#fff"${
     outline ? ' stroke="#c8102e" stroke-width="2"' : ""
-  }/><path d="${SPADE}" fill="#c8102e" transform="translate(16 16.3) scale(1.3) translate(-20 -19.35)"/></svg>`;
+  }/><path d="${DIAMOND}" fill="#c8102e" transform="translate(16 16) scale(.74) translate(-20 -20)"/></svg>`;
 writeFileSync(join(dist, "favicon.svg"), iconSvg());
 const favicon = "data:image/svg+xml," + encodeURIComponent(iconSvg());
 const SITE = "https://mypoker.ge";

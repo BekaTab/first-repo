@@ -44,8 +44,9 @@ const TEXT = {
     dealer: "დილერი",
     search: "ძიება",
     searchPh: "ძებნა",
-    freeDelivery: "უფასო მიწოდება",
-    freeFrom: (n) => `${n} ₾-დან`,
+    freeDelivery: "უფასო მიწოდება თბილისის მასშტაბით",
+    freeDeliveryShort: "უფასო მიწოდება თბილისში",
+    freeFrom: (n) => `${n} ლარიდან`,
     callUs: "დაგვირეკეთ",
     callAria: (p) => `დაგვირეკეთ: ${p}`,
     cartAria: (n) => `კალათა, ${n} ნივთი`,
@@ -53,8 +54,9 @@ const TEXT = {
     price: "ფასი",
     pricePrefix: (l) => `ფასი: ${l}`,
     clearFilters: "ფილტრების გასუფთავება",
-    waBoxTitle: "შეკვეთა WhatsApp-ით",
-    waBoxText: "აირჩიეთ პროდუქტი და მოგვწერეთ — გიპასუხებთ რამდენიმე წუთში.",
+    waBoxTitle: "შესაკვეთად დაგვიკავშირდით",
+    waBoxText: "აირჩიეთ პროდუქტი და დაგვირეკეთ ან მოგვწერეთ — გიპასუხებთ რამდენიმე წუთში.",
+    callBtn: "დარეკვა",
     categoriesAria: "კატეგორიები",
     detailsAria: (n) => `${n} — დეტალურად`,
     inStock: "მარაგშია",
@@ -125,7 +127,8 @@ const TEXT = {
     dealer: "DEALER",
     search: "Search",
     searchPh: "Search",
-    freeDelivery: "Free delivery",
+    freeDelivery: "Free delivery in Tbilisi",
+    freeDeliveryShort: "Free delivery in Tbilisi",
     freeFrom: (n) => `from ${n} ₾`,
     callUs: "Call us",
     callAria: (p) => `Call us: ${p}`,
@@ -134,8 +137,9 @@ const TEXT = {
     price: "Price",
     pricePrefix: (l) => `Price: ${l}`,
     clearFilters: "Clear filters",
-    waBoxTitle: "Order via WhatsApp",
-    waBoxText: "Pick a product and message us — we reply within minutes.",
+    waBoxTitle: "Contact us to order",
+    waBoxText: "Pick a product and call or message us — we reply within minutes.",
+    callBtn: "Call",
     categoriesAria: "Categories",
     detailsAria: (n) => `${n} — details`,
     inStock: "In stock",
@@ -541,32 +545,25 @@ const GLOBAL_CSS = `
 /* ------------------------------------------------------------------ */
 /*  ლოგო — „ყვავის ფირფიტა“                                           */
 /* ------------------------------------------------------------------ */
+/* აგური (♦) — ჩაზნექილი გვერდებით, როგორც კარტზე */
+const DIAMOND_PATH = "M20 2.5C23.4 8.7 28 14.7 34 20c-6 5.3-10.6 11.3-14 17.5C16.6 31.3 12 25.3 6 20c6-5.3 10.6-11.3 14-17.5Z";
+
 function LogoMark({ size = 34 }) {
   return (
     <svg width={size} height={size} viewBox="0 0 40 40" aria-hidden="true" className="shrink-0">
       <defs>
         <linearGradient id="mp-logo-fill" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stopColor="#e3324d" />
-          <stop offset="0.55" stopColor="#c8102e" />
-          <stop offset="1" stopColor="#9e0c24" />
+          <stop offset="0" stopColor="#ff4d63" />
+          <stop offset="0.55" stopColor="#e0193a" />
+          <stop offset="1" stopColor="#a50d26" />
         </linearGradient>
         <linearGradient id="mp-logo-gloss" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#fff" stopOpacity="0.55" />
+          <stop offset="0" stopColor="#fff" stopOpacity="0.45" />
           <stop offset="0.5" stopColor="#fff" stopOpacity="0" />
         </linearGradient>
       </defs>
-      {/* სკვირკლი */}
-      <path d="M20 1.5c11.2 0 18.5 7.3 18.5 18.5S31.2 38.5 20 38.5 1.5 31.2 1.5 20 8.8 1.5 20 1.5Z" fill="url(#mp-logo-fill)" />
-      <path d="M20 1.5c11.2 0 18.5 7.3 18.5 18.5S31.2 38.5 20 38.5 1.5 31.2 1.5 20 8.8 1.5 20 1.5Z" fill="url(#mp-logo-gloss)" />
-      {/* ჩიპის კიდის ჭდეები */}
-      {[0, 90, 180, 270].map((a) => (
-        <rect key={a} x="18.6" y="3.6" width="2.8" height="4.2" rx="1.2" fill="#ffffff" opacity="0.4" transform={`rotate(${a + 45} 20 20)`} />
-      ))}
-      {/* ყვავი */}
-      <path
-        d="M20 9.2c0 0-8.4 6.3-8.4 11.3 0 2.8 2.1 4.7 4.6 4.7 1.4 0 2.6-.6 3.1-1.5l-1.2 5.1h3.8l-1.2-5.1c.5.9 1.7 1.5 3.1 1.5 2.5 0 4.6-1.9 4.6-4.7 0-5-8.4-11.3-8.4-11.3Z"
-        fill="#ffffff"
-      />
+      <path d={DIAMOND_PATH} fill="url(#mp-logo-fill)" />
+      <path d={DIAMOND_PATH} fill="url(#mp-logo-gloss)" />
     </svg>
   );
 }
@@ -792,11 +789,11 @@ function FreeShipping({ strip = false }) {
   return (
     <p
       className={`flex items-center justify-center whitespace-nowrap font-extrabold ${
-        strip ? "gap-2 text-[13px] tracking-[0.02em]" : "gap-3 text-[17px] tracking-[0.14em] min-[1400px]:text-[18px] min-[1400px]:tracking-[0.18em]"
+        strip ? "gap-1.5 text-[12px] min-[380px]:text-[13px]" : "gap-2.5 text-[16px] tracking-[0.06em] min-[1400px]:text-[17px] min-[1400px]:tracking-[0.08em]"
       }`}
     >
       <Truck className={`mp-drive shrink-0 ${strip ? "h-4 w-4 text-white" : "h-6 w-6 text-[#ff5a6e]"}`} strokeWidth={2.2} aria-hidden="true" />
-      <span className="mp-shimmer">{T.freeDelivery}</span>
+      <span className="mp-shimmer">{strip ? T.freeDeliveryShort : T.freeDelivery}</span>
       <span className="mp-beat">
         <span className={`mp-num ${strip ? "mp-shimmer" : "mp-shimmer-red"}`}>{T.freeFrom(CONFIG.freeShippingFrom)}</span>
       </span>
@@ -808,7 +805,7 @@ function Header({ cartCount, onOpenCart, query, onQuery, onNavigate, productId }
   return (
     <header className="sticky top-[env(safe-area-inset-top,0px)] z-40 bg-[#18191c] text-white shadow-[0_1px_0_rgba(0,0,0,0.2)]">
       {CONFIG.freeShippingFrom > 0 && (
-        <div className="flex h-9 items-center justify-center bg-[#c8102e] px-4 xl:hidden">
+        <div className="flex h-9 items-center justify-center bg-[#c8102e] px-3 xl:hidden">
           <FreeShipping strip />
         </div>
       )}
@@ -834,8 +831,8 @@ function Header({ cartCount, onOpenCart, query, onQuery, onNavigate, productId }
             <span className="grid h-6 w-6 place-items-center rounded-full bg-[#15803d] text-white">
               <Phone className="h-3.5 w-3.5 transition-transform duration-300 group-hover:rotate-12" strokeWidth={2.5} />
             </span>
-            <span className="hidden flex-col leading-tight sm:flex">
-              <span className="text-[10px] text-white/60">{T.callUs}</span>
+            <span className="hidden flex-col items-center leading-tight sm:flex">
+              <span className="text-[12px] font-medium text-white/75">{T.callUs}</span>
               <span className="mp-num whitespace-nowrap text-[13px] font-semibold">{CONFIG.phoneDisplay}</span>
             </span>
           </a>
@@ -912,12 +909,37 @@ function Sidebar({ filter }) {
             {T.clearFilters}
           </button>
         )}
-        <div className="rounded-2xl border border-[#e4e2dd] bg-white p-4">
-          <p className="text-sm font-semibold text-[#18191c]">{T.waBoxTitle}</p>
-          <p className="mt-1 text-xs leading-relaxed text-[#5c5d61]">{T.waBoxText}</p>
-          <a href={`tel:${CONFIG.phoneTel}`} className="mp-num mt-3 block select-all text-sm font-semibold text-[#18191c] hover:text-[#15803d]">
+        <div className="relative overflow-hidden rounded-2xl bg-[#18191c] p-5 text-white shadow-[0_18px_40px_-24px_rgba(24,25,28,0.6)]">
+          {/* მკრთალი აგური ფონზე */}
+          <svg viewBox="0 0 40 40" className="pointer-events-none absolute -bottom-6 -right-5 h-28 w-28 text-white/[0.06]" aria-hidden="true">
+            <path d={DIAMOND_PATH} fill="currentColor" />
+          </svg>
+          <span className="relative grid h-9 w-9 place-items-center rounded-full bg-[#15803d]">
+            <MessageCircle className="h-[18px] w-[18px]" strokeWidth={2.2} />
+          </span>
+          <p className="relative mt-3 text-[15px] font-bold leading-snug">{T.waBoxTitle}</p>
+          <p className="relative mt-1.5 text-xs leading-relaxed text-white/70">{T.waBoxText}</p>
+          <a href={`tel:${CONFIG.phoneTel}`} className="mp-num relative mt-3 block select-all text-[17px] font-bold tracking-wide">
             {CONFIG.phoneDisplay}
           </a>
+          <div className="relative mt-4 grid grid-cols-2 gap-2">
+            <a
+              href={`tel:${CONFIG.phoneTel}`}
+              className="inline-flex h-10 items-center justify-center gap-1 px-1 rounded-xl border border-white/15 bg-white/10 text-[12px] font-semibold transition-colors hover:bg-white/15"
+            >
+              <Phone className="h-4 w-4" />
+              {T.callBtn}
+            </a>
+            <a
+              href={buildWhatsAppLink(T.waHello)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex h-10 items-center justify-center gap-1 px-1 rounded-xl bg-[#15803d] text-[12px] font-semibold transition-colors hover:bg-[#166534]"
+            >
+              <MessageCircle className="h-4 w-4" />
+              WhatsApp
+            </a>
+          </div>
         </div>
       </div>
     </aside>
