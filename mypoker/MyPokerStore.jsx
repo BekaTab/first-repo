@@ -496,23 +496,33 @@ const suitAt = (d, x, y, r, fill, opacity) =>
   `<path d="${d}" fill="${fill}" fill-opacity="${opacity}" transform="translate(${x} ${y}) rotate(${r} 12 12) scale(.75)"/>`;
 const PATTERN_SVG =
   `<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 120 120">` +
-  suitAt(SUIT.spade, 10, 12, -12, "#ffffff", 0.045) +
-  suitAt(SUIT.heart, 72, 8, 10, "#ff4d63", 0.09) +
-  suitAt(SUIT.diamond, 40, 70, 8, "#ff4d63", 0.09) +
-  suitAt(SUIT.club, 92, 76, -10, "#ffffff", 0.045) +
+  suitAt(SUIT.spade, 10, 12, -12, "#ffffff", 0.03) +
+  suitAt(SUIT.heart, 72, 8, 10, "#ff4d63", 0.06) +
+  suitAt(SUIT.diamond, 40, 70, 8, "#ff4d63", 0.06) +
+  suitAt(SUIT.club, 92, 76, -10, "#ffffff", 0.03) +
   `</svg>`;
 const PATTERN_URL = `url("data:image/svg+xml,${encodeURIComponent(PATTERN_SVG)}")`;
 
 const GLOBAL_CSS = `
-  :root { color-scheme: dark; }
-  body { margin: 0; background: #262a31; color: #f1f2f4; }
+  :root { color-scheme: dark; --mp-ease: cubic-bezier(0.32,0.72,0,1); --mp-accent: #f0b85a; }
+  body { margin: 0; background: #09090b; color: #fafafa; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; text-rendering: optimizeLegibility; }
+  .mp-sans { line-height: 1.55; }
+  .mp-sans h1, .mp-sans h2, .mp-sans h3 { letter-spacing: -0.015em; line-height: 1.25; }
+  .mp-sans *, .mp-sans *::before, .mp-sans *::after { transition-timing-function: var(--mp-ease); }
   .mp-sans { font-family: 'Noto Sans Georgian', system-ui, -apple-system, 'Segoe UI', sans-serif; }
   .mp-brand { font-family: 'Manrope', 'Noto Sans Georgian', system-ui, sans-serif; }
   .mp-num { font-variant-numeric: tabular-nums; }
   .mp-sheen { position: relative; overflow: hidden; isolation: isolate; }
-  .mp-sheen::after { content: ''; position: absolute; inset: 0; z-index: -1; background: linear-gradient(110deg, transparent 35%, rgba(255,255,255,.22) 50%, transparent 65%); transform: translateX(-100%); transition: transform .7s cubic-bezier(.16,1,.3,1); }
+  .mp-sheen::after { content: ''; position: absolute; inset: 0; z-index: -1; background: linear-gradient(110deg, transparent 35%, rgba(255,255,255,.16) 50%, transparent 65%); transform: translateX(-100%); transition: transform .8s var(--mp-ease); }
   .mp-sheen:hover::after { transform: translateX(100%); }
-  .mp-pattern { background-color: #262a31; background-image: ${PATTERN_URL}; background-size: 120px 120px; }
+  .mp-pattern {
+    background-color: #09090b;
+    background-image: radial-gradient(56rem 28rem at 12% -6rem, rgba(240,184,90,0.07), transparent 70%),
+      radial-gradient(48rem 26rem at 100% 0, rgba(200,16,46,0.08), transparent 70%), ${PATTERN_URL};
+    background-size: 100% 100%, 100% 100%, 120px 120px;
+    background-repeat: no-repeat, no-repeat, repeat;
+    background-attachment: fixed, fixed, scroll;
+  }
   @keyframes mp-rise { from { opacity: 0; translate: 0 14px; scale: .97; } to { opacity: 1; translate: 0 0; scale: 1; } }
   @keyframes mp-pop { 0% { scale: .4; } 60% { scale: 1.35; } 100% { scale: 1; } }
   .mp-pop { animation: mp-pop .45s cubic-bezier(.16,1,.3,1) both; }
@@ -543,7 +553,7 @@ const GLOBAL_CSS = `
   @keyframes mp-beat { 0%, 70%, 100% { transform: scale(1); } 80% { transform: scale(1.08); } 90% { transform: scale(.98); } }
   .mp-scroll::-webkit-scrollbar { display: none; }
   .mp-scroll { scrollbar-width: none; }
-  :focus-visible { outline: 2px solid #ff7a8b; outline-offset: 2px; }
+  :focus-visible { outline: 2px solid var(--mp-accent); outline-offset: 3px; border-radius: 4px; outline-offset: 2px; }
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; }
   }
@@ -590,7 +600,7 @@ function Logo({ onNavigate }) {
       className="group flex shrink-0 items-center gap-2.5"
       aria-label={T.homeAria}
     >
-      <span className="transition-transform duration-500 ease-[cubic-bezier(.16,1,.3,1)] group-hover:rotate-[-8deg] group-hover:scale-105">
+      <span className="transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:rotate-[-8deg] group-hover:scale-105">
         <LogoMark />
       </span>
       <span className="mp-brand text-[19px] font-semibold leading-none tracking-[-0.02em] text-white">
@@ -604,7 +614,7 @@ function Logo({ onNavigate }) {
 function LangSwitch({ productId, className = "" }) {
   const item = (code, label) =>
     code === LANG ? (
-      <span aria-current="true" className="rounded-full bg-white px-2.5 py-1 text-[#1b1e23]">
+      <span aria-current="true" className="rounded-full bg-white px-2.5 py-1 text-[#09090b]">
         {label}
       </span>
     ) : (
@@ -613,7 +623,7 @@ function LangSwitch({ productId, className = "" }) {
       </a>
     );
   return (
-    <div className={`shrink-0 items-center rounded-full border border-white/10 bg-white/10 p-0.5 text-[12px] font-semibold ${className}`} role="group" aria-label={T.language}>
+    <div className={`shrink-0 items-center rounded-full border border-white/[0.08] bg-white/[0.04] shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] p-0.5 text-[12px] font-semibold ${className}`} role="group" aria-label={T.language}>
       {item("ka", "ქარ")}
       {item("en", "EN")}
     </div>
@@ -791,7 +801,7 @@ function SearchField({ id, query, onQuery, className = "" }) {
         value={query}
         onChange={(e) => onQuery(e.target.value)}
         placeholder={T.searchPh}
-        className="h-11 w-full rounded-full border border-white/10 bg-white/10 pl-11 pr-4 text-[13px] text-white placeholder:text-white/60 transition-colors focus:border-white/40 focus:bg-white/15 focus:outline-none"
+        className="h-11 w-full rounded-full border border-white/[0.08] bg-white/[0.04] shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] pl-11 pr-4 text-[13px] text-white placeholder:text-white/60 transition-colors focus:border-[#f0b85a]/50 focus:bg-white/[0.06] focus:shadow-[0_0_0_4px_rgba(240,184,90,0.12)] focus:outline-none"
       />
     </label>
   );
@@ -817,8 +827,8 @@ function FreeShipping({ strip = false }) {
 
 function Header({ cartCount, onOpenCart, query, onQuery, onNavigate, productId }) {
   return (
-    <header className="sticky top-[env(safe-area-inset-top,0px)] z-40 bg-[#1b1e23]/[0.96] text-white shadow-[0_10px_30px_-18px_rgba(0,0,0,0.6)] backdrop-blur-xl backdrop-saturate-150">
-      <span className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-[#ff4d63]/50 to-transparent" aria-hidden="true" />
+    <header className="sticky top-[env(safe-area-inset-top,0px)] z-40 border-b border-white/[0.08] bg-[#09090b]/70 text-white shadow-[0_1px_0_rgba(255,255,255,0.02),0_12px_32px_-20px_rgba(0,0,0,0.9)] backdrop-blur-xl backdrop-saturate-150">
+      <span className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-[#f0b85a]/30 to-transparent" aria-hidden="true" />
       {CONFIG.freeShippingFrom > 0 && (
         <div className="flex h-9 items-center justify-center bg-[#c8102e] px-3 xl:hidden">
           <FreeShipping strip />
@@ -840,7 +850,7 @@ function Header({ cartCount, onOpenCart, query, onQuery, onNavigate, productId }
 
           <a
             href={`tel:${CONFIG.phoneTel}`}
-            className="group flex h-11 items-center gap-2.5 rounded-full border border-white/10 bg-white/10 px-3 transition-colors hover:bg-white/15 sm:pr-4"
+            className="group flex h-11 items-center gap-2.5 rounded-full border border-white/[0.08] bg-white/[0.04] shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] px-3 transition-colors hover:border-white/[0.14] hover:bg-white/[0.08] sm:pr-4"
             aria-label={T.callAria(CONFIG.phoneDisplay)}
           >
             <span className="grid h-6 w-6 place-items-center rounded-full bg-[#15803d] text-white">
@@ -855,12 +865,12 @@ function Header({ cartCount, onOpenCart, query, onQuery, onNavigate, productId }
           <button
             type="button"
             onClick={onOpenCart}
-            className="relative grid h-11 w-11 place-items-center rounded-full border border-white/10 bg-white/10 transition-colors hover:bg-white/15"
+            className="relative grid h-11 w-11 place-items-center rounded-full border border-white/[0.08] bg-white/[0.04] shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] transition-colors hover:border-white/[0.14] hover:bg-white/[0.08]"
             aria-label={T.cartAria(cartCount)}
           >
             <ShoppingBag className="h-5 w-5" strokeWidth={1.8} />
             {cartCount > 0 && (
-              <span key={cartCount} className="mp-num mp-pop absolute -right-1 -top-1 grid h-5 min-w-5 place-items-center rounded-full bg-[#c8102e] px-1 text-[11px] font-bold text-white ring-2 ring-[#1b1e23]">
+              <span key={cartCount} className="mp-num mp-pop absolute -right-1 -top-1 grid h-5 min-w-5 place-items-center rounded-full bg-[#c8102e] px-1 text-[11px] font-bold text-white ring-2 ring-[#09090b]">
                 {cartCount}
               </span>
             )}
@@ -882,7 +892,7 @@ function Header({ cartCount, onOpenCart, query, onQuery, onNavigate, productId }
 function FilterGroup({ title, children }) {
   return (
     <div>
-      <p className="px-3 text-[11px] font-semibold uppercase tracking-[0.08em] text-[#959ba5]">{title}</p>
+      <p className="px-3 text-[11px] font-semibold uppercase tracking-[0.08em] text-[#8b8b94]">{title}</p>
       <div className="mt-2 flex flex-col gap-0.5">{children}</div>
     </div>
   );
@@ -895,11 +905,11 @@ function FilterOption({ active, onClick, label, count }) {
       onClick={onClick}
       aria-pressed={active}
       className={`flex items-center justify-between rounded-full px-3 py-1.5 text-left text-sm transition-all duration-200 ${
-        active ? "bg-[#f1f2f4] font-semibold text-[#1b1e23] shadow-[0_6px_14px_-6px_rgba(0,0,0,0.6)]" : "text-[#f1f2f4] hover:bg-[#3a3f48]"
+        active ? "bg-[#fafafa] font-semibold text-[#09090b] shadow-[inset_0_-1px_0_rgba(0,0,0,0.12),0_6px_16px_-8px_rgba(255,255,255,0.25)]" : "text-[#d4d4d8] hover:bg-white/[0.06] hover:text-white"
       }`}
     >
       {label}
-      {count !== undefined && <span className={`mp-num text-xs ${active ? "text-[#1b1e23]/60" : "text-[#959ba5]"}`}>{count}</span>}
+      {count !== undefined && <span className={`mp-num text-xs ${active ? "text-[#09090b]/60" : "text-[#8b8b94]"}`}>{count}</span>}
     </button>
   );
 }
@@ -909,7 +919,7 @@ function Sidebar({ filter }) {
   return (
     <aside className="hidden lg:block">
       <div className={`mp-scroll sticky -mx-3 -mt-2 flex flex-col gap-5 overflow-y-auto px-3 pb-8 pt-2 [&>*]:shrink-0 ${CONFIG.freeShippingFrom > 0 ? "top-[7.25rem] max-h-[calc(100vh-8rem)] xl:top-24 xl:max-h-[calc(100vh-7rem)]" : "top-24 max-h-[calc(100vh-7rem)]"}`}>
-        <div className={`flex flex-col gap-4 rounded-[22px] bg-[#30353d] p-2.5 pt-4 shadow-[0_1px_2px_rgba(0,0,0,0.2),0_10px_30px_-14px_rgba(0,0,0,0.55)] ring-1 ring-white/[0.07]`}>
+        <div className={`flex flex-col gap-4 rounded-[22px] bg-[#121215] p-2.5 pt-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.05),0_1px_2px_rgba(0,0,0,0.5),0_12px_32px_-16px_rgba(0,0,0,0.8)] ring-1 ring-white/[0.08]`}>
         <FilterGroup title={T.category}>
           {CATEGORIES.map((c) => (
             <FilterOption key={c.id} active={category === c.id} onClick={() => setCategory(c.id)} label={c.label} count={counts[c.id] || 0} />
@@ -926,7 +936,7 @@ function Sidebar({ filter }) {
           </button>
         )}
         </div>
-        <div className="relative overflow-hidden rounded-[22px] bg-[radial-gradient(120%_80%_at_50%_0%,#2f333b_0%,#1b1e23_65%)] px-5 pb-5 pt-5 text-center text-white shadow-[0_14px_28px_-16px_rgba(0,0,0,0.6)]">
+        <div className="relative overflow-hidden rounded-[22px] bg-[radial-gradient(120%_80%_at_50%_0%,#1d1d22_0%,#0e0e11_70%)] ring-1 ring-white/[0.08] px-5 pb-5 pt-5 text-center text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.06),0_1px_2px_rgba(0,0,0,0.5),0_18px_36px_-18px_rgba(0,0,0,0.9)]">
           {/* ზედა წითელი ხაზი და მკრთალი აგური ფონზე, ცენტრში */}
           <span className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-[#a50d26] via-[#ff4d63] to-[#a50d26]" aria-hidden="true" />
           <svg viewBox="0 0 40 40" className="pointer-events-none absolute -bottom-12 left-1/2 h-36 w-36 -translate-x-1/2 text-white/[0.04]" aria-hidden="true">
@@ -968,7 +978,7 @@ function Sidebar({ filter }) {
             href={buildWhatsAppLink(T.waHello)}
             target="_blank"
             rel="noopener noreferrer"
-            className="mp-sheen relative mt-3 inline-flex h-10 w-full items-center justify-center gap-2 rounded-full bg-[#15803d] text-[13px] font-semibold shadow-[0_8px_18px_-8px_rgba(21,128,61,0.7)] transition-colors hover:bg-[#166534]"
+            className="mp-sheen relative mt-3 inline-flex h-10 w-full items-center justify-center gap-2 rounded-full text-[13px] font-semibold bg-gradient-to-b from-[#1c9b4c] to-[#15803d] shadow-[inset_0_1px_0_rgba(255,255,255,0.22),0_1px_2px_rgba(0,0,0,0.5),0_10px_24px_-10px_rgba(34,197,94,0.55)] hover:brightness-110 transition-[filter,transform] duration-300 ease-[cubic-bezier(0.32,0.72,0,1)]"
           >
             <MessageCircle className="h-4 w-4" />
             WhatsApp
@@ -983,7 +993,7 @@ function MobileFilters({ filter }) {
   const { category, setCategory, price, setPrice, counts } = filter;
   return (
     <div
-      className={`sticky z-30 -mx-4 border-b border-[#444a54] bg-[#262a31]/95 px-4 py-3 backdrop-blur-md lg:hidden ${
+      className={`sticky z-30 -mx-4 border-b border-white/[0.08] bg-[#09090b]/95 px-4 py-3 backdrop-blur-md lg:hidden ${
         CONFIG.freeShippingFrom > 0
           ? "top-[calc(env(safe-area-inset-top,0px)+9.5rem)] md:top-[calc(env(safe-area-inset-top,0px)+6.25rem)]"
           : "top-[calc(env(safe-area-inset-top,0px)+7.25rem)] md:top-[calc(env(safe-area-inset-top,0px)+4rem)]"
@@ -1000,11 +1010,11 @@ function MobileFilters({ filter }) {
               aria-selected={active}
               onClick={() => setCategory(c.id)}
               className={`inline-flex shrink-0 items-center gap-1.5 rounded-full border px-4 py-2 text-[13px] transition-colors duration-200 ${
-                active ? "border-[#f1f2f4] bg-[#f1f2f4] font-semibold text-[#1b1e23]" : "border-[#4d535e] bg-[#30353d] text-[#f1f2f4]"
+                active ? "border-[#fafafa] bg-[#fafafa] font-semibold text-[#09090b]" : "border-white/[0.10] bg-[#121215] text-[#fafafa]"
               }`}
             >
               {c.label}
-              <span className={`mp-num text-[11px] ${active ? "text-[#1b1e23]/60" : "text-[#959ba5]"}`}>{counts[c.id] || 0}</span>
+              <span className={`mp-num text-[11px] ${active ? "text-[#09090b]/60" : "text-[#8b8b94]"}`}>{counts[c.id] || 0}</span>
             </button>
           );
         })}
@@ -1015,7 +1025,7 @@ function MobileFilters({ filter }) {
           id="mp-price-mobile"
           value={price}
           onChange={(e) => setPrice(e.target.value)}
-          className="h-9 w-full appearance-none rounded-full border border-[#4d535e] bg-[#30353d] pl-4 pr-9 text-[13px] text-[#f1f2f4] focus:border-[#8b929e] focus:outline-none"
+          className="h-9 w-full appearance-none rounded-full border border-white/[0.10] bg-[#121215] pl-4 pr-9 text-[13px] text-[#fafafa] focus:border-[#f0b85a]/60 focus:outline-none"
         >
           {PRICE_RANGES.map((r) => (
             <option key={r.id} value={r.id}>
@@ -1023,7 +1033,7 @@ function MobileFilters({ filter }) {
             </option>
           ))}
         </select>
-        <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#c0c4cb]" />
+        <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#a1a1aa]" />
       </label>
     </div>
   );
@@ -1048,20 +1058,20 @@ function ProductCard({ product, index, inCart, onAdd, onOpen }) {
 
   return (
     <article
-      className="mp-rise group flex min-w-0 flex-col rounded-[22px] bg-[#30353d] p-2 shadow-[0_1px_2px_rgba(0,0,0,0.2),0_10px_30px_-14px_rgba(0,0,0,0.55)] ring-1 ring-white/[0.07] transition-all duration-300 ease-[cubic-bezier(.16,1,.3,1)] hover:-translate-y-1.5 hover:shadow-[0_2px_4px_rgba(0,0,0,0.2),0_28px_50px_-22px_rgba(0,0,0,0.7)]"
+      className="mp-rise group flex min-w-0 flex-col rounded-[22px] bg-[#121215] p-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.05),0_1px_2px_rgba(0,0,0,0.5),0_12px_32px_-16px_rgba(0,0,0,0.8)] ring-1 ring-white/[0.08] transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-1 hover:ring-white/[0.16] hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_2px_4px_rgba(0,0,0,0.5),0_28px_56px_-24px_rgba(0,0,0,0.95),0_0_40px_-12px_rgba(240,184,90,0.12)]"
       style={{ animationDelay: `${Math.min(index, 11) * 40}ms` }}
     >
       <a
         href={productPath(product.id)}
         onClick={handleNav(onOpen, product.id)}
-        className="relative block aspect-[4/3] overflow-hidden rounded-[16px] bg-[radial-gradient(110%_85%_at_50%_15%,#4a505a_0%,#3a3f48_55%,#30343c_100%)]"
+        className="relative block aspect-[4/3] overflow-hidden rounded-[16px] bg-[radial-gradient(110%_85%_at_50%_15%,#202025_0%,#17171a_60%,#121215_100%)]"
         aria-label={T.detailsAria(product.name)}
         tabIndex={-1}
       >
-        <div className="absolute inset-0 p-6 transition-transform duration-500 ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-105">
+        <div className="absolute inset-0 p-6 transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:scale-105">
           <ProductMedia product={product} uid={`p-${product.id}`} />
         </div>
-        <span className="absolute right-3 top-3 grid h-8 w-8 translate-y-1 place-items-center rounded-full bg-white/90 text-[#1b1e23] opacity-0 shadow-sm backdrop-blur transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100" aria-hidden="true">
+        <span className="absolute right-3 top-3 grid h-8 w-8 translate-y-1 place-items-center rounded-full bg-white/90 text-[#09090b] opacity-0 shadow-sm backdrop-blur transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100" aria-hidden="true">
           <ArrowUpRight className="h-4 w-4" />
         </span>
         {(product.badge || discount > 0) && (
@@ -1069,25 +1079,25 @@ function ProductCard({ product, index, inCart, onAdd, onOpen }) {
             {discount > 0 && (
               <span className="mp-num rounded-full bg-[#c8102e] px-2.5 py-0.5 text-[11px] font-bold text-white shadow-[0_4px_10px_-4px_rgba(200,16,46,0.7)]">−{discount}%</span>
             )}
-            {product.badge && <span className="rounded-full bg-[#1b1e23]/85 px-2.5 py-0.5 text-[11px] font-medium text-white backdrop-blur">{product.badge}</span>}
+            {product.badge && <span className="rounded-full bg-black/55 px-2.5 py-0.5 text-[11px] font-medium text-white ring-1 ring-white/10 backdrop-blur">{product.badge}</span>}
           </div>
         )}
       </a>
 
       <div className="flex flex-1 flex-col px-2.5 pb-2 pt-3.5">
-        <h3 className="line-clamp-2 min-h-[2.75rem] text-[15px] font-semibold leading-snug text-[#f1f2f4]">
+        <h3 className="line-clamp-2 min-h-[2.75rem] text-[15px] font-semibold leading-snug text-[#fafafa]">
           <a href={productPath(product.id)} onClick={handleNav(onOpen, product.id)} className="transition-colors hover:text-[#ff7a8b]">
             {product.name}
           </a>
         </h3>
-        <p className="mt-1 truncate text-[13px] text-[#c0c4cb]">{product.spec}</p>
+        <p className="mt-1 truncate text-[13px] text-[#a1a1aa]">{product.spec}</p>
 
         <div className="mt-3 flex items-end justify-between gap-2">
           <div className="flex items-baseline gap-2">
-            <span className={`mp-num text-xl font-bold tracking-tight ${product.oldPrice ? "text-[#ff7a8b]" : "text-[#f1f2f4]"}`}>
+            <span className={`mp-num text-xl font-bold tracking-tight ${product.oldPrice ? "text-[#ff7a8b]" : "text-[#fafafa]"}`}>
               {formatPrice(product.price)}
             </span>
-            {product.oldPrice && <span className="mp-num text-xs text-[#959ba5] line-through">{formatPrice(product.oldPrice)}</span>}
+            {product.oldPrice && <span className="mp-num text-xs text-[#8b8b94] line-through">{formatPrice(product.oldPrice)}</span>}
           </div>
           <span className={`text-xs font-medium ${product.inStock ? "text-[#4ade80]" : "text-[#fbbf24]"}`}>
             {product.inStock ? T.inStock : T.onOrder}
@@ -1099,7 +1109,7 @@ function ProductCard({ product, index, inCart, onAdd, onOpen }) {
             href={productWhatsAppLink(product)}
             target="_blank"
             rel="noopener noreferrer"
-            className="mp-sheen inline-flex h-11 min-w-0 flex-1 items-center justify-center gap-2 whitespace-nowrap rounded-full bg-[#15803d] px-3 text-[13px] font-bold text-white shadow-[0_8px_18px_-10px_rgba(21,128,61,0.8)] transition-colors duration-200 hover:bg-[#166534] active:scale-[0.98]"
+            className="mp-sheen inline-flex h-11 min-w-0 flex-1 items-center justify-center gap-2 whitespace-nowrap rounded-full px-3 text-[13px] font-bold text-white bg-gradient-to-b from-[#1c9b4c] to-[#15803d] shadow-[inset_0_1px_0_rgba(255,255,255,0.22),0_1px_2px_rgba(0,0,0,0.5),0_10px_24px_-10px_rgba(34,197,94,0.55)] hover:brightness-110 transition-[filter,transform] duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] active:scale-[0.98]"
           >
             <MessageCircle className="h-4 w-4 shrink-0" strokeWidth={2.2} />
             {T.orderCta}
@@ -1108,7 +1118,7 @@ function ProductCard({ product, index, inCart, onAdd, onOpen }) {
             type="button"
             onClick={() => onAdd(product.id)}
             className={`grid h-11 w-11 shrink-0 place-items-center rounded-full border transition-colors duration-200 ${
-              inCart ? "border-[#f1f2f4] bg-[#f1f2f4] text-[#1b1e23]" : "border-[#444a54] bg-[#3a3f48] text-[#f1f2f4] hover:border-[#8b929e] hover:bg-[#444a54]"
+              inCart ? "border-[#fafafa] bg-[#fafafa] text-[#09090b]" : "border-white/[0.08] bg-[#18181b] text-[#fafafa] hover:border-white/[0.24] hover:bg-[#27272a]"
             }`}
             aria-label={inCart ? T.inCartAria(product.name) : T.addAria(product.name)}
             title={inCart ? T.inCart : T.addToCart}
@@ -1139,8 +1149,8 @@ function Shop({ filter, cart, onOpen }) {
 
         <div className="mt-4 flex items-center justify-between gap-3 lg:mt-0">
           <div className="min-w-0">
-            <h1 className="text-lg font-bold leading-tight text-[#f1f2f4] sm:text-2xl">{title}</h1>
-            <p className="mp-num text-sm text-[#c0c4cb]" aria-live="polite">
+            <h1 className="text-lg font-bold leading-tight text-[#fafafa] sm:text-2xl">{title}</h1>
+            <p className="mp-num text-sm text-[#a1a1aa]" aria-live="polite">
               {T.productCount(visible.length)}
             </p>
           </div>
@@ -1150,7 +1160,7 @@ function Shop({ filter, cart, onOpen }) {
               id="mp-sort"
               value={sort}
               onChange={(e) => setSort(e.target.value)}
-              className="h-10 max-w-[10.5rem] appearance-none truncate rounded-full border border-[#444a54] bg-[#30353d] pl-4 pr-9 shadow-[0_4px_14px_-8px_rgba(0,0,0,0.5)] text-[13px] text-[#f1f2f4] transition-colors focus:border-[#8b929e] focus:outline-none"
+              className="h-10 max-w-[10.5rem] appearance-none truncate rounded-full border border-white/[0.08] bg-[#121215] pl-4 pr-9 shadow-[inset_0_1px_0_rgba(255,255,255,0.05),0_4px_14px_-8px_rgba(0,0,0,0.8)] text-[13px] text-[#fafafa] transition-colors focus:border-[#f0b85a]/60 focus:outline-none"
             >
               {SORTS.map((s) => (
                 <option key={s.id} value={s.id}>
@@ -1158,7 +1168,7 @@ function Shop({ filter, cart, onOpen }) {
                 </option>
               ))}
             </select>
-            <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#c0c4cb]" />
+            <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#a1a1aa]" />
           </label>
         </div>
 
@@ -1169,15 +1179,15 @@ function Shop({ filter, cart, onOpen }) {
             ))}
           </div>
         ) : (
-          <div className="mp-fade mt-5 flex flex-col items-center rounded-[22px] border border-dashed border-[#565d69] bg-[#30353d] px-6 py-16 text-center">
-            <Search className="h-6 w-6 text-[#959ba5]" />
-            <p className="mt-3 font-semibold text-[#f1f2f4]">{T.noResults}</p>
-            <p className="mt-1 text-sm text-[#c0c4cb]">{T.noResultsHint}</p>
+          <div className="mp-fade mt-5 flex flex-col items-center rounded-[22px] border border-dashed border-white/[0.14] bg-[#121215] px-6 py-16 text-center">
+            <Search className="h-6 w-6 text-[#8b8b94]" />
+            <p className="mt-3 font-semibold text-[#fafafa]">{T.noResults}</p>
+            <p className="mt-1 text-sm text-[#a1a1aa]">{T.noResultsHint}</p>
             {hasFilters && (
               <button
                 type="button"
                 onClick={reset}
-                className="mt-5 rounded-full bg-[#f1f2f4] px-5 py-2 text-sm font-semibold text-[#1b1e23] transition-colors hover:bg-white"
+                className="mt-5 rounded-full bg-[#fafafa] px-5 py-2 text-sm font-semibold text-[#09090b] transition-colors hover:bg-white"
               >
                 {T.clearFilters}
               </button>
@@ -1218,7 +1228,7 @@ function Gallery({ product }) {
 
   if (!count) {
     return (
-      <div className="aspect-square overflow-hidden rounded-[28px] bg-[radial-gradient(110%_85%_at_50%_15%,#4a505a_0%,#3a3f48_55%,#30343c_100%)] p-10 shadow-[0_1px_2px_rgba(0,0,0,0.2),0_10px_30px_-14px_rgba(0,0,0,0.55)] ring-1 ring-white/[0.07]">
+      <div className="aspect-square overflow-hidden rounded-[28px] bg-[radial-gradient(110%_85%_at_50%_15%,#202025_0%,#17171a_60%,#121215_100%)] p-10 shadow-[inset_0_1px_0_rgba(255,255,255,0.05),0_1px_2px_rgba(0,0,0,0.5),0_12px_32px_-16px_rgba(0,0,0,0.8)] ring-1 ring-white/[0.08]">
         <ProductVisual visual={product.visual} uid={`g-${product.id}`} label={product.name} />
       </div>
     );
@@ -1233,11 +1243,11 @@ function Gallery({ product }) {
       if (Math.abs(dx) > 40 && count > 1) go(dx < 0 ? 1 : -1);
     },
   };
-  const arrow = "absolute top-1/2 grid h-10 w-10 -translate-y-1/2 place-items-center rounded-full bg-white/90 text-[#1b1e23] shadow-md transition hover:bg-white";
+  const arrow = "absolute top-1/2 grid h-10 w-10 -translate-y-1/2 place-items-center rounded-full bg-white/90 text-[#09090b] shadow-md transition hover:bg-white";
 
   return (
     <div className="flex flex-col gap-3">
-      <div className="group relative aspect-square overflow-hidden rounded-[28px] bg-[#30353d] shadow-[0_1px_2px_rgba(0,0,0,0.2),0_10px_30px_-14px_rgba(0,0,0,0.55)] ring-1 ring-white/[0.07]" {...swipe}>
+      <div className="group relative aspect-square overflow-hidden rounded-[28px] bg-[#121215] shadow-[inset_0_1px_0_rgba(255,255,255,0.05),0_1px_2px_rgba(0,0,0,0.5),0_12px_32px_-16px_rgba(0,0,0,0.8)] ring-1 ring-white/[0.08]" {...swipe}>
         <button type="button" onClick={() => setZoom(true)} className="absolute inset-0 cursor-zoom-in" aria-label={T.zoom}>
           <img
             key={images[index].src}
@@ -1246,7 +1256,7 @@ function Gallery({ product }) {
             className="mp-fade h-full w-full object-contain p-4"
           />
         </button>
-        <span className="pointer-events-none absolute right-3 top-3 grid h-9 w-9 place-items-center rounded-full bg-white/90 text-[#1b1e23] opacity-0 shadow-sm transition-opacity group-hover:opacity-100">
+        <span className="pointer-events-none absolute right-3 top-3 grid h-9 w-9 place-items-center rounded-full bg-white/90 text-[#09090b] opacity-0 shadow-sm transition-opacity group-hover:opacity-100">
           <Maximize2 className="h-4 w-4" />
         </span>
         {count > 1 && (
@@ -1257,7 +1267,7 @@ function Gallery({ product }) {
             <button type="button" onClick={() => go(1)} className={`${arrow} right-3`} aria-label={T.nextPhoto}>
               <ChevronRight className="h-5 w-5" />
             </button>
-            <span className="mp-num absolute bottom-3 left-1/2 -translate-x-1/2 rounded-full bg-[#1b1e23]/75 px-2.5 py-0.5 text-xs text-white">
+            <span className="mp-num absolute bottom-3 left-1/2 -translate-x-1/2 rounded-full bg-black/60 ring-1 ring-white/10 px-2.5 py-0.5 text-xs text-white">
               {index + 1} / {count}
             </span>
           </>
@@ -1271,8 +1281,8 @@ function Gallery({ product }) {
               key={img.src}
               type="button"
               onClick={() => setIndex(i)}
-              className={`h-20 w-20 shrink-0 overflow-hidden rounded-2xl border-2 bg-[#30353d] p-1 transition-colors ${
-                i === index ? "border-[#f1f2f4]" : "border-[#444a54] hover:border-[#6b7280]"
+              className={`h-20 w-20 shrink-0 overflow-hidden rounded-2xl border-2 bg-[#121215] p-1 transition-colors ${
+                i === index ? "border-[#fafafa]" : "border-white/[0.08] hover:border-white/30"
               }`}
               aria-label={T.photo(i + 1)}
               aria-current={i === index}
@@ -1324,7 +1334,7 @@ function Description({ text }) {
     .map((b) => b.split("\n").map((l) => l.trim()).filter(Boolean))
     .filter((lines) => lines.length);
   return (
-    <div className="flex max-w-3xl flex-col gap-4 text-[15px] leading-relaxed text-[#d5d8dd]">
+    <div className="flex max-w-3xl flex-col gap-4 text-[15px] leading-relaxed text-[#d4d4d8]">
       {blocks.map((lines, i) =>
         lines.every((l) => /^[-•*]\s*/.test(l)) ? (
           <ul key={i} className="flex flex-col gap-1.5">
@@ -1370,8 +1380,8 @@ function ProductPage({ product, cart, onNavigate }) {
 
   return (
     <main className="mx-auto max-w-[1200px] px-4 pb-16 pt-5 sm:px-6 lg:pt-8">
-      <nav className="flex flex-wrap items-center gap-1.5 text-sm text-[#c0c4cb]" aria-label={T.breadcrumb}>
-        <a href={HOME_PATH} onClick={handleNav(onNavigate, null)} className="inline-flex items-center gap-1.5 font-medium text-[#f1f2f4] hover:text-[#ff7a8b]">
+      <nav className="flex flex-wrap items-center gap-1.5 text-sm text-[#a1a1aa]" aria-label={T.breadcrumb}>
+        <a href={HOME_PATH} onClick={handleNav(onNavigate, null)} className="inline-flex items-center gap-1.5 font-medium text-[#fafafa] hover:text-[#ff7a8b]">
           <ArrowLeft className="h-4 w-4" />
           {T.shop}
         </a>
@@ -1386,17 +1396,17 @@ function ProductPage({ product, cart, onNavigate }) {
           {(product.badge || discount > 0) && (
             <div className="flex flex-wrap gap-1.5">
               {discount > 0 && <span className="mp-num rounded-full bg-[#c8102e] px-2.5 py-0.5 text-xs font-bold text-white">−{discount}%</span>}
-              {product.badge && <span className="rounded-full bg-[#1b1e23] px-2.5 py-0.5 text-xs font-medium text-white">{product.badge}</span>}
+              {product.badge && <span className="rounded-full bg-white/[0.06] px-2.5 py-0.5 text-xs font-medium text-white ring-1 ring-white/10">{product.badge}</span>}
             </div>
           )}
-          <h1 className="mt-3 text-2xl font-bold leading-tight text-[#f1f2f4] sm:text-3xl">{product.name}</h1>
-          {product.spec && <p className="mt-2 text-[15px] text-[#c0c4cb]">{product.spec}</p>}
+          <h1 className="mt-3 text-2xl font-bold leading-tight text-[#fafafa] sm:text-3xl">{product.name}</h1>
+          {product.spec && <p className="mt-2 text-[15px] text-[#a1a1aa]">{product.spec}</p>}
 
           <div className="mt-6 flex flex-wrap items-baseline gap-3">
-            <span className={`mp-num text-3xl font-bold tracking-tight ${product.oldPrice ? "text-[#ff7a8b]" : "text-[#f1f2f4]"}`}>
+            <span className={`mp-num text-3xl font-bold tracking-tight ${product.oldPrice ? "text-[#ff7a8b]" : "text-[#fafafa]"}`}>
               {formatPrice(product.price)}
             </span>
-            {product.oldPrice && <span className="mp-num text-lg text-[#959ba5] line-through">{formatPrice(product.oldPrice)}</span>}
+            {product.oldPrice && <span className="mp-num text-lg text-[#8b8b94] line-through">{formatPrice(product.oldPrice)}</span>}
           </div>
           {product.oldPrice && product.saleEnds && (
             <p className="mt-1 text-sm font-medium text-[#ff7a8b]">{T.saleUntil(formatDate(product.saleEnds))}</p>
@@ -1411,7 +1421,7 @@ function ProductPage({ product, cart, onNavigate }) {
               href={productWhatsAppLink(product)}
               target="_blank"
               rel="noopener noreferrer"
-              className="mp-sheen inline-flex h-12 min-w-0 flex-1 items-center justify-center gap-2 rounded-full bg-[#15803d] px-4 text-sm font-bold text-white shadow-[0_10px_22px_-10px_rgba(21,128,61,0.8)] transition-colors hover:bg-[#166534] active:scale-[0.98]"
+              className="mp-sheen inline-flex h-12 min-w-0 flex-1 items-center justify-center gap-2 rounded-full px-4 text-sm font-bold text-white bg-gradient-to-b from-[#1c9b4c] to-[#15803d] shadow-[inset_0_1px_0_rgba(255,255,255,0.22),0_1px_2px_rgba(0,0,0,0.5),0_10px_24px_-10px_rgba(34,197,94,0.55)] hover:brightness-110 transition-[filter,transform] duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] active:scale-[0.98]"
             >
               <MessageCircle className="h-5 w-5 shrink-0" strokeWidth={2.2} />
               {T.orderCta}
@@ -1420,7 +1430,7 @@ function ProductPage({ product, cart, onNavigate }) {
               type="button"
               onClick={() => cart.add(product.id)}
               className={`grid h-12 w-12 shrink-0 place-items-center rounded-full border transition-colors ${
-                inCart ? "border-[#f1f2f4] bg-[#f1f2f4] text-[#1b1e23]" : "border-[#4d535e] bg-[#30353d] text-[#f1f2f4] hover:border-[#8b929e]"
+                inCart ? "border-[#fafafa] bg-[#fafafa] text-[#09090b]" : "border-white/[0.10] bg-[#121215] text-[#fafafa] hover:border-white/[0.24]"
               }`}
               aria-label={inCart ? T.inCartMore : T.addToCart}
               title={inCart ? T.inCart : T.addToCart}
@@ -1429,14 +1439,14 @@ function ProductPage({ product, cart, onNavigate }) {
             </button>
           </div>
           {CONFIG.phoneDisplay && (
-            <p className="mt-3 text-sm text-[#c0c4cb]">
+            <p className="mt-3 text-sm text-[#a1a1aa]">
               {T.orCall}{" "}
-              <a href={`tel:${CONFIG.phoneTel}`} className="mp-num select-all font-semibold text-[#f1f2f4] hover:text-[#4ade80]">
+              <a href={`tel:${CONFIG.phoneTel}`} className="mp-num select-all font-semibold text-[#fafafa] hover:text-[#4ade80]">
                 {CONFIG.phoneDisplay}
               </a>
             </p>
           )}
-          <ul className="mt-6 flex flex-col gap-2.5 rounded-[20px] bg-[#30353d]/80 p-4 text-sm text-[#d5d8dd] shadow-[0_1px_2px_rgba(0,0,0,0.2),0_10px_30px_-14px_rgba(0,0,0,0.55)] ring-1 ring-white/[0.07]">
+          <ul className="mt-6 flex flex-col gap-2.5 rounded-[20px] bg-[#121215]/80 p-4 text-sm text-[#d4d4d8] shadow-[inset_0_1px_0_rgba(255,255,255,0.05),0_1px_2px_rgba(0,0,0,0.5),0_12px_32px_-16px_rgba(0,0,0,0.8)] ring-1 ring-white/[0.08]">
             {[T.perkDelivery, T.perkConfirm].map((t) => (
               <li key={t} className="flex items-center gap-2.5">
                 <span className="grid h-5 w-5 shrink-0 place-items-center rounded-full bg-[#15803d]/25 text-[#4ade80]">
@@ -1450,8 +1460,8 @@ function ProductPage({ product, cart, onNavigate }) {
       </div>
 
       {product.description.trim() && (
-        <section className="mt-12 border-t border-[#444a54] pt-8" aria-labelledby="mp-desc">
-          <h2 id="mp-desc" className="text-xl font-bold text-[#f1f2f4]">{T.description}</h2>
+        <section className="mt-12 border-t border-white/[0.08] pt-8" aria-labelledby="mp-desc">
+          <h2 id="mp-desc" className="text-xl font-bold text-[#fafafa]">{T.description}</h2>
           <div className="mt-4">
             <Description text={product.description} />
           </div>
@@ -1459,8 +1469,8 @@ function ProductPage({ product, cart, onNavigate }) {
       )}
 
       {related.length > 0 && (
-        <section className="mt-12 border-t border-[#444a54] pt-8" aria-labelledby="mp-related">
-          <h2 id="mp-related" className="text-xl font-bold text-[#f1f2f4]">{T.related}</h2>
+        <section className="mt-12 border-t border-white/[0.08] pt-8" aria-labelledby="mp-related">
+          <h2 id="mp-related" className="text-xl font-bold text-[#fafafa]">{T.related}</h2>
           <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {related.map((p, i) => (
               /* 4 ბარათი ორ სვეტად, 3 — სამ სვეტად; მეოთხე დიდ ეკრანზე იმალება, რომ რიგი სრული იყოს */
@@ -1479,12 +1489,12 @@ function NotFound({ onNavigate }) {
   return (
     <main className="mx-auto flex max-w-xl flex-col items-center px-4 py-24 text-center">
       <p className="text-5xl">♠</p>
-      <h1 className="mt-4 text-2xl font-bold text-[#f1f2f4]">{T.notFound}</h1>
-      <p className="mt-2 text-[#c0c4cb]">{T.notFoundText}</p>
+      <h1 className="mt-4 text-2xl font-bold text-[#fafafa]">{T.notFound}</h1>
+      <p className="mt-2 text-[#a1a1aa]">{T.notFoundText}</p>
       <a
         href={HOME_PATH}
         onClick={handleNav(onNavigate, null)}
-        className="mt-6 rounded-full bg-[#f1f2f4] px-5 py-2.5 text-sm font-semibold text-[#1b1e23] transition-colors hover:bg-white"
+        className="mt-6 rounded-full bg-[#fafafa] px-5 py-2.5 text-sm font-semibold text-[#09090b] transition-colors hover:bg-white"
       >
         {T.backToShop}
       </a>
@@ -1512,17 +1522,17 @@ function CartDrawer({ open, onClose, cart, onOpenProduct }) {
 
   return (
     <div className="fixed inset-0 z-50" role="dialog" aria-modal="true" aria-label={T.cart}>
-      <button type="button" className="mp-fade absolute inset-0 bg-[#1b1e23]/40 backdrop-blur-[2px]" onClick={onClose} aria-label={T.close} />
-      <aside className="mp-slide-in absolute inset-y-0 right-0 flex w-full max-w-md flex-col overflow-hidden bg-[#30353d] pb-[env(safe-area-inset-bottom,0px)] pt-[env(safe-area-inset-top,0px)] shadow-2xl sm:inset-y-3 sm:right-3 sm:rounded-[28px]">
-        <div className="flex items-center justify-between border-b border-[#444a54] px-5 py-4">
+      <button type="button" className="mp-fade absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} aria-label={T.close} />
+      <aside className="mp-slide-in absolute inset-y-0 right-0 flex w-full max-w-md flex-col overflow-hidden bg-[#121215] pb-[env(safe-area-inset-bottom,0px)] pt-[env(safe-area-inset-top,0px)] shadow-2xl sm:inset-y-3 sm:right-3 sm:rounded-[28px]">
+        <div className="flex items-center justify-between border-b border-white/[0.08] px-5 py-4">
           <div>
-            <h2 className="text-lg font-bold text-[#f1f2f4]">{T.cart}</h2>
-            <p className="mp-num text-xs text-[#c0c4cb]">{T.items(cart.count)}</p>
+            <h2 className="text-lg font-bold text-[#fafafa]">{T.cart}</h2>
+            <p className="mp-num text-xs text-[#a1a1aa]">{T.items(cart.count)}</p>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="grid h-10 w-10 place-items-center rounded-full text-[#c0c4cb] transition-colors hover:bg-[#3a3f48] hover:text-white"
+            className="grid h-10 w-10 place-items-center rounded-full text-[#a1a1aa] transition-colors hover:bg-[#18181b] hover:text-white"
             aria-label={T.closeCart}
           >
             <X className="h-5 w-5" />
@@ -1531,55 +1541,55 @@ function CartDrawer({ open, onClose, cart, onOpenProduct }) {
 
         {cart.lines.length === 0 ? (
           <div className="flex flex-1 flex-col items-center justify-center px-8 text-center">
-            <ShoppingBag className="h-8 w-8 text-[#959ba5]" strokeWidth={1.5} />
-            <p className="mt-4 font-semibold text-[#f1f2f4]">{T.cartEmpty}</p>
-            <p className="mt-1 text-sm text-[#c0c4cb]">{T.cartEmptyText}</p>
-            <button type="button" onClick={onClose} className="mt-6 rounded-full bg-[#f1f2f4] px-5 py-2 text-sm font-semibold text-[#1b1e23] hover:bg-white">
+            <ShoppingBag className="h-8 w-8 text-[#8b8b94]" strokeWidth={1.5} />
+            <p className="mt-4 font-semibold text-[#fafafa]">{T.cartEmpty}</p>
+            <p className="mt-1 text-sm text-[#a1a1aa]">{T.cartEmptyText}</p>
+            <button type="button" onClick={onClose} className="mt-6 rounded-full bg-[#fafafa] px-5 py-2 text-sm font-semibold text-[#09090b] hover:bg-white">
               {T.continueShopping}
             </button>
           </div>
         ) : (
           <>
-            <ul className="flex-1 divide-y divide-[#3e434c] overflow-y-auto px-5">
+            <ul className="flex-1 divide-y divide-white/[0.06] overflow-y-auto px-5">
               {cart.lines.map(({ product, qty }) => (
                 <li key={product.id} className="mp-fade flex gap-3 py-4">
-                  <div className="h-16 w-20 shrink-0 overflow-hidden rounded-2xl bg-[radial-gradient(110%_85%_at_50%_15%,#4a505a_0%,#3a3f48_55%,#30343c_100%)] p-1.5">
+                  <div className="h-16 w-20 shrink-0 overflow-hidden rounded-2xl bg-[radial-gradient(110%_85%_at_50%_15%,#202025_0%,#17171a_60%,#121215_100%)] p-1.5">
                     <ProductMedia product={product} uid={`c-${product.id}`} />
                   </div>
                   <div className="flex min-w-0 flex-1 flex-col">
                     <a
                       href={productPath(product.id)}
                       onClick={handleNav(onOpenProduct, product.id)}
-                      className="line-clamp-2 text-[13px] font-medium leading-snug text-[#f1f2f4] hover:text-[#ff7a8b]"
+                      className="line-clamp-2 text-[13px] font-medium leading-snug text-[#fafafa] hover:text-[#ff7a8b]"
                     >
                       {product.name}
                     </a>
                     <div className="mt-auto flex items-center justify-between pt-2">
-                      <div className="flex items-center rounded-full border border-[#4d535e]">
+                      <div className="flex items-center rounded-full border border-white/[0.10]">
                         <button
                           type="button"
                           onClick={() => cart.decrement(product.id)}
-                          className="grid h-8 w-8 place-items-center text-[#c0c4cb] hover:text-white"
+                          className="grid h-8 w-8 place-items-center text-[#a1a1aa] hover:text-white"
                           aria-label={T.decrease}
                         >
                           <Minus className="h-3.5 w-3.5" />
                         </button>
-                        <span className="mp-num w-5 text-center text-[13px] font-semibold text-[#f1f2f4]">{qty}</span>
+                        <span className="mp-num w-5 text-center text-[13px] font-semibold text-[#fafafa]">{qty}</span>
                         <button
                           type="button"
                           onClick={() => cart.add(product.id)}
-                          className="grid h-8 w-8 place-items-center text-[#c0c4cb] hover:text-white"
+                          className="grid h-8 w-8 place-items-center text-[#a1a1aa] hover:text-white"
                           aria-label={T.increase}
                         >
                           <Plus className="h-3.5 w-3.5" />
                         </button>
                       </div>
                       <div className="flex items-center gap-3">
-                        <span className="mp-num text-sm font-bold text-[#f1f2f4]">{formatPrice(product.price * qty)}</span>
+                        <span className="mp-num text-sm font-bold text-[#fafafa]">{formatPrice(product.price * qty)}</span>
                         <button
                           type="button"
                           onClick={() => cart.remove(product.id)}
-                          className="text-[#959ba5] transition-colors hover:text-[#ff7a8b]"
+                          className="text-[#8b8b94] transition-colors hover:text-[#ff7a8b]"
                           aria-label={T.removeAria(product.name)}
                         >
                           <Trash2 className="h-4 w-4" />
@@ -1591,22 +1601,22 @@ function CartDrawer({ open, onClose, cart, onOpenProduct }) {
               ))}
             </ul>
 
-            <div className="border-t border-[#444a54] bg-[#2a2e35] px-5 py-5">
+            <div className="border-t border-white/[0.08] bg-[#0e0e11] px-5 py-5">
               <div className="flex items-baseline justify-between">
-                <span className="text-sm text-[#c0c4cb]">{T.total}</span>
-                <span className="mp-num text-2xl font-bold text-[#f1f2f4]">{formatPrice(cart.total)}</span>
+                <span className="text-sm text-[#a1a1aa]">{T.total}</span>
+                <span className="mp-num text-2xl font-bold text-[#fafafa]">{formatPrice(cart.total)}</span>
               </div>
               <a
                 href={cartWhatsAppLink(cart.lines, cart.total)}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mp-sheen mt-4 inline-flex h-12 w-full items-center justify-center gap-2 rounded-full bg-[#15803d] text-sm font-bold text-white shadow-[0_10px_22px_-10px_rgba(21,128,61,0.8)] transition-colors hover:bg-[#166534]"
+                className="mp-sheen mt-4 inline-flex h-12 w-full items-center justify-center gap-2 rounded-full text-sm font-bold text-white bg-gradient-to-b from-[#1c9b4c] to-[#15803d] shadow-[inset_0_1px_0_rgba(255,255,255,0.22),0_1px_2px_rgba(0,0,0,0.5),0_10px_24px_-10px_rgba(34,197,94,0.55)] hover:brightness-110 transition-[filter,transform] duration-300 ease-[cubic-bezier(0.32,0.72,0,1)]"
               >
                 <MessageCircle className="h-4 w-4" />
                 {T.orderCta}
               </a>
-              <p className="mt-3 text-center text-xs text-[#959ba5]">{T.paySoon}</p>
-              <button type="button" onClick={cart.clear} className="mt-2 w-full text-xs text-[#c0c4cb] transition-colors hover:text-[#ff7a8b]">
+              <p className="mt-3 text-center text-xs text-[#8b8b94]">{T.paySoon}</p>
+              <button type="button" onClick={cart.clear} className="mt-2 w-full text-xs text-[#a1a1aa] transition-colors hover:text-[#ff7a8b]">
                 {T.clearCart}
               </button>
             </div>
@@ -1622,7 +1632,7 @@ function CartDrawer({ open, onClose, cart, onOpenProduct }) {
 /* ------------------------------------------------------------------ */
 function Footer() {
   return (
-    <footer className="bg-[#1b1e23] text-white">
+    <footer className="border-t border-white/[0.08] bg-[#09090b] text-white">
       <div className="mx-auto flex max-w-[1400px] flex-col gap-4 px-4 py-6 text-sm sm:flex-row sm:items-center sm:justify-between sm:px-6">
         <div className="flex items-center gap-3">
           <LogoMark size={24} />
@@ -1684,7 +1694,7 @@ export default function App() {
   };
 
   return (
-    <div id="top" className="mp-sans mp-pattern flex min-h-screen flex-col text-[#f1f2f4] antialiased selection:bg-[#c8102e]/40">
+    <div id="top" className="mp-sans mp-pattern flex min-h-screen flex-col text-[#fafafa] antialiased selection:bg-[#f0b85a]/30 selection:text-white">
       <style>{GLOBAL_CSS}</style>
       <Header
         cartCount={cart.count}
@@ -1720,7 +1730,7 @@ export default function App() {
       {toast && (
         <div
           key={toast.id}
-          className="mp-toast fixed bottom-[calc(1.25rem+env(safe-area-inset-bottom,0px))] left-1/2 z-50 flex w-[calc(100%-2rem)] max-w-sm items-center gap-3 rounded-2xl bg-[#1b1e23] py-2.5 pl-3 pr-4 text-white shadow-2xl"
+          className="mp-toast fixed bottom-[calc(1.25rem+env(safe-area-inset-bottom,0px))] left-1/2 z-50 flex w-[calc(100%-2rem)] max-w-sm items-center gap-3 rounded-2xl bg-[#18181b]/90 ring-1 ring-white/10 backdrop-blur-xl py-2.5 pl-3 pr-4 text-white shadow-2xl"
           role="status"
         >
           <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-[#15803d]">
