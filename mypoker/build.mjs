@@ -76,7 +76,7 @@ const pick = (p, field, lang) => (lang === "en" && typeof p[`${field}En`] === "s
 
 // Every page is the same app shell; only the language, title, description, URLs and preview image differ.
 // `path` is the language-neutral path ("/" or "/p/<id>/"); each page links to its twin in the other language.
-const pageHead = ({ lang, title, description, path, image }) => `<title>${esc(title)}</title>
+const pageHead = ({ lang, title, description, path, image, jsonld }) => `<title>${esc(title)}</title>
 <meta name="description" content="${esc(description)}">
 <link rel="canonical" href="${SITE}${LANGS[lang]}${path}">
 <link rel="alternate" hreflang="ka" href="${SITE}${path}">
@@ -88,13 +88,18 @@ const pageHead = ({ lang, title, description, path, image }) => `<title>${esc(ti
 <meta property="og:url" content="${SITE}${LANGS[lang]}${path}">
 <meta property="og:title" content="${esc(title)}">
 <meta property="og:description" content="${esc(description)}">${image ? `\n<meta property="og:image" content="${SITE}/${esc(image.replace(/^\//, ""))}">` : ""}
-<meta name="theme-color" content="#18191c">
+<meta name="twitter:card" content="${image ? "summary_large_image" : "summary"}">
+<meta name="theme-color" content="#18191c">${jsonld ? `\n<script type="application/ld+json">${JSON.stringify(jsonld).replace(/</g, "\\u003c")}</script>` : ""}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Georgian:wght@400;500;600;700;800&family=Manrope:wght@600;700&display=swap">
 <link rel="icon" href="${favicon}" type="image/svg+xml">
 <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="stylesheet" href="/app.css">
 <style>html,body{background:#f3f2ef;color:#18191c;margin:0}</style>`;
-const body = `<div id="root"></div>
+const body = `<noscript><p style="font:16px sans-serif;padding:24px;text-align:center">mypoker.ge მუშაობს JavaScript-ით. ჩართეთ JavaScript ან დაგვიკავშირდით WhatsApp-ით. · Please enable JavaScript.</p></noscript>
+<div id="root"></div>
 <script type="application/json" id="mp-data">${inlineData}</script>
 <script src="/app.js" defer></script>`;
 const page = (lang, head) =>
@@ -124,7 +129,24 @@ for (const lang of Object.keys(LANGS)) {
     const image = first ? (typeof first === "string" ? first : first.src) : null;
     const text = [pick(p, "spec", lang), String(pick(p, "description", lang)).replace(/\s+/g, " ")].filter(Boolean).join(" — ");
     const path = `/p/${p.id}/`;
-    write(lang, path, page(lang, pageHead({ lang, title: `${pick(p, "name", lang)} — mypoker.ge`, description: clip(text || STORE[lang].description, 160), path, image })));
+    const today = new Date().toLocaleDateString("sv-SE", { timeZone: "Asia/Tbilisi" });
+    const onSale = Number(p.salePrice) > 0 && Number(p.salePrice) < Number(p.price) && (!p.saleEnds || p.saleEnds >= today);
+    const jsonld = {
+      "@context": "https://schema.org",
+      "@type": "Product",
+      name: pick(p, "name", lang),
+      description: text || undefined,
+      image: image ? `${SITE}/${image.replace(/^\//, "")}` : undefined,
+      offers: {
+        "@type": "Offer",
+        url: `${SITE}${LANGS[lang]}${path}`,
+        priceCurrency: "GEL",
+        price: String(onSale ? Number(p.salePrice) : Number(p.price)),
+        ...(onSale && p.saleEnds ? { priceValidUntil: p.saleEnds } : {}),
+        availability: p.inStock === false ? "https://schema.org/PreOrder" : "https://schema.org/InStock",
+      },
+    };
+    write(lang, path, page(lang, pageHead({ lang, title: `${pick(p, "name", lang)} — mypoker.ge`, description: clip(text || STORE[lang].description, 160), path, image, jsonld })));
     urls.push(`${SITE}${LANGS[lang]}${path}`);
     pages++;
   }

@@ -15,6 +15,7 @@ import {
   ArrowLeft,
   Maximize2,
   Truck,
+  ArrowUpRight,
 } from "lucide-react";
 
 /* ------------------------------------------------------------------ */
@@ -273,6 +274,7 @@ function normalizeProduct(p, today) {
     inStock: p.inStock !== false,
     images: normalizeImages(p),
     description: typeof pick("description") === "string" ? pick("description") : "",
+    searchText: [p.name, p.nameEn, p.spec, p.specEn].filter((x) => typeof x === "string").join(" ").toLowerCase(),
     visual: p.visual || DEFAULT_VISUAL[p.category] || DEFAULT_VISUAL.accessories,
   };
 }
@@ -352,7 +354,10 @@ function useRoute() {
   }, [route.productId]);
 
   const navigate = (productId) => {
-    if (productId === route.productId) return;
+    if (productId === route.productId) {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      return;
+    }
     if (!route.productId) shopScroll.current = window.scrollY;
     try {
       window.history.pushState({}, "", productId ? productPath(productId) : HOME_PATH);
@@ -457,7 +462,7 @@ function useProductFilter(products) {
         (category === "all" || p.category === category) &&
         p.price >= range.min &&
         p.price < range.max &&
-        (!q || `${p.name} ${p.spec}`.toLowerCase().includes(q))
+        (!q || p.searchText.includes(q))
     );
     const sorted = [...list];
     if (sort === "price-asc") sorted.sort((a, b) => a.price - b.price);
@@ -499,12 +504,14 @@ const PATTERN_SVG =
 const PATTERN_URL = `url("data:image/svg+xml,${encodeURIComponent(PATTERN_SVG)}")`;
 
 const GLOBAL_CSS = `
-  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Georgian:wght@400;500;600;700&family=Manrope:wght@600;700&display=swap');
   :root { color-scheme: light; }
   body { margin: 0; background: #f3f2ef; color: #18191c; }
   .mp-sans { font-family: 'Noto Sans Georgian', system-ui, -apple-system, 'Segoe UI', sans-serif; }
   .mp-brand { font-family: 'Manrope', 'Noto Sans Georgian', system-ui, sans-serif; }
   .mp-num { font-variant-numeric: tabular-nums; }
+  .mp-sheen { position: relative; overflow: hidden; isolation: isolate; }
+  .mp-sheen::after { content: ''; position: absolute; inset: 0; z-index: -1; background: linear-gradient(110deg, transparent 35%, rgba(255,255,255,.22) 50%, transparent 65%); transform: translateX(-100%); transition: transform .7s cubic-bezier(.16,1,.3,1); }
+  .mp-sheen:hover::after { transform: translateX(100%); }
   .mp-pattern { background-color: #f3f2ef; background-image: ${PATTERN_URL}; background-size: 120px 120px; }
   @keyframes mp-rise { from { opacity: 0; translate: 0 14px; scale: .97; } to { opacity: 1; translate: 0 0; scale: 1; } }
   @keyframes mp-pop { 0% { scale: .4; } 60% { scale: 1.35; } 100% { scale: 1; } }
@@ -810,7 +817,8 @@ function FreeShipping({ strip = false }) {
 
 function Header({ cartCount, onOpenCart, query, onQuery, onNavigate, productId }) {
   return (
-    <header className="sticky top-[env(safe-area-inset-top,0px)] z-40 bg-[#18191c] text-white shadow-[0_1px_0_rgba(0,0,0,0.2)]">
+    <header className="sticky top-[env(safe-area-inset-top,0px)] z-40 bg-[#18191c]/[0.96] text-white shadow-[0_10px_30px_-18px_rgba(0,0,0,0.6)] backdrop-blur-xl backdrop-saturate-150">
+      <span className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-[#ff4d63]/50 to-transparent" aria-hidden="true" />
       {CONFIG.freeShippingFrom > 0 && (
         <div className="flex h-9 items-center justify-center bg-[#c8102e] px-3 xl:hidden">
           <FreeShipping strip />
@@ -874,7 +882,7 @@ function Header({ cartCount, onOpenCart, query, onQuery, onNavigate, productId }
 function FilterGroup({ title, children }) {
   return (
     <div>
-      <p className="px-3 text-xs font-semibold text-[#5c5d61]">{title}</p>
+      <p className="px-3 text-[11px] font-semibold uppercase tracking-[0.08em] text-[#8a8b90]">{title}</p>
       <div className="mt-2 flex flex-col gap-0.5">{children}</div>
     </div>
   );
@@ -886,8 +894,8 @@ function FilterOption({ active, onClick, label, count }) {
       type="button"
       onClick={onClick}
       aria-pressed={active}
-      className={`flex items-center justify-between rounded-xl px-3 py-1.5 text-left text-sm transition-colors duration-200 ${
-        active ? "bg-[#18191c] font-semibold text-white" : "text-[#18191c] hover:bg-[#e8e6e1]"
+      className={`flex items-center justify-between rounded-full px-3 py-1.5 text-left text-sm transition-all duration-200 ${
+        active ? "bg-[#18191c] font-semibold text-white shadow-[0_6px_14px_-6px_rgba(24,25,28,0.5)]" : "text-[#18191c] hover:bg-[#f1efea]"
       }`}
     >
       {label}
@@ -900,7 +908,8 @@ function Sidebar({ filter }) {
   const { category, setCategory, price, setPrice, counts, hasFilters, reset } = filter;
   return (
     <aside className="hidden lg:block">
-      <div className={`mp-scroll sticky flex flex-col gap-5 overflow-y-auto pb-2 [&>*]:shrink-0 ${CONFIG.freeShippingFrom > 0 ? "top-[7.25rem] max-h-[calc(100vh-8rem)] xl:top-24 xl:max-h-[calc(100vh-7rem)]" : "top-24 max-h-[calc(100vh-7rem)]"}`}>
+      <div className={`mp-scroll sticky -mx-3 -mt-2 flex flex-col gap-5 overflow-y-auto px-3 pb-8 pt-2 [&>*]:shrink-0 ${CONFIG.freeShippingFrom > 0 ? "top-[7.25rem] max-h-[calc(100vh-8rem)] xl:top-24 xl:max-h-[calc(100vh-7rem)]" : "top-24 max-h-[calc(100vh-7rem)]"}`}>
+        <div className={`flex flex-col gap-4 rounded-[22px] bg-white p-2.5 pt-4 shadow-[0_1px_2px_rgba(24,25,28,0.04),0_10px_30px_-14px_rgba(24,25,28,0.14)] ring-1 ring-[#18191c]/[0.06]`}>
         <FilterGroup title={T.category}>
           {CATEGORIES.map((c) => (
             <FilterOption key={c.id} active={category === c.id} onClick={() => setCategory(c.id)} label={c.label} count={counts[c.id] || 0} />
@@ -912,11 +921,12 @@ function Sidebar({ filter }) {
           ))}
         </FilterGroup>
         {hasFilters && (
-          <button type="button" onClick={reset} className="px-3 text-left text-sm font-medium text-[#c8102e] hover:underline">
+          <button type="button" onClick={reset} className="px-3 pb-1 text-left text-sm font-medium text-[#c8102e] hover:underline">
             {T.clearFilters}
           </button>
         )}
-        <div className="relative overflow-hidden rounded-2xl bg-[#18191c] px-5 pb-5 pt-5 text-center text-white shadow-[0_18px_40px_-24px_rgba(24,25,28,0.6)]">
+        </div>
+        <div className="relative overflow-hidden rounded-[22px] bg-[radial-gradient(120%_80%_at_50%_0%,#2a2b30_0%,#18191c_60%)] px-5 pb-5 pt-5 text-center text-white shadow-[0_14px_28px_-16px_rgba(24,25,28,0.55)]">
           {/* ზედა წითელი ხაზი და მკრთალი აგური ფონზე, ცენტრში */}
           <span className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-[#a50d26] via-[#ff4d63] to-[#a50d26]" aria-hidden="true" />
           <svg viewBox="0 0 40 40" className="pointer-events-none absolute -bottom-12 left-1/2 h-36 w-36 -translate-x-1/2 text-white/[0.04]" aria-hidden="true">
@@ -958,7 +968,7 @@ function Sidebar({ filter }) {
             href={buildWhatsAppLink(T.waHello)}
             target="_blank"
             rel="noopener noreferrer"
-            className="relative mt-3 inline-flex h-10 w-full items-center justify-center gap-2 rounded-xl bg-[#15803d] text-[13px] font-semibold transition-colors hover:bg-[#166534]"
+            className="mp-sheen relative mt-3 inline-flex h-10 w-full items-center justify-center gap-2 rounded-full bg-[#15803d] text-[13px] font-semibold shadow-[0_8px_18px_-8px_rgba(21,128,61,0.7)] transition-colors hover:bg-[#166534]"
           >
             <MessageCircle className="h-4 w-4" />
             WhatsApp
@@ -1038,30 +1048,33 @@ function ProductCard({ product, index, inCart, onAdd, onOpen }) {
 
   return (
     <article
-      className="mp-rise group flex flex-col overflow-hidden rounded-2xl border border-[#e4e2dd] bg-white transition-all duration-300 hover:-translate-y-1 hover:border-[#d2cfc8] hover:shadow-[0_18px_40px_-20px_rgba(24,25,28,0.28)]"
+      className="mp-rise group flex min-w-0 flex-col rounded-[22px] bg-white p-2 shadow-[0_1px_2px_rgba(24,25,28,0.04),0_10px_30px_-14px_rgba(24,25,28,0.14)] ring-1 ring-[#18191c]/[0.06] transition-all duration-300 ease-[cubic-bezier(.16,1,.3,1)] hover:-translate-y-1.5 hover:shadow-[0_2px_4px_rgba(24,25,28,0.04),0_28px_50px_-22px_rgba(24,25,28,0.32)]"
       style={{ animationDelay: `${Math.min(index, 11) * 40}ms` }}
     >
       <a
         href={productPath(product.id)}
         onClick={handleNav(onOpen, product.id)}
-        className="relative block aspect-[4/3] overflow-hidden bg-gradient-to-b from-[#f7f6f3] to-[#ebe9e4]"
+        className="relative block aspect-[4/3] overflow-hidden rounded-[16px] bg-[radial-gradient(110%_85%_at_50%_15%,#ffffff_0%,#f3f1ec_55%,#e6e3dc_100%)]"
         aria-label={T.detailsAria(product.name)}
         tabIndex={-1}
       >
         <div className="absolute inset-0 p-6 transition-transform duration-500 ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-105">
           <ProductMedia product={product} uid={`p-${product.id}`} />
         </div>
+        <span className="absolute right-3 top-3 grid h-8 w-8 translate-y-1 place-items-center rounded-full bg-white/90 text-[#18191c] opacity-0 shadow-sm backdrop-blur transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100" aria-hidden="true">
+          <ArrowUpRight className="h-4 w-4" />
+        </span>
         {(product.badge || discount > 0) && (
           <div className="absolute left-3 top-3 flex gap-1.5">
             {discount > 0 && (
-              <span className="mp-num rounded-md bg-[#c8102e] px-2 py-0.5 text-[11px] font-bold text-white">−{discount}%</span>
+              <span className="mp-num rounded-full bg-[#c8102e] px-2.5 py-0.5 text-[11px] font-bold text-white shadow-[0_4px_10px_-4px_rgba(200,16,46,0.7)]">−{discount}%</span>
             )}
-            {product.badge && <span className="rounded-md bg-[#18191c] px-2 py-0.5 text-[11px] font-medium text-white">{product.badge}</span>}
+            {product.badge && <span className="rounded-full bg-[#18191c]/85 px-2.5 py-0.5 text-[11px] font-medium text-white backdrop-blur">{product.badge}</span>}
           </div>
         )}
       </a>
 
-      <div className="flex flex-1 flex-col p-4">
+      <div className="flex flex-1 flex-col px-2.5 pb-2 pt-3.5">
         <h3 className="line-clamp-2 min-h-[2.75rem] text-[15px] font-semibold leading-snug text-[#18191c]">
           <a href={productPath(product.id)} onClick={handleNav(onOpen, product.id)} className="transition-colors hover:text-[#c8102e]">
             {product.name}
@@ -1086,7 +1099,7 @@ function ProductCard({ product, index, inCart, onAdd, onOpen }) {
             href={productWhatsAppLink(product)}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex h-11 min-w-0 flex-1 items-center justify-center gap-2 whitespace-nowrap rounded-xl bg-[#15803d] px-3 text-[13px] font-bold text-white transition-colors duration-200 hover:bg-[#166534] active:scale-[0.98]"
+            className="mp-sheen inline-flex h-11 min-w-0 flex-1 items-center justify-center gap-2 whitespace-nowrap rounded-full bg-[#15803d] px-3 text-[13px] font-bold text-white shadow-[0_8px_18px_-10px_rgba(21,128,61,0.8)] transition-colors duration-200 hover:bg-[#166534] active:scale-[0.98]"
           >
             <MessageCircle className="h-4 w-4 shrink-0" strokeWidth={2.2} />
             {T.orderCta}
@@ -1094,8 +1107,8 @@ function ProductCard({ product, index, inCart, onAdd, onOpen }) {
           <button
             type="button"
             onClick={() => onAdd(product.id)}
-            className={`grid h-11 w-11 shrink-0 place-items-center rounded-xl border transition-colors duration-200 ${
-              inCart ? "border-[#18191c] bg-[#18191c] text-white" : "border-[#d9d6d0] text-[#18191c] hover:border-[#18191c]"
+            className={`grid h-11 w-11 shrink-0 place-items-center rounded-full border transition-colors duration-200 ${
+              inCart ? "border-[#18191c] bg-[#18191c] text-white" : "border-[#e4e2dd] bg-[#f6f5f2] text-[#18191c] hover:border-[#18191c] hover:bg-white"
             }`}
             aria-label={inCart ? T.inCartAria(product.name) : T.addAria(product.name)}
             title={inCart ? T.inCart : T.addToCart}
@@ -1137,7 +1150,7 @@ function Shop({ filter, cart, onOpen }) {
               id="mp-sort"
               value={sort}
               onChange={(e) => setSort(e.target.value)}
-              className="h-10 max-w-[10.5rem] appearance-none truncate rounded-full border border-[#d9d6d0] bg-white pl-4 pr-9 text-[13px] text-[#18191c] transition-colors focus:border-[#18191c] focus:outline-none"
+              className="h-10 max-w-[10.5rem] appearance-none truncate rounded-full border border-[#e4e2dd] bg-white pl-4 pr-9 shadow-[0_4px_14px_-8px_rgba(24,25,28,0.2)] text-[13px] text-[#18191c] transition-colors focus:border-[#18191c] focus:outline-none"
             >
               {SORTS.map((s) => (
                 <option key={s.id} value={s.id}>
@@ -1150,13 +1163,13 @@ function Shop({ filter, cart, onOpen }) {
         </div>
 
         {visible.length > 0 ? (
-          <div key={gridKey} className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+          <div key={gridKey} className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
             {visible.map((product, i) => (
               <ProductCard key={product.id} product={product} index={i} inCart={inCart.has(product.id)} onAdd={cart.add} onOpen={onOpen} />
             ))}
           </div>
         ) : (
-          <div className="mp-fade mt-5 flex flex-col items-center rounded-2xl border border-dashed border-[#d2cfc8] bg-white px-6 py-16 text-center">
+          <div className="mp-fade mt-5 flex flex-col items-center rounded-[22px] border border-dashed border-[#d2cfc8] bg-white px-6 py-16 text-center">
             <Search className="h-6 w-6 text-[#8a8b90]" />
             <p className="mt-3 font-semibold text-[#18191c]">{T.noResults}</p>
             <p className="mt-1 text-sm text-[#5c5d61]">{T.noResultsHint}</p>
@@ -1205,7 +1218,7 @@ function Gallery({ product }) {
 
   if (!count) {
     return (
-      <div className="aspect-square overflow-hidden rounded-3xl border border-[#e4e2dd] bg-gradient-to-b from-[#f7f6f3] to-[#ebe9e4] p-10">
+      <div className="aspect-square overflow-hidden rounded-[28px] bg-[radial-gradient(110%_85%_at_50%_15%,#ffffff_0%,#f3f1ec_55%,#e6e3dc_100%)] p-10 shadow-[0_1px_2px_rgba(24,25,28,0.04),0_10px_30px_-14px_rgba(24,25,28,0.14)] ring-1 ring-[#18191c]/[0.06]">
         <ProductVisual visual={product.visual} uid={`g-${product.id}`} label={product.name} />
       </div>
     );
@@ -1224,7 +1237,7 @@ function Gallery({ product }) {
 
   return (
     <div className="flex flex-col gap-3">
-      <div className="group relative aspect-square overflow-hidden rounded-3xl border border-[#e4e2dd] bg-white" {...swipe}>
+      <div className="group relative aspect-square overflow-hidden rounded-[28px] bg-white shadow-[0_1px_2px_rgba(24,25,28,0.04),0_10px_30px_-14px_rgba(24,25,28,0.14)] ring-1 ring-[#18191c]/[0.06]" {...swipe}>
         <button type="button" onClick={() => setZoom(true)} className="absolute inset-0 cursor-zoom-in" aria-label={T.zoom}>
           <img
             key={images[index].src}
@@ -1258,7 +1271,7 @@ function Gallery({ product }) {
               key={img.src}
               type="button"
               onClick={() => setIndex(i)}
-              className={`h-20 w-20 shrink-0 overflow-hidden rounded-xl border-2 bg-white p-1 transition-colors ${
+              className={`h-20 w-20 shrink-0 overflow-hidden rounded-2xl border-2 bg-white p-1 transition-colors ${
                 i === index ? "border-[#18191c]" : "border-[#e4e2dd] hover:border-[#b9b6af]"
               }`}
               aria-label={T.photo(i + 1)}
@@ -1372,8 +1385,8 @@ function ProductPage({ product, cart, onNavigate }) {
         <div className="flex min-w-0 flex-col">
           {(product.badge || discount > 0) && (
             <div className="flex flex-wrap gap-1.5">
-              {discount > 0 && <span className="mp-num rounded-md bg-[#c8102e] px-2 py-0.5 text-xs font-bold text-white">−{discount}%</span>}
-              {product.badge && <span className="rounded-md bg-[#18191c] px-2 py-0.5 text-xs font-medium text-white">{product.badge}</span>}
+              {discount > 0 && <span className="mp-num rounded-full bg-[#c8102e] px-2.5 py-0.5 text-xs font-bold text-white">−{discount}%</span>}
+              {product.badge && <span className="rounded-full bg-[#18191c] px-2.5 py-0.5 text-xs font-medium text-white">{product.badge}</span>}
             </div>
           )}
           <h1 className="mt-3 text-2xl font-bold leading-tight text-[#18191c] sm:text-3xl">{product.name}</h1>
@@ -1398,7 +1411,7 @@ function ProductPage({ product, cart, onNavigate }) {
               href={productWhatsAppLink(product)}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex h-12 min-w-0 flex-1 items-center justify-center gap-2 rounded-xl bg-[#15803d] px-4 text-sm font-bold text-white transition-colors hover:bg-[#166534] active:scale-[0.98]"
+              className="mp-sheen inline-flex h-12 min-w-0 flex-1 items-center justify-center gap-2 rounded-full bg-[#15803d] px-4 text-sm font-bold text-white shadow-[0_10px_22px_-10px_rgba(21,128,61,0.8)] transition-colors hover:bg-[#166534] active:scale-[0.98]"
             >
               <MessageCircle className="h-5 w-5 shrink-0" strokeWidth={2.2} />
               {T.orderCta}
@@ -1406,7 +1419,7 @@ function ProductPage({ product, cart, onNavigate }) {
             <button
               type="button"
               onClick={() => cart.add(product.id)}
-              className={`grid h-12 w-12 shrink-0 place-items-center rounded-xl border transition-colors ${
+              className={`grid h-12 w-12 shrink-0 place-items-center rounded-full border transition-colors ${
                 inCart ? "border-[#18191c] bg-[#18191c] text-white" : "border-[#d9d6d0] bg-white text-[#18191c] hover:border-[#18191c]"
               }`}
               aria-label={inCart ? T.inCartMore : T.addToCart}
@@ -1423,9 +1436,15 @@ function ProductPage({ product, cart, onNavigate }) {
               </a>
             </p>
           )}
-          <ul className="mt-6 flex flex-col gap-2 border-t border-[#e4e2dd] pt-5 text-sm text-[#5c5d61]">
-            <li>✓ {T.perkDelivery}</li>
-            <li>✓ {T.perkConfirm}</li>
+          <ul className="mt-6 flex flex-col gap-2.5 rounded-[20px] bg-white/80 p-4 text-sm text-[#2c2d31] shadow-[0_1px_2px_rgba(24,25,28,0.04),0_10px_30px_-14px_rgba(24,25,28,0.14)] ring-1 ring-[#18191c]/[0.06]">
+            {[T.perkDelivery, T.perkConfirm].map((t) => (
+              <li key={t} className="flex items-center gap-2.5">
+                <span className="grid h-5 w-5 shrink-0 place-items-center rounded-full bg-[#15803d]/10 text-[#15803d]">
+                  <Check className="h-3 w-3" strokeWidth={3} />
+                </span>
+                {t}
+              </li>
+            ))}
           </ul>
         </div>
       </div>
@@ -1445,7 +1464,7 @@ function ProductPage({ product, cart, onNavigate }) {
           <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {related.map((p, i) => (
               /* 4 ბარათი ორ სვეტად, 3 — სამ სვეტად; მეოთხე დიდ ეკრანზე იმალება, რომ რიგი სრული იყოს */
-              <div key={p.id} className={`grid ${i === 3 ? "lg:hidden" : ""}`}>
+              <div key={p.id} className={`grid min-w-0 ${i === 3 ? "lg:hidden" : ""}`}>
                 <ProductCard product={p} index={i} inCart={cartIds.has(p.id)} onAdd={cart.add} onOpen={onNavigate} />
               </div>
             ))}
@@ -1494,7 +1513,7 @@ function CartDrawer({ open, onClose, cart, onOpenProduct }) {
   return (
     <div className="fixed inset-0 z-50" role="dialog" aria-modal="true" aria-label={T.cart}>
       <button type="button" className="mp-fade absolute inset-0 bg-[#18191c]/40 backdrop-blur-[2px]" onClick={onClose} aria-label={T.close} />
-      <aside className="mp-slide-in absolute inset-y-0 right-0 flex w-full max-w-md flex-col bg-white pb-[env(safe-area-inset-bottom,0px)] pt-[env(safe-area-inset-top,0px)] shadow-2xl">
+      <aside className="mp-slide-in absolute inset-y-0 right-0 flex w-full max-w-md flex-col overflow-hidden bg-white pb-[env(safe-area-inset-bottom,0px)] pt-[env(safe-area-inset-top,0px)] shadow-2xl sm:inset-y-3 sm:right-3 sm:rounded-[28px]">
         <div className="flex items-center justify-between border-b border-[#e4e2dd] px-5 py-4">
           <div>
             <h2 className="text-lg font-bold text-[#18191c]">{T.cart}</h2>
@@ -1524,7 +1543,7 @@ function CartDrawer({ open, onClose, cart, onOpenProduct }) {
             <ul className="flex-1 divide-y divide-[#eceae5] overflow-y-auto px-5">
               {cart.lines.map(({ product, qty }) => (
                 <li key={product.id} className="mp-fade flex gap-3 py-4">
-                  <div className="h-16 w-20 shrink-0 overflow-hidden rounded-xl bg-gradient-to-b from-[#f7f6f3] to-[#ebe9e4] p-1.5">
+                  <div className="h-16 w-20 shrink-0 overflow-hidden rounded-2xl bg-[radial-gradient(110%_85%_at_50%_15%,#ffffff_0%,#f3f1ec_55%,#e6e3dc_100%)] p-1.5">
                     <ProductMedia product={product} uid={`c-${product.id}`} />
                   </div>
                   <div className="flex min-w-0 flex-1 flex-col">
@@ -1581,7 +1600,7 @@ function CartDrawer({ open, onClose, cart, onOpenProduct }) {
                 href={cartWhatsAppLink(cart.lines, cart.total)}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mt-4 inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-[#15803d] text-sm font-bold text-white transition-colors hover:bg-[#166534]"
+                className="mp-sheen mt-4 inline-flex h-12 w-full items-center justify-center gap-2 rounded-full bg-[#15803d] text-sm font-bold text-white shadow-[0_10px_22px_-10px_rgba(21,128,61,0.8)] transition-colors hover:bg-[#166534]"
               >
                 <MessageCircle className="h-4 w-4" />
                 {T.orderCta}
