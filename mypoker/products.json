@@ -1,0 +1,247 @@
+{
+  "settings": {
+    "phoneDisplay": "+995 555 12 34 56",
+    "phoneTel": "+995555123456",
+    "whatsappNumber": "995555123456"
+  },
+  "products": [
+    {
+      "id": "chips-pro-500",
+      "name": "პროფესიონალური პოკერის ჩიპების ნაკრები (500ც)",
+      "category": "chips",
+      "price": 449,
+      "salePrice": 389,
+      "saleEnds": "",
+      "badge": "ბესტსელერი",
+      "spec": "11.5 გ · თიხის კომპოზიტი · ალუმინის კეისი",
+      "image": "",
+      "inStock": true,
+      "visible": true,
+      "visual": {
+        "kind": "chips",
+        "colors": [
+          "#c2410c",
+          "#1f2937",
+          "#d6b25e"
+        ]
+      }
+    },
+    {
+      "id": "bicycle-standard",
+      "name": "Bicycle-ის ორიგინალი დასტა",
+      "category": "cards",
+      "price": 19,
+      "saleEnds": "",
+      "badge": "",
+      "spec": "სტანდარტული ინდექსი · ჰაერის ბალიში",
+      "image": "",
+      "inStock": true,
+      "visible": true,
+      "visual": {
+        "kind": "cards",
+        "colors": [
+          "#1e40af",
+          "#fff",
+          "#b91c1c"
+        ]
+      },
+      "salePrice": null
+    },
+    {
+      "id": "ceramic-300",
+      "name": "კერამიკული კაზინოს ჩიპები (300ც, ალუმინის კეისით)",
+      "category": "chips",
+      "price": 549,
+      "saleEnds": "",
+      "badge": "პრემიუმი",
+      "spec": "10 გ · სრული კერამიკა · ორმხრივი ბეჭდვა",
+      "image": "",
+      "inStock": true,
+      "visible": true,
+      "visual": {
+        "kind": "chips",
+        "colors": [
+          "#047857",
+          "#f5f5f4",
+          "#1d4ed8"
+        ]
+      },
+      "salePrice": null
+    },
+    {
+      "id": "copag-1546",
+      "name": "Copag-ის 100% პლასტიკის კარტი (2 დასტა)",
+      "category": "cards",
+      "price": 69,
+      "saleEnds": "",
+      "badge": "",
+      "spec": "100% პლასტიკი · წყალგაუმტარი",
+      "image": "",
+      "inStock": true,
+      "visible": true,
+      "visual": {
+        "kind": "cards",
+        "colors": [
+          "#991b1b",
+          "#fff",
+          "#111827"
+        ]
+      },
+      "salePrice": null
+    },
+    {
+      "id": "oval-table-8",
+      "name": "ჰოლდემის ოვალური მაგიდა (8 მოთამაშე)",
+      "category": "tables",
+      "price": 1890,
+      "saleEnds": "",
+      "badge": "ახალი",
+      "spec": "213 × 107 სმ · მწვანე მაუდი · მუხის კიდე",
+      "image": "",
+      "inStock": true,
+      "visible": true,
+      "visual": {
+        "kind": "table",
+        "colors": [
+          "#047857",
+          "#7c4a1e",
+          "#d6b25e"
+        ]
+      },
+      "salePrice": null
+    },
+    {
+      "id": "folding-top-10",
+      "name": "დასაკეცი პოკერის მაგიდის ზედაპირი (10 მოთამაშე)",
+      "category": "tables",
+      "price": 649,
+      "saleEnds": "",
+      "badge": "",
+      "spec": "180 × 90 სმ · ჩანთით",
+      "image": "",
+      "inStock": true,
+      "visible": true,
+      "visual": {
+        "kind": "table",
+        "colors": [
+          "#1e40af",
+          "#1f2937",
+          "#cbd5e1"
+        ]
+      },
+      "salePrice": null
+    },
+    {
+      "id": "octagon-table",
+      "name": "რვაკუთხა მაგიდა ჭიქის სადგამებით",
+      "category": "tables",
+      "price": 1290,
+      "saleEnds": "",
+      "badge": "",
+      "spec": "Ø 120 სმ · დასაკეცი ფეხები",
+      "image": "",
+      "inStock": true,
+      "visible": true,
+      "visual": {
+        "kind": "table",
+        "colors": [
+          "#991b1b",
+          "#3f3f46",
+          "#d6b25e"
+        ],
+        "octagon": true
+      },
+      "salePrice": null
+    },
+    {
+      "id": "dealer-button",
+      "name": "დილერის ღილაკი — ხელნაკეთი აკრილი",
+      "category": "accessories",
+      "price": 29,
+      "saleEnds": "",
+      "badge": "",
+      "spec": "Ø 76 მმ · 12 მმ სისქე",
+      "image": "",
+      "inStock": true,
+      "visible": true,
+      "visual": {
+        "kind": "dealer"
+      },
+      "salePrice": null
+    },
+    {
+      "id": "auto-shuffler",
+      "name": "კარტების ავტომატური მრევი",
+      "category": "accessories",
+      "price": 189,
+      "salePrice": 159,
+      "saleEnds": "",
+      "badge": "",
+      "spec": "1–6 დასტა · USB კვება",
+      "image": "",
+      "inStock": true,
+      "visible": true,
+      "visual": {
+        "kind": "shuffler"
+      }
+    },
+    {
+      "id": "card-guard-gold",
+      "name": "ლითონის კარტის დამცველი — ოქროსფერი",
+      "category": "accessories",
+      "price": 45,
+      "saleEnds": "",
+      "badge": "საჩუქრად",
+      "spec": "თუთიის შენადნობი · 40 მმ",
+      "image": "",
+      "inStock": true,
+      "visible": true,
+      "visual": {
+        "kind": "guard"
+      },
+      "salePrice": null
+    },
+    {
+      "id": "clay-monaco-200",
+      "name": "თიხის ჩიპების ნაკრები „მონაკო“ (200ც)",
+      "category": "chips",
+      "price": 279,
+      "saleEnds": "",
+      "badge": "",
+      "spec": "13.5 გ · კაკლის ხის ყუთი",
+      "image": "",
+      "inStock": true,
+      "visible": true,
+      "visual": {
+        "kind": "chips",
+        "colors": [
+          "#6d28d9",
+          "#1f2937",
+          "#d6b25e"
+        ]
+      },
+      "salePrice": null
+    },
+    {
+      "id": "kem-arrow",
+      "name": "KEM Arrow — ფართო ინდექსის დასტა",
+      "category": "cards",
+      "price": 49,
+      "saleEnds": "",
+      "badge": "",
+      "spec": "100% პლასტიკი · დიდი ინდექსი",
+      "image": "",
+      "inStock": true,
+      "visible": true,
+      "visual": {
+        "kind": "cards",
+        "colors": [
+          "#065f46",
+          "#fff",
+          "#111827"
+        ]
+      },
+      "salePrice": null
+    }
+  ]
+}
