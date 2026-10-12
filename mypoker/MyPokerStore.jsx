@@ -886,7 +886,7 @@ function FilterOption({ active, onClick, label, count }) {
       type="button"
       onClick={onClick}
       aria-pressed={active}
-      className={`flex items-center justify-between rounded-xl px-3 py-2 text-left text-sm transition-colors duration-200 ${
+      className={`flex items-center justify-between rounded-xl px-3 py-1.5 text-left text-sm transition-colors duration-200 ${
         active ? "bg-[#18191c] font-semibold text-white" : "text-[#18191c] hover:bg-[#e8e6e1]"
       }`}
     >
@@ -900,7 +900,7 @@ function Sidebar({ filter }) {
   const { category, setCategory, price, setPrice, counts, hasFilters, reset } = filter;
   return (
     <aside className="hidden lg:block">
-      <div className={`sticky flex flex-col gap-7 ${CONFIG.freeShippingFrom > 0 ? "top-[7.25rem] xl:top-24" : "top-24"}`}>
+      <div className={`mp-scroll sticky flex flex-col gap-5 overflow-y-auto pb-2 [&>*]:shrink-0 ${CONFIG.freeShippingFrom > 0 ? "top-[7.25rem] max-h-[calc(100vh-8rem)] xl:top-24 xl:max-h-[calc(100vh-7rem)]" : "top-24 max-h-[calc(100vh-7rem)]"}`}>
         <FilterGroup title={T.category}>
           {CATEGORIES.map((c) => (
             <FilterOption key={c.id} active={category === c.id} onClick={() => setCategory(c.id)} label={c.label} count={counts[c.id] || 0} />
@@ -916,49 +916,53 @@ function Sidebar({ filter }) {
             {T.clearFilters}
           </button>
         )}
-        <div className="relative overflow-hidden rounded-2xl bg-[#18191c] px-5 pb-5 pt-6 text-center text-white shadow-[0_18px_40px_-24px_rgba(24,25,28,0.6)]">
+        <div className="relative overflow-hidden rounded-2xl bg-[#18191c] px-5 pb-5 pt-5 text-center text-white shadow-[0_18px_40px_-24px_rgba(24,25,28,0.6)]">
           {/* ზედა წითელი ხაზი და მკრთალი აგური ფონზე, ცენტრში */}
           <span className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-[#a50d26] via-[#ff4d63] to-[#a50d26]" aria-hidden="true" />
-          <svg viewBox="0 0 40 40" className="pointer-events-none absolute -bottom-10 left-1/2 h-40 w-40 -translate-x-1/2 text-white/[0.04]" aria-hidden="true">
+          <svg viewBox="0 0 40 40" className="pointer-events-none absolute -bottom-12 left-1/2 h-36 w-36 -translate-x-1/2 text-white/[0.04]" aria-hidden="true">
             <path d={DIAMOND_PATH} fill="currentColor" />
           </svg>
 
-          <span className="relative mx-auto grid h-11 w-11 place-items-center rounded-full bg-[#15803d] ring-4 ring-[#15803d]/20">
-            <MessageCircle className="h-5 w-5" strokeWidth={2.2} />
-          </span>
-          <p className="relative mt-4 text-[15px] font-bold leading-snug [text-wrap:balance]">{T.waBoxTitle}</p>
-          <p className="relative mt-2 text-xs leading-relaxed text-white/65 [text-wrap:balance]">{T.waBoxText}</p>
+          <p className="relative text-[15px] font-bold leading-snug [text-wrap:balance]">{T.waBoxTitle}</p>
+          <p className="relative mt-1.5 text-xs leading-relaxed text-white/65 [text-wrap:balance]">{T.waBoxText}</p>
 
-          <div className="relative mt-4 flex items-center gap-2" aria-hidden="true">
+          <div className="relative mt-3 flex items-center gap-2" aria-hidden="true">
             <span className="h-px flex-1 bg-white/15" />
-            <svg viewBox="0 0 40 40" className="h-3 w-3 text-[#ff4d63]">
-              <path d={DIAMOND_PATH} fill="currentColor" />
-            </svg>
+            {/* ოთხივე ნიშანი: ყვავი, გული, აგური, ჯვარი */}
+            {[
+              [SUIT.spade, "text-white/80"],
+              [SUIT.heart, "text-[#ff4d63]"],
+              [SUIT.diamond, "text-[#ff4d63]"],
+              [SUIT.club, "text-white/80"],
+            ].map(([d, color]) => (
+              <svg key={d} viewBox="0 0 24 24" className={`h-3 w-3 ${color}`}>
+                <path d={d} fill="currentColor" />
+              </svg>
+            ))}
             <span className="h-px flex-1 bg-white/15" />
           </div>
 
-          <a href={`tel:${CONFIG.phoneTel}`} className="mp-num relative mt-3 block select-all text-[18px] font-bold tracking-wide hover:text-white/85">
-            {CONFIG.phoneDisplay}
+          {/* ნომერი თავადაა დარეკვის ღილაკი */}
+          <a
+            href={`tel:${CONFIG.phoneTel}`}
+            className="group/call relative mx-auto mt-3 flex w-fit items-center gap-1.5 whitespace-nowrap rounded-full py-0.5 pl-0.5 pr-1.5 transition-colors hover:bg-white/[0.06]"
+            aria-label={T.callAria(CONFIG.phoneDisplay)}
+          >
+            <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full border border-white/15 bg-[#232428] transition-colors group-hover/call:border-[#15803d] group-hover/call:bg-[#15803d]">
+              <Phone className="h-3 w-3" />
+            </span>
+            <span className="mp-num select-all text-[18px] font-bold tracking-wide">{CONFIG.phoneDisplay}</span>
           </a>
 
-          <div className="relative mt-4 flex flex-col gap-2">
-            <a
-              href={buildWhatsAppLink(T.waHello)}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-[#15803d] text-[13px] font-semibold transition-colors hover:bg-[#166534]"
-            >
-              <MessageCircle className="h-4 w-4" />
-              WhatsApp
-            </a>
-            <a
-              href={`tel:${CONFIG.phoneTel}`}
-              className="inline-flex h-10 items-center justify-center gap-2 rounded-xl border border-white/15 bg-[#232428] text-[13px] font-semibold transition-colors hover:bg-[#2c2d31]"
-            >
-              <Phone className="h-4 w-4" />
-              {T.callBtn}
-            </a>
-          </div>
+          <a
+            href={buildWhatsAppLink(T.waHello)}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="relative mt-3 inline-flex h-10 w-full items-center justify-center gap-2 rounded-xl bg-[#15803d] text-[13px] font-semibold transition-colors hover:bg-[#166534]"
+          >
+            <MessageCircle className="h-4 w-4" />
+            WhatsApp
+          </a>
         </div>
       </div>
     </aside>
@@ -1114,7 +1118,7 @@ function Shop({ filter, cart, onOpen }) {
   const title = query.trim() ? T.searchTitle(query.trim()) : category === "all" ? T.allProducts : CATEGORY_LABEL[category];
 
   return (
-    <main id="shop" className="mx-auto grid max-w-[1400px] gap-8 px-4 pb-16 sm:px-6 lg:grid-cols-[220px_1fr] lg:pt-6">
+    <main id="shop" className="mx-auto grid max-w-[1400px] gap-8 px-4 pb-16 sm:px-6 lg:grid-cols-[240px_1fr] lg:pt-6">
       <Sidebar filter={filter} />
 
       <section className="min-w-0" aria-label={T.productsAria}>
