@@ -13,9 +13,19 @@ import {
 } from "lucide-react";
 
 /* ------------------------------------------------------------------ */
-/*  მონაცემები ადმინ პანელიდან (products.json, ჩაიწერება აწყობისას)      */
+/*  მონაცემები ადმინ პანელიდან (products.json, ჩაიწერება გვერდში აწყობისას) */
 /* ------------------------------------------------------------------ */
-const DATA = (typeof window !== "undefined" && window.__MP_DATA__) || { settings: {}, products: [] };
+function readData() {
+  try {
+    const el = typeof document !== "undefined" && document.getElementById("mp-data");
+    const parsed = el ? JSON.parse(el.textContent) : null;
+    if (parsed && typeof parsed === "object") return { settings: parsed.settings || {}, products: parsed.products || [] };
+  } catch {
+    /* დაზიანებული მონაცემები — მაღაზია ცარიელი გამოჩნდება */
+  }
+  return { settings: {}, products: [] };
+}
+const DATA = readData();
 
 const CONFIG = {
   phoneDisplay: DATA.settings.phoneDisplay || "",

@@ -1,5 +1,5 @@
 // Builds the mypoker.ge store into dist/ (Vercel project root: mypoker/).
-//   dist/index.html   page shell with products.json inlined (window.__MP_DATA__)
+//   dist/index.html   page shell with products.json inlined as a JSON data element (#mp-data)
 //   dist/app.js       React app bundled from MyPokerStore.jsx
 //   dist/app.css      Tailwind CSS generated from the classes the app uses
 //   dist/admin/       admin panel (products, prices, sales, settings)
@@ -70,7 +70,7 @@ const head = `<title>${title}</title>
 <link rel="stylesheet" href="app.css">
 <style>html,body{background:#f3f2ef;color:#18191c;margin:0}</style>`;
 const body = `<div id="root"></div>
-<script>window.__MP_DATA__=${inlineData};</script>
+<script type="application/json" id="mp-data">${inlineData}</script>
 <script src="app.js" defer></script>`;
 
 writeFileSync(
