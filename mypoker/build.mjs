@@ -51,11 +51,14 @@ rmSync(cssIn);
 if (existsSync(join(here, "public"))) cpSync(join(here, "public"), dist, { recursive: true });
 cpSync(join(here, "admin"), join(dist, "admin"), { recursive: true });
 
-const favicon =
-  "data:image/svg+xml," +
-  encodeURIComponent(
-    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40"><rect width="40" height="40" rx="11" fill="#c8102e"/><path d="M20 9.2c0 0-8.4 6.3-8.4 11.3 0 2.8 2.1 4.7 4.6 4.7 1.4 0 2.6-.6 3.1-1.5l-1.2 5.1h3.8l-1.2-5.1c.5.9 1.7 1.5 3.1 1.5 2.5 0 4.6-1.9 4.6-4.7 0-5-8.4-11.3-8.4-11.3Z" fill="#fff"/></svg>'
-  );
+// Tab icon: big red spade on white with a red outline (readable at 16px on light and dark tab bars)
+const SPADE = "M20 9.2c0 0-8.4 6.3-8.4 11.3 0 2.8 2.1 4.7 4.6 4.7 1.4 0 2.6-.6 3.1-1.5l-1.2 5.1h3.8l-1.2-5.1c.5.9 1.7 1.5 3.1 1.5 2.5 0 4.6-1.9 4.6-4.7 0-5-8.4-11.3-8.4-11.3Z";
+const iconSvg = (outline = true) =>
+  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect x="1" y="1" width="30" height="30" rx="7" fill="#fff"${
+    outline ? ' stroke="#c8102e" stroke-width="2"' : ""
+  }/><path d="${SPADE}" fill="#c8102e" transform="translate(16 16.3) scale(1.3) translate(-20 -19.35)"/></svg>`;
+writeFileSync(join(dist, "favicon.svg"), iconSvg());
+const favicon = "data:image/svg+xml," + encodeURIComponent(iconSvg());
 const title = "mypoker.ge — პოკერის აქსესუარების მაღაზია";
 const description = "პოკერის ჩიპები, კარტები, მაგიდები და აქსესუარები. შეკვეთა WhatsApp-ით, მიწოდება მთელ საქართველოში.";
 const inlineData = JSON.stringify(data).replace(/</g, "\\u003c");
@@ -66,7 +69,9 @@ const head = `<title>${title}</title>
 <meta property="og:title" content="${title}">
 <meta property="og:description" content="${description}">
 <meta name="theme-color" content="#18191c">
-<link rel="icon" href="${favicon}">
+<link rel="icon" href="${favicon}" type="image/svg+xml">
+<link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="stylesheet" href="app.css">
 <style>html,body{background:#f3f2ef;color:#18191c;margin:0}</style>`;
 const body = `<div id="root"></div>
