@@ -7,19 +7,20 @@ import {
   Plus,
   Minus,
   X,
-  Star,
   ChevronDown,
   Trash2,
   Check,
 } from "lucide-react";
 
 /* ------------------------------------------------------------------ */
-/*  კონფიგურაცია — შეცვალეთ რეალური ნომრებით                          */
+/*  მონაცემები ადმინ პანელიდან (products.json, ჩაიწერება აწყობისას)      */
 /* ------------------------------------------------------------------ */
+const DATA = (typeof window !== "undefined" && window.__MP_DATA__) || { settings: {}, products: [] };
+
 const CONFIG = {
-  phoneDisplay: "+995 555 12 34 56", // [YOUR_PHONE_NUMBER]
-  phoneTel: "+995555123456",
-  whatsappNumber: "995555123456", // [YOUR_WHATSAPP_NUMBER] — მხოლოდ ციფრები, „+“-ის გარეშე
+  phoneDisplay: DATA.settings.phoneDisplay || "",
+  phoneTel: DATA.settings.phoneTel || "",
+  whatsappNumber: String(DATA.settings.whatsappNumber || "").replace(/\D/g, ""),
   currency: "₾",
   storageKey: "mypoker.cart.v1",
 };
@@ -49,137 +50,39 @@ const SORTS = [
   { id: "featured", label: "რეკომენდებული" },
   { id: "price-asc", label: "ჯერ იაფი" },
   { id: "price-desc", label: "ჯერ ძვირი" },
-  { id: "rating", label: "საუკეთესო შეფასება" },
+  { id: "sale", label: "ჯერ ფასდაკლებული" },
 ];
 
-const PRODUCTS = [
-  {
-    id: "chips-pro-500",
-    name: "პროფესიონალური პოკერის ჩიპების ნაკრები (500ც)",
-    category: "chips",
-    price: 389,
-    oldPrice: 449,
-    rating: 4.9,
-    reviews: 128,
-    badge: "ბესტსელერი",
-    spec: "11.5 გ · თიხის კომპოზიტი · ალუმინის კეისი",
-    visual: { kind: "chips", colors: ["#c2410c", "#1f2937", "#d6b25e"] },
-  },
-  {
-    id: "bicycle-standard",
-    name: "Bicycle-ის ორიგინალი დასტა",
-    category: "cards",
-    price: 19,
-    rating: 4.8,
-    reviews: 342,
-    spec: "სტანდარტული ინდექსი · ჰაერის ბალიში",
-    visual: { kind: "cards", colors: ["#1e40af", "#fff", "#b91c1c"] },
-  },
-  {
-    id: "ceramic-300",
-    name: "კერამიკული კაზინოს ჩიპები (300ც, ალუმინის კეისით)",
-    category: "chips",
-    price: 549,
-    rating: 5.0,
-    reviews: 64,
-    badge: "პრემიუმი",
-    spec: "10 გ · სრული კერამიკა · ორმხრივი ბეჭდვა",
-    visual: { kind: "chips", colors: ["#047857", "#f5f5f4", "#1d4ed8"] },
-  },
-  {
-    id: "copag-1546",
-    name: "Copag-ის 100% პლასტიკის კარტი (2 დასტა)",
-    category: "cards",
-    price: 69,
-    rating: 4.9,
-    reviews: 211,
-    spec: "100% პლასტიკი · წყალგაუმტარი",
-    visual: { kind: "cards", colors: ["#991b1b", "#fff", "#111827"] },
-  },
-  {
-    id: "oval-table-8",
-    name: "ჰოლდემის ოვალური მაგიდა (8 მოთამაშე)",
-    category: "tables",
-    price: 1890,
-    rating: 4.9,
-    reviews: 37,
-    badge: "ახალი",
-    spec: "213 × 107 სმ · მწვანე მაუდი · მუხის კიდე",
-    visual: { kind: "table", colors: ["#047857", "#7c4a1e", "#d6b25e"] },
-  },
-  {
-    id: "folding-top-10",
-    name: "დასაკეცი პოკერის მაგიდის ზედაპირი (10 მოთამაშე)",
-    category: "tables",
-    price: 649,
-    rating: 4.7,
-    reviews: 89,
-    spec: "180 × 90 სმ · ჩანთით",
-    visual: { kind: "table", colors: ["#1e40af", "#1f2937", "#cbd5e1"] },
-  },
-  {
-    id: "octagon-table",
-    name: "რვაკუთხა მაგიდა ჭიქის სადგამებით",
-    category: "tables",
-    price: 1290,
-    rating: 4.8,
-    reviews: 22,
-    spec: "Ø 120 სმ · დასაკეცი ფეხები",
-    visual: { kind: "table", colors: ["#991b1b", "#3f3f46", "#d6b25e"], octagon: true },
-  },
-  {
-    id: "dealer-button",
-    name: "დილერის ღილაკი — ხელნაკეთი აკრილი",
-    category: "accessories",
-    price: 29,
-    rating: 4.8,
-    reviews: 156,
-    spec: "Ø 76 მმ · 12 მმ სისქე",
-    visual: { kind: "dealer" },
-  },
-  {
-    id: "auto-shuffler",
-    name: "კარტების ავტომატური მრევი",
-    category: "accessories",
-    price: 159,
-    oldPrice: 189,
-    rating: 4.6,
-    reviews: 73,
-    spec: "1–6 დასტა · USB კვება",
-    visual: { kind: "shuffler" },
-  },
-  {
-    id: "card-guard-gold",
-    name: "ლითონის კარტის დამცველი — ოქროსფერი",
-    category: "accessories",
-    price: 45,
-    rating: 4.9,
-    reviews: 98,
-    badge: "საჩუქრად",
-    spec: "თუთიის შენადნობი · 40 მმ",
-    visual: { kind: "guard" },
-  },
-  {
-    id: "clay-monaco-200",
-    name: "თიხის ჩიპების ნაკრები „მონაკო“ (200ც)",
-    category: "chips",
-    price: 279,
-    rating: 4.7,
-    reviews: 51,
-    spec: "13.5 გ · კაკლის ხის ყუთი",
-    visual: { kind: "chips", colors: ["#6d28d9", "#1f2937", "#d6b25e"] },
-  },
-  {
-    id: "kem-arrow",
-    name: "KEM Arrow — ფართო ინდექსის დასტა",
-    category: "cards",
-    price: 49,
-    rating: 4.8,
-    reviews: 119,
-    spec: "100% პლასტიკი · დიდი ინდექსი",
-    visual: { kind: "cards", colors: ["#065f46", "#fff", "#111827"] },
-  },
-];
+const DEFAULT_VISUAL = {
+  chips: { kind: "chips", colors: ["#c2410c", "#1f2937", "#d6b25e"] },
+  cards: { kind: "cards", colors: ["#1e40af", "#fff", "#b91c1c"] },
+  tables: { kind: "table", colors: ["#047857", "#7c4a1e", "#d6b25e"] },
+  accessories: { kind: "dealer" },
+};
+
+/* დღევანდელი თარიღი თბილისის დროით, ფორმატში YYYY-MM-DD */
+const todayInTbilisi = () => new Date().toLocaleDateString("sv-SE", { timeZone: "Asia/Tbilisi" });
+
+/* ფასდაკლება აქტიურია, თუ ფასი დაბალია ძველზე და ვადა (თუ მითითებულია) ჯერ არ გასულა */
+function normalizeProduct(p, today) {
+  const regular = Number(p.price) || 0;
+  const sale = Number(p.salePrice) || 0;
+  const onSale = sale > 0 && sale < regular && (!p.saleEnds || p.saleEnds >= today);
+  return {
+    ...p,
+    price: onSale ? sale : regular,
+    oldPrice: onSale ? regular : null,
+    inStock: p.inStock !== false,
+    visual: p.visual || DEFAULT_VISUAL[p.category] || DEFAULT_VISUAL.accessories,
+  };
+}
+
+const PRODUCTS = (() => {
+  const today = todayInTbilisi();
+  return (Array.isArray(DATA.products) ? DATA.products : [])
+    .filter((p) => p && p.id && p.name && p.visible !== false && CATEGORY_LABEL[p.category])
+    .map((p) => normalizeProduct(p, today));
+})();
 
 /* ------------------------------------------------------------------ */
 /*  დამხმარე ფუნქციები                                                */
@@ -301,7 +204,7 @@ function useProductFilter(products) {
     const sorted = [...list];
     if (sort === "price-asc") sorted.sort((a, b) => a.price - b.price);
     if (sort === "price-desc") sorted.sort((a, b) => b.price - a.price);
-    if (sort === "rating") sorted.sort((a, b) => b.rating - a.rating || b.reviews - a.reviews);
+    if (sort === "sale") sorted.sort((a, b) => (b.oldPrice ? 1 - b.price / b.oldPrice : 0) - (a.oldPrice ? 1 - a.price / a.oldPrice : 0));
     return sorted;
   }, [products, category, price, query, sort]);
 
@@ -722,6 +625,16 @@ function MobileFilters({ filter }) {
 }
 
 /* ------------------------------------------------------------------ */
+/*  პროდუქტის სურათი: ატვირთული ფოტო ან ილუსტრაცია                     */
+/* ------------------------------------------------------------------ */
+function ProductMedia({ product, uid }) {
+  if (product.image) {
+    return <img src={product.image} alt={product.name} loading="lazy" className="h-full w-full object-contain" />;
+  }
+  return <ProductVisual visual={product.visual} uid={uid} label={product.name} />;
+}
+
+/* ------------------------------------------------------------------ */
 /*  პროდუქტის ბარათი                                                   */
 /* ------------------------------------------------------------------ */
 function ProductCard({ product, index, inCart, onAdd }) {
@@ -734,7 +647,7 @@ function ProductCard({ product, index, inCart, onAdd }) {
     >
       <div className="relative aspect-[4/3] overflow-hidden bg-gradient-to-b from-[#f7f6f3] to-[#ebe9e4]">
         <div className="absolute inset-0 p-6 transition-transform duration-500 ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-105">
-          <ProductVisual visual={product.visual} uid={`p-${product.id}`} label={product.name} />
+          <ProductMedia product={product} uid={`p-${product.id}`} />
         </div>
         {(product.badge || discount > 0) && (
           <div className="absolute left-3 top-3 flex gap-1.5">
@@ -757,10 +670,8 @@ function ProductCard({ product, index, inCart, onAdd }) {
             </span>
             {product.oldPrice && <span className="mp-num text-xs text-[#8a8b90] line-through">{formatPrice(product.oldPrice)}</span>}
           </div>
-          <span className="flex items-center gap-1 text-xs text-[#5c5d61]">
-            <Star className="h-3.5 w-3.5 fill-[#e0a526] text-[#e0a526]" />
-            <span className="mp-num font-semibold text-[#18191c]">{product.rating.toFixed(1)}</span>
-            <span className="mp-num">({product.reviews})</span>
+          <span className={`text-xs font-medium ${product.inStock ? "text-[#15803d]" : "text-[#b45309]"}`}>
+            {product.inStock ? "მარაგშია" : "შეკვეთით"}
           </span>
         </div>
 
@@ -911,7 +822,7 @@ function CartDrawer({ open, onClose, cart }) {
               {cart.lines.map(({ product, qty }) => (
                 <li key={product.id} className="mp-fade flex gap-3 py-4">
                   <div className="h-16 w-20 shrink-0 overflow-hidden rounded-xl bg-gradient-to-b from-[#f7f6f3] to-[#ebe9e4] p-1.5">
-                    <ProductVisual visual={product.visual} uid={`c-${product.id}`} label={product.name} />
+                    <ProductMedia product={product} uid={`c-${product.id}`} />
                   </div>
                   <div className="flex min-w-0 flex-1 flex-col">
                     <p className="line-clamp-2 text-[13px] font-medium leading-snug text-[#18191c]">{product.name}</p>
