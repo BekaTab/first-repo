@@ -24,9 +24,9 @@
       "visual": {
         "kind": "chips",
         "colors": [
-          "#c2410c",
-          "#1f2937",
-          "#d6b25e"
+          "#6e2c32",
+          "#3b2e27",
+          "#b0916a"
         ]
       },
       "descriptionEn": ""
@@ -48,9 +48,9 @@
       "visual": {
         "kind": "cards",
         "colors": [
-          "#1e40af",
-          "#fff",
-          "#b91c1c"
+          "#3a4553",
+          "#f6f1e8",
+          "#7a3037"
         ]
       },
       "salePrice": null,
@@ -73,9 +73,9 @@
       "visual": {
         "kind": "chips",
         "colors": [
-          "#047857",
-          "#f5f5f4",
-          "#1d4ed8"
+          "#2f4a3c",
+          "#e9e0d0",
+          "#3a4553"
         ]
       },
       "salePrice": null,
@@ -98,9 +98,9 @@
       "visual": {
         "kind": "cards",
         "colors": [
-          "#991b1b",
-          "#fff",
-          "#111827"
+          "#6e2c32",
+          "#f6f1e8",
+          "#2a201b"
         ]
       },
       "salePrice": null,
@@ -123,9 +123,9 @@
       "visual": {
         "kind": "table",
         "colors": [
-          "#047857",
-          "#7c4a1e",
-          "#d6b25e"
+          "#3d5a4a",
+          "#5a4030",
+          "#c9b78c"
         ]
       },
       "salePrice": null,
@@ -148,9 +148,9 @@
       "visual": {
         "kind": "table",
         "colors": [
-          "#1e40af",
-          "#1f2937",
-          "#cbd5e1"
+          "#5a2a2f",
+          "#2e2520",
+          "#d9cdb8"
         ]
       },
       "salePrice": null,
@@ -173,9 +173,9 @@
       "visual": {
         "kind": "table",
         "colors": [
-          "#991b1b",
-          "#3f3f46",
-          "#d6b25e"
+          "#4a4239",
+          "#3e2c22",
+          "#c9b78c"
         ],
         "octagon": true
       },
@@ -259,9 +259,9 @@
       "visual": {
         "kind": "chips",
         "colors": [
-          "#6d28d9",
-          "#1f2937",
-          "#d6b25e"
+          "#3a4553",
+          "#3b2e27",
+          "#b0916a"
         ]
       },
       "salePrice": null,
@@ -284,9 +284,9 @@
       "visual": {
         "kind": "cards",
         "colors": [
-          "#065f46",
-          "#fff",
-          "#111827"
+          "#2f4a3c",
+          "#f6f1e8",
+          "#2a201b"
         ]
       },
       "salePrice": null,
