@@ -7,8 +7,8 @@
   var STORE_KEY = 'mypoker-admin-v1';
   var SESSION_KEY = 'mypoker-admin-session';
   var API = 'https://api.github.com';
-  var CATEGORIES = [['cards', 'კარტები', '🂡'], ['chips', 'ჩიპები', '🪙'], ['tables', 'მაგიდები', '🟩'], ['accessories', 'პოკერის აქსესუარები', '♠'], ['games', 'თამაშები და გართობა', '🎲']];
-  // „თამაშები და გართობა“ — ცალკე განყოფილება ქვეკატეგორიებით
+  var CATEGORIES = [['cards', 'კარტები', '🂡'], ['chips', 'ჩიპები', '🪙'], ['tables', 'მაგიდები', '🟩'], ['accessories', 'პოკერის აქსესუარები', '♠'], ['games', 'სამაგიდო თამაშები და აქსესუარები', '🎲']];
+  // „სამაგიდო თამაშები და აქსესუარები“ — ცალკე განყოფილება ქვეკატეგორიებით
   var GAME_SUBS = [['backgammon', 'ნარდი'], ['domino', 'დომინო'], ['bingo', 'ბინგო და ლოტო'], ['boardgames', 'სამაგიდო თამაშები'], ['fun', 'სხვა გასართობი']];
   var SUB_LABEL = {}; GAME_SUBS.forEach(function (c) { SUB_LABEL[c[0]] = c[1]; });
   var CAT_LABEL = {}; CATEGORIES.forEach(function (c) { CAT_LABEL[c[0]] = c[1]; });
