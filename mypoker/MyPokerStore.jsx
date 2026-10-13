@@ -16,7 +16,6 @@ import {
   Maximize2,
   Truck,
   ArrowUpRight,
-  Dices,
 } from "lucide-react";
 
 /* ------------------------------------------------------------------ */
@@ -120,7 +119,7 @@ const TEXT = {
     waCartLine: (i, n, q, p) => `${i}. ${n} × ${q} (ფასი: ${p}₾)`,
     waCartTotal: (t) => `ჯამი: ${t}₾`,
     cat: { all: "ყველა", cards: "კარტები", chips: "ჩიპები", tables: "მაგიდები", accessories: "პოკერის აქსესუარები", poker: "პოკერი", games: "სამაგიდო თამაშები და აქსესუარები" },
-    gameSub: { backgammon: "ნარდი", domino: "დომინო", bingo: "ბინგო და ლოტო", boardgames: "სამაგიდო თამაშები", fun: "სხვა გასართობი" },
+    gameSub: { backgammon: "ნარდი", domino: "დომინო", chess: "ჭადრაკი", boardgames: "Board Games", fun: "სხვა გასართობი" },
     priceAny: "ნებისმიერი",
     priceOver: (n) => `${n} ₾-ზე მეტი`,
     sorts: { featured: "რეკომენდებული", "price-asc": "ჯერ იაფი", "price-desc": "ჯერ ძვირი", sale: "ჯერ ფასდაკლებული" },
@@ -203,8 +202,8 @@ const TEXT = {
     waCartHead: "Hello, I'm writing from mypoker.ge. I'm interested in these products:",
     waCartLine: (i, n, q, p) => `${i}. ${n} × ${q} (price: ${p}₾)`,
     waCartTotal: (t) => `Total: ${t}₾`,
-    cat: { all: "All", cards: "Cards", chips: "Chips", tables: "Tables", accessories: "Poker accessories", poker: "Poker", games: "Board games & accessories" },
-    gameSub: { backgammon: "Backgammon", domino: "Dominoes", bingo: "Bingo & lotto", boardgames: "Board games", fun: "Other fun" },
+    cat: { all: "All", cards: "Cards", chips: "Chips", tables: "Tables", accessories: "Poker accessories", poker: "Poker", games: "Tabletop games & accessories" },
+    gameSub: { backgammon: "Backgammon", domino: "Dominoes", chess: "Chess", boardgames: "Board games", fun: "Other fun" },
     priceAny: "Any",
     priceOver: (n) => `Over ${n} ₾`,
     sorts: { featured: "Recommended", "price-asc": "Price: low to high", "price-desc": "Price: high to low", sale: "Biggest discount" },
@@ -227,7 +226,7 @@ const CONFIG = {
 /* ორი განყოფილება: „პოკერი“ (წითელი, ლოგოს ფერი) და „სამაგიდო თამაშები და აქსესუარები“ (ოქროსფერი).
    ფილტრის მნიშვნელობა: "all", "poker", პოკერის კატეგორია ("cards" …), "games" ან "games:<ქვეკატეგორია>" */
 const POKER_CATS = ["cards", "chips", "tables", "accessories"];
-const GAME_SUBS = ["backgammon", "domino", "bingo", "boardgames", "fun"];
+const GAME_SUBS = ["backgammon", "domino", "chess", "boardgames", "fun"];
 const SECTIONS = [
   { id: "poker", items: POKER_CATS.map((id) => ({ id, label: T.cat[id] })) },
   { id: "games", items: GAME_SUBS.map((sub) => ({ id: `games:${sub}`, label: T.gameSub[sub] })) },
@@ -261,8 +260,8 @@ const DEFAULT_VISUAL = {
   accessories: { kind: "dealer" },
   "games:backgammon": { kind: "backgammon" },
   "games:domino": { kind: "domino" },
-  "games:bingo": { kind: "bingo" },
-  "games:boardgames": { kind: "chess" },
+  "games:chess": { kind: "chess" },
+  "games:boardgames": { kind: "boardgame" },
   "games:fun": { kind: "dice" },
 };
 
@@ -667,31 +666,59 @@ const GLOBAL_CSS = `
   .mp-bullet { background: linear-gradient(135deg, #ff4d63, #c8102e); box-shadow: 0 2px 6px rgba(200,16,46,.35); }
   .mp-check { color: #15803d; background: rgba(21,128,61,.1); box-shadow: inset 0 0 0 1px rgba(21,128,61,.2); }
 
-  /* ---------- „პოკერი“ — წითელი ტონი, ლოგოს ფერებში (#e3324d → #c8102e → #9e0c24) ---------- */
-  .mp-poker { background: linear-gradient(180deg, #fff6f7 0%, #fde9ec 100%); border: 1px solid rgba(200,16,46,.26);
-    box-shadow: inset 0 1px 0 rgba(255,255,255,.9), 0 6px 16px -10px rgba(158,12,36,.35); }
-  .mp-opt.mp-opt-poker { color: #5a0a17; }
-  .mp-opt.mp-opt-poker .mp-count { color: #9a3443; }
-  .mp-opt.mp-opt-poker.mp-opt-on { color: #fff; background: linear-gradient(180deg, #d81e3c, #a50d26); box-shadow: inset 0 1px 0 rgba(255,255,255,.2), 0 8px 18px -10px rgba(158,12,36,.75); }
-  .mp-opt.mp-opt-poker.mp-opt-on::before { background: linear-gradient(#ffe1e6, #ffa3b2); }
-  .mp-opt.mp-opt-poker.mp-opt-on .mp-count { color: rgba(255,255,255,.75); }
-  .mp-chip.mp-chip-poker { color: #5a0a17; background: #fff6f7; border-color: rgba(200,16,46,.3); }
+  /* ---------- ორი მთავარი განყოფილება ----------
+     პოკერი — ლოგოს წითელი (#e3324d → #c8102e → #8f0a20), თეთრი ტექსტით;
+     სამაგიდო თამაშები — ნათელი ოქრო (#fbecc0 → #ecc976 → #cc9b40), მუქი ყავისფერი ტექსტით.
+     თითო განყოფილება: ფერადი „ფირფიტა“ (მთელი განყოფილება) და მის ქვემოთ ქვეკატეგორიები თავისი ნიშნებით. */
+  .mp-sec-poker { background: linear-gradient(180deg, #fff6f7 0%, #fdeef1 100%); box-shadow: inset 0 0 0 1px rgba(200,16,46,.14), 0 8px 22px -16px rgba(158,12,36,.4); }
+  .mp-sec-games { background: linear-gradient(180deg, #fffaf0 0%, #fbf2df 100%); box-shadow: inset 0 0 0 1px rgba(184,137,44,.24), 0 8px 22px -16px rgba(140,100,20,.4); }
+
+  .mp-plate { position: relative; overflow: hidden; isolation: isolate; border-radius: 13px;
+    transition: transform .35s var(--ease), box-shadow .35s var(--ease), filter .35s var(--ease); }
+  .mp-plate::after { content: ''; position: absolute; inset: 0; z-index: -1; transform: translateX(-100%); transition: none;
+    background: linear-gradient(110deg, transparent 35%, rgba(255,255,255,.3) 50%, transparent 65%); }
+  .mp-plate-poker { color: #fff; text-shadow: 0 1px 1px rgba(80,0,12,.25);
+    background: radial-gradient(130% 150% at 0% 0%, rgba(255,255,255,.24), transparent 52%), linear-gradient(135deg, #e3324d 0%, #c8102e 46%, #8f0a20 100%);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.3), inset 0 -1px 0 rgba(60,0,10,.25), 0 10px 22px -12px rgba(158,12,36,.8); }
+  .mp-plate-games { color: #3a2504; text-shadow: 0 1px 0 rgba(255,255,255,.35);
+    background: radial-gradient(130% 150% at 0% 0%, rgba(255,255,255,.6), transparent 52%), linear-gradient(135deg, #fbecc0 0%, #ecc976 46%, #cc9b40 100%);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.65), inset 0 -1px 0 rgba(90,60,10,.28), 0 10px 22px -12px rgba(140,100,20,.75); }
+  .mp-plate-ico { display: grid; place-items: center; flex-shrink: 0; border-radius: 11px; }
+  .mp-plate-poker .mp-plate-ico { background: rgba(255,255,255,.16); box-shadow: inset 0 0 0 1px rgba(255,255,255,.24); }
+  .mp-plate-games .mp-plate-ico { color: #6b4708; background: rgba(255,255,255,.4); box-shadow: inset 0 0 0 1px rgba(255,255,255,.6); }
+  .mp-plate-sub { opacity: .82; }
+  .mp-plate-mark { position: absolute; z-index: -1; pointer-events: none; opacity: .13; }
+  .mp-plate-games .mp-plate-mark { opacity: .12; color: #5a3a06; }
+  .mp-plate-poker.mp-plate-on { box-shadow: 0 0 0 2px #fff, 0 0 0 4px #c8102e, 0 12px 24px -12px rgba(158,12,36,.8); }
+  .mp-plate-games.mp-plate-on { box-shadow: 0 0 0 2px #fff, 0 0 0 4px #c9a24e, 0 12px 24px -12px rgba(140,100,20,.75); }
+
+  .mp-sub { position: relative; border-radius: 11px; transition: background-color .3s var(--ease), color .3s var(--ease), box-shadow .3s var(--ease), translate .3s var(--ease); }
+  .mp-sub-ico { display: grid; place-items: center; flex-shrink: 0; border-radius: 9px; background: #fff; transition: background-color .3s var(--ease), color .3s var(--ease), box-shadow .3s var(--ease); }
+  .mp-sub-poker { color: #4d0914; }
+  .mp-sub-poker .mp-sub-ico { color: #c8102e; box-shadow: inset 0 0 0 1px rgba(200,16,46,.16), 0 2px 5px -2px rgba(158,12,36,.25); }
+  .mp-sub-poker .mp-count { color: #9a3443; }
+  .mp-sub-games { color: #432c05; }
+  .mp-sub-games .mp-sub-ico { color: #a5741b; box-shadow: inset 0 0 0 1px rgba(184,137,44,.28), 0 2px 5px -2px rgba(140,100,20,.28); }
+  .mp-sub-games .mp-count { color: #85642c; }
+  .mp-sub-on { color: #fff; }
+  .mp-sub-on .mp-count { color: rgba(255,255,255,.75); }
+  .mp-sub-on .mp-sub-ico { color: #fff; background: rgba(255,255,255,.16); box-shadow: inset 0 0 0 1px rgba(255,255,255,.22); }
+  .mp-sub-poker.mp-sub-on { background: linear-gradient(180deg, #d81e3c, #a50d26); box-shadow: inset 0 1px 0 rgba(255,255,255,.2), 0 8px 18px -10px rgba(158,12,36,.75); }
+  .mp-sub-games.mp-sub-on { background: linear-gradient(180deg, #b8892f, #8a5f14); box-shadow: inset 0 1px 0 rgba(255,255,255,.22), 0 8px 18px -10px rgba(127,83,14,.75); }
+
+  /* მობილურის ჩიპები იგივე ფერებით */
+  .mp-chip.mp-chip-poker .mp-sub-ico, .mp-chip.mp-chip-games .mp-sub-ico { background: transparent; box-shadow: none; }
+  .mp-chip.mp-chip-poker { color: #4d0914; border-color: rgba(200,16,46,.2); }
+  .mp-chip.mp-chip-poker .mp-sub-ico { color: #c8102e; }
   .mp-chip.mp-chip-poker:not(.mp-chip-on) .mp-count { color: #9a3443; }
   .mp-chip.mp-chip-poker.mp-chip-on { color: #fff; border-color: #a50d26; background: linear-gradient(180deg, #d81e3c, #a50d26); box-shadow: inset 0 1px 0 rgba(255,255,255,.2), 0 6px 16px -8px rgba(158,12,36,.7); }
-  .mp-chip.mp-chip-poker.mp-chip-on .mp-count { color: rgba(255,255,255,.75); }
+  .mp-chip.mp-chip-games { color: #432c05; border-color: rgba(184,137,44,.32); }
+  .mp-chip.mp-chip-games .mp-sub-ico { color: #a5741b; }
+  .mp-chip.mp-chip-games:not(.mp-chip-on) .mp-count { color: #85642c; }
+  .mp-chip.mp-chip-games.mp-chip-on { color: #fff; border-color: #8a5f14; background: linear-gradient(180deg, #b8892f, #8a5f14); box-shadow: inset 0 1px 0 rgba(255,255,255,.22), 0 6px 16px -8px rgba(127,83,14,.7); }
+  .mp-chip.mp-chip-on .mp-sub-ico { color: #fff; }
+  .mp-chip.mp-chip-poker.mp-chip-on .mp-count, .mp-chip.mp-chip-games.mp-chip-on .mp-count { color: rgba(255,255,255,.75); }
 
-  /* ---------- „სამაგიდო თამაშები და აქსესუარები“ — ოქროსფერი ტონი (თბილი ქარვა, საერთო ოქროსფერ ნათებასთან ჰარმონიაში) ---------- */
-  .mp-games { background: linear-gradient(180deg, #fdf8ec 0%, #f8eedb 100%); border: 1px solid rgba(201,162,78,.4);
-    box-shadow: inset 0 1px 0 rgba(255,255,255,.9), 0 6px 16px -10px rgba(138,90,16,.35); }
-  .mp-opt.mp-opt-games { color: #4a3106; }
-  .mp-opt.mp-opt-games .mp-count { color: #8a6a33; }
-  .mp-opt.mp-opt-games.mp-opt-on { color: #fff; background: linear-gradient(180deg, #9c6a18, #7f530e); box-shadow: inset 0 1px 0 rgba(255,255,255,.18), 0 8px 18px -10px rgba(127,83,14,.75); }
-  .mp-opt.mp-opt-games.mp-opt-on::before { background: linear-gradient(#fde68a, #f3c96b); }
-  .mp-opt.mp-opt-games.mp-opt-on .mp-count { color: rgba(255,255,255,.7); }
-  .mp-chip.mp-chip-games { color: #4a3106; background: #fdf8ec; border-color: rgba(201,162,78,.5); }
-  .mp-chip.mp-chip-games:not(.mp-chip-on) .mp-count { color: #8a6a33; }
-  .mp-chip.mp-chip-games.mp-chip-on { color: #fff; border-color: #7f530e; background: linear-gradient(180deg, #9c6a18, #7f530e); box-shadow: inset 0 1px 0 rgba(255,255,255,.18), 0 6px 16px -8px rgba(127,83,14,.7); }
-  .mp-chip.mp-chip-games.mp-chip-on .mp-count { color: rgba(255,255,255,.7); }
   .mp-card-games { border-color: rgba(201,162,78,.28); }
   .mp-card-games .mp-tile, .mp-tile.mp-tile-games { background: radial-gradient(120% 90% at 50% 10%, #fffdf7 0%, #f8efdc 55%, #efdfbd 100%); }
   .mp-card.mp-card-games::before { background: linear-gradient(135deg, rgba(201,162,78,.85), rgba(201,162,78,.15) 45%, rgba(127,83,14,.6)); }
@@ -716,12 +743,15 @@ const GLOBAL_CSS = `
     .mp-thumb-on:hover { border-color: #18191c; }
     .mp-stepper button:hover { color: var(--ink); background: rgba(24,25,28,.06); }
     .mp-link:hover { background-size: 100% 1px; }
-    .mp-opt.mp-opt-poker:hover { color: #3d0610; background: rgba(200,16,46,.08); }
-    .mp-opt.mp-opt-poker.mp-opt-on:hover { color: #fff; background: linear-gradient(180deg, #e0243f, #b00e28); }
-    .mp-chip.mp-chip-poker:hover:not(.mp-chip-on) { color: #3d0610; border-color: rgba(200,16,46,.6); }
-    .mp-opt.mp-opt-games:hover { color: #2e1f04; background: rgba(201,162,78,.18); }
-    .mp-opt.mp-opt-games.mp-opt-on:hover { color: #fff; background: linear-gradient(180deg, #a87420, #865810); }
-    .mp-chip.mp-chip-games:hover:not(.mp-chip-on) { color: #2e1f04; border-color: rgba(201,162,78,.85); }
+    .mp-plate:hover { transform: translateY(-1px); filter: saturate(1.08) brightness(1.03); }
+    .mp-plate:hover::after { transform: translateX(100%); transition: transform .9s var(--ease-out); }
+    .mp-sub:hover:not(.mp-sub-on) { translate: 2px 0; }
+    .mp-sub-poker:hover:not(.mp-sub-on) { color: #2e040b; background: rgba(200,16,46,.07); }
+    .mp-sub-games:hover:not(.mp-sub-on) { color: #2a1b02; background: rgba(184,137,44,.12); }
+    .mp-sub-poker.mp-sub-on:hover { background: linear-gradient(180deg, #e0243f, #b00e28); }
+    .mp-sub-games.mp-sub-on:hover { background: linear-gradient(180deg, #c29437, #93661a); }
+    .mp-chip.mp-chip-poker:hover:not(.mp-chip-on) { color: #2e040b; border-color: rgba(200,16,46,.5); }
+    .mp-chip.mp-chip-games:hover:not(.mp-chip-on) { color: #2a1b02; border-color: rgba(184,137,44,.75); }
     .mp-card.mp-card-games:hover { box-shadow: var(--hl), var(--e3), 0 18px 44px -24px rgba(201,162,78,.45); }
   }
   .mp-card:has(:focus-visible) { transform: translateY(-4px); box-shadow: var(--hl), var(--e3); }
@@ -774,6 +804,8 @@ const GLOBAL_CSS = `
 /* ------------------------------------------------------------------ */
 /* აგური (♦) — ჩაზნექილი გვერდებით, როგორც კარტზე */
 const DIAMOND_PATH = "M20 2.5C23.4 8.7 28 14.7 34 20c-6 5.3-10.6 11.3-14 17.5C16.6 31.3 12 25.3 6 20c6-5.3 10.6-11.3 14-17.5Z";
+/* სამაგიდო თამაშის ფიგურა („მიპლი“) 24×24 ბადეზე */
+const MEEPLE_PATH = "M12 2.8c1.5 0 2.7 1.2 2.7 2.7 0 .9-.4 1.6-1 2.1 3.2.5 6.9 1.7 6.9 3.6 0 1.2-1.4 1.6-3.3 1.5-.5 0-.7.4-.5.8l2.6 5.3c.4.9-.1 1.7-1.1 1.7h-3.4c-.6 0-1-.3-1.2-.8L12 16.2l-1.7 3.5c-.2.5-.6.8-1.2.8H5.7c-1 0-1.5-.8-1.1-1.7l2.6-5.3c.2-.4 0-.8-.5-.8-1.9.1-3.3-.3-3.3-1.5 0-1.9 3.7-3.1 6.9-3.6-.6-.5-1-1.2-1-2.1 0-1.5 1.2-2.7 2.7-2.7z";
 
 function LogoMark({ size = 34 }) {
   return (
@@ -1070,41 +1102,40 @@ function ProductVisual({ visual, uid, label }) {
         <DominoTile x={158} y={86} rotate={18} a={2} b={4} />
       </g>
     );
-  } else if (kind === "bingo") {
-    const nums = [[7, 21, 34, 52, 68], [12, 0, 41, 0, 73], [3, 29, 0, 57, 61]];
+  } else if (kind === "boardgame") {
+    /* სამაგიდო თამაშის დაფა პერსპექტივაში: ფერადი გზა კიდეებზე, ორი მიპლი და კამათელი */
+    const track = ["#c8102e", "#d6a43a", "#1d4ed8", "#047857"];
+    const cells = [
+      ...Array.from({ length: 8 }, (_, i) => [i, 0]),
+      ...Array.from({ length: 7 }, (_, i) => [7, i + 1]),
+      ...Array.from({ length: 7 }, (_, i) => [6 - i, 7]),
+      ...Array.from({ length: 6 }, (_, i) => [0, 6 - i]),
+    ];
+    const meeple = (x, y, fill) => (
+      <g transform={`translate(${x - 21.6} ${y - 36.9}) scale(1.8)`}>
+        <ellipse cx="12" cy="20.6" rx="8" ry="2.2" fill="#0f172a" opacity="0.25" />
+        <path d={MEEPLE_PATH} fill={fill} />
+        <path d={MEEPLE_PATH} fill={`url(#${uid}-shine)`} />
+      </g>
+    );
     art = (
       <g>
-        <ellipse cx="116" cy="140" rx="92" ry="8" fill="#0f172a" opacity="0.14" />
-        <g transform="rotate(-4 100 82)">
-          <rect x="34" y="26" width="132" height="106" rx="9" fill="#0f172a" opacity="0.12" transform="translate(3 5)" />
-          <rect x="34" y="26" width="132" height="106" rx="9" fill="#ffffff" stroke="#e7e1d3" />
-          <rect x="34" y="26" width="132" height="24" rx="9" fill="#c8102e" />
-          <rect x="34" y="40" width="132" height="10" fill="#c8102e" />
-          <text x="100" y="43" textAnchor="middle" fontSize="13" fontWeight="800" letterSpacing="5" fill="#fff" fontFamily="Manrope, sans-serif">BINGO</text>
-          {nums.map((row, ri) =>
-            row.map((n, ci) => {
-              const cx = 47 + ci * 26;
-              const cy = 64 + ri * 24;
-              return (
-                <g key={`${ri}-${ci}`}>
-                  <rect x={cx - 11} y={cy - 9} width="22" height="18" rx="4" fill="#f7f3ea" />
-                  {n ? (
-                    <text x={cx} y={cy + 4} textAnchor="middle" fontSize="10" fontWeight="700" fill="#1c1917" fontFamily="Manrope, sans-serif">{n}</text>
-                  ) : null}
-                  {(ri + ci) % 3 === 0 && <circle cx={cx} cy={cy} r="8.5" fill="#c8102e" opacity="0.28" />}
-                </g>
-              );
-            })
-          )}
+        <ellipse cx="116" cy="142" rx="98" ry="9" fill="#0f172a" opacity="0.14" />
+        <g transform="translate(116 88) scale(1 0.56) rotate(45)">
+          <rect x="-62" y="-62" width="124" height="124" rx="9" fill="#4a2a0e" transform="translate(8 8)" />
+          <rect x="-62" y="-62" width="124" height="124" rx="9" fill="#7c4a1e" />
+          <rect x="-57" y="-57" width="114" height="114" rx="6" fill="#fbf6ea" />
+          {cells.map(([cx, cy], i) => (
+            <rect key={i} x={-55.8 + cx * 14.25} y={-55.8 + cy * 14.25} width="11.85" height="11.85" rx="2.5" fill={track[i % 4]} opacity="0.92" />
+          ))}
+          <rect x="-41" y="-41" width="82" height="82" rx="5" fill="#f2e2bf" />
+          <circle r="19" fill="none" stroke="#c9a24e" strokeWidth="3" />
+          <path d={DIAMOND_PATH} transform="translate(-12 -12) scale(.6)" fill="#c8102e" />
         </g>
-        <g>
-          <circle cx="182" cy="112" r="20" fill="#d6a43a" />
-          <circle cx="182" cy="112" r="20" fill={`url(#${uid}-shine)`} />
-          <circle cx="182" cy="112" r="10" fill="#fff" />
-          <text x="182" y="116" textAnchor="middle" fontSize="11" fontWeight="800" fill="#1c1917" fontFamily="Manrope, sans-serif">75</text>
-          <circle cx="160" cy="132" r="13" fill="#1d4ed8" />
-          <circle cx="160" cy="132" r="13" fill={`url(#${uid}-shine)`} />
-          <circle cx="160" cy="132" r="6.5" fill="#fff" />
+        {meeple(84, 86, "#c8102e")}
+        {meeple(146, 96, "#1d4ed8")}
+        <g transform="translate(176 116) scale(.6) translate(-176 -116)">
+          <Die x={176} y={116} rotate={14} value={4} face="#fbf8f1" pip="#1c1917" />
         </g>
       </g>
     );
@@ -1263,13 +1294,13 @@ function FilterGroup({ title, children }) {
   );
 }
 
-function FilterOption({ active, onClick, label, count, tone }) {
+function FilterOption({ active, onClick, label, count }) {
   return (
     <button
       type="button"
       onClick={onClick}
       aria-pressed={active}
-      className={`mp-opt flex items-center justify-between px-3 py-1.5 text-left text-sm ${tone ? `mp-opt-${tone}` : ""} ${active ? "mp-opt-on font-semibold" : ""}`}
+      className={`mp-opt flex items-center justify-between px-3 py-1.5 text-left text-sm ${active ? "mp-opt-on font-semibold" : ""}`}
     >
       {label}
       {count !== undefined && <span className="mp-num mp-count text-xs">{count}</span>}
@@ -1277,34 +1308,107 @@ function FilterOption({ active, onClick, label, count, tone }) {
   );
 }
 
-/* განყოფილების ნიშანი: პოკერი — ლოგოს აგური, თამაშები — კამათელი */
-function SectionIcon({ id, className }) {
-  if (id === "games") return <Dices className={className} strokeWidth={2.1} aria-hidden="true" />;
+/* კატეგორიების ნიშნები: მთლიანი გლიფები 24×24 ბადეზე, ფერს currentColor-იდან იღებს.
+   პოკერი — ლოგოს აგური, თამაშები — კამათლების წყვილი, ნარდი — კამათელი, ჭადრაკი — მხედარი, Board Games — მიპლი */
+const CAT_ICONS = {
+  poker: <path d={DIAMOND_PATH} transform="scale(.6)" />,
+  games: (
+    <>
+      <path fillRule="evenodd" opacity=".5" transform="rotate(-14 8 14)" d="M4.9 8.2h6.1a2.7 2.7 0 0 1 2.7 2.7v6.1a2.7 2.7 0 0 1-2.7 2.7H4.9a2.7 2.7 0 0 1-2.7-2.7v-6.1a2.7 2.7 0 0 1 2.7-2.7zM4.4 11.6a1.2 1.2 0 1 0 2.4 0 1.2 1.2 0 1 0-2.4 0zm4.7 4.7a1.2 1.2 0 1 0 2.4 0 1.2 1.2 0 1 0-2.4 0z" />
+      <path fillRule="evenodd" transform="rotate(12 15.75 8.55)" d="M12.7 2.8h6.1a2.7 2.7 0 0 1 2.7 2.7v6.1a2.7 2.7 0 0 1-2.7 2.7h-6.1a2.7 2.7 0 0 1-2.7-2.7V5.5a2.7 2.7 0 0 1 2.7-2.7zM12.1 6.1a1.2 1.2 0 1 0 2.4 0 1.2 1.2 0 1 0-2.4 0zm2.45 2.45a1.2 1.2 0 1 0 2.4 0 1.2 1.2 0 1 0-2.4 0zM17 11a1.2 1.2 0 1 0 2.4 0 1.2 1.2 0 1 0-2.4 0z" />
+    </>
+  ),
+  cards: (
+    <>
+      <path opacity=".4" transform="rotate(-15 8.5 11.25)" d="M5.5 4h6a2 2 0 0 1 2 2v10.5a2 2 0 0 1-2 2h-6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z" />
+      <path fillRule="evenodd" transform="rotate(10 14.5 12.25)" d="M11.5 5h6a2 2 0 0 1 2 2v10.5a2 2 0 0 1-2 2h-6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2zm3 3.95 2.4 3.3-2.4 3.3-2.4-3.3z" />
+    </>
+  ),
+  chips: (
+    <>
+      <circle cx="12" cy="12" r="8.1" fill="none" stroke="currentColor" strokeWidth="3" strokeDasharray="5.48 3" transform="rotate(-15 12 12)" />
+      <circle cx="12" cy="12" r="6.2" fill="none" stroke="currentColor" strokeWidth=".8" opacity=".5" />
+      <circle cx="12" cy="12" r="4.4" />
+    </>
+  ),
+  tables: (
+    <>
+      <path fillRule="evenodd" d="M1.8 12a10.2 6.8 0 1 0 20.4 0 10.2 6.8 0 1 0-20.4 0zm2.6 0a7.6 4.4 0 1 0 15.2 0 7.6 4.4 0 1 0-15.2 0z" />
+      <ellipse cx="12" cy="12" rx="7.6" ry="4.4" opacity=".35" />
+      <circle cx="9.6" cy="12" r="1.25" />
+      <circle cx="12" cy="11.2" r="1.25" />
+      <circle cx="14.4" cy="12" r="1.25" />
+    </>
+  ),
+  accessories: (
+    <path fillRule="evenodd" d="M2.4 12a9.6 9.6 0 1 0 19.2 0 9.6 9.6 0 1 0-19.2 0zM4 12a8 8 0 1 0 16 0 8 8 0 1 0-16 0zm1.3 0a6.7 6.7 0 1 0 13.4 0 6.7 6.7 0 1 0-13.4 0zm4.4-3.6H12a3.6 3.6 0 0 1 0 7.2H9.7zm1.7 1.6h.6a2 2 0 0 1 0 4h-.6z" />
+  ),
+  "games:backgammon": (
+    <path fillRule="evenodd" transform="rotate(-12 12 12)" d="M8.1 4.5h7.8a3.6 3.6 0 0 1 3.6 3.6v7.8a3.6 3.6 0 0 1-3.6 3.6H8.1a3.6 3.6 0 0 1-3.6-3.6V8.1a3.6 3.6 0 0 1 3.6-3.6zM6.95 8.5a1.55 1.55 0 1 0 3.1 0 1.55 1.55 0 1 0-3.1 0zm7 0a1.55 1.55 0 1 0 3.1 0 1.55 1.55 0 1 0-3.1 0zm-3.5 3.5a1.55 1.55 0 1 0 3.1 0 1.55 1.55 0 1 0-3.1 0zm-3.5 3.5a1.55 1.55 0 1 0 3.1 0 1.55 1.55 0 1 0-3.1 0zm7 0a1.55 1.55 0 1 0 3.1 0 1.55 1.55 0 1 0-3.1 0z" />
+  ),
+  "games:domino": (
+    <path fillRule="evenodd" transform="rotate(20 12 12)" d="M9.9 2.5h4.2a2.4 2.4 0 0 1 2.4 2.4v14.2a2.4 2.4 0 0 1-2.4 2.4H9.9a2.4 2.4 0 0 1-2.4-2.4V4.9a2.4 2.4 0 0 1 2.4-2.4zM10 11.4h4a.6.6 0 0 1 0 1.2h-4a.6.6 0 0 1 0-1.2zM9.2 5.3a1.1 1.1 0 1 0 2.2 0 1.1 1.1 0 1 0-2.2 0zm3.4 3.3a1.1 1.1 0 1 0 2.2 0 1.1 1.1 0 1 0-2.2 0zm-3.45 6a1.05 1.05 0 1 0 2.1 0 1.05 1.05 0 1 0-2.1 0zm1.8 2.4a1.05 1.05 0 1 0 2.1 0 1.05 1.05 0 1 0-2.1 0zm1.8 2.4a1.05 1.05 0 1 0 2.1 0 1.05 1.05 0 1 0-2.1 0z" />
+  ),
+  "games:chess": (
+    <>
+      <path fillRule="evenodd" d="M8.2 16c.2-1.6.8-2.6 1.7-3.5l-2.6.7c-.9.2-1.9-.3-2-1.3-.1-.8.4-1.5 1-2.3.9-1.2 2-2.3 3-3.4l1.2-2.8 1.8 1.8c3.3.2 6.1 2.8 6.3 7 .1 1.4-.3 2.7-1.2 3.8zm1.65-7.6a.85.85 0 1 0 1.7 0 .85.85 0 1 0-1.7 0z" />
+      <rect x="6.8" y="16.6" width="10.4" height="1.6" rx=".8" />
+      <rect x="5" y="18.8" width="14" height="2.8" rx="1.2" />
+    </>
+  ),
+  "games:boardgames": <path d={MEEPLE_PATH} />,
+  "games:fun": (
+    <>
+      <path d="M10 3c.5 4.3 2.2 6 6.5 6.5-4.3.5-6 2.2-6.5 6.5-.5-4.3-2.2-6-6.5-6.5C7.8 9 9.5 7.3 10 3z" />
+      <path d="M17.5 13c.3 2.2 1.1 3 3.3 3.3-2.2.3-3 1.1-3.3 3.3-.3-2.2-1.1-3-3.3-3.3 2.2-.3 3-1.1 3.3-3.3z" />
+      <circle cx="18.2" cy="5.2" r="1.3" />
+    </>
+  ),
+};
+
+function CatIcon({ id, className }) {
   return (
-    <svg viewBox="0 0 40 40" className={className} aria-hidden="true">
-      <path d={DIAMOND_PATH} fill="currentColor" />
+    <svg viewBox="0 0 24 24" className={className} fill="currentColor" aria-hidden="true">
+      {CAT_ICONS[id]}
     </svg>
   );
 }
 
-/* ფერადი განყოფილება გვერდით პანელში: სათაური (მთელი განყოფილება) და ქვეკატეგორიები, ყოველთვის გაშლილი */
+/* მთავარი განყოფილება გვერდით პანელში: ფერადი ფირფიტა (მთელი განყოფილება) და მის ქვემოთ ქვეკატეგორიები, ყოველთვის გაშლილი */
 function FilterSection({ section, category, setCategory, counts }) {
   const { id, items } = section;
   return (
-    <div className={`mp-${id} -mx-1.5 flex flex-col gap-1 rounded-[14px] p-1`} role="group" aria-label={T.cat[id]}>
+    <div className={`mp-sec mp-sec-${id} rounded-[18px] p-[5px]`} role="group" aria-label={T.cat[id]}>
       <button
         type="button"
         onClick={() => setCategory(id)}
         aria-pressed={category === id}
-        className={`mp-opt mp-opt-${id} flex items-center gap-1.5 px-2 py-2 text-left text-sm font-semibold ${category === id ? "mp-opt-on" : ""}`}
+        className={`mp-plate mp-plate-${id} flex w-full items-center gap-2.5 px-3 py-3 text-left ${category === id ? "mp-plate-on" : ""}`}
       >
-        <SectionIcon id={id} className="h-4 w-4 shrink-0" />
-        <span className="min-w-0 flex-1 leading-snug tracking-[-0.01em] [text-wrap:balance]">{T.cat[id]}</span>
-        <span className="mp-num mp-count shrink-0 text-xs font-normal">{counts[id] || 0}</span>
+        <span className="mp-plate-ico h-9 w-9">
+          <CatIcon id={id} className="h-5 w-5" />
+        </span>
+        <span className="min-w-0 flex-1">
+          <span className="block text-[15px] font-bold leading-[1.25] tracking-[-0.01em] [text-wrap:balance]">{T.cat[id]}</span>
+          <span className="mp-plate-sub mp-num mt-0.5 block text-[12px] font-medium">{T.productCount(counts[id] || 0)}</span>
+        </span>
+        <CatIcon id={id} className="mp-plate-mark -bottom-6 -right-5 h-24 w-24 rotate-[-12deg]" />
       </button>
-      <div className="flex flex-col gap-0.5 pb-0.5 pl-3.5">
+      <div className="mt-1.5 flex flex-col gap-0.5">
         {items.map((c) => (
-          <FilterOption key={c.id} tone={id} active={category === c.id} onClick={() => setCategory(c.id)} label={c.label} count={counts[c.id] || 0} />
+          <button
+            key={c.id}
+            type="button"
+            onClick={() => setCategory(c.id)}
+            aria-pressed={category === c.id}
+            className={`mp-sub mp-sub-${id} flex items-center gap-2.5 py-[5px] pl-[5px] pr-3 text-left text-sm ${category === c.id ? "mp-sub-on font-semibold" : ""}`}
+          >
+            <span className="mp-sub-ico h-7 w-7">
+              <CatIcon id={c.id} className="h-4 w-4" />
+            </span>
+            <span className="min-w-0 flex-1">{c.label}</span>
+            <span className="mp-num mp-count text-xs">{counts[c.id] || 0}</span>
+          </button>
         ))}
       </div>
     </div>
@@ -1320,8 +1424,8 @@ function Sidebar({ filter }) {
         <FilterGroup title={T.category}>
           <FilterOption active={category === "all"} onClick={() => setCategory("all")} label={T.cat.all} count={counts.all || 0} />
         </FilterGroup>
-        {/* ორი ფერადი განყოფილება: პოკერი (წითელი) და სამაგიდო თამაშები და აქსესუარები (ოქროსფერი) */}
-        <div className="-mt-2 flex flex-col gap-2.5">
+        {/* ორი მთავარი განყოფილება: პოკერი (წითელი) და სამაგიდო თამაშები და აქსესუარები (ოქროსფერი) */}
+        <div className="-mx-1.5 -mt-1 flex flex-col gap-3">
           {SECTIONS.map((section) => (
             <FilterSection key={section.id} section={section} category={category} setCategory={setCategory} counts={counts} />
           ))}
@@ -1415,16 +1519,26 @@ function MobileFilters({ filter }) {
                 <span className="mp-num mp-count text-[11px]">{counts.all || 0}</span>
               </button>
             )}
-            <div className={`mp-${id} flex shrink-0 gap-1 rounded-[14px] p-1`} role="group" aria-label={T.cat[id]}>
-              {[{ id, label: T.cat[id], head: true }, ...items].map((c) => (
+            <div className={`mp-sec mp-sec-${id} flex shrink-0 items-center gap-1 rounded-[15px] p-1`} role="group" aria-label={T.cat[id]}>
+              <button
+                type="button"
+                aria-pressed={category === id}
+                onClick={() => setCategory(id)}
+                className={`mp-plate mp-plate-${id} inline-flex shrink-0 items-center gap-2 rounded-[11px] py-2 pl-2.5 pr-3 text-[13px] font-bold ${category === id ? "mp-plate-on" : ""}`}
+              >
+                <CatIcon id={id} className="h-4 w-4" />
+                {T.cat[id]}
+                <span className="mp-plate-sub mp-num text-[11px] font-medium">{counts[id] || 0}</span>
+              </button>
+              {items.map((c) => (
                 <button
                   key={c.id}
                   type="button"
                   aria-pressed={category === c.id}
                   onClick={() => setCategory(c.id)}
-                  className={`mp-chip mp-chip-${id} inline-flex shrink-0 items-center gap-1.5 px-3 py-1.5 text-[13px] ${c.head ? "font-semibold" : ""} ${category === c.id ? "mp-chip-on font-semibold" : ""}`}
+                  className={`mp-chip mp-chip-${id} inline-flex shrink-0 items-center gap-1.5 py-1.5 pl-2.5 pr-3 text-[13px] ${category === c.id ? "mp-chip-on font-semibold" : ""}`}
                 >
-                  {c.head && <SectionIcon id={id} className="h-3.5 w-3.5" />}
+                  <CatIcon id={c.id} className="mp-sub-ico h-4 w-4" />
                   {c.label}
                   <span className="mp-num mp-count text-[11px] font-normal">{counts[c.id] || 0}</span>
                 </button>
@@ -1554,7 +1668,7 @@ function Shop({ filter, cart, onOpen }) {
   const section = query.trim() ? null : category.startsWith("games:") ? "games" : POKER_CATS.includes(category) ? "poker" : null;
 
   return (
-    <main id="shop" className="mx-auto grid max-w-[1400px] gap-8 px-4 pb-20 sm:px-6 lg:grid-cols-[240px_1fr] lg:pt-8 xl:gap-10">
+    <main id="shop" className="mx-auto grid max-w-[1400px] gap-8 px-4 pb-20 sm:px-6 lg:grid-cols-[256px_1fr] lg:pt-8 xl:gap-10">
       <Sidebar filter={filter} />
 
       <section className="min-w-0" aria-label={T.productsAria}>
@@ -1567,7 +1681,7 @@ function Shop({ filter, cart, onOpen }) {
               section === "games" ? "bg-[#c9a24e]/[0.16] text-[#7a4f0c] ring-[#c9a24e]/40" : "bg-[#c8102e]/[0.08] text-[#a50d26] ring-[#c8102e]/25"
             }`}
           >
-            <SectionIcon id={section} className="h-3.5 w-3.5 shrink-0" />
+            <CatIcon id={section} className="h-3.5 w-3.5 shrink-0" />
             {T.cat[section]}
           </p>
         )}
