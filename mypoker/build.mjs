@@ -46,7 +46,7 @@ createRoot(document.getElementById("root")).render(<App />);`,
 
 const cssIn = join(dist, ".tailwind-input.css");
 writeFileSync(cssIn, "@tailwind base;\n@tailwind components;\n@tailwind utilities;\n");
-execFileSync(join(here, "node_modules", ".bin", "tailwindcss"), ["-i", cssIn, "-o", join(dist, "app.css"), "--content", join(here, "MyPokerStore.jsx"), "--minify"], {
+execFileSync(join(here, "node_modules", ".bin", "tailwindcss"), ["-c", join(here, "tailwind.config.cjs"), "-i", cssIn, "-o", join(dist, "app.css"), "--minify"], {
   stdio: ["ignore", "ignore", "inherit"],
 });
 rmSync(cssIn);
@@ -89,7 +89,7 @@ const pageHead = ({ lang, title, description, path, image, jsonld }) => `<title>
 <meta property="og:title" content="${esc(title)}">
 <meta property="og:description" content="${esc(description)}">${image ? `\n<meta property="og:image" content="${SITE}/${esc(image.replace(/^\//, ""))}">` : ""}
 <meta name="twitter:card" content="${image ? "summary_large_image" : "summary"}">
-<meta name="theme-color" content="#0f172a">${jsonld ? `\n<script type="application/ld+json">${JSON.stringify(jsonld).replace(/</g, "\\u003c")}</script>` : ""}
+<meta name="theme-color" content="#f3f2ef">${jsonld ? `\n<script type="application/ld+json">${JSON.stringify(jsonld).replace(/</g, "\\u003c")}</script>` : ""}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Georgian:wght@400;500;600;700;800&family=Manrope:wght@600;700&display=swap">
@@ -97,7 +97,7 @@ const pageHead = ({ lang, title, description, path, image, jsonld }) => `<title>
 <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="stylesheet" href="/app.css">
-<style>html,body{background:#0f172a;color:#f8fafc;margin:0}</style>`;
+<style>html,body{background:#f3f2ef;color:#18191c;margin:0}</style>`;
 const body = `<noscript><p style="font:16px sans-serif;padding:24px;text-align:center">mypoker.ge მუშაობს JavaScript-ით. ჩართეთ JavaScript ან დაგვიკავშირდით WhatsApp-ით. · Please enable JavaScript.</p></noscript>
 <div id="root"></div>
 <script type="application/json" id="mp-data">${inlineData}</script>
