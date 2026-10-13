@@ -97,13 +97,13 @@ const pageHead = ({ lang, title, description, path, image, jsonld }) => `<title>
 <meta property="og:title" content="${esc(title)}">
 <meta property="og:description" content="${esc(description)}">${image ? `\n<meta property="og:image" content="${SITE}/${esc(image.replace(/^\//, ""))}">` : ""}
 <meta name="twitter:card" content="${image ? "summary_large_image" : "summary"}">
-<meta name="theme-color" content="#ffffff">${jsonld ? `\n<script type="application/ld+json">${JSON.stringify(jsonld).replace(/</g, "\\u003c")}</script>` : ""}
+<meta name="theme-color" content="#18191c">${jsonld ? `\n<script type="application/ld+json">${JSON.stringify(jsonld).replace(/</g, "\\u003c")}</script>` : ""}
 <link rel="preload" href="/fonts/noto-sans-georgian-${lang === "en" ? "latin" : "georgian"}.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="icon" href="${favicon}" type="image/svg+xml">
 <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="stylesheet" href="/app.css">
-<style>html,body{background:#ffffff;color:#18191c;margin:0}</style>`;
+<style>html,body{background:#c4c3bf;color:#18191c;margin:0}</style>`;
 const body = `<noscript><p style="font:16px sans-serif;padding:24px;text-align:center">mypoker.ge მუშაობს JavaScript-ით. ჩართეთ JavaScript ან დაგვიკავშირდით WhatsApp-ით. · Please enable JavaScript.</p></noscript>
 <div id="root"></div>
 <script type="application/json" id="mp-data">${inlineData}</script>
