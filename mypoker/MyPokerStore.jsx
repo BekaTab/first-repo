@@ -45,15 +45,13 @@ const TEXT = {
     dealer: "დილერი",
     search: "ძიება",
     searchPh: "ძებნა",
-    freeDelivery: "უფასო მიწოდება თბილისის მასშტაბით",
-    freeDeliveryShort: "უფასო მიწოდება თბილისში",
+    freeDelivery: ["უფასო მიწოდება", "თბილისის მასშტაბით"],
+    freeDeliveryShort: ["უფასო მიწოდება", "თბილისში"],
     freeFrom: (n) => `${n} ლარიდან`,
     callUs: "დაგვირეკეთ",
     callAria: (p) => `დაგვირეკეთ: ${p}`,
     cartAria: (n) => `კალათა, ${n} ნივთი`,
     category: "კატეგორია",
-    price: "ფასი",
-    pricePrefix: (l) => `ფასი: ${l}`,
     clearFilters: "ფილტრების გასუფთავება",
     waBoxTitle: "შესაკვეთად დაგვიკავშირდით",
     waBoxText: "აირჩიეთ პროდუქტი და დაგვირეკეთ ან მოგვწერეთ — გიპასუხებთ რამდენიმე წუთში.",
@@ -120,8 +118,6 @@ const TEXT = {
     waCartTotal: (t) => `ჯამი: ${t}₾`,
     cat: { all: "ყველა", cards: "კარტები", chips: "ჩიპები", tables: "მაგიდები", accessories: "პოკერის აქსესუარები", poker: "პოკერი", games: "სამაგიდო თამაშები და აქსესუარები" },
     gameSub: { backgammon: "ნარდი", domino: "დომინო", chess: "ჭადრაკი", boardgames: "Board Games", fun: "სხვა გასართობი" },
-    priceAny: "ნებისმიერი",
-    priceOver: (n) => `${n} ₾-ზე მეტი`,
     sorts: { featured: "რეკომენდებული", "price-asc": "ჯერ იაფი", "price-desc": "ჯერ ძვირი", sale: "ჯერ ფასდაკლებული" },
   },
   en: {
@@ -129,15 +125,13 @@ const TEXT = {
     dealer: "DEALER",
     search: "Search",
     searchPh: "Search",
-    freeDelivery: "Free delivery in Tbilisi",
-    freeDeliveryShort: "Free delivery in Tbilisi",
+    freeDelivery: ["Free delivery", "in Tbilisi"],
+    freeDeliveryShort: ["Free delivery", "in Tbilisi"],
     freeFrom: (n) => `from ${n} ₾`,
     callUs: "Call us",
     callAria: (p) => `Call us: ${p}`,
     cartAria: (n) => `Cart, ${n} ${n === 1 ? "item" : "items"}`,
     category: "Category",
-    price: "Price",
-    pricePrefix: (l) => `Price: ${l}`,
     clearFilters: "Clear filters",
     waBoxTitle: "Contact us to order",
     waBoxText: "Pick a product and call or message us — we reply within minutes.",
@@ -204,8 +198,6 @@ const TEXT = {
     waCartTotal: (t) => `Total: ${t}₾`,
     cat: { all: "All", cards: "Cards", chips: "Chips", tables: "Tables", accessories: "Poker accessories", poker: "Poker", games: "Tabletop games & accessories" },
     gameSub: { backgammon: "Backgammon", domino: "Dominoes", chess: "Chess", boardgames: "Board games", fun: "Other fun" },
-    priceAny: "Any",
-    priceOver: (n) => `Over ${n} ₾`,
     sorts: { featured: "Recommended", "price-asc": "Price: low to high", "price-desc": "Price: high to low", sale: "Biggest discount" },
   },
 };
@@ -243,13 +235,6 @@ const CATEGORY_LABEL = {
   games: T.cat.games,
   ...Object.fromEntries(GAME_SUBS.map((sub) => [`games:${sub}`, T.gameSub[sub]])),
 };
-
-const PRICE_RANGES = [
-  { id: "any", label: T.priceAny, min: 0, max: Infinity },
-  { id: "50-100", label: "50 – 100 ₾", min: 50, max: 100 },
-  { id: "100-200", label: "100 – 200 ₾", min: 100, max: 200 },
-  { id: "200+", label: T.priceOver(200), min: 200, max: Infinity },
-];
 
 const SORTS = ["featured", "price-asc", "price-desc", "sale"].map((id) => ({ id, label: T.sorts[id] }));
 
@@ -508,7 +493,6 @@ function useScrolled(threshold = 8) {
 
 function useProductFilter(products) {
   const [category, setCategory] = useState("all");
-  const [price, setPrice] = useState("any");
   const [query, setQuery] = useState("");
   const [sort, setSort] = useState("featured");
 
@@ -524,29 +508,21 @@ function useProductFilter(products) {
 
   const visible = useMemo(() => {
     const q = query.trim().toLowerCase();
-    const range = PRICE_RANGES.find((r) => r.id === price) || PRICE_RANGES[0];
-    const list = products.filter(
-      (p) =>
-        inCategory(p, category) &&
-        p.price >= range.min &&
-        p.price < range.max &&
-        (!q || p.searchText.includes(q))
-    );
+    const list = products.filter((p) => inCategory(p, category) && (!q || p.searchText.includes(q)));
     const sorted = [...list];
     if (sort === "price-asc") sorted.sort((a, b) => a.price - b.price);
     if (sort === "price-desc") sorted.sort((a, b) => b.price - a.price);
     if (sort === "sale") sorted.sort((a, b) => (b.oldPrice ? 1 - b.price / b.oldPrice : 0) - (a.oldPrice ? 1 - a.price / a.oldPrice : 0));
     return sorted;
-  }, [products, category, price, query, sort]);
+  }, [products, category, query, sort]);
 
-  const hasFilters = category !== "all" || price !== "any" || query.trim() !== "";
+  const hasFilters = category !== "all" || query.trim() !== "";
   const reset = () => {
     setCategory("all");
-    setPrice("any");
     setQuery("");
   };
 
-  return { category, setCategory, price, setPrice, query, setQuery, sort, setSort, counts, visible, hasFilters, reset };
+  return { category, setCategory, query, setQuery, sort, setSort, counts, visible, hasFilters, reset };
 }
 
 
@@ -570,7 +546,7 @@ const SUIT = {
 const GLOBAL_CSS = `
   :root {
     color-scheme: light;
-    --bg: #ffffff; --surface: #ffffff; --surface-2: #f5f5f4; --surface-3: #efeeec;
+    --bg: #c4c3bf; --surface: #ffffff; --surface-2: #f5f5f4; --surface-3: #efeeec;
     --ink: #18191c; --ink-2: #44403c; --text-2: #57534e; --text-3: #78716c;
     --line: #e7e5e4; --line-soft: #f0efed; --line-strong: #d6d3d1;
     --red: #c8102e; --red-2: #a50d26; --red-tint: #fdf2f3; --gold: #b8862c; --gold-2: #8a5f14; --gold-tint: #fbf6ea; --green: #15803d; --green-2: #116932;
@@ -580,7 +556,7 @@ const GLOBAL_CSS = `
     --e2: 0 8px 24px -8px rgba(24,25,28,.12);
     --e3: 0 16px 40px -16px rgba(24,25,28,.18);
   }
-  html { scrollbar-color: #d6d3d1 var(--bg); scroll-behavior: smooth; }
+  html { scrollbar-color: #8f8c87 var(--bg); scroll-behavior: smooth; }
   body { margin: 0; background: var(--bg); color: var(--ink); -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; text-rendering: optimizeLegibility; }
   ::selection { background: rgba(200,16,46,.12); color: var(--ink); }
 
@@ -598,10 +574,18 @@ const GLOBAL_CSS = `
   .mp-pattern { background: var(--bg); }
 
   /* ---------- ზედა ზოლი: თეთრი; გადახვევისას ჩნდება თხელი ჩრდილი ---------- */
-  .mp-header { background: rgba(255,255,255,.92); -webkit-backdrop-filter: saturate(180%) blur(16px); backdrop-filter: saturate(180%) blur(16px);
-    border-bottom: 1px solid var(--line-soft); transition: box-shadow .3s var(--ease), border-color .3s var(--ease); }
-  .mp-header-scrolled { border-bottom-color: var(--line); box-shadow: 0 8px 24px -16px rgba(24,25,28,.25); }
-  .mp-strip { background: var(--red); }
+  .mp-header { background: #18191c; border-bottom: 1px solid #000; transition: box-shadow .3s var(--ease); }
+  .mp-header-scrolled { box-shadow: 0 12px 32px -16px rgba(0,0,0,.6); }
+  .mp-strip { background: #111214; border-bottom: 1px solid rgba(255,255,255,.08); }
+  .mp-header .mp-ctl { color: #fff; background: rgba(255,255,255,.06); border-color: rgba(255,255,255,.12); }
+  .mp-header .mp-field { color: #fff; background: rgba(255,255,255,.08); }
+  .mp-header .mp-field::placeholder { color: rgba(255,255,255,.55); }
+  .mp-header .mp-field:focus { background: rgba(255,255,255,.12); border-color: rgba(255,255,255,.55); box-shadow: 0 0 0 4px rgba(255,255,255,.08); }
+  .mp-header .mp-segbox { background: rgba(255,255,255,.08); }
+  .mp-header .mp-seg { color: rgba(255,255,255,.6); }
+  .mp-header .mp-seg-on { color: #18191c; background: #fff; }
+  .mp-header .mp-count-badge { box-shadow: 0 0 0 2px #18191c; }
+  .mp-header :focus-visible { outline-color: #fff; }
 
   /* ---------- მართვის ელემენტები ---------- */
   .mp-ctl { color: var(--ink); background: var(--surface); border: 1px solid var(--line);
@@ -614,7 +598,7 @@ const GLOBAL_CSS = `
   .mp-count-badge { background: var(--red); box-shadow: 0 0 0 2px #fff; }
 
   /* ---------- ველები ---------- */
-  .mp-field { color: var(--ink); background: var(--surface-2); border: 1px solid transparent; border-radius: var(--r);
+  .mp-field { color: var(--ink); background: #fff; border: 1px solid transparent; border-radius: var(--r);
     transition: border-color .2s var(--ease), box-shadow .2s var(--ease), background-color .2s var(--ease); }
   .mp-field::placeholder { color: var(--text-3); }
   .mp-field:focus { outline: none; background: #fff; border-color: var(--ink); box-shadow: 0 0 0 4px rgba(24,25,28,.06); }
@@ -626,11 +610,12 @@ const GLOBAL_CSS = `
 
   /* ---------- ზედაპირები ---------- */
   .mp-panel { border-radius: var(--r-lg); background: var(--surface); border: 1px solid var(--line); }
-  .mp-card { position: relative; container-type: inline-size; }
+  .mp-card { position: relative; container-type: inline-size; background: #fff; border-radius: var(--r-lg); transition: transform .3s var(--ease), box-shadow .3s var(--ease); }
   /* ვიწრო ბარათზე ღილაკის ტექსტი ერთ ხაზზე რჩება — ხატულა იმალება */
-  @container (max-width: 280px) { .mp-card .mp-cta { font-size: 12px; padding-left: 8px; padding-right: 8px; } .mp-card .mp-cta > svg { display: none; } }
+  @container (max-width: 300px) { .mp-card .mp-cta { font-size: 12px; padding-left: 8px; padding-right: 8px; } .mp-card .mp-cta > svg { display: none; } }
   .mp-card h3 > a:focus-visible { outline: none; color: var(--red); text-decoration: underline; }
-  .mp-tile { position: relative; border-radius: var(--r-lg); background: var(--surface-2); transition: background-color .4s var(--ease), box-shadow .4s var(--ease); }
+  .mp-tile { position: relative; border-radius: var(--r); background: var(--surface-2); transition: background-color .4s var(--ease); }
+  .mp-tile.mp-tile-lg { border-radius: var(--r-lg); background-color: #fff; }
   .mp-tile :focus-visible { outline-offset: -4px; border-radius: inherit; }
   .mp-tile-media { transition: transform .7s var(--ease-out); }
   .mp-card-games .mp-tile, .mp-tile.mp-tile-games { background: var(--gold-tint); }
@@ -645,7 +630,7 @@ const GLOBAL_CSS = `
   /* ---------- ფილტრები და ჩიპები ---------- */
   .mp-opt { position: relative; border-radius: var(--r); color: var(--ink-2); transition: background-color .2s var(--ease), color .2s var(--ease); }
   .mp-opt .mp-count { color: var(--text-3); }
-  .mp-opt-on { color: var(--ink); background: var(--surface-2); }
+  .mp-opt-on { color: var(--ink); background: #fff; }
   .mp-opt-on::before { content: ''; position: absolute; left: 0; top: 8px; bottom: 8px; width: 2px; border-radius: 2px; background: var(--ink); }
   .mp-chip { border-radius: var(--r); color: var(--ink-2); background: var(--surface); border: 1px solid var(--line); transition: background-color .2s var(--ease), border-color .2s var(--ease), color .2s var(--ease); }
   .mp-chip:not(.mp-chip-on) .mp-count { color: var(--text-3); }
@@ -705,15 +690,20 @@ const GLOBAL_CSS = `
     .mp-ctl:hover { border-color: var(--line-strong); background: var(--surface-2); }
     .mp-ctl-on:hover { background: #2c2d31; border-color: #2c2d31; }
     .mp-seg:hover { color: var(--ink); }
-    .mp-field:hover:not(:focus) { background: var(--surface-3); }
+    .mp-field:hover:not(:focus) { border-color: var(--line-strong); }
+    .mp-header .mp-ctl:hover { background: rgba(255,255,255,.12); border-color: rgba(255,255,255,.2); }
+    .mp-header .mp-seg:hover { color: #fff; }
+    .mp-header .mp-field:hover:not(:focus) { background: rgba(255,255,255,.12); border-color: transparent; }
+    .mp-dock-card:hover { transform: translateY(-2px); }
     .mp-cta:hover { background: var(--green-2); }
     .mp-cta:hover svg { transform: translateX(2px) rotate(-8deg); }
-    .mp-card:hover .mp-tile { box-shadow: var(--e2); background: var(--surface-3); }
+    .mp-card:hover { transform: translateY(-4px); box-shadow: 0 16px 32px -16px rgba(24,25,28,.35); }
+    .mp-card:hover .mp-tile { background: var(--surface-3); }
     .mp-card.mp-card-games:hover .mp-tile { background: #f7eed8; }
     .mp-card:hover .mp-tile-media { transform: scale(1.06); }
     .mp-card:hover h3 a { color: var(--red); }
     .mp-float:hover { color: #fff; background: var(--ink); scale: 1.06; }
-    .mp-opt:hover:not(.mp-opt-on) { color: var(--ink); background: var(--surface-2); }
+    .mp-opt:hover:not(.mp-opt-on) { color: var(--ink); background: rgba(255,255,255,.55); }
     .mp-chip:hover:not(.mp-chip-on) { color: var(--ink); border-color: var(--line-strong); }
     .mp-thumb:hover { transform: translateY(-2px); border-color: var(--line-strong); }
     .mp-thumb-on:hover { border-color: var(--ink); }
@@ -754,6 +744,9 @@ const GLOBAL_CSS = `
   .mp-toast { animation: mp-toast .35s var(--ease-out) both; }
   .mp-drive { animation: mp-drive 1.6s ease-in-out infinite; }
   @keyframes mp-drive { 0%, 100% { transform: translateX(-2px); } 50% { transform: translateX(2px); } }
+  .mp-dock { transition: opacity .3s var(--ease), translate .3s var(--ease), visibility .3s; animation: mp-rise .6s var(--ease-out) .5s backwards; }
+  .mp-dock.is-hidden { opacity: 0; translate: 0 16px; visibility: hidden; }
+  .mp-dock-card { box-shadow: 0 16px 40px -12px rgba(24,25,28,.5); transition: transform .3s var(--ease); }
   .mp-scroll::-webkit-scrollbar { display: none; }
   .mp-scroll { scrollbar-width: none; }
   @media (prefers-reduced-motion: reduce) {
@@ -809,8 +802,8 @@ function Logo({ onNavigate }) {
       <span className="transition-transform duration-500 group-hover:rotate-[-8deg] group-hover:scale-105">
         <LogoMark size={32} />
       </span>
-      <span className="mp-brand text-[17px] font-semibold leading-none tracking-[-0.02em] text-[#18191c]">
-        mypoker<span className="text-[#c8102e]">.ge</span>
+      <span className="mp-brand text-[17px] font-semibold leading-none tracking-[-0.02em] text-white">
+        mypoker<span className="text-[#ff4d63]">.ge</span>
       </span>
     </a>
   );
@@ -1154,7 +1147,7 @@ function SearchField({ id, query, onQuery, className = "" }) {
   return (
     <label htmlFor={id} className={`relative block ${className}`}>
       <span className="sr-only">{T.search}</span>
-      <Search className="pointer-events-none absolute left-3 top-1/2 z-[1] h-4 w-4 -translate-y-1/2 text-[#78716c]" />
+      <Search className="pointer-events-none absolute left-3 top-1/2 z-[1] h-4 w-4 -translate-y-1/2 text-white/55" />
       <input
         id={id}
         type="search"
@@ -1171,10 +1164,12 @@ function SearchField({ id, query, onQuery, className = "" }) {
 function FreeShipping({ strip = false }) {
   if (!CONFIG.freeShippingFrom) return null;
   return (
-    <p className={`flex items-center justify-center gap-2 whitespace-nowrap font-medium ${strip ? "text-[12px] leading-4 text-white" : "text-[13px] leading-6 text-[#44403c]"}`}>
-      <Truck className={`mp-drive h-4 w-4 shrink-0 ${strip ? "text-white" : "text-[#c8102e]"}`} strokeWidth={2} aria-hidden="true" />
-      <span>{strip ? T.freeDeliveryShort : T.freeDelivery}</span>
-      <span className={`mp-num font-semibold ${strip ? "" : "text-[#c8102e]"}`}>{T.freeFrom(CONFIG.freeShippingFrom)}</span>
+    <p className={`flex items-center justify-center whitespace-nowrap font-medium text-white/85 ${strip ? "gap-2 text-[13px] leading-4 tracking-[0.02em]" : "gap-2 text-[15px] leading-6 tracking-[0.04em]"}`}>
+      <Truck className={`mp-drive shrink-0 text-[#ff4d63] ${strip ? "h-4 w-4" : "h-5 w-5"}`} strokeWidth={2} aria-hidden="true" />
+      <span>
+        <span className="font-semibold text-[#ff4d63]">{(strip ? T.freeDeliveryShort : T.freeDelivery)[0]}</span> {(strip ? T.freeDeliveryShort : T.freeDelivery)[1]}
+      </span>
+      <span className="mp-num font-bold text-[#ff4d63]">{T.freeFrom(CONFIG.freeShippingFrom)}</span>
     </p>
   );
 }
@@ -1182,7 +1177,7 @@ function FreeShipping({ strip = false }) {
 function Header({ cartCount, onOpenCart, query, onQuery, onNavigate, productId }) {
   const scrolled = useScrolled();
   return (
-    <header className={`mp-header sticky top-[env(safe-area-inset-top,0px)] z-40 text-[#18191c] ${scrolled ? "mp-header-scrolled" : ""}`}>
+    <header className={`mp-header sticky top-[env(safe-area-inset-top,0px)] z-40 text-white ${scrolled ? "mp-header-scrolled" : ""}`}>
       {CONFIG.freeShippingFrom > 0 && (
         <div className="mp-strip flex h-8 items-center justify-center px-4 xl:hidden">
           <FreeShipping strip />
@@ -1211,8 +1206,8 @@ function Header({ cartCount, onOpenCart, query, onQuery, onNavigate, productId }
               <Phone className="h-3 w-3 transition-transform duration-300 group-hover:rotate-12" strokeWidth={2.5} />
             </span>
             <span className="hidden flex-col items-start sm:flex">
-              <span className="text-[11px] leading-4 text-[#78716c]">{T.callUs}</span>
-              <span className="mp-num whitespace-nowrap text-[12px] font-semibold leading-4 text-[#18191c]">{CONFIG.phoneDisplay}</span>
+              <span className="text-[11px] leading-4 text-white/60">{T.callUs}</span>
+              <span className="mp-num whitespace-nowrap text-[12px] font-semibold leading-4 text-white">{CONFIG.phoneDisplay}</span>
             </span>
           </a>
 
@@ -1248,7 +1243,7 @@ function Header({ cartCount, onOpenCart, query, onQuery, onNavigate, productId }
 function FilterGroup({ title, children }) {
   return (
     <div>
-      <p className="px-3 text-[12px] font-medium leading-4 text-[#78716c]">{title}</p>
+      <p className="px-3 text-[12px] font-medium leading-4 text-[#514d49]">{title}</p>
       <div className="mt-2 flex flex-col gap-1">{children}</div>
     </div>
   );
@@ -1376,7 +1371,7 @@ function FilterSection({ section, category, setCategory, counts }) {
 }
 
 function Sidebar({ filter }) {
-  const { category, setCategory, price, setPrice, counts, hasFilters, reset } = filter;
+  const { category, setCategory, counts, hasFilters, reset } = filter;
   return (
     <aside className="hidden lg:block">
       <div className={`mp-scroll sticky -mx-4 -mt-2 flex flex-col gap-8 overflow-y-auto px-4 pb-8 pt-2 [&>*]:shrink-0 ${CONFIG.freeShippingFrom > 0 ? "top-28 max-h-[calc(100vh-8rem)] xl:top-24 xl:max-h-[calc(100vh-7rem)]" : "top-24 max-h-[calc(100vh-7rem)]"}`}>
@@ -1390,64 +1385,11 @@ function Sidebar({ filter }) {
             <FilterSection key={section.id} section={section} category={category} setCategory={setCategory} counts={counts} />
           ))}
         </div>
-        <FilterGroup title={T.price}>
-          {PRICE_RANGES.map((r) => (
-            <FilterOption key={r.id} active={price === r.id} onClick={() => setPrice(r.id)} label={r.label} />
-          ))}
-        </FilterGroup>
         {hasFilters && (
           <button type="button" onClick={reset} className="mp-link mx-3 self-start text-left text-[13px] font-medium leading-4 text-[#c8102e] hover:text-[#a50d26]">
             {T.clearFilters}
           </button>
         )}
-        </div>
-        <div className="mp-promo relative overflow-hidden p-6 text-center text-white">
-          {/* ზედა წითელი ხაზი და მკრთალი აგური ფონზე, ცენტრში */}
-          <span className="mp-accent-line absolute inset-x-0 top-0 h-1" aria-hidden="true" />
-          <svg viewBox="0 0 40 40" className="pointer-events-none absolute -bottom-12 left-1/2 h-36 w-36 -translate-x-1/2 text-white/[0.04]" aria-hidden="true">
-            <path d={DIAMOND_PATH} fill="currentColor" />
-          </svg>
-
-          <p className="relative text-[14px] font-semibold leading-5 text-white [text-wrap:balance]">{T.waBoxTitle}</p>
-          <p className="relative mt-2 text-[12px] leading-5 text-white/65 [text-wrap:balance]">{T.waBoxText}</p>
-
-          <div className="relative mt-4 flex items-center gap-2" aria-hidden="true">
-            <span className="h-px flex-1 bg-white/15" />
-            {/* ოთხივე ნიშანი: ყვავი, გული, აგური, ჯვარი */}
-            {[
-              [SUIT.spade, "text-[#e2e8f0]"],
-              [SUIT.heart, "text-[#c8102e]"],
-              [SUIT.diamond, "text-[#c8102e]"],
-              [SUIT.club, "text-[#e2e8f0]"],
-            ].map(([d, color]) => (
-              <svg key={d} viewBox="0 0 24 24" className={`h-3 w-3 ${color}`}>
-                <path d={d} fill="currentColor" />
-              </svg>
-            ))}
-            <span className="h-px flex-1 bg-white/15" />
-          </div>
-
-          {/* ნომერი თავადაა დარეკვის ღილაკი */}
-          <a
-            href={`tel:${CONFIG.phoneTel}`}
-            className="group/call relative mx-auto mt-4 flex w-fit items-center gap-2 whitespace-nowrap rounded-lg py-1 pl-1 pr-2 transition-colors duration-300 hover:bg-white/[0.08]"
-            aria-label={T.callAria(CONFIG.phoneDisplay)}
-          >
-            <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full border border-white/15 transition-colors duration-300 group-hover/call:border-transparent group-hover/call:bg-[#15803d]">
-              <Phone className="h-3 w-3" />
-            </span>
-            <span className="mp-num select-all text-[16px] font-semibold leading-6">{CONFIG.phoneDisplay}</span>
-          </a>
-
-          <a
-            href={buildWhatsAppLink(T.waHello)}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mp-cta mt-4 inline-flex h-10 w-full items-center justify-center gap-2 text-[13px] font-semibold"
-          >
-            <MessageCircle className="h-4 w-4" />
-            WhatsApp
-          </a>
         </div>
       </div>
     </aside>
@@ -1455,10 +1397,10 @@ function Sidebar({ filter }) {
 }
 
 function MobileFilters({ filter }) {
-  const { category, setCategory, price, setPrice, counts } = filter;
+  const { category, setCategory, counts } = filter;
   return (
     <div
-      className={`sticky z-30 -mx-4 border-b border-[#e7e5e4] bg-white/90 px-4 py-3 backdrop-blur-xl backdrop-saturate-150 sm:-mx-6 sm:px-6 lg:hidden ${
+      className={`sticky z-30 -mx-4 border-b border-black/10 bg-[#c4c3bf]/90 px-4 py-3 backdrop-blur-xl backdrop-saturate-150 sm:-mx-6 sm:px-6 lg:hidden ${
         CONFIG.freeShippingFrom > 0
           ? "top-[calc(env(safe-area-inset-top,0px)+9.5rem)] md:top-[calc(env(safe-area-inset-top,0px)+6rem)]"
           : "top-[calc(env(safe-area-inset-top,0px)+7.5rem)] md:top-[calc(env(safe-area-inset-top,0px)+4rem)]"
@@ -1507,22 +1449,6 @@ function MobileFilters({ filter }) {
           </div>
         ))}
       </div>
-      <label className="relative mt-3 block" htmlFor="mp-price-mobile">
-        <span className="sr-only">{T.price}</span>
-        <select
-          id="mp-price-mobile"
-          value={price}
-          onChange={(e) => setPrice(e.target.value)}
-          className="mp-field h-10 w-full appearance-none pl-4 pr-10 text-[13px]"
-        >
-          {PRICE_RANGES.map((r) => (
-            <option key={r.id} value={r.id}>
-              {T.pricePrefix(r.label)}
-            </option>
-          ))}
-        </select>
-        <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#6f7075]" />
-      </label>
     </div>
   );
 }
@@ -1548,7 +1474,7 @@ function ProductCard({ product, index, inCart, onAdd, onOpen }) {
   return (
     <article
       ref={ref}
-      className={`mp-card mp-reveal group flex min-w-0 flex-col ${shown ? "is-in" : ""} ${product.category === "games" ? "mp-card-games" : ""}`}
+      className={`mp-card mp-reveal group flex min-w-0 flex-col p-2 ${shown ? "is-in" : ""} ${product.category === "games" ? "mp-card-games" : ""}`}
       style={{ "--d": `${(index % 4) * 80}ms` }}
     >
       <a
@@ -1574,20 +1500,20 @@ function ProductCard({ product, index, inCart, onAdd, onOpen }) {
         )}
       </a>
 
-      <div className="flex flex-1 flex-col pt-4">
+      <div className="flex flex-1 flex-col px-2 pb-2 pt-4">
         <h3 className="line-clamp-2 min-h-10 text-[14px] font-medium leading-5 text-[#18191c]">
           <a href={productPath(product.id)} onClick={handleNav(onOpen, product.id)} className="transition-colors duration-300">
             {product.name}
           </a>
         </h3>
-        <p className="mt-1 truncate text-[12px] leading-4 text-[#78716c]">{product.spec}</p>
+        <p className="mt-1 truncate text-[12px] leading-4 text-[#514d49]">{product.spec}</p>
 
         <div className="mt-4 flex items-end justify-between gap-2">
           <div className="flex items-baseline gap-2">
             <span className={`mp-num mp-price text-[18px] font-semibold leading-6 ${product.oldPrice ? "text-[#c8102e]" : "text-[#18191c]"}`}>
               {formatPrice(product.price)}
             </span>
-            {product.oldPrice && <span className="mp-num text-[12px] leading-4 text-[#78716c] line-through decoration-[#78716c]/60">{formatPrice(product.oldPrice)}</span>}
+            {product.oldPrice && <span className="mp-num text-[12px] leading-4 text-[#514d49] line-through decoration-[#514d49]/60">{formatPrice(product.oldPrice)}</span>}
           </div>
           <span className={`inline-flex items-center gap-2 text-[12px] leading-6 ${product.inStock ? "text-[#15803d]" : "text-[#b45309]"}`}>
             {product.inStock ? T.inStock : T.onOrder}
@@ -1623,9 +1549,9 @@ function ProductCard({ product, index, inCart, onAdd, onOpen }) {
 /*  მაღაზია                                                            */
 /* ------------------------------------------------------------------ */
 function Shop({ filter, cart, onOpen }) {
-  const { category, query, sort, setSort, price, visible, hasFilters, reset } = filter;
+  const { category, query, sort, setSort, visible, hasFilters, reset } = filter;
   const inCart = useMemo(() => new Set(cart.lines.map((l) => l.product.id)), [cart.lines]);
-  const gridKey = `${category}|${sort}|${price}|${query.trim()}`;
+  const gridKey = `${category}|${sort}|${query.trim()}`;
   const title = query.trim() ? T.searchTitle(query.trim()) : category === "all" ? T.allProducts : CATEGORY_LABEL[category];
   const section = query.trim() ? null : category.startsWith("games:") ? "games" : POKER_CATS.includes(category) ? "poker" : null;
 
@@ -1650,7 +1576,7 @@ function Shop({ filter, cart, onOpen }) {
         <div className={`flex items-end justify-between gap-4 ${section ? "" : "mt-6 lg:mt-0"}`}>
           <div className="min-w-0">
             <h1 className="mp-title text-[20px] font-semibold leading-7 sm:text-[24px] sm:leading-8">{title}</h1>
-            <p className="mp-num mt-1 text-[13px] leading-5 text-[#78716c]" aria-live="polite">
+            <p className="mp-num mt-1 text-[13px] leading-5 text-[#514d49]" aria-live="polite">
               {T.productCount(visible.length)}
             </p>
           </div>
@@ -1673,7 +1599,7 @@ function Shop({ filter, cart, onOpen }) {
         </div>
 
         {visible.length > 0 ? (
-          <div key={gridKey} className="mt-8 grid grid-cols-1 gap-x-6 gap-y-12 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+          <div key={gridKey} className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3">
             {visible.map((product, i) => (
               <ProductCard key={product.id} product={product} index={i} inCart={inCart.has(product.id)} onAdd={cart.add} onOpen={onOpen} />
             ))}
@@ -1682,7 +1608,7 @@ function Shop({ filter, cart, onOpen }) {
           <div className="mp-fade mp-panel mt-8 flex flex-col items-center !border-dashed px-6 py-16 text-center">
             <Search className="h-6 w-6 text-[#a8a29e]" />
             <p className="mt-4 font-semibold text-[#18191c]">{T.noResults}</p>
-            <p className="mt-1 text-[13px] text-[#78716c]">{T.noResultsHint}</p>
+            <p className="mt-1 text-[13px] text-[#514d49]">{T.noResultsHint}</p>
             {hasFilters && (
               <button
                 type="button"
@@ -1878,7 +1804,7 @@ function ProductPage({ product, cart, onNavigate }) {
 
   return (
     <main className="mp-rise mx-auto max-w-[1216px] px-4 pb-24 pt-8 sm:px-6 lg:px-8 lg:pt-12">
-      <nav className="flex flex-wrap items-center gap-2 text-[13px] leading-5 text-[#78716c]" aria-label={T.breadcrumb}>
+      <nav className="flex flex-wrap items-center gap-2 text-[13px] leading-5 text-[#514d49]" aria-label={T.breadcrumb}>
         <a href={HOME_PATH} onClick={handleNav(onNavigate, null)} className="group inline-flex items-center gap-2 font-medium text-[#18191c] transition-colors duration-300 hover:text-[#c8102e]">
           <ArrowLeft className="h-4 w-4 transition-transform duration-300 group-hover:-translate-x-0.5" />
           <span className="mp-link">{T.shop}</span>
@@ -1910,13 +1836,13 @@ function ProductPage({ product, cart, onNavigate }) {
             </div>
           )}
           <h1 className="mp-title mt-4 text-[24px] font-semibold leading-8 sm:text-[28px] sm:leading-9">{product.name}</h1>
-          {product.spec && <p className="mt-2 text-[14px] leading-6 text-[#78716c]">{product.spec}</p>}
+          {product.spec && <p className="mt-2 text-[14px] leading-6 text-[#514d49]">{product.spec}</p>}
 
           <div className="mt-6 flex flex-wrap items-baseline gap-3">
             <span className={`mp-num mp-price text-[28px] font-semibold leading-8 ${product.oldPrice ? "text-[#c8102e]" : "text-[#18191c]"}`}>
               {formatPrice(product.price)}
             </span>
-            {product.oldPrice && <span className="mp-num text-[16px] leading-6 text-[#78716c] line-through decoration-[#78716c]/60">{formatPrice(product.oldPrice)}</span>}
+            {product.oldPrice && <span className="mp-num text-[16px] leading-6 text-[#514d49] line-through decoration-[#514d49]/60">{formatPrice(product.oldPrice)}</span>}
           </div>
           {product.oldPrice && product.saleEnds && (
             <p className="mt-2 text-[13px] leading-5 text-[#c8102e]">{T.saleUntil(formatDate(product.saleEnds))}</p>
@@ -1947,7 +1873,7 @@ function ProductPage({ product, cart, onNavigate }) {
             </button>
           </div>
           {CONFIG.phoneDisplay && (
-            <p className="mt-4 text-[13px] leading-5 text-[#78716c]">
+            <p className="mt-4 text-[13px] leading-5 text-[#514d49]">
               {T.orCall}{" "}
               <a href={`tel:${CONFIG.phoneTel}`} className="mp-num mp-link select-all font-semibold text-[#18191c] hover:text-[#15803d]">
                 {CONFIG.phoneDisplay}
@@ -1979,7 +1905,7 @@ function ProductPage({ product, cart, onNavigate }) {
       {related.length > 0 && (
         <section className="mt-16 border-t border-[#e7e5e4] pt-12" aria-labelledby="mp-related">
           <h2 id="mp-related" className="mp-title text-[20px] font-semibold leading-7">{T.related}</h2>
-          <div className="mt-8 grid grid-cols-1 gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {related.map((p, i) => (
               /* 4 ბარათი ორ სვეტად, 3 — სამ სვეტად; მეოთხე დიდ ეკრანზე იმალება, რომ რიგი სრული იყოს */
               <div key={p.id} className={`grid min-w-0 ${i === 3 ? "lg:hidden" : ""}`}>
@@ -1998,7 +1924,7 @@ function NotFound({ onNavigate }) {
     <main className="mx-auto flex max-w-xl flex-col items-center px-4 py-24 text-center">
       <p className="mp-rise text-[64px] leading-none text-[#18191c]">♠</p>
       <h1 className="mp-title mt-6 text-[24px] font-semibold leading-8">{T.notFound}</h1>
-      <p className="mt-2 text-[#78716c]">{T.notFoundText}</p>
+      <p className="mt-2 text-[#514d49]">{T.notFoundText}</p>
       <a
         href={HOME_PATH}
         onClick={handleNav(onNavigate, null)}
@@ -2035,7 +1961,7 @@ function CartDrawer({ open, onClose, cart, onOpenProduct }) {
         <div className="flex items-center justify-between border-b border-[#e7e5e4] px-6 py-4">
           <div>
             <h2 className="mp-title text-[18px] font-semibold leading-7">{T.cart}</h2>
-            <p className="mp-num text-[12px] leading-4 text-[#78716c]">{T.items(cart.count)}</p>
+            <p className="mp-num text-[12px] leading-4 text-[#514d49]">{T.items(cart.count)}</p>
           </div>
           <button
             type="button"
@@ -2051,7 +1977,7 @@ function CartDrawer({ open, onClose, cart, onOpenProduct }) {
           <div className="flex flex-1 flex-col items-center justify-center px-8 text-center">
             <ShoppingBag className="h-8 w-8 text-[#a8a29e]" strokeWidth={1.5} />
             <p className="mt-4 font-semibold text-[#18191c]">{T.cartEmpty}</p>
-            <p className="mt-1 text-[13px] text-[#78716c]">{T.cartEmptyText}</p>
+            <p className="mt-1 text-[13px] text-[#514d49]">{T.cartEmptyText}</p>
             <button type="button" onClick={onClose} className="mp-cta mt-6 h-10 px-6 text-[13px] font-semibold">
               {T.continueShopping}
             </button>
@@ -2077,7 +2003,7 @@ function CartDrawer({ open, onClose, cart, onOpenProduct }) {
                         <button
                           type="button"
                           onClick={() => cart.decrement(product.id)}
-                          className="grid h-8 w-8 place-items-center text-[#78716c]"
+                          className="grid h-8 w-8 place-items-center text-[#514d49]"
                           aria-label={T.decrease}
                         >
                           <Minus className="h-3.5 w-3.5" />
@@ -2086,7 +2012,7 @@ function CartDrawer({ open, onClose, cart, onOpenProduct }) {
                         <button
                           type="button"
                           onClick={() => cart.add(product.id)}
-                          className="grid h-8 w-8 place-items-center text-[#78716c]"
+                          className="grid h-8 w-8 place-items-center text-[#514d49]"
                           aria-label={T.increase}
                         >
                           <Plus className="h-3.5 w-3.5" />
@@ -2097,7 +2023,7 @@ function CartDrawer({ open, onClose, cart, onOpenProduct }) {
                         <button
                           type="button"
                           onClick={() => cart.remove(product.id)}
-                          className="grid h-8 w-8 place-items-center rounded-lg text-[#78716c] transition-colors duration-300 hover:bg-[#c8102e]/10 hover:text-[#c8102e]"
+                          className="grid h-8 w-8 place-items-center rounded-lg text-[#514d49] transition-colors duration-300 hover:bg-[#c8102e]/10 hover:text-[#c8102e]"
                           aria-label={T.removeAria(product.name)}
                         >
                           <Trash2 className="h-4 w-4" />
@@ -2111,7 +2037,7 @@ function CartDrawer({ open, onClose, cart, onOpenProduct }) {
 
             <div className="border-t border-[#e7e5e4] p-6">
               <div className="flex items-baseline justify-between">
-                <span className="text-[13px] text-[#78716c]">{T.total}</span>
+                <span className="text-[13px] text-[#514d49]">{T.total}</span>
                 <span className="mp-num mp-price mp-title text-[24px] font-semibold leading-8">{formatPrice(cart.total)}</span>
               </div>
               <a
@@ -2123,8 +2049,8 @@ function CartDrawer({ open, onClose, cart, onOpenProduct }) {
                 <MessageCircle className="h-4 w-4" />
                 {T.orderCta}
               </a>
-              <p className="mt-4 text-center text-[12px] leading-4 text-[#78716c]">{T.paySoon}</p>
-              <button type="button" onClick={cart.clear} className="mx-auto mt-2 block w-fit rounded-lg px-2 py-1 text-[12px] leading-4 text-[#78716c] transition-colors duration-300 hover:bg-[#c8102e]/10 hover:text-[#c8102e]">
+              <p className="mt-4 text-center text-[12px] leading-4 text-[#514d49]">{T.paySoon}</p>
+              <button type="button" onClick={cart.clear} className="mx-auto mt-2 block w-fit rounded-lg px-2 py-1 text-[12px] leading-4 text-[#514d49] transition-colors duration-300 hover:bg-[#c8102e]/10 hover:text-[#c8102e]">
                 {T.clearCart}
               </button>
             </div>
@@ -2132,6 +2058,50 @@ function CartDrawer({ open, onClose, cart, onOpenProduct }) {
         )}
       </aside>
     </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  მცურავი კონტაქტი — მარჯვენა ქვედა კუთხეში, გადახვევას მიჰყვება;     */
+/*  ფუტერთან იმალება (იქ იგივე ინფორმაციაა)                           */
+/* ------------------------------------------------------------------ */
+function ContactDock() {
+  const [nearFooter, setNearFooter] = useState(false);
+  useEffect(() => {
+    const footer = document.querySelector("footer");
+    if (!footer || typeof IntersectionObserver === "undefined") return undefined;
+    const io = new IntersectionObserver(([entry]) => setNearFooter(entry.isIntersecting));
+    io.observe(footer);
+    return () => io.disconnect();
+  }, []);
+  if (!CONFIG.phoneDisplay) return null;
+  return (
+    <aside
+      className={`mp-dock fixed bottom-[calc(1rem+env(safe-area-inset-bottom,0px))] right-4 z-30 lg:bottom-6 lg:right-6 ${nearFooter ? "is-hidden" : ""}`}
+      aria-label={T.waBoxTitle}
+    >
+      <div className="mp-dock-card flex items-center gap-3 rounded-2xl bg-[#18191c] p-2 pr-4 text-white sm:pr-2 lg:p-3">
+        <a href={`tel:${CONFIG.phoneTel}`} className="group flex min-w-0 items-center gap-3" aria-label={T.callAria(CONFIG.phoneDisplay)}>
+          <span className="relative grid h-8 w-8 shrink-0 place-items-center rounded-full bg-[#15803d] sm:h-10 sm:w-10">
+            <span className="mp-ping absolute inset-0 rounded-full bg-[#15803d]/50" aria-hidden="true" />
+            <Phone className="relative h-4 w-4 transition-transform duration-300 group-hover:rotate-12" strokeWidth={2.2} />
+          </span>
+          <span className="flex min-w-0 flex-col pr-1">
+            <span className="text-[11px] leading-4 text-white/65 lg:text-[12px]">{T.waBoxTitle}</span>
+            <span className="mp-num whitespace-nowrap text-[13px] font-semibold leading-4 sm:text-[14px] sm:leading-5 lg:text-[16px] lg:leading-6">{CONFIG.phoneDisplay}</span>
+          </span>
+        </a>
+        <a
+          href={buildWhatsAppLink(T.waHello)}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mp-cta hidden h-10 shrink-0 items-center gap-2 px-4 text-[13px] font-semibold sm:inline-flex"
+        >
+          <MessageCircle className="h-4 w-4" strokeWidth={2} />
+          WhatsApp
+        </a>
+      </div>
+    </aside>
   );
 }
 
@@ -2225,6 +2195,7 @@ export default function App() {
         )}
       </div>
       <Footer />
+      <ContactDock />
       <CartDrawer
         open={cartOpen}
         onClose={() => setCartOpen(false)}
@@ -2238,7 +2209,7 @@ export default function App() {
       {toast && (
         <div
           key={toast.id}
-          className="mp-toast mp-glass fixed bottom-[calc(1.5rem+env(safe-area-inset-bottom,0px))] left-1/2 z-50 flex w-[calc(100%-2rem)] max-w-sm items-center gap-3 rounded-xl p-3 pr-4 text-white"
+          className="mp-toast mp-glass fixed bottom-[calc(5.5rem+env(safe-area-inset-bottom,0px))] left-1/2 z-50 lg:bottom-6 flex w-[calc(100%-2rem)] max-w-sm items-center gap-3 rounded-xl p-3 pr-4 text-white"
           role="status"
         >
           <span className="mp-call-dot grid h-8 w-8 shrink-0 place-items-center rounded-full">
