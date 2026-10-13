@@ -496,48 +496,40 @@ const suitAt = (d, x, y, r, fill, opacity) =>
   `<path d="${d}" fill="${fill}" fill-opacity="${opacity}" transform="translate(${x} ${y}) rotate(${r} 12 12) scale(.75)"/>`;
 const PATTERN_SVG =
   `<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 120 120">` +
-  suitAt(SUIT.spade, 10, 12, -12, "#c7d2fe", 0.035) +
-  suitAt(SUIT.heart, 72, 8, 10, "#fb7185", 0.05) +
-  suitAt(SUIT.diamond, 40, 70, 8, "#fb7185", 0.05) +
-  suitAt(SUIT.club, 92, 76, -10, "#c7d2fe", 0.035) +
+  suitAt(SUIT.spade, 10, 12, -12, "#18191c", 0.055) +
+  suitAt(SUIT.heart, 72, 8, 10, "#c8102e", 0.065) +
+  suitAt(SUIT.diamond, 40, 70, 8, "#c8102e", 0.065) +
+  suitAt(SUIT.club, 92, 76, -10, "#18191c", 0.055) +
   `</svg>`;
 const PATTERN_URL = `url("data:image/svg+xml,${encodeURIComponent(PATTERN_SVG)}")`;
-/* ძალიან მსუბუქი „მარცვალი“ — ფონი ბრტყლად და იაფად რომ არ გამოჩნდეს */
-const NOISE_SVG =
-  `<svg xmlns="http://www.w3.org/2000/svg" width="160" height="160"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency=".85" numOctaves="2" stitchTiles="stitch"/>` +
-  `<feColorMatrix values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .55 0"/></filter><rect width="100%" height="100%" filter="url(#n)"/></svg>`;
-const NOISE_URL = `url("data:image/svg+xml,${encodeURIComponent(NOISE_SVG)}")`;
 
 /*
-  დიზაინ-სისტემა — „Midnight Slate“
-  ფონი #0f172a · ზედაპირები #1e293b → #243047 · ტექსტი #f8fafc / #cbd5e1 / #94a3b8
-  აქცენტი: ინდიგო → იისფერი (#6366f1 → #7c3aed) — მხოლოდ CTA-ზე, აქტიურ მდგომარეობებსა და პატარა აქცენტებზე;
-  ფირუზისფერი (#2dd4bf) — „ხელმისაწვდომია / დაგვიკავშირდით / წარმატება“; ვარდისფერ-წითელი (#fb7185) — ფასდაკლება.
+  დიზაინ-სისტემა — ღია „ქვის“ პალიტრა
+  ფონი #f3f2ef · ბარათები #ffffff · ტექსტი #18191c / #3f4045 / #5c5d61 / #6f7075
+  აქცენტები ზომიერად: ბრენდის წითელი #c8102e (ლოგო, ფასდაკლება, აქტიური ნიშნები), ოქროსფერი #c9a24e (მცირე ნათება),
+  მწვანე #15803d — მხოლოდ შეკვეთის ღილაკი (WhatsApp) და „მარაგშია“.
 */
 const GLOBAL_CSS = `
   :root {
-    color-scheme: dark;
-    --bg: #0f172a; --bg-deep: #0b1120;
-    --surface: #1e293b; --surface-2: #243047;
-    --line: rgba(255,255,255,.08); --line-soft: rgba(255,255,255,.05); --line-strong: rgba(255,255,255,.14);
-    --text: #f8fafc; --text-2: #cbd5e1; --text-3: #94a3b8;
-    --indigo: #6366f1; --violet: #8b5cf6; --teal: #2dd4bf; --accent-text: #a5b4fc;
-    --grad: linear-gradient(135deg, #5558e8 0%, #7c3aed 100%);
+    color-scheme: light;
+    --bg: #f3f2ef; --surface: #ffffff; --surface-2: #f7f6f3;
+    --ink: #18191c; --ink-2: #3f4045; --text-2: #5c5d61; --text-3: #6f7075;
+    --line: rgba(24,25,28,.075); --line-soft: rgba(24,25,28,.05); --line-strong: rgba(24,25,28,.16);
+    --red: #c8102e; --gold: #c9a24e; --green: #15803d;
     --ease: cubic-bezier(.4,0,.2,1); --ease-out: cubic-bezier(.16,1,.3,1);
     --r-sm: 10px; --r: 12px; --r-lg: 16px;
-    --hl: inset 0 1px 0 rgba(255,255,255,.06);
-    --e1: 0 1px 2px rgba(2,6,23,.45), 0 4px 12px -4px rgba(2,6,23,.35);
-    --e2: 0 1px 2px rgba(2,6,23,.4), 0 2px 6px -2px rgba(2,6,23,.3), 0 12px 28px -12px rgba(2,6,23,.65);
-    --e3: 0 2px 4px rgba(2,6,23,.4), 0 10px 22px -10px rgba(2,6,23,.5), 0 28px 56px -22px rgba(2,6,23,.85);
+    --hl: inset 0 1px 0 rgba(255,255,255,.95);
+    --e1: 0 1px 2px rgba(24,25,28,.05), 0 2px 6px -2px rgba(24,25,28,.06);
+    --e2: 0 1px 2px rgba(24,25,28,.04), 0 4px 10px -4px rgba(24,25,28,.06), 0 14px 32px -16px rgba(24,25,28,.14);
+    --e3: 0 2px 4px rgba(24,25,28,.04), 0 12px 24px -10px rgba(24,25,28,.10), 0 32px 60px -24px rgba(24,25,28,.24);
   }
-  html { scrollbar-color: #2c3a54 var(--bg); }
+  html { scrollbar-color: #cfccc5 var(--bg); }
   ::-webkit-scrollbar { width: 12px; height: 12px; }
   ::-webkit-scrollbar-track { background: var(--bg); }
-  ::-webkit-scrollbar-thumb { background: #2c3a54; border-radius: 12px; border: 3px solid var(--bg); }
-  ::-webkit-scrollbar-thumb:hover { background: #3b4a66; }
-  body { margin: 0; background: var(--bg); color: var(--text); -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; text-rendering: optimizeLegibility; }
-  ::selection { background: rgba(99,102,241,.38); color: #fff; }
-  option { background: #1e293b; color: var(--text); }
+  ::-webkit-scrollbar-thumb { background: #d3d0c9; border-radius: 12px; border: 3px solid var(--bg); }
+  ::-webkit-scrollbar-thumb:hover { background: #bdb9b1; }
+  body { margin: 0; background: var(--bg); color: var(--ink); -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; text-rendering: optimizeLegibility; }
+  ::selection { background: rgba(200,16,46,.14); color: var(--ink); }
 
   /* ---------- ტიპოგრაფია ---------- */
   .mp-sans { font-family: 'Noto Sans Georgian', system-ui, -apple-system, 'Segoe UI', sans-serif; line-height: 1.6; font-feature-settings: "kern", "liga"; }
@@ -546,123 +538,131 @@ const GLOBAL_CSS = `
   .mp-sans *, .mp-sans *::before, .mp-sans *::after { transition-timing-function: var(--ease); }
   .mp-brand { font-family: 'Manrope', 'Noto Sans Georgian', system-ui, sans-serif; }
   .mp-num { font-variant-numeric: tabular-nums; }
-  .mp-title { background: linear-gradient(180deg, #ffffff 15%, #c7d2fe 140%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .mp-title { background: linear-gradient(180deg, #18191c 35%, #4a4b50 125%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .mp-promo .mp-title { background-image: linear-gradient(180deg, #ffffff 30%, #e4e2dc 120%); }
   .mp-price { letter-spacing: -0.02em; }
   .mp-link { background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat; transition: background-size .3s var(--ease), color .3s var(--ease); }
 
-  /* ---------- გვერდის ფონი: ღამის ფიქალი + რბილი ნათება + მარცვალი + კარტის ნიშნები ---------- */
+  /* ---------- გვერდის ფონი: თბილი ქვა + კარტის ნიშნები + ძალიან რბილი ნათება ---------- */
   .mp-pattern { position: relative; isolation: isolate; background-color: var(--bg); background-image: ${PATTERN_URL}; background-size: 120px 120px; }
-  .mp-pattern::before, .mp-pattern::after { content: ''; position: fixed; inset: 0; z-index: -1; pointer-events: none; }
-  .mp-pattern::before {
+  .mp-pattern::before { content: ''; position: fixed; inset: 0; z-index: -1; pointer-events: none;
     background:
-      radial-gradient(70rem 36rem at 6% -14rem, rgba(99,102,241,.22), transparent 62%),
-      radial-gradient(56rem 32rem at 104% -6rem, rgba(139,92,246,.16), transparent 60%),
-      radial-gradient(64rem 40rem at 50% 118%, rgba(45,212,191,.07), transparent 62%),
-      linear-gradient(180deg, rgba(15,23,42,0) 0%, rgba(11,17,32,.55) 100%);
-  }
-  .mp-pattern::after { background-image: ${NOISE_URL}; background-size: 160px 160px; opacity: .035; }
+      radial-gradient(70rem 34rem at 6% -14rem, rgba(200,16,46,.07), transparent 62%),
+      radial-gradient(56rem 30rem at 104% -8rem, rgba(201,162,78,.11), transparent 60%),
+      linear-gradient(180deg, rgba(255,255,255,.5) 0%, rgba(255,255,255,0) 32rem); }
 
   /* ---------- ზედა ზოლი ---------- */
-  .mp-header { background: rgba(15,23,42,.72); -webkit-backdrop-filter: blur(18px) saturate(170%); backdrop-filter: blur(18px) saturate(170%); border-bottom: 1px solid var(--line-soft); box-shadow: 0 1px 0 rgba(255,255,255,.02), 0 14px 34px -18px rgba(2,6,23,.8); }
-  .mp-hairline { background: linear-gradient(90deg, transparent 0%, rgba(99,102,241,.6) 28%, rgba(139,92,246,.6) 55%, rgba(45,212,191,.5) 80%, transparent 100%); opacity: .55; }
-  .mp-strip { background: linear-gradient(90deg, #4f46e5 0%, #6d28d9 55%, #7c3aed 100%); box-shadow: inset 0 -1px 0 rgba(255,255,255,.12); }
+  .mp-header { background: rgba(255,255,255,.9); -webkit-backdrop-filter: blur(18px) saturate(180%); backdrop-filter: blur(18px) saturate(180%);
+    border-bottom: 1px solid var(--line); box-shadow: 0 10px 30px -22px rgba(24,25,28,.22); }
+  .mp-hairline { background: linear-gradient(90deg, transparent 0%, rgba(200,16,46,.45) 30%, rgba(201,162,78,.55) 70%, transparent 100%); opacity: .6; }
+  .mp-strip { background: linear-gradient(90deg, #c8102e 0%, #b30d29 100%); box-shadow: inset 0 1px 0 rgba(255,255,255,.14), inset 0 -1px 0 rgba(0,0,0,.08); }
 
-  /* ---------- მართვის ელემენტები (ღილაკი-ხატულა, ენა, ტელეფონი) ---------- */
-  .mp-ctl { color: var(--text); background: rgba(255,255,255,.045); border: 1px solid var(--line); box-shadow: var(--hl), 0 1px 2px rgba(2,6,23,.3);
+  /* ---------- მართვის ელემენტები ---------- */
+  .mp-ctl { color: var(--ink); background: var(--surface); border: 1px solid var(--line); box-shadow: var(--hl), var(--e1);
     transition: background-color .3s var(--ease), border-color .3s var(--ease), box-shadow .3s var(--ease), transform .3s var(--ease), color .3s var(--ease); }
-  .mp-ctl:active { transform: translateY(0) scale(.96); }
-  .mp-ctl-on { color: #e0e7ff; background: linear-gradient(135deg, rgba(99,102,241,.32), rgba(139,92,246,.24)); border-color: rgba(129,140,248,.55); box-shadow: inset 0 1px 0 rgba(255,255,255,.1), 0 8px 22px -10px rgba(99,102,241,.75); }
-  .mp-seg-on { color: #fff; background: var(--grad); box-shadow: inset 0 1px 0 rgba(255,255,255,.22), 0 4px 12px -4px rgba(99,102,241,.7); }
-  .mp-seg { color: var(--text-3); transition: color .3s var(--ease), background-color .3s var(--ease); }
-  .mp-call-dot { background: linear-gradient(135deg, #14b8a6, #0d9488); box-shadow: inset 0 1px 0 rgba(255,255,255,.25), 0 0 0 3px rgba(45,212,191,.14), 0 4px 12px -2px rgba(45,212,191,.5); }
-  .mp-count-badge { background: var(--grad); box-shadow: 0 0 0 2px var(--bg), 0 4px 10px -2px rgba(99,102,241,.75); }
+  .mp-ctl-on { color: #fff; background: linear-gradient(180deg, #2a2b30, #18191c); border-color: #18191c; box-shadow: inset 0 1px 0 rgba(255,255,255,.12), 0 8px 18px -10px rgba(24,25,28,.6); }
+  .mp-segbox { background: rgba(24,25,28,.04); border: 1px solid var(--line); box-shadow: inset 0 1px 2px rgba(24,25,28,.05); }
+  .mp-seg { color: var(--text-2); transition: color .3s var(--ease), background-color .3s var(--ease); }
+  .mp-seg-on { color: #fff; background: linear-gradient(180deg, #2a2b30, #18191c); box-shadow: inset 0 1px 0 rgba(255,255,255,.14), 0 4px 10px -4px rgba(24,25,28,.55); }
+  .mp-call-dot { color: #fff; background: linear-gradient(135deg, #1a9a4c, #15803d); box-shadow: inset 0 1px 0 rgba(255,255,255,.25), 0 0 0 3px rgba(21,128,61,.12), 0 4px 10px -2px rgba(21,128,61,.45); }
+  .mp-count-badge { background: linear-gradient(135deg, #e0213f, #c8102e); box-shadow: 0 0 0 2px #fff, 0 4px 10px -2px rgba(200,16,46,.55); }
 
   /* ---------- ველები ---------- */
-  .mp-field { color: var(--text); background: rgba(2,6,23,.3); border: 1px solid var(--line); border-radius: var(--r);
-    box-shadow: inset 0 1px 2px rgba(2,6,23,.45), 0 1px 0 rgba(255,255,255,.03);
+  .mp-field { color: var(--ink); background: var(--surface); border: 1px solid rgba(24,25,28,.11); border-radius: var(--r);
+    box-shadow: inset 0 1px 2px rgba(24,25,28,.05), 0 1px 0 rgba(255,255,255,.9);
     transition: border-color .3s var(--ease), box-shadow .3s var(--ease), background-color .3s var(--ease); }
-  .mp-field::placeholder { color: var(--text-3); }
-  .mp-field:focus { outline: none; border-color: rgba(129,140,248,.7); background: rgba(2,6,23,.42);
-    box-shadow: inset 0 1px 2px rgba(2,6,23,.45), 0 0 0 4px rgba(99,102,241,.2), 0 8px 24px -12px rgba(99,102,241,.6); }
+  .mp-field::placeholder { color: #7a7b80; }
+  .mp-field:focus { outline: none; border-color: #18191c; box-shadow: inset 0 1px 2px rgba(24,25,28,.05), 0 0 0 1px #18191c, 0 0 0 5px rgba(24,25,28,.08); }
 
-  /* ---------- მთავარი ღილაკი (CTA) ---------- */
+  /* ---------- შეკვეთის ღილაკი (CTA) ---------- */
   .mp-cta { position: relative; overflow: hidden; isolation: isolate; color: #fff; border-radius: var(--r);
-    background-image: linear-gradient(135deg, #5558e8 0%, #7c3aed 50%, #5558e8 100%); background-size: 200% 100%; background-position: 0% 0;
-    text-shadow: 0 1px 1px rgba(30,27,75,.35);
-    box-shadow: inset 0 1px 0 rgba(255,255,255,.24), inset 0 -1px 0 rgba(0,0,0,.18), 0 1px 2px rgba(2,6,23,.5), 0 8px 22px -8px rgba(99,102,241,.6);
+    background-image: linear-gradient(135deg, #15803d 0%, #0f6b31 50%, #15803d 100%); background-size: 200% 100%; background-position: 0% 0;
+    text-shadow: 0 1px 1px rgba(0,0,0,.15);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.22), inset 0 -1px 0 rgba(0,0,0,.12), 0 1px 2px rgba(21,128,61,.25), 0 8px 20px -8px rgba(21,128,61,.45);
     transition: transform .3s var(--ease), box-shadow .3s var(--ease), background-position .6s var(--ease), filter .3s var(--ease); }
-  .mp-cta::after { content: ''; position: absolute; inset: 0; z-index: -1; background: linear-gradient(110deg, transparent 35%, rgba(255,255,255,.2) 50%, transparent 65%); transform: translateX(-100%); transition: transform .8s var(--ease-out); }
-  .mp-cta:active { transform: translateY(0) scale(.98); filter: brightness(.96); }
+  .mp-cta::after { content: ''; position: absolute; inset: 0; z-index: -1; background: linear-gradient(110deg, transparent 35%, rgba(255,255,255,.24) 50%, transparent 65%); transform: translateX(-100%); transition: none; }
 
   /* ---------- ზედაპირები ---------- */
-  .mp-panel { border-radius: var(--r-lg); background: linear-gradient(180deg, rgba(36,48,71,.72) 0%, rgba(27,37,57,.64) 100%); border: 1px solid var(--line);
-    box-shadow: var(--hl), var(--e2); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); }
-  .mp-card { position: relative; border-radius: var(--r-lg); background: linear-gradient(180deg, rgba(36,48,71,.86) 0%, rgba(27,37,57,.8) 100%); border: 1px solid var(--line);
-    box-shadow: var(--hl), var(--e2); transition: transform .4s var(--ease), box-shadow .4s var(--ease), border-color .4s var(--ease); }
+  .mp-panel { border-radius: var(--r-lg); background: rgba(255,255,255,.82); border: 1px solid var(--line); box-shadow: var(--hl), var(--e2); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); }
+  .mp-card { position: relative; border-radius: var(--r-lg); background: var(--surface); border: 1px solid var(--line); box-shadow: var(--hl), var(--e2);
+    transition: transform .4s var(--ease), box-shadow .4s var(--ease), border-color .4s var(--ease); }
   .mp-card::before { content: ''; position: absolute; inset: -1px; z-index: 1; border-radius: inherit; padding: 1px; pointer-events: none; opacity: 0;
-    background: linear-gradient(135deg, rgba(129,140,248,.75), rgba(167,139,250,.15) 45%, rgba(45,212,191,.45));
+    background: linear-gradient(135deg, rgba(200,16,46,.5), rgba(201,162,78,.12) 45%, rgba(201,162,78,.6));
     -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude;
     transition: opacity .4s var(--ease); }
-  .mp-tile { position: relative; border-radius: var(--r); background: radial-gradient(120% 85% at 50% 0%, rgba(99,102,241,.16), transparent 58%), linear-gradient(180deg, #26324a 0%, #1c2638 100%);
-    box-shadow: inset 0 0 0 1px rgba(255,255,255,.04), inset 0 -24px 40px -24px rgba(2,6,23,.55); }
+  /* ვიწრო ბარათზე (1280px ეკრანი, 4 სვეტი) ღილაკის ტექსტი ერთ ხაზზე რჩება — ხატულა იმალება */
+  .mp-card { container-type: inline-size; }
+  @container (max-width: 330px) { .mp-card .mp-cta { font-size: 12px; padding-left: 8px; padding-right: 8px; } .mp-card .mp-cta > svg { display: none; } }
+  .mp-card h3 > a:focus-visible { outline: none; color: var(--red); }
+  .mp-card:has(h3 > a:focus-visible) { outline: 2px solid var(--red); outline-offset: 3px; }
+  .mp-tile { position: relative; border-radius: var(--r); background: radial-gradient(120% 90% at 50% 10%, #ffffff 0%, #f4f2ee 55%, #e9e6e0 100%);
+    box-shadow: inset 0 0 0 1px rgba(24,25,28,.04), inset 0 -24px 40px -28px rgba(24,25,28,.12); }
   .mp-tile::before { content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; opacity: 0;
-    background: radial-gradient(60% 55% at 50% 45%, rgba(139,92,246,.22), transparent 70%); transition: opacity .5s var(--ease); }
-  .mp-tile.mp-tile-lg { border-radius: var(--r-lg); box-shadow: inset 0 0 0 1px rgba(255,255,255,.07), inset 0 -60px 80px -60px rgba(2,6,23,.6), 0 1px 2px rgba(2,6,23,.4), 0 30px 60px -24px rgba(2,6,23,.85), 0 20px 60px -30px rgba(99,102,241,.35); }
-  .mp-segbox { background: rgba(255,255,255,.045); border: 1px solid var(--line); box-shadow: var(--hl), 0 1px 2px rgba(2,6,23,.3); }
-  .mp-promo { border-radius: var(--r-lg); border: 1px solid rgba(129,140,248,.2);
-    background: radial-gradient(120% 70% at 50% 0%, rgba(99,102,241,.3), transparent 60%), radial-gradient(90% 60% at 50% 115%, rgba(45,212,191,.1), transparent 60%), linear-gradient(180deg, #1f2a44 0%, #151d31 100%);
-    box-shadow: inset 0 1px 0 rgba(255,255,255,.08), var(--e3), 0 22px 50px -26px rgba(99,102,241,.5); }
-  .mp-accent-line { background: linear-gradient(90deg, #6366f1, #a78bfa 50%, #2dd4bf); }
-  .mp-drawer { background: rgba(15,23,42,.9); -webkit-backdrop-filter: blur(24px) saturate(160%); backdrop-filter: blur(24px) saturate(160%);
-    border-left: 1px solid var(--line); box-shadow: -24px 0 80px -20px rgba(2,6,23,.85), inset 1px 0 0 rgba(255,255,255,.04); }
+    background: radial-gradient(60% 55% at 50% 45%, rgba(201,162,78,.2), transparent 70%); transition: opacity .5s var(--ease); }
+  .mp-tile :focus-visible { outline-offset: -4px; border-radius: inherit; }
+  .mp-tile.mp-tile-lg { border-radius: var(--r-lg); box-shadow: inset 0 0 0 1px rgba(24,25,28,.06), inset 0 -60px 80px -60px rgba(24,25,28,.12), var(--e2); }
+  .mp-promo { border-radius: var(--r-lg); border: 1px solid rgba(255,255,255,.06);
+    background: radial-gradient(120% 70% at 50% 0%, rgba(200,16,46,.2), transparent 62%), radial-gradient(120% 80% at 50% 0%, #2a2b30 0%, #18191c 65%);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.08), 0 2px 4px rgba(24,25,28,.06), 0 14px 28px -14px rgba(24,25,28,.42); }
+  .mp-accent-line { background: linear-gradient(90deg, #a50d26, #ff4d63 50%, #a50d26); }
+  .mp-drawer { background: rgba(255,255,255,.985); -webkit-backdrop-filter: blur(24px) saturate(160%); backdrop-filter: blur(24px) saturate(160%);
+    border-left: 1px solid var(--line); box-shadow: -24px 0 70px -24px rgba(24,25,28,.35); }
   @media (min-width: 640px) { .mp-drawer { border: 1px solid var(--line); border-radius: var(--r-lg); } }
-  .mp-glass { background: rgba(30,41,59,.82); -webkit-backdrop-filter: blur(18px) saturate(160%); backdrop-filter: blur(18px) saturate(160%); border: 1px solid var(--line-strong); box-shadow: var(--hl), var(--e3); }
-  .mp-float { color: var(--text); background: rgba(15,23,42,.62); border: 1px solid rgba(255,255,255,.14); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
-    box-shadow: var(--hl), 0 6px 16px -6px rgba(2,6,23,.7); transition: background-color .3s var(--ease), border-color .3s var(--ease), scale .3s var(--ease), opacity .3s var(--ease), translate .3s var(--ease), box-shadow .3s var(--ease); }
+  .mp-glass { background: rgba(24,25,28,.92); -webkit-backdrop-filter: blur(18px) saturate(160%); backdrop-filter: blur(18px) saturate(160%); border: 1px solid rgba(255,255,255,.08); box-shadow: inset 0 1px 0 rgba(255,255,255,.08), var(--e3); }
+  .mp-float { color: var(--ink); background: rgba(255,255,255,.92); border: 1px solid var(--line); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); box-shadow: var(--hl), var(--e1);
+    transition: background-color .3s var(--ease), border-color .3s var(--ease), color .3s var(--ease), transform .3s var(--ease), scale .3s var(--ease), opacity .3s var(--ease), translate .3s var(--ease), box-shadow .3s var(--ease); }
 
   /* ---------- ფილტრები და ჩიპები ---------- */
-  .mp-opt { position: relative; border-radius: var(--r-sm); color: var(--text-2); transition: background-color .3s var(--ease), color .3s var(--ease), translate .3s var(--ease), box-shadow .3s var(--ease); }
-  .mp-opt-on { color: #fff; background: linear-gradient(135deg, rgba(99,102,241,.34), rgba(139,92,246,.2)); box-shadow: inset 0 0 0 1px rgba(129,140,248,.42), inset 0 1px 0 rgba(255,255,255,.08), 0 8px 20px -10px rgba(99,102,241,.75); }
-  .mp-opt-on::before { content: ''; position: absolute; left: 4px; top: 28%; bottom: 28%; width: 3px; border-radius: 3px; background: linear-gradient(#818cf8, #c084fc); }
-  .mp-opt .mp-count { color: var(--text-3); } .mp-opt-on .mp-count, .mp-chip-on .mp-count { color: #e0e7ff; }
-  .mp-chip { border-radius: var(--r); color: var(--text-2); background: rgba(30,41,59,.72); border: 1px solid var(--line); box-shadow: var(--hl);
+  .mp-opt { position: relative; border-radius: var(--r); color: var(--ink-2); transition: background-color .3s var(--ease), color .3s var(--ease), translate .3s var(--ease), box-shadow .3s var(--ease); }
+  .mp-opt .mp-count { color: var(--text-3); }
+  .mp-opt-on { color: #fff; background: linear-gradient(180deg, #2a2b30, #18191c); box-shadow: inset 0 1px 0 rgba(255,255,255,.1), 0 8px 18px -10px rgba(24,25,28,.6); }
+  .mp-opt-on::before { content: ''; position: absolute; left: 5px; top: 28%; bottom: 28%; width: 3px; border-radius: 3px; background: linear-gradient(#ff4d63, #c8102e); }
+  .mp-opt.mp-opt-on .mp-count { color: rgba(255,255,255,.62); }
+  .mp-chip { border-radius: var(--r); color: var(--ink-2); background: var(--surface); border: 1px solid var(--line); box-shadow: var(--hl), var(--e1);
     transition: background-color .3s var(--ease), border-color .3s var(--ease), color .3s var(--ease), box-shadow .3s var(--ease); }
-  .mp-chip .mp-count { color: var(--text-3); }
-  .mp-chip-on { color: #fff; border-color: transparent; background: var(--grad); box-shadow: inset 0 1px 0 rgba(255,255,255,.2), 0 6px 18px -6px rgba(99,102,241,.65); }
-  .mp-thumb { border-radius: var(--r); border: 1px solid var(--line); background: #1c2638; transition: border-color .3s var(--ease), box-shadow .3s var(--ease), transform .3s var(--ease); }
-  .mp-thumb-on { border-color: rgba(129,140,248,.85); box-shadow: 0 0 0 3px rgba(99,102,241,.25), 0 8px 20px -8px rgba(99,102,241,.6); }
-  .mp-stepper { border-radius: var(--r-sm); border: 1px solid var(--line); background: rgba(2,6,23,.28); box-shadow: inset 0 1px 2px rgba(2,6,23,.4); }
-  .mp-stepper button { border-radius: 8px; transition: background-color .3s var(--ease), color .3s var(--ease); }
+  .mp-chip:not(.mp-chip-on) .mp-count { color: var(--text-3); }
+  .mp-chip-on { color: #fff; border-color: #18191c; background: linear-gradient(180deg, #2a2b30, #18191c); box-shadow: inset 0 1px 0 rgba(255,255,255,.1), 0 6px 16px -8px rgba(24,25,28,.6); }
+  .mp-chip-on .mp-count { color: rgba(255,255,255,.62); }
+  .mp-thumb { border-radius: var(--r); border: 1px solid var(--line); background: var(--surface); box-shadow: var(--e1); transition: border-color .3s var(--ease), box-shadow .3s var(--ease), transform .3s var(--ease); }
+  .mp-thumb-on { border-color: #18191c; box-shadow: 0 0 0 3px rgba(24,25,28,.1), 0 8px 18px -10px rgba(24,25,28,.4); }
+  .mp-stepper { border-radius: var(--r); border: 1px solid var(--line); background: var(--surface-2); box-shadow: inset 0 1px 2px rgba(24,25,28,.05); }
+  .mp-stepper button { border-radius: var(--r-sm); transition: background-color .3s var(--ease), color .3s var(--ease); }
 
   /* ---------- ბეჯები ---------- */
-  .mp-badge-sale { color: #fff; background: linear-gradient(135deg, #e11d48, #be123c); box-shadow: inset 0 1px 0 rgba(255,255,255,.25), 0 4px 12px -4px rgba(244,63,94,.65); }
-  .mp-badge { color: #e2e8f0; background: rgba(15,23,42,.62); border: 1px solid rgba(255,255,255,.12); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); }
-  .mp-dot-ok { background: #2dd4bf; box-shadow: 0 0 0 3px rgba(45,212,191,.18), 0 0 10px rgba(45,212,191,.6); }
-  .mp-dot-wait { background: #fbbf24; box-shadow: 0 0 0 3px rgba(251,191,36,.16); }
-  .mp-bullet { background: linear-gradient(135deg, #818cf8, #c084fc); box-shadow: 0 0 8px rgba(139,92,246,.6); }
-  .mp-check { color: #5eead4; background: rgba(45,212,191,.14); box-shadow: inset 0 0 0 1px rgba(45,212,191,.28); }
+  .mp-badge-sale { color: #fff; background: linear-gradient(135deg, #e0213f, #b00e28); box-shadow: inset 0 1px 0 rgba(255,255,255,.25), 0 4px 12px -4px rgba(200,16,46,.55); }
+  .mp-badge { color: #fff; background: rgba(24,25,28,.84); border: 1px solid rgba(255,255,255,.1); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); }
+  .mp-dot-ok { background: #15803d; box-shadow: 0 0 0 3px rgba(21,128,61,.15); }
+  .mp-dot-wait { background: #d97706; box-shadow: 0 0 0 3px rgba(217,119,6,.15); }
+  .mp-bullet { background: linear-gradient(135deg, #ff4d63, #c8102e); box-shadow: 0 2px 6px rgba(200,16,46,.35); }
+  .mp-check { color: #15803d; background: rgba(21,128,61,.1); box-shadow: inset 0 0 0 1px rgba(21,128,61,.2); }
 
-  /* ---------- hover — მხოლოდ მაუსიან მოწყობილობებზე, რომ ტელეფონზე არ „გაიჭედოს“ ---------- */
+  /* ---------- hover — მხოლოდ მაუსიან მოწყობილობებზე ---------- */
   @media (hover: hover) {
-    .mp-ctl:hover { background: rgba(255,255,255,.085); border-color: var(--line-strong); transform: translateY(-1px); box-shadow: var(--hl), 0 10px 22px -12px rgba(2,6,23,.9); }
-    .mp-ctl-on:hover { border-color: rgba(165,180,252,.7); box-shadow: inset 0 1px 0 rgba(255,255,255,.12), 0 12px 26px -10px rgba(99,102,241,.85); }
-    .mp-seg:hover { color: #fff; }
-    .mp-field:hover:not(:focus) { border-color: var(--line-strong); }
+    .mp-ctl:hover { border-color: var(--line-strong); transform: translateY(-1px); box-shadow: var(--hl), 0 10px 22px -12px rgba(24,25,28,.35); }
+    .mp-ctl-on:hover { border-color: #000; box-shadow: inset 0 1px 0 rgba(255,255,255,.14), 0 12px 24px -10px rgba(24,25,28,.7); }
+    .mp-seg:hover { color: var(--ink); background: rgba(255,255,255,.8); }
+    .mp-field:hover:not(:focus) { border-color: rgba(24,25,28,.2); box-shadow: inset 0 1px 2px rgba(24,25,28,.05), 0 0 0 3px rgba(24,25,28,.04); }
     .mp-cta:hover { transform: translateY(-2px); background-position: 100% 0;
-      box-shadow: inset 0 1px 0 rgba(255,255,255,.28), inset 0 -1px 0 rgba(0,0,0,.18), 0 2px 4px rgba(2,6,23,.4), 0 18px 36px -12px rgba(124,58,237,.75), 0 0 0 1px rgba(165,180,252,.3); }
-    .mp-cta:hover::after { transform: translateX(100%); }
-    .mp-card:hover { transform: translateY(-4px); box-shadow: inset 0 1px 0 rgba(255,255,255,.09), var(--e3), 0 20px 50px -20px rgba(99,102,241,.45); }
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.26), inset 0 -1px 0 rgba(0,0,0,.12), 0 2px 4px rgba(21,128,61,.2), 0 16px 32px -12px rgba(21,128,61,.6); }
+    .mp-cta:hover::after { transform: translateX(100%); transition: transform .8s var(--ease-out); }
+    .mp-card:hover { transform: translateY(-4px); box-shadow: var(--hl), var(--e3), 0 18px 44px -24px rgba(200,16,46,.22); }
+    .mp-card:hover::after { content: ''; position: absolute; left: 0; right: 0; top: 100%; height: 6px; }
     .mp-card:hover::before, .mp-card:hover .mp-tile::before { opacity: 1; }
-    .mp-float:hover { background: rgba(79,70,229,.9); border-color: rgba(165,180,252,.6); scale: 1.06; box-shadow: inset 0 1px 0 rgba(255,255,255,.2), 0 10px 24px -8px rgba(99,102,241,.8); }
-    .mp-opt:hover { color: var(--text); background: rgba(255,255,255,.05); translate: 2px 0; }
-    .mp-opt-on:hover { color: #fff; background: linear-gradient(135deg, rgba(99,102,241,.4), rgba(139,92,246,.26)); translate: 0 0; }
-    .mp-chip:hover:not(.mp-chip-on) { color: var(--text); border-color: var(--line-strong); background: rgba(36,48,71,.9); }
-    .mp-thumb:hover { transform: translateY(-2px); border-color: var(--line-strong); }
-    .mp-thumb-on:hover { border-color: #a5b4fc; }
-    .mp-stepper button:hover { color: #fff; background: rgba(255,255,255,.07); }
+    .mp-float:hover { color: #fff; background: #18191c; border-color: #18191c; scale: 1.06; box-shadow: 0 10px 22px -8px rgba(24,25,28,.5); }
+    .mp-opt:hover { color: var(--ink); background: rgba(24,25,28,.045); translate: 2px 0; }
+    .mp-opt.mp-opt-on:hover { color: #fff; background: linear-gradient(180deg, #2f3035, #1c1d21); translate: 0 0; }
+    .mp-chip:hover:not(.mp-chip-on) { color: var(--ink); border-color: var(--line-strong); box-shadow: var(--hl), 0 8px 18px -10px rgba(24,25,28,.3); }
+    .mp-thumb:hover { transform: translateY(-2px); border-color: var(--line-strong); box-shadow: 0 10px 20px -10px rgba(24,25,28,.35); }
+    .mp-thumb-on:hover { border-color: #18191c; }
+    .mp-stepper button:hover { color: var(--ink); background: rgba(24,25,28,.06); }
     .mp-link:hover { background-size: 100% 1px; }
   }
-  :focus-visible { outline: 2px solid #818cf8; outline-offset: 2px; border-radius: 6px; }
+  .mp-card:has(:focus-visible) { transform: translateY(-4px); box-shadow: var(--hl), var(--e3); }
+  /* დაჭერა hover-ის შემდეგ — რომ ყოველთვის იმოქმედოს */
+  .mp-ctl:active { transform: translateY(0) scale(.96); transition-duration: .1s; }
+  .mp-cta:active { transform: translateY(0) scale(.98); filter: brightness(.96); transition-duration: .1s; }
+  :focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
+  :where(:focus-visible) { border-radius: 6px; }
   .mp-field:focus-visible { outline: none; }
 
   /* ---------- ანიმაციები ---------- */
@@ -682,8 +682,9 @@ const GLOBAL_CSS = `
     background-size: 300% 100%; -webkit-background-clip: text; background-clip: text; color: transparent;
     animation: mp-shimmer 3.2s ease-in-out infinite;
   }
-  .mp-shimmer { background-image: linear-gradient(110deg, #f8fafc 42%, #c7d2fe 50%, #f8fafc 58%); }
-  .mp-shimmer-red { background-image: linear-gradient(110deg, #a5b4fc 38%, #f5f3ff 50%, #c4b5fd 62%); }
+  .mp-shimmer { background-image: linear-gradient(110deg, #18191c 42%, #c8102e 50%, #18191c 58%); }
+  .mp-shimmer-red { background-image: linear-gradient(110deg, #c8102e 42%, #ff7086 50%, #c8102e 58%); }
+  .mp-strip .mp-shimmer { background-image: linear-gradient(110deg, #ffffff 42%, #ffd6dc 50%, #ffffff 58%); }
   @keyframes mp-shimmer { 0% { background-position: 100% 0; } 55%, 100% { background-position: 0 0; } }
   .mp-drive { animation: mp-drive 1.2s ease-in-out infinite; }
   @keyframes mp-drive {
@@ -697,7 +698,7 @@ const GLOBAL_CSS = `
   .mp-scroll::-webkit-scrollbar { display: none; }
   .mp-scroll { scrollbar-width: none; }
   @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; }
+    *, *::before, *::after { animation-duration: .001ms !important; animation-delay: 0s !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; transition-delay: 0s !important; }
   }
 `;
 
@@ -742,11 +743,11 @@ function Logo({ onNavigate }) {
       className="group flex shrink-0 items-center gap-2.5"
       aria-label={T.homeAria}
     >
-      <span className="drop-shadow-[0_4px_12px_rgba(244,63,94,0.35)] transition-transform duration-500 group-hover:rotate-[-8deg] group-hover:scale-105">
+      <span className="drop-shadow-[0_4px_10px_rgba(200,16,46,0.3)] transition-transform duration-500 group-hover:rotate-[-8deg] group-hover:scale-105">
         <LogoMark />
       </span>
-      <span className="mp-brand text-[19px] font-semibold leading-none tracking-[-0.02em] text-white">
-        mypoker<span className="text-[#ff5a6e]">.ge</span>
+      <span className="mp-brand text-[19px] font-semibold leading-none tracking-[-0.02em] text-[#18191c]">
+        mypoker<span className="text-[#c8102e]">.ge</span>
       </span>
     </a>
   );
@@ -936,7 +937,7 @@ function SearchField({ id, query, onQuery, className = "" }) {
   return (
     <label htmlFor={id} className={`relative block ${className}`}>
       <span className="sr-only">{T.search}</span>
-      <Search className="pointer-events-none absolute left-3.5 top-1/2 z-[1] h-4 w-4 -translate-y-1/2 text-[#94a3b8]" />
+      <Search className="pointer-events-none absolute left-3.5 top-1/2 z-[1] h-4 w-4 -translate-y-1/2 text-[#6f7075]" />
       <input
         id={id}
         type="search"
@@ -958,7 +959,7 @@ function FreeShipping({ strip = false }) {
         strip ? "gap-1.5 text-[12px] min-[380px]:text-[13px]" : "gap-2.5 text-[16px] tracking-[0.06em] min-[1400px]:text-[17px] min-[1400px]:tracking-[0.08em]"
       }`}
     >
-      <Truck className={`mp-drive shrink-0 ${strip ? "h-4 w-4 text-white" : "h-6 w-6 text-[#a5b4fc] drop-shadow-[0_0_10px_rgba(129,140,248,0.55)]"}`} strokeWidth={2.2} aria-hidden="true" />
+      <Truck className={`mp-drive shrink-0 ${strip ? "h-4 w-4 text-white" : "h-6 w-6 text-[#c8102e] drop-shadow-[0_2px_6px_rgba(200,16,46,0.3)]"}`} strokeWidth={2.2} aria-hidden="true" />
       <span className="mp-shimmer">{strip ? T.freeDeliveryShort : T.freeDelivery}</span>
       <span className="mp-beat">
         <span className={`mp-num ${strip ? "mp-shimmer" : "mp-shimmer-red"}`}>{T.freeFrom(CONFIG.freeShippingFrom)}</span>
@@ -969,7 +970,7 @@ function FreeShipping({ strip = false }) {
 
 function Header({ cartCount, onOpenCart, query, onQuery, onNavigate, productId }) {
   return (
-    <header className="mp-header sticky top-[env(safe-area-inset-top,0px)] z-40 text-white">
+    <header className="mp-header sticky top-[env(safe-area-inset-top,0px)] z-40 text-[#18191c]">
       <span className="mp-hairline pointer-events-none absolute inset-x-0 bottom-0 h-px" aria-hidden="true" />
       {CONFIG.freeShippingFrom > 0 && (
         <div className="mp-strip flex h-9 items-center justify-center px-3 xl:hidden">
@@ -999,8 +1000,8 @@ function Header({ cartCount, onOpenCart, query, onQuery, onNavigate, productId }
               <Phone className="h-3.5 w-3.5 transition-transform duration-300 group-hover:rotate-12" strokeWidth={2.5} />
             </span>
             <span className="hidden flex-col items-center leading-tight sm:flex">
-              <span className="text-[12px] font-medium text-[#94a3b8]">{T.callUs}</span>
-              <span className="mp-num whitespace-nowrap text-[13px] font-semibold tracking-[0.01em] text-[#f8fafc]">{CONFIG.phoneDisplay}</span>
+              <span className="text-[12px] font-medium text-[#6f7075]">{T.callUs}</span>
+              <span className="mp-num whitespace-nowrap text-[13px] font-semibold tracking-[0.01em] text-[#18191c]">{CONFIG.phoneDisplay}</span>
             </span>
           </a>
 
@@ -1034,7 +1035,7 @@ function Header({ cartCount, onOpenCart, query, onQuery, onNavigate, productId }
 function FilterGroup({ title, children }) {
   return (
     <div>
-      <p className="px-3 text-[11px] font-semibold uppercase tracking-[0.12em] text-[#94a3b8]">{title}</p>
+      <p className="px-3 text-[11px] font-semibold uppercase tracking-[0.12em] text-[#6f7075]">{title}</p>
       <div className="mt-2.5 flex flex-col gap-1">{children}</div>
     </div>
   );
@@ -1071,7 +1072,7 @@ function Sidebar({ filter }) {
           ))}
         </FilterGroup>
         {hasFilters && (
-          <button type="button" onClick={reset} className="mp-link mx-3 mb-1 self-start text-left text-sm font-medium text-[#a5b4fc] hover:text-[#c7d2fe]">
+          <button type="button" onClick={reset} className="mp-link mx-3 mb-1 self-start text-left text-sm font-medium text-[#c8102e] hover:text-[#a50d26]">
             {T.clearFilters}
           </button>
         )}
@@ -1079,20 +1080,20 @@ function Sidebar({ filter }) {
         <div className="mp-promo relative overflow-hidden px-5 pb-5 pt-5 text-center text-white">
           {/* ზედა წითელი ხაზი და მკრთალი აგური ფონზე, ცენტრში */}
           <span className="mp-accent-line absolute inset-x-0 top-0 h-[3px]" aria-hidden="true" />
-          <svg viewBox="0 0 40 40" className="pointer-events-none absolute -bottom-12 left-1/2 h-36 w-36 -translate-x-1/2 text-[#a5b4fc]/[0.06]" aria-hidden="true">
+          <svg viewBox="0 0 40 40" className="pointer-events-none absolute -bottom-12 left-1/2 h-36 w-36 -translate-x-1/2 text-white/[0.04]" aria-hidden="true">
             <path d={DIAMOND_PATH} fill="currentColor" />
           </svg>
 
           <p className="mp-title relative text-[15px] font-bold leading-snug tracking-[-0.01em] [text-wrap:balance]">{T.waBoxTitle}</p>
-          <p className="relative mt-1.5 text-xs leading-relaxed text-[#cbd5e1]/80 [text-wrap:balance]">{T.waBoxText}</p>
+          <p className="relative mt-1.5 text-xs leading-relaxed text-white/65 [text-wrap:balance]">{T.waBoxText}</p>
 
           <div className="relative mt-3 flex items-center gap-2" aria-hidden="true">
             <span className="h-px flex-1 bg-gradient-to-r from-transparent to-white/20" />
             {/* ოთხივე ნიშანი: ყვავი, გული, აგური, ჯვარი */}
             {[
               [SUIT.spade, "text-[#e2e8f0]"],
-              [SUIT.heart, "text-[#fb7185]"],
-              [SUIT.diamond, "text-[#fb7185]"],
+              [SUIT.heart, "text-[#c8102e]"],
+              [SUIT.diamond, "text-[#c8102e]"],
               [SUIT.club, "text-[#e2e8f0]"],
             ].map(([d, color]) => (
               <svg key={d} viewBox="0 0 24 24" className={`h-3 w-3 ${color}`}>
@@ -1108,7 +1109,7 @@ function Sidebar({ filter }) {
             className="group/call relative mx-auto mt-3 flex w-fit items-center gap-1.5 whitespace-nowrap rounded-xl py-1 pl-1 pr-2 transition-colors duration-300 hover:bg-white/[0.06]"
             aria-label={T.callAria(CONFIG.phoneDisplay)}
           >
-            <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full border border-white/15 bg-white/[0.06] transition-all duration-300 group-hover/call:border-transparent group-hover/call:bg-[#0d9488] group-hover/call:shadow-[0_0_0_3px_rgba(45,212,191,0.18)]">
+            <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full border border-white/15 bg-white/[0.06] transition-all duration-300 group-hover/call:border-transparent group-hover/call:bg-[#15803d] group-hover/call:shadow-[0_0_0_3px_rgba(21,128,61,0.3)]">
               <Phone className="h-3 w-3" />
             </span>
             <span className="mp-num select-all text-[18px] font-bold tracking-wide">{CONFIG.phoneDisplay}</span>
@@ -1133,13 +1134,13 @@ function MobileFilters({ filter }) {
   const { category, setCategory, price, setPrice, counts } = filter;
   return (
     <div
-      className={`sticky z-30 -mx-4 border-b border-white/[0.06] bg-[#0f172a]/80 px-4 py-3 backdrop-blur-xl backdrop-saturate-150 lg:hidden ${
+      className={`sticky z-30 -mx-4 border-b border-[#18191c]/[0.06] bg-[#f3f2ef]/85 px-4 py-3 backdrop-blur-xl backdrop-saturate-150 lg:hidden ${
         CONFIG.freeShippingFrom > 0
           ? "top-[calc(env(safe-area-inset-top,0px)+9.5rem)] md:top-[calc(env(safe-area-inset-top,0px)+6.25rem)]"
           : "top-[calc(env(safe-area-inset-top,0px)+7.25rem)] md:top-[calc(env(safe-area-inset-top,0px)+4rem)]"
       }`}
     >
-      <div className="mp-scroll flex gap-2 overflow-x-auto" role="tablist" aria-label={T.categoriesAria}>
+      <div className="mp-scroll -m-1 flex gap-2 overflow-x-auto p-1" role="tablist" aria-label={T.categoriesAria}>
         {CATEGORIES.map((c) => {
           const active = category === c.id;
           return (
@@ -1171,7 +1172,7 @@ function MobileFilters({ filter }) {
             </option>
           ))}
         </select>
-        <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#94a3b8]" />
+        <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#6f7075]" />
       </label>
     </div>
   );
@@ -1223,21 +1224,21 @@ function ProductCard({ product, index, inCart, onAdd, onOpen }) {
       </a>
 
       <div className="flex flex-1 flex-col px-3 pb-3 pt-4">
-        <h3 className="line-clamp-2 min-h-[2.75rem] text-[15px] font-semibold leading-snug text-[#f8fafc]">
-          <a href={productPath(product.id)} onClick={handleNav(onOpen, product.id)} className="transition-colors duration-300 hover:text-[#c7d2fe]">
+        <h3 className="line-clamp-2 min-h-[2.75rem] text-[15px] font-semibold leading-snug text-[#18191c]">
+          <a href={productPath(product.id)} onClick={handleNav(onOpen, product.id)} className="transition-colors duration-300 hover:text-[#c8102e]">
             {product.name}
           </a>
         </h3>
-        <p className="mt-1.5 truncate text-[13px] text-[#94a3b8]">{product.spec}</p>
+        <p className="mt-1.5 truncate text-[13px] text-[#6f7075]">{product.spec}</p>
 
         <div className="mt-3.5 flex items-end justify-between gap-2">
           <div className="flex items-baseline gap-2">
-            <span className={`mp-num mp-price text-xl font-bold ${product.oldPrice ? "text-[#fb7185]" : "text-[#f8fafc]"}`}>
+            <span className={`mp-num mp-price text-xl font-bold ${product.oldPrice ? "text-[#c8102e]" : "text-[#18191c]"}`}>
               {formatPrice(product.price)}
             </span>
-            {product.oldPrice && <span className="mp-num text-xs text-[#94a3b8] line-through decoration-[#94a3b8]/70">{formatPrice(product.oldPrice)}</span>}
+            {product.oldPrice && <span className="mp-num text-xs text-[#6f7075] line-through decoration-[#6f7075]/60">{formatPrice(product.oldPrice)}</span>}
           </div>
-          <span className={`inline-flex items-center gap-1.5 text-xs font-medium ${product.inStock ? "text-[#5eead4]" : "text-[#fcd34d]"}`}>
+          <span className={`inline-flex items-center gap-1.5 text-xs font-medium ${product.inStock ? "text-[#15803d]" : "text-[#b45309]"}`}>
             {product.inStock ? T.inStock : T.onOrder}
           </span>
         </div>
@@ -1247,7 +1248,7 @@ function ProductCard({ product, index, inCart, onAdd, onOpen }) {
             href={productWhatsAppLink(product)}
             target="_blank"
             rel="noopener noreferrer"
-            className="mp-cta inline-flex h-11 min-w-0 flex-1 items-center justify-center gap-2 whitespace-nowrap px-3 text-[13px] font-bold"
+            className="mp-cta inline-flex h-11 min-w-0 flex-1 items-center justify-center gap-1.5 px-2.5 text-center text-[12.5px] font-bold leading-[1.15] [text-wrap:balance]"
           >
             <MessageCircle className="h-4 w-4 shrink-0" strokeWidth={2.2} />
             {T.orderCta}
@@ -1286,7 +1287,7 @@ function Shop({ filter, cart, onOpen }) {
         <div className="mt-5 flex items-end justify-between gap-3 lg:mt-0">
           <div className="min-w-0">
             <h1 className="mp-title text-xl font-bold leading-tight sm:text-[28px]">{title}</h1>
-            <p className="mp-num mt-1 text-sm text-[#94a3b8]" aria-live="polite">
+            <p className="mp-num mt-1 text-sm text-[#6f7075]" aria-live="polite">
               {T.productCount(visible.length)}
             </p>
           </div>
@@ -1296,7 +1297,7 @@ function Shop({ filter, cart, onOpen }) {
               id="mp-sort"
               value={sort}
               onChange={(e) => setSort(e.target.value)}
-              className="mp-field h-10 max-w-[10.5rem] appearance-none truncate pl-4 pr-9 text-[13px]"
+              className="mp-field h-10 max-w-[10.5rem] appearance-none truncate pl-4 pr-9 text-[13px] sm:max-w-[13rem]"
             >
               {SORTS.map((s) => (
                 <option key={s.id} value={s.id}>
@@ -1304,7 +1305,7 @@ function Shop({ filter, cart, onOpen }) {
                 </option>
               ))}
             </select>
-            <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#94a3b8]" />
+            <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#6f7075]" />
           </label>
         </div>
 
@@ -1315,10 +1316,10 @@ function Shop({ filter, cart, onOpen }) {
             ))}
           </div>
         ) : (
-          <div className="mp-fade mp-panel mt-6 flex flex-col items-center !border-dashed !border-white/[0.14] px-6 py-16 text-center">
-            <Search className="h-6 w-6 text-[#a5b4fc]" />
-            <p className="mt-3 font-semibold text-[#f8fafc]">{T.noResults}</p>
-            <p className="mt-1 text-sm text-[#94a3b8]">{T.noResultsHint}</p>
+          <div className="mp-fade mp-panel mt-6 flex flex-col items-center !border-dashed !border-[#18191c]/[0.16] px-6 py-16 text-center">
+            <Search className="h-6 w-6 text-[#8a8b90]" />
+            <p className="mt-3 font-semibold text-[#18191c]">{T.noResults}</p>
+            <p className="mt-1 text-sm text-[#6f7075]">{T.noResultsHint}</p>
             {hasFilters && (
               <button
                 type="button"
@@ -1411,7 +1412,7 @@ function Gallery({ product }) {
       </div>
 
       {count > 1 && (
-        <div className="mp-scroll -mx-1 flex gap-2.5 overflow-x-auto px-1 pb-1 pt-1">
+        <div className="mp-scroll -mx-2 -my-1 flex gap-2.5 overflow-x-auto px-2 py-2">
           {images.map((img, i) => (
             <button
               key={img.src}
@@ -1428,7 +1429,7 @@ function Gallery({ product }) {
       )}
 
       {zoom && (
-        <div className="mp-fade fixed inset-0 z-[60] flex items-center justify-center bg-[#020617]/90 backdrop-blur-md" role="dialog" aria-modal="true" aria-label={product.name} {...swipe}>
+        <div className="mp-fade fixed inset-0 z-[60] flex items-center justify-center bg-[#111214]/92 backdrop-blur-md" role="dialog" aria-modal="true" aria-label={product.name} {...swipe}>
           <button type="button" className="absolute inset-0 cursor-zoom-out" onClick={() => setZoom(false)} aria-label={T.close} />
           <img src={images[index].src} alt={T.photoAlt(product.name, index + 1)} className="relative max-h-[92vh] max-w-[94vw] object-contain" />
           <button
@@ -1447,7 +1448,7 @@ function Gallery({ product }) {
               <button type="button" onClick={() => go(1)} className="mp-float absolute right-3 grid h-12 w-12 place-items-center rounded-xl" aria-label={T.nextPhoto}>
                 <ChevronRight className="h-6 w-6" />
               </button>
-              <span className="mp-num absolute bottom-[calc(1.25rem+env(safe-area-inset-bottom,0px))] text-sm text-[#cbd5e1]">
+              <span className="mp-num absolute bottom-[calc(1.25rem+env(safe-area-inset-bottom,0px))] text-sm text-white/80">
                 {index + 1} / {count}
               </span>
             </>
@@ -1468,7 +1469,7 @@ function Description({ text }) {
     .map((b) => b.split("\n").map((l) => l.trim()).filter(Boolean))
     .filter((lines) => lines.length);
   return (
-    <div className="flex max-w-3xl flex-col gap-4 text-[15px] leading-[1.75] text-[#cbd5e1]">
+    <div className="flex max-w-3xl flex-col gap-4 text-[15px] leading-[1.75] text-[#3f4045]">
       {blocks.map((lines, i) =>
         lines.every((l) => /^[-•*]\s*/.test(l)) ? (
           <ul key={i} className="flex flex-col gap-1.5">
@@ -1514,12 +1515,12 @@ function ProductPage({ product, cart, onNavigate }) {
 
   return (
     <main className="mx-auto max-w-[1200px] px-4 pb-20 pt-6 sm:px-6 lg:pt-10">
-      <nav className="flex flex-wrap items-center gap-1.5 text-sm text-[#94a3b8]" aria-label={T.breadcrumb}>
-        <a href={HOME_PATH} onClick={handleNav(onNavigate, null)} className="group inline-flex items-center gap-1.5 font-medium text-[#f8fafc] transition-colors duration-300 hover:text-[#c7d2fe]">
+      <nav className="flex flex-wrap items-center gap-1.5 text-sm text-[#6f7075]" aria-label={T.breadcrumb}>
+        <a href={HOME_PATH} onClick={handleNav(onNavigate, null)} className="group inline-flex items-center gap-1.5 font-medium text-[#18191c] transition-colors duration-300 hover:text-[#c8102e]">
           <ArrowLeft className="h-4 w-4 transition-transform duration-300 group-hover:-translate-x-0.5" />
           <span className="mp-link">{T.shop}</span>
         </a>
-        <span aria-hidden="true" className="text-[#475569]">/</span>
+        <span aria-hidden="true" className="text-[#b9b6af]">/</span>
         <span>{CATEGORY_LABEL[product.category]}</span>
       </nav>
 
@@ -1534,18 +1535,18 @@ function ProductPage({ product, cart, onNavigate }) {
             </div>
           )}
           <h1 className="mp-title mt-4 text-2xl font-bold leading-[1.15] sm:text-[34px]">{product.name}</h1>
-          {product.spec && <p className="mt-3 text-[15px] text-[#94a3b8]">{product.spec}</p>}
+          {product.spec && <p className="mt-3 text-[15px] text-[#6f7075]">{product.spec}</p>}
 
           <div className="mt-7 flex flex-wrap items-baseline gap-3">
-            <span className={`mp-num mp-price text-[34px] font-bold leading-none ${product.oldPrice ? "text-[#fb7185]" : "text-[#f8fafc]"}`}>
+            <span className={`mp-num mp-price text-[34px] font-bold leading-none ${product.oldPrice ? "text-[#c8102e]" : "text-[#18191c]"}`}>
               {formatPrice(product.price)}
             </span>
-            {product.oldPrice && <span className="mp-num text-lg text-[#94a3b8] line-through decoration-[#94a3b8]/70">{formatPrice(product.oldPrice)}</span>}
+            {product.oldPrice && <span className="mp-num text-lg text-[#6f7075] line-through decoration-[#6f7075]/60">{formatPrice(product.oldPrice)}</span>}
           </div>
           {product.oldPrice && product.saleEnds && (
-            <p className="mt-2 text-sm font-medium text-[#fda4af]">{T.saleUntil(formatDate(product.saleEnds))}</p>
+            <p className="mt-2 text-sm font-medium text-[#c8102e]">{T.saleUntil(formatDate(product.saleEnds))}</p>
           )}
-          <p className={`mt-4 inline-flex items-center gap-2 text-sm font-medium ${product.inStock ? "text-[#5eead4]" : "text-[#fcd34d]"}`}>
+          <p className={`mt-4 inline-flex items-center gap-2 text-sm font-medium ${product.inStock ? "text-[#15803d]" : "text-[#b45309]"}`}>
             <span className={`h-2 w-2 rounded-full ${product.inStock ? "mp-dot-ok" : "mp-dot-wait"}`} />
             {product.inStock ? T.inStock : T.onOrderLong}
           </p>
@@ -1571,14 +1572,14 @@ function ProductPage({ product, cart, onNavigate }) {
             </button>
           </div>
           {CONFIG.phoneDisplay && (
-            <p className="mt-3.5 text-sm text-[#94a3b8]">
+            <p className="mt-3.5 text-sm text-[#6f7075]">
               {T.orCall}{" "}
-              <a href={`tel:${CONFIG.phoneTel}`} className="mp-num mp-link select-all font-semibold text-[#f8fafc] hover:text-[#5eead4]">
+              <a href={`tel:${CONFIG.phoneTel}`} className="mp-num mp-link select-all font-semibold text-[#18191c] hover:text-[#15803d]">
                 {CONFIG.phoneDisplay}
               </a>
             </p>
           )}
-          <ul className="mp-panel mt-7 flex flex-col gap-3 p-4 text-sm text-[#cbd5e1]">
+          <ul className="mp-panel mt-7 flex flex-col gap-3 p-4 text-sm text-[#3f4045]">
             {[T.perkDelivery, T.perkConfirm].map((t) => (
               <li key={t} className="flex items-center gap-2.5">
                 <span className="mp-check grid h-5 w-5 shrink-0 place-items-center rounded-full">
@@ -1592,7 +1593,7 @@ function ProductPage({ product, cart, onNavigate }) {
       </div>
 
       {product.description.trim() && (
-        <section className="mt-16 border-t border-white/[0.06] pt-10" aria-labelledby="mp-desc">
+        <section className="mt-16 border-t border-[#18191c]/[0.08] pt-10" aria-labelledby="mp-desc">
           <h2 id="mp-desc" className="mp-title text-[22px] font-bold">{T.description}</h2>
           <div className="mt-5">
             <Description text={product.description} />
@@ -1601,7 +1602,7 @@ function ProductPage({ product, cart, onNavigate }) {
       )}
 
       {related.length > 0 && (
-        <section className="mt-16 border-t border-white/[0.06] pt-10" aria-labelledby="mp-related">
+        <section className="mt-16 border-t border-[#18191c]/[0.08] pt-10" aria-labelledby="mp-related">
           <h2 id="mp-related" className="mp-title text-[22px] font-bold">{T.related}</h2>
           <div className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {related.map((p, i) => (
@@ -1620,9 +1621,9 @@ function ProductPage({ product, cart, onNavigate }) {
 function NotFound({ onNavigate }) {
   return (
     <main className="mx-auto flex max-w-xl flex-col items-center px-4 py-24 text-center">
-      <p className="mp-title text-6xl drop-shadow-[0_0_24px_rgba(129,140,248,0.45)]">♠</p>
+      <p className="mp-title text-6xl drop-shadow-[0_10px_24px_rgba(24,25,28,0.18)]">♠</p>
       <h1 className="mp-title mt-4 text-[28px] font-bold">{T.notFound}</h1>
-      <p className="mt-2 text-[#94a3b8]">{T.notFoundText}</p>
+      <p className="mt-2 text-[#6f7075]">{T.notFoundText}</p>
       <a
         href={HOME_PATH}
         onClick={handleNav(onNavigate, null)}
@@ -1654,17 +1655,17 @@ function CartDrawer({ open, onClose, cart, onOpenProduct }) {
 
   return (
     <div className="fixed inset-0 z-50" role="dialog" aria-modal="true" aria-label={T.cart}>
-      <button type="button" className="mp-fade absolute inset-0 bg-[#020617]/60 backdrop-blur-[3px]" onClick={onClose} aria-label={T.close} />
+      <button type="button" className="mp-fade absolute inset-0 bg-[#18191c]/35 backdrop-blur-[3px]" onClick={onClose} aria-label={T.close} />
       <aside className="mp-slide-in mp-drawer absolute inset-y-0 right-0 flex w-full max-w-md flex-col overflow-hidden pb-[env(safe-area-inset-bottom,0px)] pt-[env(safe-area-inset-top,0px)] sm:inset-y-3 sm:right-3">
-        <div className="flex items-center justify-between border-b border-white/[0.06] px-6 py-5">
+        <div className="flex items-center justify-between border-b border-[#18191c]/[0.07] px-6 py-5">
           <div>
             <h2 className="mp-title text-lg font-bold">{T.cart}</h2>
-            <p className="mp-num mt-0.5 text-xs text-[#94a3b8]">{T.items(cart.count)}</p>
+            <p className="mp-num mt-0.5 text-xs text-[#6f7075]">{T.items(cart.count)}</p>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="mp-ctl grid h-10 w-10 place-items-center rounded-xl !text-[#cbd5e1]"
+            className="mp-ctl grid h-10 w-10 place-items-center rounded-xl !text-[#5c5d61]"
             aria-label={T.closeCart}
           >
             <X className="h-5 w-5" />
@@ -1673,16 +1674,16 @@ function CartDrawer({ open, onClose, cart, onOpenProduct }) {
 
         {cart.lines.length === 0 ? (
           <div className="flex flex-1 flex-col items-center justify-center px-8 text-center">
-            <ShoppingBag className="h-8 w-8 text-[#a5b4fc]" strokeWidth={1.5} />
-            <p className="mt-4 font-semibold text-[#f8fafc]">{T.cartEmpty}</p>
-            <p className="mt-1 text-sm text-[#94a3b8]">{T.cartEmptyText}</p>
+            <ShoppingBag className="h-8 w-8 text-[#8a8b90]" strokeWidth={1.5} />
+            <p className="mt-4 font-semibold text-[#18191c]">{T.cartEmpty}</p>
+            <p className="mt-1 text-sm text-[#6f7075]">{T.cartEmptyText}</p>
             <button type="button" onClick={onClose} className="mp-cta mt-6 px-5 py-2.5 text-sm font-semibold">
               {T.continueShopping}
             </button>
           </div>
         ) : (
           <>
-            <ul className="flex-1 divide-y divide-white/[0.06] overflow-y-auto px-6">
+            <ul className="flex-1 divide-y divide-[#18191c]/[0.06] overflow-y-auto px-6">
               {cart.lines.map(({ product, qty }) => (
                 <li key={product.id} className="mp-fade flex gap-3 py-4">
                   <div className="mp-tile h-16 w-20 shrink-0 overflow-hidden p-1.5">
@@ -1692,7 +1693,7 @@ function CartDrawer({ open, onClose, cart, onOpenProduct }) {
                     <a
                       href={productPath(product.id)}
                       onClick={handleNav(onOpenProduct, product.id)}
-                      className="line-clamp-2 text-[13px] font-medium leading-snug text-[#f8fafc] transition-colors duration-300 hover:text-[#c7d2fe]"
+                      className="line-clamp-2 text-[13px] font-medium leading-snug text-[#18191c] transition-colors duration-300 hover:text-[#c8102e]"
                     >
                       {product.name}
                     </a>
@@ -1701,27 +1702,27 @@ function CartDrawer({ open, onClose, cart, onOpenProduct }) {
                         <button
                           type="button"
                           onClick={() => cart.decrement(product.id)}
-                          className="grid h-7 w-7 place-items-center text-[#94a3b8]"
+                          className="grid h-7 w-7 place-items-center text-[#6f7075]"
                           aria-label={T.decrease}
                         >
                           <Minus className="h-3.5 w-3.5" />
                         </button>
-                        <span className="mp-num w-6 text-center text-[13px] font-semibold text-[#f8fafc]">{qty}</span>
+                        <span className="mp-num w-6 text-center text-[13px] font-semibold text-[#18191c]">{qty}</span>
                         <button
                           type="button"
                           onClick={() => cart.add(product.id)}
-                          className="grid h-7 w-7 place-items-center text-[#94a3b8]"
+                          className="grid h-7 w-7 place-items-center text-[#6f7075]"
                           aria-label={T.increase}
                         >
                           <Plus className="h-3.5 w-3.5" />
                         </button>
                       </div>
                       <div className="flex items-center gap-3">
-                        <span className="mp-num mp-price text-sm font-bold text-[#f8fafc]">{formatPrice(product.price * qty)}</span>
+                        <span className="mp-num mp-price text-sm font-bold text-[#18191c]">{formatPrice(product.price * qty)}</span>
                         <button
                           type="button"
                           onClick={() => cart.remove(product.id)}
-                          className="rounded-lg p-1 text-[#94a3b8] transition-colors duration-300 hover:bg-[#fb7185]/10 hover:text-[#fb7185]"
+                          className="rounded-[10px] p-1.5 text-[#6f7075] transition-colors duration-300 hover:bg-[#c8102e]/10 hover:text-[#c8102e]"
                           aria-label={T.removeAria(product.name)}
                         >
                           <Trash2 className="h-4 w-4" />
@@ -1733,9 +1734,9 @@ function CartDrawer({ open, onClose, cart, onOpenProduct }) {
               ))}
             </ul>
 
-            <div className="border-t border-white/[0.06] bg-[#0b1120]/60 px-6 py-5">
+            <div className="border-t border-[#18191c]/[0.07] bg-[#f7f6f3]/80 px-6 py-5">
               <div className="flex items-baseline justify-between">
-                <span className="text-sm text-[#94a3b8]">{T.total}</span>
+                <span className="text-sm text-[#6f7075]">{T.total}</span>
                 <span className="mp-num mp-price mp-title text-[26px] font-bold">{formatPrice(cart.total)}</span>
               </div>
               <a
@@ -1747,8 +1748,8 @@ function CartDrawer({ open, onClose, cart, onOpenProduct }) {
                 <MessageCircle className="h-4 w-4" />
                 {T.orderCta}
               </a>
-              <p className="mt-3 text-center text-xs text-[#94a3b8]">{T.paySoon}</p>
-              <button type="button" onClick={cart.clear} className="mt-2 w-full text-xs text-[#94a3b8] transition-colors duration-300 hover:text-[#fb7185]">
+              <p className="mt-3 text-center text-xs text-[#6f7075]">{T.paySoon}</p>
+              <button type="button" onClick={cart.clear} className="mx-auto mt-2 block w-fit rounded-lg px-2 py-1 text-xs text-[#6f7075] transition-colors duration-300 hover:bg-[#c8102e]/10 hover:text-[#c8102e]">
                 {T.clearCart}
               </button>
             </div>
@@ -1764,21 +1765,21 @@ function CartDrawer({ open, onClose, cart, onOpenProduct }) {
 /* ------------------------------------------------------------------ */
 function Footer() {
   return (
-    <footer className="relative border-t border-white/[0.06] bg-[#0b1120]/80 text-white backdrop-blur-xl">
+    <footer className="relative bg-[#18191c] text-white">
       <div className="mx-auto flex max-w-[1400px] flex-col gap-4 px-4 py-7 text-sm sm:flex-row sm:items-center sm:justify-between sm:px-6">
         <div className="flex items-center gap-3">
           <LogoMark size={24} />
-          <span className="text-xs text-[#94a3b8]">© {new Date().getFullYear()} mypoker.ge · {T.rights}</span>
+          <span className="text-xs text-white/65">© {new Date().getFullYear()} mypoker.ge · {T.rights}</span>
         </div>
         <div className="flex flex-wrap items-center gap-4">
-          <a href={`tel:${CONFIG.phoneTel}`} className="mp-num mp-link select-all font-semibold text-[#f8fafc] hover:text-[#c7d2fe]">
+          <a href={`tel:${CONFIG.phoneTel}`} className="mp-num mp-link select-all font-semibold text-white hover:text-white/80">
             {CONFIG.phoneDisplay}
           </a>
           <a
             href={buildWhatsAppLink(T.waHello)}
             target="_blank"
             rel="noopener noreferrer"
-            className="mp-link inline-flex items-center gap-1.5 font-semibold text-[#5eead4] hover:text-[#99f6e4]"
+            className="mp-link inline-flex items-center gap-1.5 font-semibold text-[#4ade80] hover:text-[#86efac]"
           >
             <MessageCircle className="h-4 w-4" />
             WhatsApp
@@ -1826,7 +1827,7 @@ export default function App() {
   };
 
   return (
-    <div id="top" className="mp-sans mp-pattern flex min-h-screen flex-col text-[#f8fafc] antialiased">
+    <div id="top" className="mp-sans mp-pattern flex min-h-screen flex-col text-[#18191c] antialiased">
       <style>{GLOBAL_CSS}</style>
       <Header
         cartCount={cart.count}
@@ -1869,7 +1870,7 @@ export default function App() {
             <Check className="h-4 w-4" />
           </span>
           <p className="min-w-0 flex-1 truncate text-[13px]">{T.added} {toast.name}</p>
-          <button type="button" onClick={openCart} className="mp-link shrink-0 text-[13px] font-bold text-[#a5b4fc] hover:text-[#c7d2fe]">
+          <button type="button" onClick={openCart} className="mp-link shrink-0 text-[13px] font-bold text-[#4ade80] hover:text-[#86efac]">
             {T.view}
           </button>
         </div>
