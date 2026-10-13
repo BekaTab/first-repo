@@ -536,6 +536,18 @@ const SUIT = {
   diamond: "M12 2l7.5 10L12 22 4.5 12z",
   club: "M12 2.8a4.2 4.2 0 0 1 3.6 6.4 4.2 4.2 0 1 1-2.4 7.2L14.5 21h-5l1.3-4.6a4.2 4.2 0 1 1-2.4-7.2A4.2 4.2 0 0 1 12 2.8z",
 };
+/* ფონის პატერნი: კარტის ოთხი ნიშანი, მკრთალად (♠ ♥ ♦ ♣) */
+const suitAt = (d, x, y, r, fill, opacity) =>
+  `<path d="${d}" fill="${fill}" fill-opacity="${opacity}" transform="translate(${x} ${y}) rotate(${r} 12 12) scale(.75)"/>`;
+const PATTERN_SVG =
+  `<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 120 120">` +
+  suitAt(SUIT.spade, 10, 12, -12, "#18191c", 0.055) +
+  suitAt(SUIT.heart, 72, 8, 10, "#c8102e", 0.065) +
+  suitAt(SUIT.diamond, 40, 70, 8, "#c8102e", 0.065) +
+  suitAt(SUIT.club, 92, 76, -10, "#18191c", 0.055) +
+  `</svg>`;
+const PATTERN_URL = `url("data:image/svg+xml,${encodeURIComponent(PATTERN_SVG)}")`;
+
 /*
   დიზაინ-სისტემა — სუფთა, თეთრი, 8pt ბადე
   · ფონი თეთრი #ffffff, ზედაპირები #f5f5f4, ხაზები #e7e5e4 — ჩრდილების და გრადიენტების ნაცვლად სივრცე და თხელი ხაზები
@@ -571,7 +583,7 @@ const GLOBAL_CSS = `
   .mp-link { background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat; transition: background-size .3s var(--ease), color .3s var(--ease); }
 
   /* ---------- გვერდი ---------- */
-  .mp-pattern { background: var(--bg); }
+  .mp-pattern { background-color: var(--bg); background-image: ${PATTERN_URL}; background-size: 120px 120px; }
 
   /* ---------- ზედა ზოლი: თეთრი; გადახვევისას ჩნდება თხელი ჩრდილი ---------- */
   .mp-header { background: #18191c; border-bottom: 1px solid #000; transition: box-shadow .3s var(--ease); }
