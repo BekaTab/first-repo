@@ -586,18 +586,11 @@ const GLOBAL_CSS = `
   .mp-pattern { background-color: var(--bg); background-image: ${PATTERN_URL}; background-size: 120px 120px; }
 
   /* ---------- ზედა ზოლი: თეთრი; გადახვევისას ჩნდება თხელი ჩრდილი ---------- */
-  .mp-header { background: #18191c; border-bottom: 1px solid #000; transition: box-shadow .3s var(--ease); }
-  .mp-header-scrolled { box-shadow: 0 12px 32px -16px rgba(0,0,0,.6); }
-  .mp-strip { background: #111214; border-bottom: 1px solid rgba(255,255,255,.08); }
-  .mp-header .mp-ctl { color: #fff; background: rgba(255,255,255,.06); border-color: rgba(255,255,255,.12); }
-  .mp-header .mp-field { color: #fff; background: rgba(255,255,255,.08); }
-  .mp-header .mp-field::placeholder { color: rgba(255,255,255,.55); }
-  .mp-header .mp-field:focus { background: rgba(255,255,255,.12); border-color: rgba(255,255,255,.55); box-shadow: 0 0 0 4px rgba(255,255,255,.08); }
-  .mp-header .mp-segbox { background: rgba(255,255,255,.08); }
-  .mp-header .mp-seg { color: rgba(255,255,255,.6); }
-  .mp-header .mp-seg-on { color: #18191c; background: #fff; }
-  .mp-header .mp-count-badge { box-shadow: 0 0 0 2px #18191c; }
-  .mp-header :focus-visible { outline-color: #fff; }
+  .mp-header { background: #fff; border-bottom: 1px solid var(--line); transition: box-shadow .3s var(--ease); }
+  .mp-header-scrolled { box-shadow: 0 8px 24px -12px rgba(24,25,28,.3); }
+  .mp-strip { background: var(--red); }
+  .mp-strip :focus-visible { outline-color: #fff; }
+  .mp-header .mp-field { background: var(--surface-2); }
 
   /* ---------- მართვის ელემენტები ---------- */
   .mp-ctl { color: var(--ink); background: var(--surface); border: 1px solid var(--line);
@@ -703,9 +696,7 @@ const GLOBAL_CSS = `
     .mp-ctl-on:hover { background: #2c2d31; border-color: #2c2d31; }
     .mp-seg:hover { color: var(--ink); }
     .mp-field:hover:not(:focus) { border-color: var(--line-strong); }
-    .mp-header .mp-ctl:hover { background: rgba(255,255,255,.12); border-color: rgba(255,255,255,.2); }
-    .mp-header .mp-seg:hover { color: #fff; }
-    .mp-header .mp-field:hover:not(:focus) { background: rgba(255,255,255,.12); border-color: transparent; }
+    .mp-header .mp-field:hover:not(:focus) { background: var(--surface-3); border-color: transparent; }
     .mp-dock-card:hover { transform: translateY(-2px); }
     .mp-cta:hover { background: var(--green-2); }
     .mp-cta:hover svg { transform: translateX(2px) rotate(-8deg); }
@@ -814,8 +805,8 @@ function Logo({ onNavigate }) {
       <span className="transition-transform duration-500 group-hover:rotate-[-8deg] group-hover:scale-105">
         <LogoMark size={32} />
       </span>
-      <span className="mp-brand text-[17px] font-semibold leading-none tracking-[-0.02em] text-white">
-        mypoker<span className="text-[#ff4d63]">.ge</span>
+      <span className="mp-brand text-[17px] font-semibold leading-none tracking-[-0.02em] text-[#18191c]">
+        mypoker<span className="text-[#c8102e]">.ge</span>
       </span>
     </a>
   );
@@ -1159,7 +1150,7 @@ function SearchField({ id, query, onQuery, className = "" }) {
   return (
     <label htmlFor={id} className={`relative block ${className}`}>
       <span className="sr-only">{T.search}</span>
-      <Search className="pointer-events-none absolute left-3 top-1/2 z-[1] h-4 w-4 -translate-y-1/2 text-white/55" />
+      <Search className="pointer-events-none absolute left-3 top-1/2 z-[1] h-4 w-4 -translate-y-1/2 text-[#514d49]" />
       <input
         id={id}
         type="search"
@@ -1173,15 +1164,20 @@ function SearchField({ id, query, onQuery, className = "" }) {
 }
 
 /* „უფასო მიწოდება N ₾-დან“ — ზედა ზოლის შუაში (დიდ ეკრანზე) ან ცალკე ზოლად (ტელეფონზე) */
-function FreeShipping({ strip = false }) {
+function FreeShipping() {
   if (!CONFIG.freeShippingFrom) return null;
   return (
-    <p className={`flex items-center justify-center whitespace-nowrap font-medium text-white/85 ${strip ? "gap-2 text-[13px] leading-4 tracking-[0.02em]" : "gap-2 text-[15px] leading-6 tracking-[0.04em]"}`}>
-      <Truck className={`mp-drive shrink-0 text-[#ff4d63] ${strip ? "h-4 w-4" : "h-5 w-5"}`} strokeWidth={2} aria-hidden="true" />
-      <span>
-        <span className="font-semibold text-[#ff4d63]">{(strip ? T.freeDeliveryShort : T.freeDelivery)[0]}</span> {(strip ? T.freeDeliveryShort : T.freeDelivery)[1]}
+    <p className="flex items-center justify-center gap-2 whitespace-nowrap text-[13px] font-medium leading-4 tracking-[0.02em] text-white md:gap-3 md:text-[15px] md:leading-6 md:tracking-[0.04em]">
+      <Truck className="mp-drive h-4 w-4 shrink-0 md:h-5 md:w-5" strokeWidth={2} aria-hidden="true" />
+      <span className="md:hidden">
+        <span className="font-semibold">{T.freeDeliveryShort[0]}</span> {T.freeDeliveryShort[1]}
       </span>
-      <span className="mp-num font-bold text-[#ff4d63]">{T.freeFrom(CONFIG.freeShippingFrom)}</span>
+      <span className="hidden md:inline">
+        <span className="font-semibold">{T.freeDelivery[0]}</span> {T.freeDelivery[1]}
+      </span>
+      <span className="mp-num rounded-full bg-white px-2 py-0.5 text-[12px] font-bold leading-4 tracking-normal text-[#c8102e] md:px-3 md:py-1 md:text-[14px]">
+        {T.freeFrom(CONFIG.freeShippingFrom)}
+      </span>
     </p>
   );
 }
@@ -1189,25 +1185,25 @@ function FreeShipping({ strip = false }) {
 function Header({ cartCount, onOpenCart, query, onQuery, onNavigate, productId }) {
   const scrolled = useScrolled();
   return (
-    <header className={`mp-header sticky top-[env(safe-area-inset-top,0px)] z-40 text-white ${scrolled ? "mp-header-scrolled" : ""}`}>
+    <header className={`mp-header sticky top-[env(safe-area-inset-top,0px)] z-40 text-[#18191c] ${scrolled ? "mp-header-scrolled" : ""}`}>
+      {/* შეთავაზება ცალკე ზოლად, ბრენდის წითელ ფერში */}
       {CONFIG.freeShippingFrom > 0 && (
-        <div className="mp-strip flex h-8 items-center justify-center px-4 xl:hidden">
-          <FreeShipping strip />
+        <div className="mp-strip flex h-8 items-center justify-center px-4 md:h-10">
+          <FreeShipping />
         </div>
       )}
-      {/* ლოგო | მიწოდება — მათ შორის დარჩენილი ადგილის შუაში | ძიება, ტელეფონი, კალათა */}
+      {/* ლოგო | ძიება შუაში | ტელეფონი, კალათა */}
       <div className="mx-auto flex h-16 max-w-[1344px] items-center gap-4 px-4 sm:px-6 lg:px-8 xl:gap-6">
         <div className="flex min-w-0 items-center gap-4">
           <Logo onNavigate={onNavigate} />
           <LangSwitch productId={productId} className="hidden sm:flex" />
         </div>
 
-        <div className="hidden min-w-0 flex-1 justify-center xl:flex">
-          <FreeShipping />
+        <div className="hidden min-w-0 flex-1 justify-center md:flex">
+          <SearchField id="mp-search" query={query} onQuery={onQuery} className="w-full max-w-[480px]" />
         </div>
 
-        <div className="ml-auto flex items-center justify-end gap-2 xl:ml-0">
-          <SearchField id="mp-search" query={query} onQuery={onQuery} className="hidden w-44 md:block xl:w-36 min-[1400px]:w-44" />
+        <div className="ml-auto flex items-center justify-end gap-2 md:ml-0">
 
           <a
             href={`tel:${CONFIG.phoneTel}`}
@@ -1218,8 +1214,8 @@ function Header({ cartCount, onOpenCart, query, onQuery, onNavigate, productId }
               <Phone className="h-3 w-3 transition-transform duration-300 group-hover:rotate-12" strokeWidth={2.5} />
             </span>
             <span className="hidden flex-col items-start sm:flex">
-              <span className="text-[11px] leading-4 text-white/60">{T.callUs}</span>
-              <span className="mp-num whitespace-nowrap text-[12px] font-semibold leading-4 text-white">{CONFIG.phoneDisplay}</span>
+              <span className="text-[11px] leading-4 text-[#514d49]">{T.callUs}</span>
+              <span className="mp-num whitespace-nowrap text-[12px] font-semibold leading-4 text-[#18191c]">{CONFIG.phoneDisplay}</span>
             </span>
           </a>
 
@@ -1386,7 +1382,7 @@ function Sidebar({ filter }) {
   const { category, setCategory, counts, hasFilters, reset } = filter;
   return (
     <aside className="hidden lg:block">
-      <div className={`mp-scroll sticky -mx-4 -mt-2 flex flex-col gap-8 overflow-y-auto px-4 pb-8 pt-2 [&>*]:shrink-0 ${CONFIG.freeShippingFrom > 0 ? "top-28 max-h-[calc(100vh-8rem)] xl:top-24 xl:max-h-[calc(100vh-7rem)]" : "top-24 max-h-[calc(100vh-7rem)]"}`}>
+      <div className={`mp-scroll sticky -mx-4 -mt-2 flex flex-col gap-8 overflow-y-auto px-4 pb-8 pt-2 [&>*]:shrink-0 ${CONFIG.freeShippingFrom > 0 ? "top-[7.5rem] max-h-[calc(100vh-8.5rem)]" : "top-24 max-h-[calc(100vh-7rem)]"}`}>
         <div className="flex flex-col gap-6">
         <FilterGroup title={T.category}>
           <FilterOption active={category === "all"} onClick={() => setCategory("all")} label={T.cat.all} count={counts.all || 0} />
@@ -1414,7 +1410,7 @@ function MobileFilters({ filter }) {
     <div
       className={`sticky z-30 -mx-4 border-b border-black/10 bg-[#c4c3bf]/90 px-4 py-3 backdrop-blur-xl backdrop-saturate-150 sm:-mx-6 sm:px-6 lg:hidden ${
         CONFIG.freeShippingFrom > 0
-          ? "top-[calc(env(safe-area-inset-top,0px)+9.5rem)] md:top-[calc(env(safe-area-inset-top,0px)+6rem)]"
+          ? "top-[calc(env(safe-area-inset-top,0px)+9.5rem)] md:top-[calc(env(safe-area-inset-top,0px)+6.5rem)]"
           : "top-[calc(env(safe-area-inset-top,0px)+7.5rem)] md:top-[calc(env(safe-area-inset-top,0px)+4rem)]"
       }`}
     >
