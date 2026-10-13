@@ -45,7 +45,15 @@ createRoot(document.getElementById("root")).render(<App />);`,
 });
 
 const cssIn = join(dist, ".tailwind-input.css");
-writeFileSync(cssIn, "@tailwind base;\n@tailwind components;\n@tailwind utilities;\n");
+// Noto Sans Georgian is served from /fonts (variable weight 100–900, split by script like Google Fonts does)
+const FONT_FACES = [
+  ["georgian", "U+0589, U+10A0-10FF, U+1C90-1CBA, U+1CBD-1CBF, U+205A, U+2D00-2D2F, U+2E31"],
+  ["latin-ext", "U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF"],
+  ["latin", "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD"],
+]
+  .map(([subset, range]) => `@font-face{font-family:'Noto Sans Georgian';font-style:normal;font-weight:100 900;font-display:swap;src:url(/fonts/noto-sans-georgian-${subset}.woff2) format('woff2');unicode-range:${range}}`)
+  .join("\n");
+writeFileSync(cssIn, `${FONT_FACES}\n@tailwind base;\n@tailwind components;\n@tailwind utilities;\n`);
 execFileSync(join(here, "node_modules", ".bin", "tailwindcss"), ["-c", join(here, "tailwind.config.cjs"), "-i", cssIn, "-o", join(dist, "app.css"), "--minify"], {
   stdio: ["ignore", "ignore", "inherit"],
 });
@@ -89,15 +97,13 @@ const pageHead = ({ lang, title, description, path, image, jsonld }) => `<title>
 <meta property="og:title" content="${esc(title)}">
 <meta property="og:description" content="${esc(description)}">${image ? `\n<meta property="og:image" content="${SITE}/${esc(image.replace(/^\//, ""))}">` : ""}
 <meta name="twitter:card" content="${image ? "summary_large_image" : "summary"}">
-<meta name="theme-color" content="#c2c2bf">${jsonld ? `\n<script type="application/ld+json">${JSON.stringify(jsonld).replace(/</g, "\\u003c")}</script>` : ""}
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Georgian:wght@400;500;600;700;800&family=Manrope:wght@600;700&display=swap">
+<meta name="theme-color" content="#ffffff">${jsonld ? `\n<script type="application/ld+json">${JSON.stringify(jsonld).replace(/</g, "\\u003c")}</script>` : ""}
+<link rel="preload" href="/fonts/noto-sans-georgian-${lang === "en" ? "latin" : "georgian"}.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="icon" href="${favicon}" type="image/svg+xml">
 <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="stylesheet" href="/app.css">
-<style>html,body{background:#c2c2bf;color:#18191c;margin:0}</style>`;
+<style>html,body{background:#ffffff;color:#18191c;margin:0}</style>`;
 const body = `<noscript><p style="font:16px sans-serif;padding:24px;text-align:center">mypoker.ge მუშაობს JavaScript-ით. ჩართეთ JavaScript ან დაგვიკავშირდით WhatsApp-ით. · Please enable JavaScript.</p></noscript>
 <div id="root"></div>
 <script type="application/json" id="mp-data">${inlineData}</script>
