@@ -119,8 +119,7 @@ const TEXT = {
     waCartHead: "გამარჯობა, mypoker.ge-დან გწერთ, მაინტერესებს ეს პროდუქტები:",
     waCartLine: (i, n, q, p) => `${i}. ${n} × ${q} (ფასი: ${p}₾)`,
     waCartTotal: (t) => `ჯამი: ${t}₾`,
-    cat: { all: "ყველა", cards: "კარტები", chips: "ჩიპები", tables: "მაგიდები", accessories: "პოკერის აქსესუარები", games: "თამაშები და გართობა" },
-    allGames: "ყველა თამაში",
+    cat: { all: "ყველა", cards: "კარტები", chips: "ჩიპები", tables: "მაგიდები", accessories: "პოკერის აქსესუარები", poker: "პოკერი", games: "სამაგიდო თამაშები და აქსესუარები" },
     gameSub: { backgammon: "ნარდი", domino: "დომინო", bingo: "ბინგო და ლოტო", boardgames: "სამაგიდო თამაშები", fun: "სხვა გასართობი" },
     priceAny: "ნებისმიერი",
     priceOver: (n) => `${n} ₾-ზე მეტი`,
@@ -204,8 +203,7 @@ const TEXT = {
     waCartHead: "Hello, I'm writing from mypoker.ge. I'm interested in these products:",
     waCartLine: (i, n, q, p) => `${i}. ${n} × ${q} (price: ${p}₾)`,
     waCartTotal: (t) => `Total: ${t}₾`,
-    cat: { all: "All", cards: "Cards", chips: "Chips", tables: "Tables", accessories: "Poker accessories", games: "Games & fun" },
-    allGames: "All games",
+    cat: { all: "All", cards: "Cards", chips: "Chips", tables: "Tables", accessories: "Poker accessories", poker: "Poker", games: "Board games & accessories" },
     gameSub: { backgammon: "Backgammon", domino: "Dominoes", bingo: "Bingo & lotto", boardgames: "Board games", fun: "Other fun" },
     priceAny: "Any",
     priceOver: (n) => `Over ${n} ₾`,
@@ -226,17 +224,23 @@ const CONFIG = {
 /* ------------------------------------------------------------------ */
 /*  მონაცემები                                                         */
 /* ------------------------------------------------------------------ */
-const CATEGORIES = ["all", "cards", "chips", "tables", "accessories"].map((id) => ({ id, label: T.cat[id] }));
-
-/* ცალკე განყოფილება „თამაშები და გართობა“ თავისი ქვეკატეგორიებით; ფილტრის მნიშვნელობა: "games" ან "games:<ქვეკატეგორია>" */
+/* ორი განყოფილება: „პოკერი“ (წითელი, ლოგოს ფერი) და „სამაგიდო თამაშები და აქსესუარები“ (ოქროსფერი).
+   ფილტრის მნიშვნელობა: "all", "poker", პოკერის კატეგორია ("cards" …), "games" ან "games:<ქვეკატეგორია>" */
+const POKER_CATS = ["cards", "chips", "tables", "accessories"];
 const GAME_SUBS = ["backgammon", "domino", "bingo", "boardgames", "fun"];
-const GAME_FILTERS = [{ id: "games", label: T.allGames }, ...GAME_SUBS.map((sub) => ({ id: `games:${sub}`, label: T.gameSub[sub] }))];
-const isGames = (category) => category === "games" || category.startsWith("games:");
+const SECTIONS = [
+  { id: "poker", items: POKER_CATS.map((id) => ({ id, label: T.cat[id] })) },
+  { id: "games", items: GAME_SUBS.map((sub) => ({ id: `games:${sub}`, label: T.gameSub[sub] })) },
+];
 const inCategory = (p, category) =>
-  category === "all" || p.category === category || (category.startsWith("games:") && p.category === "games" && `games:${p.subcategory}` === category);
+  category === "all" ||
+  p.category === category ||
+  (category === "poker" && POKER_CATS.includes(p.category)) ||
+  (category.startsWith("games:") && p.category === "games" && `games:${p.subcategory}` === category);
 
 const CATEGORY_LABEL = {
-  ...Object.fromEntries(CATEGORIES.map((c) => [c.id, c.label])),
+  ...Object.fromEntries(POKER_CATS.map((id) => [id, T.cat[id]])),
+  poker: T.cat.poker,
   games: T.cat.games,
   ...Object.fromEntries(GAME_SUBS.map((sub) => [`games:${sub}`, T.gameSub[sub]])),
 };
@@ -475,6 +479,7 @@ function useProductFilter(products) {
     const c = { all: products.length };
     products.forEach((p) => {
       c[p.category] = (c[p.category] || 0) + 1;
+      if (POKER_CATS.includes(p.category)) c.poker = (c.poker || 0) + 1;
       if (p.subcategory) c[`games:${p.subcategory}`] = (c[`games:${p.subcategory}`] || 0) + 1;
     });
     return c;
@@ -662,7 +667,20 @@ const GLOBAL_CSS = `
   .mp-bullet { background: linear-gradient(135deg, #ff4d63, #c8102e); box-shadow: 0 2px 6px rgba(200,16,46,.35); }
   .mp-check { color: #15803d; background: rgba(21,128,61,.1); box-shadow: inset 0 0 0 1px rgba(21,128,61,.2); }
 
-  /* ---------- „თამაშები და გართობა“ — ოქროსფერი ტონი (თბილი ქარვა, საერთო ოქროსფერ ნათებასთან ჰარმონიაში) ---------- */
+  /* ---------- „პოკერი“ — წითელი ტონი, ლოგოს ფერებში (#e3324d → #c8102e → #9e0c24) ---------- */
+  .mp-poker { background: linear-gradient(180deg, #fff6f7 0%, #fde9ec 100%); border: 1px solid rgba(200,16,46,.26);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.9), 0 6px 16px -10px rgba(158,12,36,.35); }
+  .mp-opt.mp-opt-poker { color: #5a0a17; }
+  .mp-opt.mp-opt-poker .mp-count { color: #9a3443; }
+  .mp-opt.mp-opt-poker.mp-opt-on { color: #fff; background: linear-gradient(180deg, #d81e3c, #a50d26); box-shadow: inset 0 1px 0 rgba(255,255,255,.2), 0 8px 18px -10px rgba(158,12,36,.75); }
+  .mp-opt.mp-opt-poker.mp-opt-on::before { background: linear-gradient(#ffe1e6, #ffa3b2); }
+  .mp-opt.mp-opt-poker.mp-opt-on .mp-count { color: rgba(255,255,255,.75); }
+  .mp-chip.mp-chip-poker { color: #5a0a17; background: #fff6f7; border-color: rgba(200,16,46,.3); }
+  .mp-chip.mp-chip-poker:not(.mp-chip-on) .mp-count { color: #9a3443; }
+  .mp-chip.mp-chip-poker.mp-chip-on { color: #fff; border-color: #a50d26; background: linear-gradient(180deg, #d81e3c, #a50d26); box-shadow: inset 0 1px 0 rgba(255,255,255,.2), 0 6px 16px -8px rgba(158,12,36,.7); }
+  .mp-chip.mp-chip-poker.mp-chip-on .mp-count { color: rgba(255,255,255,.75); }
+
+  /* ---------- „სამაგიდო თამაშები და აქსესუარები“ — ოქროსფერი ტონი (თბილი ქარვა, საერთო ოქროსფერ ნათებასთან ჰარმონიაში) ---------- */
   .mp-games { background: linear-gradient(180deg, #fdf8ec 0%, #f8eedb 100%); border: 1px solid rgba(201,162,78,.4);
     box-shadow: inset 0 1px 0 rgba(255,255,255,.9), 0 6px 16px -10px rgba(138,90,16,.35); }
   .mp-opt.mp-opt-games { color: #4a3106; }
@@ -698,6 +716,9 @@ const GLOBAL_CSS = `
     .mp-thumb-on:hover { border-color: #18191c; }
     .mp-stepper button:hover { color: var(--ink); background: rgba(24,25,28,.06); }
     .mp-link:hover { background-size: 100% 1px; }
+    .mp-opt.mp-opt-poker:hover { color: #3d0610; background: rgba(200,16,46,.08); }
+    .mp-opt.mp-opt-poker.mp-opt-on:hover { color: #fff; background: linear-gradient(180deg, #e0243f, #b00e28); }
+    .mp-chip.mp-chip-poker:hover:not(.mp-chip-on) { color: #3d0610; border-color: rgba(200,16,46,.6); }
     .mp-opt.mp-opt-games:hover { color: #2e1f04; background: rgba(201,162,78,.18); }
     .mp-opt.mp-opt-games.mp-opt-on:hover { color: #fff; background: linear-gradient(180deg, #a87420, #865810); }
     .mp-chip.mp-chip-games:hover:not(.mp-chip-on) { color: #2e1f04; border-color: rgba(201,162,78,.85); }
@@ -1242,17 +1263,51 @@ function FilterGroup({ title, children }) {
   );
 }
 
-function FilterOption({ active, onClick, label, count, games = false }) {
+function FilterOption({ active, onClick, label, count, tone }) {
   return (
     <button
       type="button"
       onClick={onClick}
       aria-pressed={active}
-      className={`mp-opt flex items-center justify-between px-3 py-1.5 text-left text-sm ${games ? "mp-opt-games" : ""} ${active ? "mp-opt-on font-semibold" : ""}`}
+      className={`mp-opt flex items-center justify-between px-3 py-1.5 text-left text-sm ${tone ? `mp-opt-${tone}` : ""} ${active ? "mp-opt-on font-semibold" : ""}`}
     >
       {label}
       {count !== undefined && <span className="mp-num mp-count text-xs">{count}</span>}
     </button>
+  );
+}
+
+/* განყოფილების ნიშანი: პოკერი — ლოგოს აგური, თამაშები — კამათელი */
+function SectionIcon({ id, className }) {
+  if (id === "games") return <Dices className={className} strokeWidth={2.1} aria-hidden="true" />;
+  return (
+    <svg viewBox="0 0 40 40" className={className} aria-hidden="true">
+      <path d={DIAMOND_PATH} fill="currentColor" />
+    </svg>
+  );
+}
+
+/* ფერადი განყოფილება გვერდით პანელში: სათაური (მთელი განყოფილება) და ქვეკატეგორიები, ყოველთვის გაშლილი */
+function FilterSection({ section, category, setCategory, counts }) {
+  const { id, items } = section;
+  return (
+    <div className={`mp-${id} -mx-1.5 flex flex-col gap-1 rounded-[14px] p-1`} role="group" aria-label={T.cat[id]}>
+      <button
+        type="button"
+        onClick={() => setCategory(id)}
+        aria-pressed={category === id}
+        className={`mp-opt mp-opt-${id} flex items-center gap-1.5 px-2 py-2 text-left text-sm font-semibold ${category === id ? "mp-opt-on" : ""}`}
+      >
+        <SectionIcon id={id} className="h-4 w-4 shrink-0" />
+        <span className="min-w-0 flex-1 leading-snug tracking-[-0.01em] [text-wrap:balance]">{T.cat[id]}</span>
+        <span className="mp-num mp-count shrink-0 text-xs font-normal">{counts[id] || 0}</span>
+      </button>
+      <div className="flex flex-col gap-0.5 pb-0.5 pl-3.5">
+        {items.map((c) => (
+          <FilterOption key={c.id} tone={id} active={category === c.id} onClick={() => setCategory(c.id)} label={c.label} count={counts[c.id] || 0} />
+        ))}
+      </div>
+    </div>
   );
 }
 
@@ -1263,30 +1318,13 @@ function Sidebar({ filter }) {
       <div className={`mp-scroll sticky -mx-4 -mt-2 flex flex-col gap-5 overflow-y-auto px-4 pb-10 pt-2 [&>*]:shrink-0 ${CONFIG.freeShippingFrom > 0 ? "top-[7.25rem] max-h-[calc(100vh-8rem)] xl:top-24 xl:max-h-[calc(100vh-7rem)]" : "top-24 max-h-[calc(100vh-7rem)]"}`}>
         <div className="mp-panel flex flex-col gap-4 p-3 pt-4">
         <FilterGroup title={T.category}>
-          {CATEGORIES.map((c) => (
-            <FilterOption key={c.id} active={category === c.id} onClick={() => setCategory(c.id)} label={c.label} count={counts[c.id] || 0} />
-          ))}
+          <FilterOption active={category === "all"} onClick={() => setCategory("all")} label={T.cat.all} count={counts.all || 0} />
         </FilterGroup>
-        {/* ცალკე განყოფილება — თამაშები და გართობა (ოქროსფერი); ქვეკატეგორიები იხსნება, როცა განყოფილება არჩეულია */}
-        <div className="mp-games -mx-1.5 flex flex-col gap-1 rounded-[14px] p-1">
-          <button
-            type="button"
-            onClick={() => setCategory("games")}
-            aria-pressed={category === "games"}
-            aria-expanded={isGames(category)}
-            className={`mp-opt mp-opt-games flex items-center gap-1 px-2 py-2 text-left text-sm font-semibold ${category === "games" ? "mp-opt-on" : ""}`}
-          >
-            <Dices className="h-4 w-4 shrink-0" strokeWidth={2.1} aria-hidden="true" />
-            <span className="min-w-0 flex-1 whitespace-nowrap tracking-[-0.02em]">{T.cat.games}</span>
-            <ChevronDown className={`h-3 w-3 shrink-0 transition-transform duration-300 ${isGames(category) ? "rotate-180" : ""}`} aria-hidden="true" />
-          </button>
-          {isGames(category) && (
-            <div className="mp-fade flex flex-col gap-0.5 pb-0.5 pl-3.5">
-              {GAME_FILTERS.slice(1).map((g) => (
-                <FilterOption key={g.id} games active={category === g.id} onClick={() => setCategory(g.id)} label={g.label} count={counts[g.id] || 0} />
-              ))}
-            </div>
-          )}
+        {/* ორი ფერადი განყოფილება: პოკერი (წითელი) და სამაგიდო თამაშები და აქსესუარები (ოქროსფერი) */}
+        <div className="-mt-2 flex flex-col gap-2.5">
+          {SECTIONS.map((section) => (
+            <FilterSection key={section.id} section={section} category={category} setCategory={setCategory} counts={counts} />
+          ))}
         </div>
         <FilterGroup title={T.price}>
           {PRICE_RANGES.map((r) => (
@@ -1362,51 +1400,39 @@ function MobileFilters({ filter }) {
           : "top-[calc(env(safe-area-inset-top,0px)+7.25rem)] md:top-[calc(env(safe-area-inset-top,0px)+4rem)]"
       }`}
     >
-      <div className="mp-scroll -m-1 flex gap-2 overflow-x-auto p-1" role="tablist" aria-label={T.categoriesAria}>
-        {CATEGORIES.map((c) => {
-          const active = category === c.id;
-          return (
-            <button
-              key={c.id}
-              type="button"
-              role="tab"
-              aria-selected={active}
-              onClick={() => setCategory(c.id)}
-              className={`mp-chip inline-flex shrink-0 items-center gap-1.5 px-4 py-2 text-[13px] ${active ? "mp-chip-on font-semibold" : ""}`}
-            >
-              {c.label}
-              <span className="mp-num mp-count text-[11px]">{counts[c.id] || 0}</span>
-            </button>
-          );
-        })}
-        <button
-          type="button"
-          role="tab"
-          aria-selected={isGames(category)}
-          onClick={() => setCategory("games")}
-          className={`mp-chip mp-chip-games inline-flex shrink-0 items-center gap-1.5 px-4 py-2 text-[13px] ${isGames(category) ? "mp-chip-on font-semibold" : ""}`}
-        >
-          <Dices className="h-4 w-4" strokeWidth={2} aria-hidden="true" />
-          {T.cat.games}
-          <span className="mp-num mp-count text-[11px]">{counts.games || 0}</span>
-        </button>
+      {/* თითო განყოფილება თავის გადასახვევ ზოლზე (პირველს წინ „ყველა“ უძღვის), ორივე ყოველთვის გაშლილი */}
+      <div className="flex flex-col gap-2" role="group" aria-label={T.categoriesAria}>
+        {SECTIONS.map(({ id, items }, i) => (
+          <div key={id} className="mp-scroll -m-1 flex items-center gap-2 overflow-x-auto p-1">
+            {i === 0 && (
+              <button
+                type="button"
+                aria-pressed={category === "all"}
+                onClick={() => setCategory("all")}
+                className={`mp-chip inline-flex shrink-0 items-center gap-1.5 px-4 py-2 text-[13px] ${category === "all" ? "mp-chip-on font-semibold" : ""}`}
+              >
+                {T.cat.all}
+                <span className="mp-num mp-count text-[11px]">{counts.all || 0}</span>
+              </button>
+            )}
+            <div className={`mp-${id} flex shrink-0 gap-1 rounded-[14px] p-1`} role="group" aria-label={T.cat[id]}>
+              {[{ id, label: T.cat[id], head: true }, ...items].map((c) => (
+                <button
+                  key={c.id}
+                  type="button"
+                  aria-pressed={category === c.id}
+                  onClick={() => setCategory(c.id)}
+                  className={`mp-chip mp-chip-${id} inline-flex shrink-0 items-center gap-1.5 px-3 py-1.5 text-[13px] ${c.head ? "font-semibold" : ""} ${category === c.id ? "mp-chip-on font-semibold" : ""}`}
+                >
+                  {c.head && <SectionIcon id={id} className="h-3.5 w-3.5" />}
+                  {c.label}
+                  <span className="mp-num mp-count text-[11px] font-normal">{counts[c.id] || 0}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        ))}
       </div>
-      {isGames(category) && (
-        <div className="mp-scroll mp-fade -m-1 mt-1 flex gap-1.5 overflow-x-auto p-1" aria-label={T.cat.games}>
-          {GAME_FILTERS.map((g) => (
-            <button
-              key={g.id}
-              type="button"
-              aria-pressed={category === g.id}
-              onClick={() => setCategory(g.id)}
-              className={`mp-chip mp-chip-games inline-flex shrink-0 items-center gap-1.5 px-3 py-1.5 text-[12px] ${category === g.id ? "mp-chip-on font-semibold" : ""}`}
-            >
-              {g.label}
-              <span className="mp-num mp-count text-[10px]">{counts[g.id] || 0}</span>
-            </button>
-          ))}
-        </div>
-      )}
       <label className="relative mt-2 block" htmlFor="mp-price-mobile">
         <span className="sr-only">{T.price}</span>
         <select
@@ -1525,6 +1551,7 @@ function Shop({ filter, cart, onOpen }) {
   const inCart = useMemo(() => new Set(cart.lines.map((l) => l.product.id)), [cart.lines]);
   const gridKey = `${category}|${sort}|${price}|${query.trim()}`;
   const title = query.trim() ? T.searchTitle(query.trim()) : category === "all" ? T.allProducts : CATEGORY_LABEL[category];
+  const section = query.trim() ? null : category.startsWith("games:") ? "games" : POKER_CATS.includes(category) ? "poker" : null;
 
   return (
     <main id="shop" className="mx-auto grid max-w-[1400px] gap-8 px-4 pb-20 sm:px-6 lg:grid-cols-[240px_1fr] lg:pt-8 xl:gap-10">
@@ -1533,14 +1560,19 @@ function Shop({ filter, cart, onOpen }) {
       <section className="min-w-0" aria-label={T.productsAria}>
         <MobileFilters filter={filter} />
 
-        <div className="mt-5 flex items-end justify-between gap-3 lg:mt-0">
+        {/* ქვეკატეგორიის სათაურს თავზე მისი განყოფილება აწერია, განყოფილების ფერით */}
+        {section && (
+          <p
+            className={`mp-fade mb-1.5 mt-5 inline-flex max-w-full items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[12px] font-semibold ring-1 lg:mt-0 ${
+              section === "games" ? "bg-[#c9a24e]/[0.16] text-[#7a4f0c] ring-[#c9a24e]/40" : "bg-[#c8102e]/[0.08] text-[#a50d26] ring-[#c8102e]/25"
+            }`}
+          >
+            <SectionIcon id={section} className="h-3.5 w-3.5 shrink-0" />
+            {T.cat[section]}
+          </p>
+        )}
+        <div className={`flex items-end justify-between gap-3 ${section ? "" : "mt-5 lg:mt-0"}`}>
           <div className="min-w-0">
-            {!query.trim() && category.startsWith("games:") && (
-              <p className="mp-fade mb-1.5 inline-flex items-center gap-1.5 rounded-full bg-[#c9a24e]/[0.16] px-2.5 py-0.5 text-[12px] font-semibold text-[#7a4f0c] ring-1 ring-[#c9a24e]/40">
-                <Dices className="h-3.5 w-3.5" aria-hidden="true" />
-                {T.cat.games}
-              </p>
-            )}
             <h1 className="mp-title text-xl font-bold leading-tight sm:text-[28px]">{title}</h1>
             <p className="mp-num mt-1 text-sm text-[#6f7075]" aria-live="polite">
               {T.productCount(visible.length)}
@@ -1776,6 +1808,12 @@ function ProductPage({ product, cart, onNavigate }) {
           <span className="mp-link">{T.shop}</span>
         </a>
         <span aria-hidden="true" className="text-[#b9b6af]">/</span>
+        {POKER_CATS.includes(product.category) && (
+          <>
+            <span className="font-medium text-[#a50d26]">{T.cat.poker}</span>
+            <span aria-hidden="true" className="text-[#b9b6af]">/</span>
+          </>
+        )}
         <span className={product.category === "games" ? "font-medium text-[#7a4f0c]" : ""}>{CATEGORY_LABEL[product.category]}</span>
         {product.subcategory && (
           <>
