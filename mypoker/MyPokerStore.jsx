@@ -505,14 +505,14 @@ const PATTERN_URL = `url("data:image/svg+xml,${encodeURIComponent(PATTERN_SVG)}"
 
 /*
   დიზაინ-სისტემა — ღია „ქვის“ პალიტრა
-  ფონი #f3f2ef · ბარათები #ffffff · ტექსტი #18191c / #3f4045 / #5c5d61 / #6f7075
+  ფონი #c2c2bf (20%-ით მუქი #f3f2ef) · ბარათები #ffffff · ტექსტი #18191c / #3f4045 / #5c5d61 / #6f7075
   აქცენტები ზომიერად: ბრენდის წითელი #c8102e (ლოგო, ფასდაკლება, აქტიური ნიშნები), ოქროსფერი #c9a24e (მცირე ნათება),
   მწვანე #15803d — მხოლოდ შეკვეთის ღილაკი (WhatsApp) და „მარაგშია“.
 */
 const GLOBAL_CSS = `
   :root {
     color-scheme: light;
-    --bg: #f3f2ef; --surface: #ffffff; --surface-2: #f7f6f3;
+    --bg: #c2c2bf; --surface: #ffffff; --surface-2: #f7f6f3;
     --ink: #18191c; --ink-2: #3f4045; --text-2: #5c5d61; --text-3: #6f7075;
     --line: rgba(24,25,28,.075); --line-soft: rgba(24,25,28,.05); --line-strong: rgba(24,25,28,.16);
     --red: #c8102e; --gold: #c9a24e; --green: #15803d;
@@ -523,11 +523,11 @@ const GLOBAL_CSS = `
     --e2: 0 1px 2px rgba(24,25,28,.04), 0 4px 10px -4px rgba(24,25,28,.06), 0 14px 32px -16px rgba(24,25,28,.14);
     --e3: 0 2px 4px rgba(24,25,28,.04), 0 12px 24px -10px rgba(24,25,28,.10), 0 32px 60px -24px rgba(24,25,28,.24);
   }
-  html { scrollbar-color: #cfccc5 var(--bg); }
+  html { scrollbar-color: #a6a39e var(--bg); }
   ::-webkit-scrollbar { width: 12px; height: 12px; }
   ::-webkit-scrollbar-track { background: var(--bg); }
-  ::-webkit-scrollbar-thumb { background: #d3d0c9; border-radius: 12px; border: 3px solid var(--bg); }
-  ::-webkit-scrollbar-thumb:hover { background: #bdb9b1; }
+  ::-webkit-scrollbar-thumb { background: #a9a6a1; border-radius: 12px; border: 3px solid var(--bg); }
+  ::-webkit-scrollbar-thumb:hover { background: #97948e; }
   body { margin: 0; background: var(--bg); color: var(--ink); -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; text-rendering: optimizeLegibility; }
   ::selection { background: rgba(200,16,46,.14); color: var(--ink); }
 
@@ -1134,7 +1134,7 @@ function MobileFilters({ filter }) {
   const { category, setCategory, price, setPrice, counts } = filter;
   return (
     <div
-      className={`sticky z-30 -mx-4 border-b border-[#18191c]/[0.06] bg-[#f3f2ef]/85 px-4 py-3 backdrop-blur-xl backdrop-saturate-150 lg:hidden ${
+      className={`sticky z-30 -mx-4 border-b border-[#18191c]/[0.06] bg-[#c2c2bf]/85 px-4 py-3 backdrop-blur-xl backdrop-saturate-150 lg:hidden ${
         CONFIG.freeShippingFrom > 0
           ? "top-[calc(env(safe-area-inset-top,0px)+9.5rem)] md:top-[calc(env(safe-area-inset-top,0px)+6.25rem)]"
           : "top-[calc(env(safe-area-inset-top,0px)+7.25rem)] md:top-[calc(env(safe-area-inset-top,0px)+4rem)]"
