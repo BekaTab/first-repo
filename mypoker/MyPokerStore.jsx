@@ -239,9 +239,9 @@ const CATEGORY_LABEL = {
 const SORTS = ["featured", "price-asc", "price-desc", "sale"].map((id) => ({ id, label: T.sorts[id] }));
 
 const DEFAULT_VISUAL = {
-  chips: { kind: "chips", colors: ["#c2410c", "#1f2937", "#d6b25e"] },
-  cards: { kind: "cards", colors: ["#1e40af", "#fff", "#b91c1c"] },
-  tables: { kind: "table", colors: ["#047857", "#7c4a1e", "#d6b25e"] },
+  chips: { kind: "chips", colors: ["#6e2c32", "#3b2e27", "#b0916a"] },
+  cards: { kind: "cards", colors: ["#3a4553", "#f6f1e8", "#7a3037"] },
+  tables: { kind: "table", colors: ["#3d5a4a", "#5a4030", "#c9b78c"] },
   accessories: { kind: "dealer" },
   "games:backgammon": { kind: "backgammon" },
   "games:domino": { kind: "domino" },
@@ -536,41 +536,78 @@ const SUIT = {
   diamond: "M12 2l7.5 10L12 22 4.5 12z",
   club: "M12 2.8a4.2 4.2 0 0 1 3.6 6.4 4.2 4.2 0 1 1-2.4 7.2L14.5 21h-5l1.3-4.6a4.2 4.2 0 1 1-2.4-7.2A4.2 4.2 0 0 1 12 2.8z",
 };
+/* ------------------------------------------------------------------ */
+/*  ფერები — „Quiet Luxury“ (Cashmere & Claret)                         */
+/*  ყველა ფერი აქ ინახება: CSS ცვლადებად გადადის (--ink, --brand …),     */
+/*  ფონის პატერნი და ლოგოც მათ იყენებს.                                */
+/*  შვრიისფერი ფონი, სპილოსძვლისფერი ზედაპირები, ესპრესოს ტექსტი,       */
+/*  ჩუმი ბორდო (პოკერი, ფასდაკლება), ღრმა ბოთლისფერი მწვანე (შეკვეთა),  */
+/*  აქლემისფერი/შამპანური (თამაშები, შეთავაზება). გრადიენტების გარეშე. */
+/* ------------------------------------------------------------------ */
+const PAL = {
+  pattern: { ink: "#3b2e27", accent: "#6e2c32" },
+  vars: {
+    bg: "#cdc3b4", "bg-glass": "rgba(205,195,180,.9)",
+    surface: "#f6f1e8", "surface-2": "#ece5d9", "surface-3": "#e4dbcc",
+    line: "#d8cebe", "line-strong": "#8a7965",
+    ink: "#2a201b", "ink-2": "#43362e", muted: "#52453b", faint: "#8a7965",
+    brand: "#6e2c32", "brand-2": "#5a2328",
+    "bar-bg": "#3b2e27", "bar-text": "#efe6d8", "pill-bg": "#c6a97f", "pill-text": "#2a201b",
+    cta: "#2f4a3c", "cta-hover": "#253c30", "cta-text": "#f6f1e8",
+    call: "#2f4a3c", "call-on-dark": "#c6a97f", "call-ring": "rgba(198,169,127,.45)",
+    badge: "#6e2c32",
+    sale: "#7a3037", "sale-badge": "#6e2c32", "sale-badge-text": "#f6f1e8", "sale-tint": "rgba(110,44,50,.1)",
+    ok: "#2f5a43", "ok-tint": "rgba(47,90,67,.14)", wait: "#74552f", "wait-tint": "rgba(116,85,47,.14)",
+    "poker-plate": "#6e2c32", "poker-plate-text": "#f6f1e8", "poker-plate-hover": "#5f262b", "poker-plate-ico": "rgba(246,241,232,.16)",
+    "poker-tint": "#f1e5e0", "poker-sub": "#552429", "poker-ico": "#8c4d52", "poker-count": "#8c4d52",
+    "poker-on": "#e6d3cd", "poker-on-text": "#552429", "poker-hover": "rgba(110,44,50,.07)", "poker-line": "rgba(110,44,50,.22)",
+    "poker-text": "#6e2c32", "poker-chip-on": "#6e2c32", "poker-chip-on-text": "#f6f1e8",
+    "games-plate": "#c2a274", "games-plate-text": "#2a201b", "games-plate-hover": "#b5946a", "games-plate-ico": "rgba(42,32,27,.08)",
+    "games-tint": "#f0e8d8", "games-tint-hover": "#e9dfcb", "games-sub": "#4f3c25", "games-ico": "#806240", "games-count": "#806240",
+    "games-on": "#e5d8bf", "games-on-text": "#4f3c25", "games-hover": "rgba(194,162,116,.18)", "games-line": "rgba(128,98,64,.3)",
+    "games-text": "#4f3c25", "games-chip-on": "#c2a274", "games-chip-on-text": "#2a201b",
+    active: "#3b2e27", "active-hover": "#2e2520", "on-dark": "#f6f1e8", "on-dark-muted": "rgba(246,241,232,.72)",
+    "opt-hover": "rgba(246,241,232,.6)",
+    dark: "#2e2520", "dark-text": "#efe7da", "dark-muted": "#b9a993", "dark-accent": "#d4bc94",
+    focus: "#6e2c32", "focus-dark": "#d4bc94",
+    scrim: "rgba(42,32,27,.35)", lightbox: "rgba(30,24,20,.94)", ring: "rgba(42,32,27,.08)", selection: "rgba(110,44,50,.16)", scrollbar: "#8a7965",
+    "shadow-soft": "rgba(42,32,27,.06)", shadow: "rgba(42,32,27,.12)", "shadow-strong": "rgba(42,32,27,.22)",
+  },
+};
+
 /* ფონის პატერნი: კარტის ოთხი ნიშანი, მკრთალად (♠ ♥ ♦ ♣) */
 const suitAt = (d, x, y, r, fill, opacity) =>
   `<path d="${d}" fill="${fill}" fill-opacity="${opacity}" transform="translate(${x} ${y}) rotate(${r} 12 12) scale(.75)"/>`;
 const PATTERN_SVG =
   `<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 120 120">` +
-  suitAt(SUIT.spade, 10, 12, -12, "#18191c", 0.055) +
-  suitAt(SUIT.heart, 72, 8, 10, "#c8102e", 0.065) +
-  suitAt(SUIT.diamond, 40, 70, 8, "#c8102e", 0.065) +
-  suitAt(SUIT.club, 92, 76, -10, "#18191c", 0.055) +
+  suitAt(SUIT.spade, 10, 12, -12, PAL.pattern.ink, 0.055) +
+  suitAt(SUIT.heart, 72, 8, 10, PAL.pattern.accent, 0.065) +
+  suitAt(SUIT.diamond, 40, 70, 8, PAL.pattern.accent, 0.065) +
+  suitAt(SUIT.club, 92, 76, -10, PAL.pattern.ink, 0.055) +
   `</svg>`;
 const PATTERN_URL = `url("data:image/svg+xml,${encodeURIComponent(PATTERN_SVG)}")`;
 
 /*
-  დიზაინ-სისტემა — სუფთა, თეთრი, 8pt ბადე
-  · ფონი თეთრი #ffffff, ზედაპირები #f5f5f4, ხაზები #e7e5e4 — ჩრდილების და გრადიენტების ნაცვლად სივრცე და თხელი ხაზები
-  · ტექსტი #18191c / #44403c / #78716c; შრიფტი — Noto Sans Georgian (საიტზევე ჩატვირთული, ცვლადი სისქით)
-  · ზომები 8-ის ჯერადია (8 / 16 / 24 / 32 / 48 / 64), მცირე შიგა დაშორებები — 4; კუთხეები 8 (ღილაკები, ველები) და 16 (ბარათები, ბლოკები)
-  · აქცენტები მხოლოდ ერთფეროვანი: ბრენდის წითელი #c8102e (პოკერი, ფასდაკლება), ოქროსფერი #b8862c (თამაშები), მწვანე #15803d (შეკვეთა)
+  დიზაინ-სისტემა — „Quiet Luxury“: ჩუმი, თბილი, დახვეწილი ტონები, ერთფეროვანი ზედაპირები, 8pt ბადე
+  ფერები ერთ ადგილას ინახება (PAL) — CSS ცვლადებად გადადის და SVG ილუსტრაციებიც მათ იყენებს.
 */
+const ROOT_VARS = Object.entries(PAL.vars)
+  .map(([k, v]) => `--${k}: ${v};`)
+  .join(" ");
+
 const GLOBAL_CSS = `
   :root {
     color-scheme: light;
-    --bg: #c4c3bf; --surface: #ffffff; --surface-2: #f5f5f4; --surface-3: #efeeec;
-    --ink: #18191c; --ink-2: #44403c; --text-2: #57534e; --text-3: #78716c;
-    --line: #e7e5e4; --line-soft: #f0efed; --line-strong: #d6d3d1;
-    --red: #c8102e; --red-2: #a50d26; --red-tint: #fdf2f3; --gold: #b8862c; --gold-2: #8a5f14; --gold-tint: #fbf6ea; --green: #15803d; --green-2: #116932;
+    ${ROOT_VARS}
     --ease: cubic-bezier(.4,0,.2,1); --ease-out: cubic-bezier(.16,1,.3,1);
     --r: 8px; --r-lg: 16px;
-    --e1: 0 1px 2px rgba(24,25,28,.06);
-    --e2: 0 8px 24px -8px rgba(24,25,28,.12);
-    --e3: 0 16px 40px -16px rgba(24,25,28,.18);
+    --e1: 0 1px 2px var(--shadow-soft);
+    --e2: 0 8px 24px -8px var(--shadow);
+    --e3: 0 16px 40px -16px var(--shadow-strong);
   }
-  html { scrollbar-color: #8f8c87 var(--bg); scroll-behavior: smooth; }
+  html { scrollbar-color: var(--scrollbar) var(--bg); scroll-behavior: smooth; }
   body { margin: 0; background: var(--bg); color: var(--ink); -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; text-rendering: optimizeLegibility; }
-  ::selection { background: rgba(200,16,46,.12); color: var(--ink); }
+  ::selection { background: var(--selection); color: var(--ink); }
 
   /* ---------- ტიპოგრაფია: Noto Sans Georgian, 14/24 საბაზისო ---------- */
   .mp-sans { font-family: 'Noto Sans Georgian', system-ui, -apple-system, 'Segoe UI', sans-serif; font-size: 14px; line-height: 24px; font-feature-settings: "kern", "liga"; }
@@ -585,128 +622,127 @@ const GLOBAL_CSS = `
   /* ---------- გვერდი ---------- */
   .mp-pattern { background-color: var(--bg); background-image: ${PATTERN_URL}; background-size: 120px 120px; }
 
-  /* ---------- ზედა ზოლი: თეთრი; გადახვევისას ჩნდება თხელი ჩრდილი ---------- */
-  .mp-header { background: #fff; border-bottom: 1px solid var(--line); transition: box-shadow .3s var(--ease); }
-  .mp-header-scrolled { box-shadow: 0 8px 24px -12px rgba(24,25,28,.3); }
-  .mp-strip { background: var(--red); }
-  .mp-strip :focus-visible { outline-color: #fff; }
+  /* ---------- ზედა ზოლი ---------- */
+  .mp-header { background: var(--surface); border-bottom: 1px solid var(--line); transition: box-shadow .3s var(--ease); }
+  .mp-header-scrolled { box-shadow: 0 8px 24px -12px var(--shadow-strong); }
+  .mp-strip { background: var(--bar-bg); }
   .mp-header .mp-field { background: var(--surface-2); }
 
   /* ---------- მართვის ელემენტები ---------- */
   .mp-ctl { color: var(--ink); background: var(--surface); border: 1px solid var(--line);
     transition: background-color .2s var(--ease), border-color .2s var(--ease), color .2s var(--ease), transform .2s var(--ease); }
-  .mp-ctl-on { color: #fff; background: var(--ink); border-color: var(--ink); }
+  .mp-ctl-on { color: var(--on-dark); background: var(--active); border-color: var(--active); }
   .mp-segbox { background: var(--surface-2); }
-  .mp-seg { color: var(--text-3); transition: color .2s var(--ease), background-color .2s var(--ease); }
-  .mp-seg-on { color: var(--ink); background: #fff; box-shadow: var(--e1); }
-  .mp-call-dot { color: #fff; background: var(--green); }
-  .mp-count-badge { background: var(--red); box-shadow: 0 0 0 2px #fff; }
+  .mp-seg { color: var(--muted); transition: color .2s var(--ease), background-color .2s var(--ease); }
+  .mp-seg-on { color: var(--ink); background: var(--surface); box-shadow: var(--e1); }
+  .mp-call-dot { color: var(--on-dark); background: var(--call); }
+  .mp-count-badge { color: var(--on-dark); background: var(--badge); box-shadow: 0 0 0 2px var(--surface); }
 
   /* ---------- ველები ---------- */
-  .mp-field { color: var(--ink); background: #fff; border: 1px solid transparent; border-radius: var(--r);
+  .mp-field { color: var(--ink); background: var(--surface); border: 1px solid transparent; border-radius: var(--r);
     transition: border-color .2s var(--ease), box-shadow .2s var(--ease), background-color .2s var(--ease); }
-  .mp-field::placeholder { color: var(--text-3); }
-  .mp-field:focus { outline: none; background: #fff; border-color: var(--ink); box-shadow: 0 0 0 4px rgba(24,25,28,.06); }
+  .mp-field::placeholder { color: var(--muted); }
+  .mp-field:focus { outline: none; background: var(--surface); border-color: var(--ink); box-shadow: 0 0 0 4px var(--ring); }
 
   /* ---------- შეკვეთის ღილაკი ---------- */
-  .mp-cta { position: relative; overflow: hidden; color: #fff; background: var(--green); border-radius: var(--r);
+  .mp-cta { position: relative; overflow: hidden; color: var(--cta-text); background: var(--cta); border-radius: var(--r);
     transition: background-color .2s var(--ease), transform .2s var(--ease), box-shadow .2s var(--ease); }
   .mp-cta svg { transition: transform .3s var(--ease-out); }
 
   /* ---------- ზედაპირები ---------- */
   .mp-panel { border-radius: var(--r-lg); background: var(--surface); border: 1px solid var(--line); }
-  .mp-card { position: relative; container-type: inline-size; background: #fff; border-radius: var(--r-lg); transition: transform .3s var(--ease), box-shadow .3s var(--ease); }
+  .mp-card { position: relative; container-type: inline-size; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-lg); transition: transform .3s var(--ease), box-shadow .3s var(--ease); }
   /* ვიწრო ბარათზე ღილაკის ტექსტი ერთ ხაზზე რჩება — ხატულა იმალება */
   @container (max-width: 300px) { .mp-card .mp-cta { font-size: 12px; padding-left: 8px; padding-right: 8px; } .mp-card .mp-cta > svg { display: none; } }
-  .mp-card h3 > a:focus-visible { outline: none; color: var(--red); text-decoration: underline; }
+  .mp-card h3 > a:focus-visible { outline: none; color: var(--brand); text-decoration: underline; }
   .mp-tile { position: relative; border-radius: var(--r); background: var(--surface-2); transition: background-color .4s var(--ease); }
-  .mp-tile.mp-tile-lg { border-radius: var(--r-lg); background-color: #fff; }
+  .mp-tile.mp-tile-lg { border-radius: var(--r-lg); background-color: var(--surface); }
   .mp-tile :focus-visible { outline-offset: -4px; border-radius: inherit; }
   .mp-tile-media { transition: transform .7s var(--ease-out); }
-  .mp-card-games .mp-tile, .mp-tile.mp-tile-games { background: var(--gold-tint); }
-  .mp-promo { border-radius: var(--r-lg); background: var(--ink); }
-  .mp-accent-line { background: var(--red); }
-  .mp-drawer { background: #fff; box-shadow: -24px 0 64px -24px rgba(24,25,28,.3); }
+  .mp-card-games .mp-tile, .mp-tile.mp-tile-games { background: var(--games-tint); }
+  .mp-drawer { background: var(--surface); box-shadow: -24px 0 64px -24px var(--shadow-strong); }
   @media (min-width: 640px) { .mp-drawer { border-radius: var(--r-lg); } }
-  .mp-glass { background: var(--ink); box-shadow: var(--e3); }
-  .mp-float { color: var(--ink); background: #fff; box-shadow: var(--e1);
+  .mp-glass { background: var(--dark); color: var(--dark-text); box-shadow: var(--e3); }
+  .mp-glass .mp-call-dot { color: var(--ink); background: var(--call-on-dark); }
+  .mp-strip :focus-visible, .mp-dock :focus-visible, footer :focus-visible, .mp-glass :focus-visible { outline-color: var(--focus-dark); }
+  .mp-float { color: var(--ink); background: var(--surface); box-shadow: var(--e1);
     transition: background-color .2s var(--ease), color .2s var(--ease), transform .3s var(--ease), scale .2s var(--ease), opacity .3s var(--ease), translate .3s var(--ease); }
 
   /* ---------- ფილტრები და ჩიპები ---------- */
   .mp-opt { position: relative; border-radius: var(--r); color: var(--ink-2); transition: background-color .2s var(--ease), color .2s var(--ease); }
-  .mp-opt .mp-count { color: var(--text-3); }
-  .mp-opt-on { color: var(--ink); background: #fff; }
-  .mp-opt-on::before { content: ''; position: absolute; left: 0; top: 8px; bottom: 8px; width: 2px; border-radius: 2px; background: var(--ink); }
+  .mp-opt .mp-count { color: var(--muted); }
+  .mp-opt-on { color: var(--ink); background: var(--surface); }
+  .mp-opt-on::before { content: ''; position: absolute; left: 0; top: 8px; bottom: 8px; width: 2px; border-radius: 2px; background: var(--active); }
   .mp-chip { border-radius: var(--r); color: var(--ink-2); background: var(--surface); border: 1px solid var(--line); transition: background-color .2s var(--ease), border-color .2s var(--ease), color .2s var(--ease); }
-  .mp-chip:not(.mp-chip-on) .mp-count { color: var(--text-3); }
-  .mp-chip-on { color: #fff; border-color: var(--ink); background: var(--ink); }
-  .mp-chip-on .mp-count { color: rgba(255,255,255,.7); }
+  .mp-chip:not(.mp-chip-on) .mp-count { color: var(--muted); }
+  .mp-chip-on { color: var(--on-dark); border-color: var(--active); background: var(--active); }
+  .mp-chip-on .mp-count { color: var(--on-dark-muted); }
   .mp-thumb { border-radius: var(--r); border: 1px solid var(--line); background: var(--surface-2); transition: border-color .2s var(--ease), transform .3s var(--ease); }
   .mp-thumb-on { border-color: var(--ink); box-shadow: 0 0 0 1px var(--ink); }
   .mp-stepper { border-radius: var(--r); border: 1px solid var(--line); }
   .mp-stepper button { border-radius: var(--r); transition: background-color .2s var(--ease), color .2s var(--ease); }
 
   /* ---------- ბეჯები ---------- */
-  .mp-badge-sale { color: #fff; background: var(--red); }
-  .mp-badge { color: var(--ink); background: #fff; }
-  .mp-dot-ok { background: var(--green); box-shadow: 0 0 0 4px rgba(21,128,61,.12); }
-  .mp-dot-wait { background: #d97706; box-shadow: 0 0 0 4px rgba(217,119,6,.12); }
-  .mp-bullet { background: var(--red); }
-  .mp-check { color: var(--green); background: rgba(21,128,61,.1); }
+  .mp-badge-sale { color: var(--sale-badge-text); background: var(--sale-badge); }
+  .mp-badge { color: var(--ink); background: var(--surface); }
+  .mp-dot-ok { background: var(--ok); box-shadow: 0 0 0 4px var(--ok-tint); }
+  .mp-dot-wait { background: var(--wait); box-shadow: 0 0 0 4px var(--wait-tint); }
+  .mp-bullet { background: var(--brand); }
+  .mp-check { color: var(--ok); background: var(--ok-tint); }
 
-  /* ---------- ორი განყოფილება: პოკერი (წითელი) და თამაშები (ოქროსფერი) — ერთფეროვანი ფირფიტები ---------- */
-  .mp-sec-poker { background: var(--red-tint); }
-  .mp-sec-games { background: var(--gold-tint); }
+  /* ---------- ორი განყოფილება: პოკერი და სამაგიდო თამაშები ---------- */
+  .mp-sec-poker { background: var(--poker-tint); }
+  .mp-sec-games { background: var(--games-tint); }
   .mp-plate { position: relative; overflow: hidden; isolation: isolate; border-radius: var(--r); transition: background-color .2s var(--ease), transform .2s var(--ease); }
-  .mp-plate-poker { color: #fff; background: var(--red); }
-  .mp-plate-games { color: #fff; background: var(--gold); }
-  .mp-plate-ico { display: grid; place-items: center; flex-shrink: 0; border-radius: var(--r); background: rgba(255,255,255,.18); }
+  .mp-plate-poker { color: var(--poker-plate-text); background: var(--poker-plate); }
+  .mp-plate-games { color: var(--games-plate-text); background: var(--games-plate); }
+  .mp-plate-ico { display: grid; place-items: center; flex-shrink: 0; border-radius: var(--r); }
+  .mp-plate-poker .mp-plate-ico { background: var(--poker-plate-ico); }
+  .mp-plate-games .mp-plate-ico { background: var(--games-plate-ico); }
   .mp-plate-sub { opacity: .8; }
   .mp-plate-mark { position: absolute; z-index: -1; pointer-events: none; opacity: .12; transition: transform .6s var(--ease-out); }
-  .mp-plate-poker.mp-plate-on { box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--red); }
-  .mp-plate-games.mp-plate-on { box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--gold); }
+  .mp-plate-poker.mp-plate-on { box-shadow: 0 0 0 2px var(--surface), 0 0 0 4px var(--poker-plate); }
+  .mp-plate-games.mp-plate-on { box-shadow: 0 0 0 2px var(--surface), 0 0 0 4px var(--games-plate); }
   .mp-sub { position: relative; border-radius: var(--r); transition: background-color .2s var(--ease), color .2s var(--ease); }
-  .mp-sub-ico { display: grid; place-items: center; flex-shrink: 0; border-radius: var(--r); background: #fff; transition: background-color .2s var(--ease), color .2s var(--ease); }
-  .mp-sub-poker { color: #4d0914; }
-  .mp-sub-poker .mp-sub-ico { color: var(--red); }
-  .mp-sub-poker .mp-count { color: #9a3443; }
-  .mp-sub-games { color: #432c05; }
-  .mp-sub-games .mp-sub-ico { color: var(--gold-2); }
-  .mp-sub-games .mp-count { color: #85642c; }
-  .mp-sub-on { color: #fff; }
-  .mp-sub-on .mp-count { color: rgba(255,255,255,.75); }
-  .mp-sub-on .mp-sub-ico { color: #fff; background: rgba(255,255,255,.18); }
-  .mp-sub-poker.mp-sub-on { background: var(--red); }
-  .mp-sub-games.mp-sub-on { background: var(--gold-2); }
+  .mp-sub-ico { display: grid; place-items: center; flex-shrink: 0; border-radius: var(--r); background: var(--surface); transition: background-color .2s var(--ease), color .2s var(--ease); }
+  .mp-sub-poker { color: var(--poker-sub); }
+  .mp-sub-poker .mp-sub-ico { color: var(--poker-ico); }
+  .mp-sub-poker .mp-count { color: var(--poker-count); }
+  .mp-sub-games { color: var(--games-sub); }
+  .mp-sub-games .mp-sub-ico { color: var(--games-ico); }
+  .mp-sub-games .mp-count { color: var(--games-count); }
+  .mp-sub-poker.mp-sub-on { color: var(--poker-on-text); background: var(--poker-on); }
+  .mp-sub-games.mp-sub-on { color: var(--games-on-text); background: var(--games-on); }
+  .mp-sub-on .mp-sub-ico { background: var(--surface); }
   .mp-chip.mp-chip-poker .mp-sub-ico, .mp-chip.mp-chip-games .mp-sub-ico { background: transparent; }
-  .mp-chip.mp-chip-poker { color: #4d0914; border-color: rgba(200,16,46,.2); }
-  .mp-chip.mp-chip-poker .mp-sub-ico { color: var(--red); }
-  .mp-chip.mp-chip-poker:not(.mp-chip-on) .mp-count { color: #9a3443; }
-  .mp-chip.mp-chip-poker.mp-chip-on { color: #fff; border-color: var(--red); background: var(--red); }
-  .mp-chip.mp-chip-games { color: #432c05; border-color: rgba(184,134,44,.3); }
-  .mp-chip.mp-chip-games .mp-sub-ico { color: var(--gold-2); }
-  .mp-chip.mp-chip-games:not(.mp-chip-on) .mp-count { color: #85642c; }
-  .mp-chip.mp-chip-games.mp-chip-on { color: #fff; border-color: var(--gold-2); background: var(--gold-2); }
-  .mp-chip.mp-chip-on .mp-sub-ico { color: #fff; }
-  .mp-chip.mp-chip-poker.mp-chip-on .mp-count, .mp-chip.mp-chip-games.mp-chip-on .mp-count { color: rgba(255,255,255,.75); }
+  .mp-chip.mp-chip-poker { color: var(--poker-sub); border-color: var(--poker-line); }
+  .mp-chip.mp-chip-poker .mp-sub-ico { color: var(--poker-ico); }
+  .mp-chip.mp-chip-poker:not(.mp-chip-on) .mp-count { color: var(--poker-count); }
+  .mp-chip.mp-chip-poker.mp-chip-on { color: var(--poker-chip-on-text); border-color: var(--poker-chip-on); background: var(--poker-chip-on); }
+  .mp-chip.mp-chip-games { color: var(--games-sub); border-color: var(--games-line); }
+  .mp-chip.mp-chip-games .mp-sub-ico { color: var(--games-ico); }
+  .mp-chip.mp-chip-games:not(.mp-chip-on) .mp-count { color: var(--games-count); }
+  .mp-chip.mp-chip-games.mp-chip-on { color: var(--games-chip-on-text); border-color: var(--games-chip-on); background: var(--games-chip-on); }
+  .mp-chip.mp-chip-on .mp-sub-ico, .mp-chip.mp-chip-poker.mp-chip-on .mp-count, .mp-chip.mp-chip-games.mp-chip-on .mp-count { color: inherit; }
+  .mp-chip.mp-chip-poker.mp-chip-on .mp-count, .mp-chip.mp-chip-games.mp-chip-on .mp-count { opacity: .75; }
 
   /* ---------- hover — მხოლოდ მაუსიან მოწყობილობებზე ---------- */
   @media (hover: hover) {
     .mp-ctl:hover { border-color: var(--line-strong); background: var(--surface-2); }
-    .mp-ctl-on:hover { background: #2c2d31; border-color: #2c2d31; }
+    .mp-ctl-on:hover { background: var(--active-hover); border-color: var(--active-hover); }
     .mp-seg:hover { color: var(--ink); }
     .mp-field:hover:not(:focus) { border-color: var(--line-strong); }
     .mp-header .mp-field:hover:not(:focus) { background: var(--surface-3); border-color: transparent; }
     .mp-dock-card:hover { transform: translateY(-2px); }
-    .mp-cta:hover { background: var(--green-2); }
+    .mp-cta:hover { background: var(--cta-hover); }
     .mp-cta:hover svg { transform: translateX(2px) rotate(-8deg); }
-    .mp-card:hover { transform: translateY(-4px); box-shadow: 0 16px 32px -16px rgba(24,25,28,.35); }
+    .mp-card:hover { transform: translateY(-4px); box-shadow: 0 16px 32px -16px var(--shadow-strong); }
     .mp-card:hover .mp-tile { background: var(--surface-3); }
-    .mp-card.mp-card-games:hover .mp-tile { background: #f7eed8; }
+    .mp-card.mp-card-games:hover .mp-tile { background: var(--games-tint-hover); }
     .mp-card:hover .mp-tile-media { transform: scale(1.06); }
-    .mp-card:hover h3 a { color: var(--red); }
-    .mp-float:hover { color: #fff; background: var(--ink); scale: 1.06; }
-    .mp-opt:hover:not(.mp-opt-on) { color: var(--ink); background: rgba(255,255,255,.55); }
+    .mp-card:hover h3 a { color: var(--brand); }
+    .mp-float:hover { color: var(--on-dark); background: var(--active); scale: 1.06; }
+    .mp-opt:hover:not(.mp-opt-on) { color: var(--ink); background: var(--opt-hover); }
     .mp-chip:hover:not(.mp-chip-on) { color: var(--ink); border-color: var(--line-strong); }
     .mp-thumb:hover { transform: translateY(-2px); border-color: var(--line-strong); }
     .mp-thumb-on:hover { border-color: var(--ink); }
@@ -714,16 +750,16 @@ const GLOBAL_CSS = `
     .mp-link:hover { background-size: 100% 1px; }
     .mp-plate:hover { transform: translateY(-1px); }
     .mp-plate:hover .mp-plate-mark { transform: rotate(-4deg) scale(1.08); }
-    .mp-plate-poker:hover { background: #b50e29; }
-    .mp-plate-games:hover { background: #a87a26; }
-    .mp-sub-poker:hover:not(.mp-sub-on) { color: #2e040b; background: rgba(200,16,46,.08); }
-    .mp-sub-games:hover:not(.mp-sub-on) { color: #2a1b02; background: rgba(184,134,44,.14); }
-    .mp-chip.mp-chip-poker:hover:not(.mp-chip-on) { color: #2e040b; border-color: rgba(200,16,46,.5); }
-    .mp-chip.mp-chip-games:hover:not(.mp-chip-on) { color: #2a1b02; border-color: rgba(184,134,44,.7); }
+    .mp-plate-poker:hover { background: var(--poker-plate-hover); }
+    .mp-plate-games:hover { background: var(--games-plate-hover); }
+    .mp-sub-poker:hover:not(.mp-sub-on) { color: var(--ink); background: var(--poker-hover); }
+    .mp-sub-games:hover:not(.mp-sub-on) { color: var(--ink); background: var(--games-hover); }
+    .mp-chip.mp-chip-poker:hover:not(.mp-chip-on) { color: var(--ink); border-color: var(--poker-ico); }
+    .mp-chip.mp-chip-games:hover:not(.mp-chip-on) { color: var(--ink); border-color: var(--games-ico); }
   }
   .mp-ctl:active { transform: scale(.96); transition-duration: .1s; }
   .mp-cta:active { transform: scale(.98); transition-duration: .1s; }
-  :focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+  :focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
   :where(:focus-visible) { border-radius: 4px; }
   .mp-field:focus-visible { outline: none; }
 
@@ -749,7 +785,7 @@ const GLOBAL_CSS = `
   @keyframes mp-drive { 0%, 100% { transform: translateX(-2px); } 50% { transform: translateX(2px); } }
   .mp-dock { transition: opacity .3s var(--ease), translate .3s var(--ease), visibility .3s; animation: mp-rise .6s var(--ease-out) .5s backwards; }
   .mp-dock.is-hidden { opacity: 0; translate: 0 16px; visibility: hidden; }
-  .mp-dock-card { box-shadow: 0 16px 40px -12px rgba(24,25,28,.5); transition: transform .3s var(--ease); }
+  .mp-dock-card { box-shadow: 0 16px 40px -12px var(--shadow-strong); transition: transform .3s var(--ease); }
   .mp-scroll::-webkit-scrollbar { display: none; }
   .mp-scroll { scrollbar-width: none; }
   @media (prefers-reduced-motion: reduce) {
@@ -770,26 +806,14 @@ const MEEPLE_PATH = "M12 2.8c1.5 0 2.7 1.2 2.7 2.7 0 .9-.4 1.6-1 2.1 3.2.5 6.9 1
 function LogoMark({ size = 34 }) {
   return (
     <svg width={size} height={size} viewBox="0 0 40 40" aria-hidden="true" className="shrink-0">
-      <defs>
-        <linearGradient id="mp-logo-fill" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stopColor="#e3324d" />
-          <stop offset="0.55" stopColor="#c8102e" />
-          <stop offset="1" stopColor="#9e0c24" />
-        </linearGradient>
-        <linearGradient id="mp-logo-gloss" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#fff" stopOpacity="0.55" />
-          <stop offset="0.5" stopColor="#fff" stopOpacity="0" />
-        </linearGradient>
-      </defs>
-      {/* მომრგვალებული ფირფიტა ბზინვარებით */}
-      <path d="M20 1.5c11.2 0 18.5 7.3 18.5 18.5S31.2 38.5 20 38.5 1.5 31.2 1.5 20 8.8 1.5 20 1.5Z" fill="url(#mp-logo-fill)" />
-      <path d="M20 1.5c11.2 0 18.5 7.3 18.5 18.5S31.2 38.5 20 38.5 1.5 31.2 1.5 20 8.8 1.5 20 1.5Z" fill="url(#mp-logo-gloss)" />
+      {/* მომრგვალებული ფირფიტა — ერთფეროვანი ბორდო */}
+      <path d="M20 1.5c11.2 0 18.5 7.3 18.5 18.5S31.2 38.5 20 38.5 1.5 31.2 1.5 20 8.8 1.5 20 1.5Z" fill={PAL.vars.brand} />
       {/* ჩიპის კიდის ჭდეები */}
       {[0, 90, 180, 270].map((a) => (
-        <rect key={a} x="18.6" y="3.6" width="2.8" height="4.2" rx="1.2" fill="#ffffff" opacity="0.4" transform={`rotate(${a + 45} 20 20)`} />
+        <rect key={a} x="18.6" y="3.6" width="2.8" height="4.2" rx="1.2" fill={PAL.vars.surface} opacity="0.35" transform={`rotate(${a + 45} 20 20)`} />
       ))}
       {/* აგური */}
-      <path d={DIAMOND_PATH} fill="#ffffff" transform="translate(20 20) scale(.52) translate(-20 -20)" />
+      <path d={DIAMOND_PATH} fill={PAL.vars.surface} transform="translate(20 20) scale(.52) translate(-20 -20)" />
     </svg>
   );
 }
@@ -805,8 +829,8 @@ function Logo({ onNavigate }) {
       <span className="transition-transform duration-500 group-hover:rotate-[-8deg] group-hover:scale-105">
         <LogoMark size={32} />
       </span>
-      <span className="mp-brand text-[17px] font-semibold leading-none tracking-[-0.02em] text-[#18191c]">
-        mypoker<span className="text-[#c8102e]">.ge</span>
+      <span className="mp-brand text-[17px] font-semibold leading-none tracking-[-0.02em] text-[color:var(--ink)]">
+        mypoker<span className="text-[color:var(--brand)]">.ge</span>
       </span>
     </a>
   );
@@ -838,19 +862,19 @@ function LangSwitch({ productId, className = "" }) {
 function ChipStack({ x, baseY, count, color, uid }) {
   return (
     <g>
-      <ellipse cx={x} cy={baseY + 6} rx="30" ry="8" fill="#0f172a" opacity="0.14" />
+      <ellipse cx={x} cy={baseY + 6} rx="30" ry="8" fill="#2a201b" opacity="0.14" />
       {Array.from({ length: count }).map((_, i) => {
         const cy = baseY - i * 7;
         return (
           <g key={i}>
             <ellipse cx={x} cy={cy + 2.5} rx="26" ry="9" fill={color} />
-            <ellipse cx={x} cy={cy + 2.5} rx="26" ry="9" fill="#000" opacity="0.22" />
+            <ellipse cx={x} cy={cy + 2.5} rx="26" ry="9" fill="#2a201b" opacity="0.22" />
             <ellipse cx={x} cy={cy} rx="26" ry="9" fill={color} />
-            <ellipse cx={x} cy={cy} rx="26" ry="9" fill="none" stroke="#fff" strokeOpacity="0.85" strokeWidth="2.4" strokeDasharray="7 9" />
+            <ellipse cx={x} cy={cy} rx="26" ry="9" fill="none" stroke="#efe6d8" strokeOpacity="0.85" strokeWidth="2.4" strokeDasharray="7 9" />
             {i === count - 1 && (
               <>
                 <ellipse cx={x} cy={cy} rx="16" ry="5.4" fill={`url(#${uid}-shine)`} />
-                <ellipse cx={x} cy={cy} rx="16" ry="5.4" fill="none" stroke="#fff" strokeOpacity="0.55" />
+                <ellipse cx={x} cy={cy} rx="16" ry="5.4" fill="none" stroke="#efe6d8" strokeOpacity="0.55" />
               </>
             )}
           </g>
@@ -863,10 +887,10 @@ function ChipStack({ x, baseY, count, color, uid }) {
 function PlayingCard({ x, y, rotate, back, ink, suit, uid }) {
   return (
     <g transform={`translate(${x} ${y}) rotate(${rotate})`}>
-      <rect x="-30" y="-44" width="60" height="88" rx="7" fill="#0f172a" opacity="0.14" transform="translate(3 5)" />
+      <rect x="-30" y="-44" width="60" height="88" rx="7" fill="#2a201b" opacity="0.14" transform="translate(3 5)" />
       {suit ? (
         <>
-          <rect x="-30" y="-44" width="60" height="88" rx="7" fill="#fafaf9" />
+          <rect x="-30" y="-44" width="60" height="88" rx="7" fill="#efe7d8" />
           <text x="-20" y="-26" fontSize="14" textAnchor="middle" fill={ink}>{suit}</text>
           <text x="0" y="12" fontSize="34" textAnchor="middle" fill={ink}>{suit}</text>
           <text x="20" y="36" fontSize="14" textAnchor="middle" fill={ink} transform="rotate(180 20 31)">{suit}</text>
@@ -874,7 +898,7 @@ function PlayingCard({ x, y, rotate, back, ink, suit, uid }) {
       ) : (
         <>
           <rect x="-30" y="-44" width="60" height="88" rx="7" fill={back} />
-          <rect x="-25" y="-39" width="50" height="78" rx="4" fill={`url(#${uid}-diamond)`} stroke="#fff" strokeOpacity="0.65" />
+          <rect x="-25" y="-39" width="50" height="78" rx="4" fill={`url(#${uid}-diamond)`} stroke="#efe6d8" strokeOpacity="0.65" />
         </>
       )}
     </g>
@@ -897,12 +921,12 @@ const pips = (n, cx, cy, step, r, fill) =>
 function DominoTile({ x, y, rotate, a, b }) {
   return (
     <g transform={`translate(${x} ${y}) rotate(${rotate})`}>
-      <rect x="-19" y="-36" width="38" height="72" rx="7" fill="#0f172a" opacity="0.14" transform="translate(3 5)" />
-      <rect x="-19" y="-36" width="38" height="72" rx="7" fill="#fbf8f1" stroke="#e7e1d3" />
-      <line x1="-12" y1="0" x2="12" y2="0" stroke="#c9bfa8" strokeWidth="1.6" />
-      <circle cx="0" cy="0" r="2" fill="#c9a24e" />
-      {pips(a, 0, -18, 8.5, 3.1, "#1c1917")}
-      {pips(b, 0, 18, 8.5, 3.1, "#1c1917")}
+      <rect x="-19" y="-36" width="38" height="72" rx="7" fill="#2a201b" opacity="0.14" transform="translate(3 5)" />
+      <rect x="-19" y="-36" width="38" height="72" rx="7" fill="#efe7d8" stroke="#8a7965" />
+      <line x1="-12" y1="0" x2="12" y2="0" stroke="#8f7e6a" strokeWidth="1.6" />
+      <circle cx="0" cy="0" r="2" fill="#a8915f" />
+      {pips(a, 0, -18, 8.5, 3.1, "#2a201b")}
+      {pips(b, 0, 18, 8.5, 3.1, "#2a201b")}
     </g>
   );
 }
@@ -910,7 +934,7 @@ function DominoTile({ x, y, rotate, a, b }) {
 function Die({ x, y, rotate, value, face, pip }) {
   return (
     <g transform={`translate(${x} ${y}) rotate(${rotate})`}>
-      <rect x="-27" y="-27" width="54" height="54" rx="12" fill="#0f172a" opacity="0.16" transform="translate(4 6)" />
+      <rect x="-27" y="-27" width="54" height="54" rx="12" fill="#2a201b" opacity="0.16" transform="translate(4 6)" />
       <rect x="-27" y="-27" width="54" height="54" rx="12" fill={face} />
       <rect x="-27" y="-27" width="54" height="54" rx="12" fill="url(#mp-die-shine)" />
       {pips(value, 0, 0, 13, 4.6, pip)}
@@ -928,21 +952,21 @@ function ProductVisual({ visual, uid, label }) {
         <stop offset="1" stopColor="#fff" stopOpacity="0" />
       </radialGradient>
       <pattern id={`${uid}-diamond`} width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
-        <rect width="8" height="8" fill={colors[0] || "#1e40af"} />
-        <rect width="4" height="4" fill="#fff" opacity="0.18" />
+        <rect width="8" height="8" fill={colors[0] || "#3a4553"} />
+        <rect width="4" height="4" fill="#efe6d8" opacity="0.18" />
       </pattern>
       <linearGradient id={`${uid}-gold`} x1="0" y1="0" x2="1" y2="1">
-        <stop offset="0" stopColor="#fff1cc" />
-        <stop offset="0.45" stopColor="#ecd08c" />
-        <stop offset="1" stopColor="#9a7430" />
+        <stop offset="0" stopColor="#c9b78c" />
+        <stop offset="0.45" stopColor="#a8915f" />
+        <stop offset="1" stopColor="#7d6a44" />
       </linearGradient>
       <linearGradient id="mp-die-shine" x1="0" y1="0" x2="0" y2="1">
         <stop offset="0" stopColor="#fff" stopOpacity="0.35" />
         <stop offset="0.55" stopColor="#fff" stopOpacity="0" />
       </linearGradient>
       <radialGradient id={`${uid}-felt`} cx="50%" cy="42%" r="68%">
-        <stop offset="0" stopColor={colors[0] || "#047857"} />
-        <stop offset="1" stopColor="#0b2a22" />
+        <stop offset="0" stopColor={colors[0] || "#3d5a4a"} />
+        <stop offset="1" stopColor="#2a201b" />
       </radialGradient>
     </defs>
   );
@@ -960,14 +984,14 @@ function ProductVisual({ visual, uid, label }) {
     art = (
       <g>
         <PlayingCard x={80} y={82} rotate={-16} back={colors[0]} uid={uid} />
-        <PlayingCard x={116} y={76} rotate={-2} ink="#111827" suit="♠" uid={uid} />
-        <PlayingCard x={152} y={84} rotate={14} ink="#b91c1c" suit="♥" uid={uid} />
+        <PlayingCard x={116} y={76} rotate={-2} ink="#2a201b" suit="♠" uid={uid} />
+        <PlayingCard x={152} y={84} rotate={14} ink="#7a3037" suit="♥" uid={uid} />
       </g>
     );
   } else if (kind === "table") {
     art = (
       <g>
-        <ellipse cx="116" cy="132" rx="96" ry="10" fill="#0f172a" opacity="0.14" />
+        <ellipse cx="116" cy="132" rx="96" ry="10" fill="#2a201b" opacity="0.14" />
         {octagon ? (
           <>
             <polygon points="66,36 166,36 206,70 206,98 166,128 66,128 26,98 26,70" fill={colors[1]} />
@@ -980,19 +1004,19 @@ function ProductVisual({ visual, uid, label }) {
             <rect x="52" y="58" width="128" height="46" rx="23" fill="none" stroke={colors[2]} strokeOpacity="0.5" strokeDasharray="4 5" />
           </>
         )}
-        <circle cx="96" cy="81" r="7" fill="#b91c1c" stroke="#fff" strokeDasharray="3 3" strokeWidth="1.5" />
-        <circle cx="116" cy="87" r="7" fill="#1f2937" stroke="#fff" strokeDasharray="3 3" strokeWidth="1.5" />
-        <circle cx="136" cy="79" r="7" fill={colors[2]} stroke="#fff" strokeDasharray="3 3" strokeWidth="1.5" />
+        <circle cx="96" cy="81" r="7" fill="#7a3037" stroke="#efe6d8" strokeDasharray="3 3" strokeWidth="1.5" />
+        <circle cx="116" cy="87" r="7" fill="#3b2e27" stroke="#efe6d8" strokeDasharray="3 3" strokeWidth="1.5" />
+        <circle cx="136" cy="79" r="7" fill={colors[2]} stroke="#efe6d8" strokeDasharray="3 3" strokeWidth="1.5" />
       </g>
     );
   } else if (kind === "dealer") {
     art = (
       <g>
-        <ellipse cx="116" cy="134" rx="52" ry="8" fill="#0f172a" opacity="0.14" />
-        <circle cx="116" cy="84" r="50" fill="#f5f5f4" />
+        <ellipse cx="116" cy="134" rx="52" ry="8" fill="#2a201b" opacity="0.14" />
+        <circle cx="116" cy="84" r="50" fill="#efe7d8" />
         <circle cx="116" cy="84" r="50" fill={`url(#${uid}-shine)`} />
         <circle cx="116" cy="84" r="40" fill="none" stroke={`url(#${uid}-gold)`} strokeWidth="3" />
-        <text x="116" y="91" textAnchor="middle" fontSize="19" fontWeight="700" fill="#18181b" fontFamily="'Noto Sans Georgian', sans-serif">
+        <text x="116" y="91" textAnchor="middle" fontSize="19" fontWeight="700" fill="#2a201b" fontFamily="'Noto Sans Georgian', sans-serif">
           {T.dealer}
         </text>
       </g>
@@ -1000,23 +1024,23 @@ function ProductVisual({ visual, uid, label }) {
   } else if (kind === "shuffler") {
     art = (
       <g>
-        <ellipse cx="116" cy="134" rx="78" ry="8" fill="#0f172a" opacity="0.14" />
-        <rect x="44" y="62" width="144" height="66" rx="12" fill="#1f2937" stroke="#475569" />
-        <rect x="56" y="74" width="50" height="42" rx="6" fill="#0b1220" />
-        <rect x="126" y="74" width="50" height="42" rx="6" fill="#0b1220" />
-        <rect x="62" y="44" width="38" height="50" rx="4" fill="#1e40af" stroke="#fff" strokeOpacity="0.55" transform="rotate(-8 81 69)" />
-        <rect x="132" y="44" width="38" height="50" rx="4" fill="#991b1b" stroke="#fff" strokeOpacity="0.55" transform="rotate(8 151 69)" />
-        <circle cx="116" cy="112" r="6" fill="#34d399" />
+        <ellipse cx="116" cy="134" rx="78" ry="8" fill="#2a201b" opacity="0.14" />
+        <rect x="44" y="62" width="144" height="66" rx="12" fill="#3b2e27" stroke="#5a4a40" />
+        <rect x="56" y="74" width="50" height="42" rx="6" fill="#2a201b" />
+        <rect x="126" y="74" width="50" height="42" rx="6" fill="#2a201b" />
+        <rect x="62" y="44" width="38" height="50" rx="4" fill="#3a4553" stroke="#efe6d8" strokeOpacity="0.55" transform="rotate(-8 81 69)" />
+        <rect x="132" y="44" width="38" height="50" rx="4" fill="#6e2c32" stroke="#efe6d8" strokeOpacity="0.55" transform="rotate(8 151 69)" />
+        <circle cx="116" cy="112" r="6" fill="#c6a97f" />
       </g>
     );
   } else if (kind === "guard") {
     art = (
       <g>
-        <ellipse cx="116" cy="134" rx="48" ry="7" fill="#0f172a" opacity="0.14" />
+        <ellipse cx="116" cy="134" rx="48" ry="7" fill="#2a201b" opacity="0.14" />
         <circle cx="116" cy="82" r="48" fill={`url(#${uid}-gold)`} />
-        <circle cx="116" cy="82" r="39" fill="none" stroke="#7a5418" strokeOpacity="0.55" strokeWidth="2" />
+        <circle cx="116" cy="82" r="39" fill="none" stroke="#7d6a44" strokeOpacity="0.55" strokeWidth="2" />
         <circle cx="116" cy="82" r="48" fill={`url(#${uid}-shine)`} />
-        <text x="116" y="99" textAnchor="middle" fontSize="46" fill="#5b3d0f" opacity="0.85">♠</text>
+        <text x="116" y="99" textAnchor="middle" fontSize="46" fill="#4f3c25" opacity="0.85">♠</text>
       </g>
     );
   } else if (kind === "backgammon") {
@@ -1025,30 +1049,30 @@ function ProductVisual({ visual, uid, label }) {
         const x = x0 + i * 14;
         const tip = top ? 74 : 86;
         const base = top ? 32 : 128;
-        return <polygon key={`${x0}-${top}-${i}`} points={`${x},${base} ${x + 14},${base} ${x + 7},${tip}`} fill={(i + n0) % 2 ? "#1f2937" : "#9f1d1d"} opacity="0.92" />;
+        return <polygon key={`${x0}-${top}-${i}`} points={`${x},${base} ${x + 14},${base} ${x + 7},${tip}`} fill={(i + n0) % 2 ? "#3b2e27" : "#6e2c32"} opacity="0.92" />;
       });
     art = (
       <g>
-        <ellipse cx="116" cy="142" rx="100" ry="8" fill="#0f172a" opacity="0.14" />
-        <rect x="14" y="22" width="204" height="116" rx="9" fill="#6b3f17" />
+        <ellipse cx="116" cy="142" rx="100" ry="8" fill="#2a201b" opacity="0.14" />
+        <rect x="14" y="22" width="204" height="116" rx="9" fill="#4a3428" />
         <rect x="14" y="22" width="204" height="116" rx="9" fill={`url(#${uid}-shine)`} opacity="0.35" />
-        <rect x="22" y="30" width="88" height="100" rx="3" fill="#f2e2bf" />
-        <rect x="122" y="30" width="88" height="100" rx="3" fill="#f2e2bf" />
-        <rect x="111" y="22" width="10" height="116" fill="#4a2a0e" />
+        <rect x="22" y="30" width="88" height="100" rx="3" fill="#e6dccb" />
+        <rect x="122" y="30" width="88" height="100" rx="3" fill="#e6dccb" />
+        <rect x="111" y="22" width="10" height="116" fill="#3e2c22" />
         {points(23, true, 0)}
         {points(123, true, 1)}
         {points(23, false, 1)}
         {points(123, false, 0)}
         {[[30, 40], [30, 52], [30, 64], [144, 120], [144, 108], [186, 40]].map(([cx, cy], i) => (
           <g key={`w${i}`}>
-            <circle cx={cx} cy={cy} r="6.6" fill="#fafaf9" stroke="#d6d3d1" />
-            <circle cx={cx} cy={cy} r="3.4" fill="none" stroke="#e7e5e4" />
+            <circle cx={cx} cy={cy} r="6.6" fill="#efe7d8" stroke="#cbbfa9" />
+            <circle cx={cx} cy={cy} r="3.4" fill="none" stroke="#d9cdb8" />
           </g>
         ))}
         {[[86, 120], [86, 108], [158, 40], [158, 52], [200, 120]].map(([cx, cy], i) => (
           <g key={`b${i}`}>
-            <circle cx={cx} cy={cy} r="6.6" fill="#1f2937" stroke="#0b0f17" />
-            <circle cx={cx} cy={cy} r="3.4" fill="none" stroke="#374151" />
+            <circle cx={cx} cy={cy} r="6.6" fill="#3b2e27" stroke="#2a201b" />
+            <circle cx={cx} cy={cy} r="3.4" fill="none" stroke="#4a3d35" />
           </g>
         ))}
       </g>
@@ -1056,7 +1080,7 @@ function ProductVisual({ visual, uid, label }) {
   } else if (kind === "domino") {
     art = (
       <g>
-        <ellipse cx="116" cy="138" rx="84" ry="8" fill="#0f172a" opacity="0.14" />
+        <ellipse cx="116" cy="138" rx="84" ry="8" fill="#2a201b" opacity="0.14" />
         <DominoTile x={74} y={84} rotate={-16} a={6} b={3} />
         <DominoTile x={116} y={78} rotate={2} a={5} b={5} />
         <DominoTile x={158} y={86} rotate={18} a={2} b={4} />
@@ -1064,7 +1088,7 @@ function ProductVisual({ visual, uid, label }) {
     );
   } else if (kind === "boardgame") {
     /* სამაგიდო თამაშის დაფა პერსპექტივაში: ფერადი გზა კიდეებზე, ორი მიპლი და კამათელი */
-    const track = ["#c8102e", "#d6a43a", "#1d4ed8", "#047857"];
+    const track = ["#6e2c32", "#b0916a", "#3a4553", "#3d5a4a"];
     const cells = [
       ...Array.from({ length: 8 }, (_, i) => [i, 0]),
       ...Array.from({ length: 7 }, (_, i) => [7, i + 1]),
@@ -1073,36 +1097,36 @@ function ProductVisual({ visual, uid, label }) {
     ];
     const meeple = (x, y, fill) => (
       <g transform={`translate(${x - 21.6} ${y - 36.9}) scale(1.8)`}>
-        <ellipse cx="12" cy="20.6" rx="8" ry="2.2" fill="#0f172a" opacity="0.25" />
+        <ellipse cx="12" cy="20.6" rx="8" ry="2.2" fill="#2a201b" opacity="0.25" />
         <path d={MEEPLE_PATH} fill={fill} />
         <path d={MEEPLE_PATH} fill={`url(#${uid}-shine)`} />
       </g>
     );
     art = (
       <g>
-        <ellipse cx="116" cy="142" rx="98" ry="9" fill="#0f172a" opacity="0.14" />
+        <ellipse cx="116" cy="142" rx="98" ry="9" fill="#2a201b" opacity="0.14" />
         <g transform="translate(116 88) scale(1 0.56) rotate(45)">
-          <rect x="-62" y="-62" width="124" height="124" rx="9" fill="#4a2a0e" transform="translate(8 8)" />
-          <rect x="-62" y="-62" width="124" height="124" rx="9" fill="#7c4a1e" />
-          <rect x="-57" y="-57" width="114" height="114" rx="6" fill="#fbf6ea" />
+          <rect x="-62" y="-62" width="124" height="124" rx="9" fill="#3e2c22" transform="translate(8 8)" />
+          <rect x="-62" y="-62" width="124" height="124" rx="9" fill="#6a4c38" />
+          <rect x="-57" y="-57" width="114" height="114" rx="6" fill="#efe7d8" />
           {cells.map(([cx, cy], i) => (
             <rect key={i} x={-55.8 + cx * 14.25} y={-55.8 + cy * 14.25} width="11.85" height="11.85" rx="2.5" fill={track[i % 4]} opacity="0.92" />
           ))}
-          <rect x="-41" y="-41" width="82" height="82" rx="5" fill="#f2e2bf" />
-          <circle r="19" fill="none" stroke="#c9a24e" strokeWidth="3" />
-          <path d={DIAMOND_PATH} transform="translate(-12 -12) scale(.6)" fill="#c8102e" />
+          <rect x="-41" y="-41" width="82" height="82" rx="5" fill="#e6dccb" />
+          <circle r="19" fill="none" stroke="#a8915f" strokeWidth="3" />
+          <path d={DIAMOND_PATH} transform="translate(-12 -12) scale(.6)" fill="#6e2c32" />
         </g>
-        {meeple(84, 86, "#c8102e")}
-        {meeple(146, 96, "#1d4ed8")}
+        {meeple(84, 86, "#6e2c32")}
+        {meeple(146, 96, "#3a4553")}
         <g transform="translate(176 116) scale(.6) translate(-176 -116)">
-          <Die x={176} y={116} rotate={14} value={4} face="#fbf8f1" pip="#1c1917" />
+          <Die x={176} y={116} rotate={14} value={4} face="#efe7d8" pip="#2a201b" />
         </g>
       </g>
     );
   } else if (kind === "chess") {
     const pawn = (x, y, fill, stroke) => (
       <g transform={`translate(${x} ${y})`}>
-        <ellipse cx="0" cy="30" rx="15" ry="4" fill="#0f172a" opacity="0.18" />
+        <ellipse cx="0" cy="30" rx="15" ry="4" fill="#2a201b" opacity="0.18" />
         <rect x="-13" y="22" width="26" height="7" rx="3.5" fill={fill} stroke={stroke} />
         <path d="M-8 22 L-5 4 H5 L8 22 Z" fill={fill} stroke={stroke} />
         <rect x="-8" y="0" width="16" height="5" rx="2.5" fill={fill} stroke={stroke} />
@@ -1111,25 +1135,25 @@ function ProductVisual({ visual, uid, label }) {
     );
     art = (
       <g>
-        <ellipse cx="116" cy="142" rx="92" ry="8" fill="#0f172a" opacity="0.14" />
+        <ellipse cx="116" cy="142" rx="92" ry="8" fill="#2a201b" opacity="0.14" />
         <g transform="translate(116 80) scale(1 0.62) rotate(45)">
-          <rect x="-58" y="-58" width="116" height="116" rx="6" fill="#6b3f17" />
+          <rect x="-58" y="-58" width="116" height="116" rx="6" fill="#4a3428" />
           {Array.from({ length: 64 }).map((_, i) => {
             const cx = i % 8;
             const cy = Math.floor(i / 8);
-            return <rect key={i} x={-52 + cx * 13} y={-52 + cy * 13} width="13" height="13" fill={(cx + cy) % 2 ? "#7c4a1e" : "#f2e2bf"} />;
+            return <rect key={i} x={-52 + cx * 13} y={-52 + cy * 13} width="13" height="13" fill={(cx + cy) % 2 ? "#6a4c38" : "#e6dccb"} />;
           })}
         </g>
-        {pawn(84, 66, "#fafaf9", "#d6d3d1")}
-        {pawn(146, 74, "#1f2937", "#0b0f17")}
+        {pawn(84, 66, "#efe7d8", "#cbbfa9")}
+        {pawn(146, 74, "#3b2e27", "#2a201b")}
       </g>
     );
   } else if (kind === "dice") {
     art = (
       <g>
-        <ellipse cx="116" cy="136" rx="76" ry="8" fill="#0f172a" opacity="0.14" />
-        <Die x={88} y={86} rotate={-14} value={5} face="#c8102e" pip="#ffffff" />
-        <Die x={148} y={78} rotate={12} value={3} face="#fbf8f1" pip="#1c1917" />
+        <ellipse cx="116" cy="136" rx="76" ry="8" fill="#2a201b" opacity="0.14" />
+        <Die x={88} y={86} rotate={-14} value={5} face="#6e2c32" pip="#efe6d8" />
+        <Die x={148} y={78} rotate={12} value={3} face="#efe7d8" pip="#2a201b" />
       </g>
     );
   }
@@ -1150,7 +1174,7 @@ function SearchField({ id, query, onQuery, className = "" }) {
   return (
     <label htmlFor={id} className={`relative block ${className}`}>
       <span className="sr-only">{T.search}</span>
-      <Search className="pointer-events-none absolute left-3 top-1/2 z-[1] h-4 w-4 -translate-y-1/2 text-[#514d49]" />
+      <Search className="pointer-events-none absolute left-3 top-1/2 z-[1] h-4 w-4 -translate-y-1/2 text-[color:var(--muted)]" />
       <input
         id={id}
         type="search"
@@ -1167,7 +1191,7 @@ function SearchField({ id, query, onQuery, className = "" }) {
 function FreeShipping() {
   if (!CONFIG.freeShippingFrom) return null;
   return (
-    <p className="flex items-center justify-center gap-2 whitespace-nowrap text-[13px] font-medium leading-4 tracking-[0.02em] text-white md:gap-3 md:text-[15px] md:leading-6 md:tracking-[0.04em]">
+    <p className="flex items-center justify-center gap-2 whitespace-nowrap text-[13px] font-medium leading-4 tracking-[0.02em] text-[color:var(--bar-text)] md:gap-3 md:text-[15px] md:leading-6 md:tracking-[0.04em]">
       <Truck className="mp-drive h-4 w-4 shrink-0 md:h-5 md:w-5" strokeWidth={2} aria-hidden="true" />
       <span className="md:hidden">
         <span className="font-semibold">{T.freeDeliveryShort[0]}</span> {T.freeDeliveryShort[1]}
@@ -1175,7 +1199,7 @@ function FreeShipping() {
       <span className="hidden md:inline">
         <span className="font-semibold">{T.freeDelivery[0]}</span> {T.freeDelivery[1]}
       </span>
-      <span className="mp-num rounded-full bg-white px-2 py-0.5 text-[12px] font-bold leading-4 tracking-normal text-[#c8102e] md:px-3 md:py-1 md:text-[14px]">
+      <span className="mp-num rounded-full bg-[color:var(--pill-bg)] px-2 py-0.5 text-[12px] font-bold leading-4 tracking-normal text-[color:var(--pill-text)] md:px-3 md:py-1 md:text-[14px]">
         {T.freeFrom(CONFIG.freeShippingFrom)}
       </span>
     </p>
@@ -1185,7 +1209,7 @@ function FreeShipping() {
 function Header({ cartCount, onOpenCart, query, onQuery, onNavigate, productId }) {
   const scrolled = useScrolled();
   return (
-    <header className={`mp-header sticky top-[env(safe-area-inset-top,0px)] z-40 text-[#18191c] ${scrolled ? "mp-header-scrolled" : ""}`}>
+    <header className={`mp-header sticky top-[env(safe-area-inset-top,0px)] z-40 text-[color:var(--ink)] ${scrolled ? "mp-header-scrolled" : ""}`}>
       {/* შეთავაზება ცალკე ზოლად, ბრენდის წითელ ფერში */}
       {CONFIG.freeShippingFrom > 0 && (
         <div className="mp-strip flex h-8 items-center justify-center px-4 md:h-10">
@@ -1210,12 +1234,12 @@ function Header({ cartCount, onOpenCart, query, onQuery, onNavigate, productId }
             className="mp-ctl group flex h-10 items-center gap-2 rounded-lg px-2 sm:pr-3"
             aria-label={T.callAria(CONFIG.phoneDisplay)}
           >
-            <span className="mp-call-dot grid h-6 w-6 place-items-center rounded-full text-white">
+            <span className="mp-call-dot grid h-6 w-6 place-items-center rounded-full">
               <Phone className="h-3 w-3 transition-transform duration-300 group-hover:rotate-12" strokeWidth={2.5} />
             </span>
             <span className="hidden flex-col items-start sm:flex">
-              <span className="text-[11px] leading-4 text-[#514d49]">{T.callUs}</span>
-              <span className="mp-num whitespace-nowrap text-[12px] font-semibold leading-4 text-[#18191c]">{CONFIG.phoneDisplay}</span>
+              <span className="text-[11px] leading-4 text-[color:var(--muted)]">{T.callUs}</span>
+              <span className="mp-num whitespace-nowrap text-[12px] font-semibold leading-4 text-[color:var(--ink)]">{CONFIG.phoneDisplay}</span>
             </span>
           </a>
 
@@ -1229,7 +1253,7 @@ function Header({ cartCount, onOpenCart, query, onQuery, onNavigate, productId }
               <ShoppingBag className="h-5 w-5" strokeWidth={1.8} />
             </span>
             {cartCount > 0 && (
-              <span key={cartCount} className="mp-num mp-pop mp-count-badge absolute -right-2 -top-2 grid h-5 min-w-5 place-items-center rounded-full px-1 text-[11px] font-semibold leading-4 text-white">
+              <span key={cartCount} className="mp-num mp-pop mp-count-badge absolute -right-2 -top-2 grid h-5 min-w-5 place-items-center rounded-full px-1 text-[11px] font-semibold leading-4">
                 {cartCount}
               </span>
             )}
@@ -1251,7 +1275,7 @@ function Header({ cartCount, onOpenCart, query, onQuery, onNavigate, productId }
 function FilterGroup({ title, children }) {
   return (
     <div>
-      <p className="px-3 text-[12px] font-medium leading-4 text-[#514d49]">{title}</p>
+      <p className="px-3 text-[12px] font-medium leading-4 text-[color:var(--muted)]">{title}</p>
       <div className="mt-2 flex flex-col gap-1">{children}</div>
     </div>
   );
@@ -1394,7 +1418,7 @@ function Sidebar({ filter }) {
           ))}
         </div>
         {hasFilters && (
-          <button type="button" onClick={reset} className="mp-link mx-3 self-start text-left text-[13px] font-medium leading-4 text-[#c8102e] hover:text-[#a50d26]">
+          <button type="button" onClick={reset} className="mp-link mx-3 self-start text-left text-[13px] font-medium leading-4 text-[color:var(--brand)] hover:text-[color:var(--brand-2)]">
             {T.clearFilters}
           </button>
         )}
@@ -1408,7 +1432,7 @@ function MobileFilters({ filter }) {
   const { category, setCategory, counts } = filter;
   return (
     <div
-      className={`sticky z-30 -mx-4 border-b border-black/10 bg-[#c4c3bf]/90 px-4 py-3 backdrop-blur-xl backdrop-saturate-150 sm:-mx-6 sm:px-6 lg:hidden ${
+      className={`sticky z-30 -mx-4 border-b border-[color:var(--line)] bg-[color:var(--bg-glass)] px-4 py-3 backdrop-blur-xl backdrop-saturate-150 sm:-mx-6 sm:px-6 lg:hidden ${
         CONFIG.freeShippingFrom > 0
           ? "top-[calc(env(safe-area-inset-top,0px)+9.5rem)] md:top-[calc(env(safe-area-inset-top,0px)+6.5rem)]"
           : "top-[calc(env(safe-area-inset-top,0px)+7.5rem)] md:top-[calc(env(safe-area-inset-top,0px)+4rem)]"
@@ -1509,21 +1533,21 @@ function ProductCard({ product, index, inCart, onAdd, onOpen }) {
       </a>
 
       <div className="flex flex-1 flex-col px-2 pb-2 pt-4">
-        <h3 className="line-clamp-2 min-h-10 text-[14px] font-medium leading-5 text-[#18191c]">
+        <h3 className="line-clamp-2 min-h-10 text-[14px] font-medium leading-5 text-[color:var(--ink)]">
           <a href={productPath(product.id)} onClick={handleNav(onOpen, product.id)} className="transition-colors duration-300">
             {product.name}
           </a>
         </h3>
-        <p className="mt-1 truncate text-[12px] leading-4 text-[#514d49]">{product.spec}</p>
+        <p className="mt-1 truncate text-[12px] leading-4 text-[color:var(--muted)]">{product.spec}</p>
 
         <div className="mt-4 flex items-end justify-between gap-2">
           <div className="flex items-baseline gap-2">
-            <span className={`mp-num mp-price text-[18px] font-semibold leading-6 ${product.oldPrice ? "text-[#c8102e]" : "text-[#18191c]"}`}>
+            <span className={`mp-num mp-price text-[18px] font-semibold leading-6 ${product.oldPrice ? "text-[color:var(--sale)]" : "text-[color:var(--ink)]"}`}>
               {formatPrice(product.price)}
             </span>
-            {product.oldPrice && <span className="mp-num text-[12px] leading-4 text-[#514d49] line-through decoration-[#514d49]/60">{formatPrice(product.oldPrice)}</span>}
+            {product.oldPrice && <span className="mp-num text-[12px] leading-4 text-[color:var(--muted)] line-through decoration-[color:var(--muted)]">{formatPrice(product.oldPrice)}</span>}
           </div>
-          <span className={`inline-flex items-center gap-2 text-[12px] leading-6 ${product.inStock ? "text-[#15803d]" : "text-[#b45309]"}`}>
+          <span className={`inline-flex items-center gap-2 text-[12px] leading-6 ${product.inStock ? "text-[color:var(--ok)]" : "text-[color:var(--wait)]"}`}>
             {product.inStock ? T.inStock : T.onOrder}
           </span>
         </div>
@@ -1574,7 +1598,7 @@ function Shop({ filter, cart, onOpen }) {
         {section && (
           <p
             className={`mp-fade mb-2 mt-6 inline-flex max-w-full items-center gap-2 rounded-full px-3 py-1 text-[12px] font-medium leading-4 lg:mt-0 ${
-              section === "games" ? "bg-[#fbf6ea] text-[#7a4f0c]" : "bg-[#fdf2f3] text-[#a50d26]"
+              section === "games" ? "bg-[color:var(--games-tint)] text-[color:var(--games-text)]" : "bg-[color:var(--poker-tint)] text-[color:var(--poker-text)]"
             }`}
           >
             <CatIcon id={section} className="h-3.5 w-3.5 shrink-0" />
@@ -1584,7 +1608,7 @@ function Shop({ filter, cart, onOpen }) {
         <div className={`flex items-end justify-between gap-4 ${section ? "" : "mt-6 lg:mt-0"}`}>
           <div className="min-w-0">
             <h1 className="mp-title text-[20px] font-semibold leading-7 sm:text-[24px] sm:leading-8">{title}</h1>
-            <p className="mp-num mt-1 text-[13px] leading-5 text-[#514d49]" aria-live="polite">
+            <p className="mp-num mt-1 text-[13px] leading-5 text-[color:var(--muted)]" aria-live="polite">
               {T.productCount(visible.length)}
             </p>
           </div>
@@ -1602,7 +1626,7 @@ function Shop({ filter, cart, onOpen }) {
                 </option>
               ))}
             </select>
-            <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#6f7075]" />
+            <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[color:var(--muted)]" />
           </label>
         </div>
 
@@ -1614,9 +1638,9 @@ function Shop({ filter, cart, onOpen }) {
           </div>
         ) : (
           <div className="mp-fade mp-panel mt-8 flex flex-col items-center !border-dashed px-6 py-16 text-center">
-            <Search className="h-6 w-6 text-[#a8a29e]" />
-            <p className="mt-4 font-semibold text-[#18191c]">{T.noResults}</p>
-            <p className="mt-1 text-[13px] text-[#514d49]">{T.noResultsHint}</p>
+            <Search className="h-6 w-6 text-[color:var(--faint)]" />
+            <p className="mt-4 font-semibold text-[color:var(--ink)]">{T.noResults}</p>
+            <p className="mt-1 text-[13px] text-[color:var(--muted)]">{T.noResultsHint}</p>
             {hasFilters && (
               <button
                 type="button"
@@ -1726,7 +1750,7 @@ function Gallery({ product }) {
       )}
 
       {zoom && (
-        <div className="mp-fade fixed inset-0 z-[60] flex items-center justify-center bg-[#111214]/92 backdrop-blur-md" role="dialog" aria-modal="true" aria-label={product.name} {...swipe}>
+        <div className="mp-fade fixed inset-0 z-[60] flex items-center justify-center bg-[color:var(--lightbox)] backdrop-blur-md" role="dialog" aria-modal="true" aria-label={product.name} {...swipe}>
           <button type="button" className="absolute inset-0 cursor-zoom-out" onClick={() => setZoom(false)} aria-label={T.close} />
           <img src={images[index].src} alt={T.photoAlt(product.name, index + 1)} className="relative max-h-[92vh] max-w-[94vw] object-contain" />
           <button
@@ -1745,7 +1769,7 @@ function Gallery({ product }) {
               <button type="button" onClick={() => go(1)} className="mp-float absolute right-4 grid h-12 w-12 place-items-center rounded-lg" aria-label={T.nextPhoto}>
                 <ChevronRight className="h-6 w-6" />
               </button>
-              <span className="mp-num absolute bottom-[calc(1.25rem+env(safe-area-inset-bottom,0px))] text-sm text-white/80">
+              <span className="mp-num absolute bottom-[calc(1.25rem+env(safe-area-inset-bottom,0px))] text-sm text-[color:var(--dark-muted)]">
                 {index + 1} / {count}
               </span>
             </>
@@ -1766,7 +1790,7 @@ function Description({ text }) {
     .map((b) => b.split("\n").map((l) => l.trim()).filter(Boolean))
     .filter((lines) => lines.length);
   return (
-    <div className="flex max-w-3xl flex-col gap-4 text-[14px] leading-6 text-[#44403c]">
+    <div className="flex max-w-3xl flex-col gap-4 text-[14px] leading-6 text-[color:var(--ink-2)]">
       {blocks.map((lines, i) =>
         lines.every((l) => /^[-•*]\s*/.test(l)) ? (
           <ul key={i} className="flex flex-col gap-2">
@@ -1812,23 +1836,23 @@ function ProductPage({ product, cart, onNavigate }) {
 
   return (
     <main className="mp-rise mx-auto max-w-[1216px] px-4 pb-24 pt-8 sm:px-6 lg:px-8 lg:pt-12">
-      <nav className="flex flex-wrap items-center gap-2 text-[13px] leading-5 text-[#514d49]" aria-label={T.breadcrumb}>
-        <a href={HOME_PATH} onClick={handleNav(onNavigate, null)} className="group inline-flex items-center gap-2 font-medium text-[#18191c] transition-colors duration-300 hover:text-[#c8102e]">
+      <nav className="flex flex-wrap items-center gap-2 text-[13px] leading-5 text-[color:var(--muted)]" aria-label={T.breadcrumb}>
+        <a href={HOME_PATH} onClick={handleNav(onNavigate, null)} className="group inline-flex items-center gap-2 font-medium text-[color:var(--ink)] transition-colors duration-300 hover:text-[color:var(--brand)]">
           <ArrowLeft className="h-4 w-4 transition-transform duration-300 group-hover:-translate-x-0.5" />
           <span className="mp-link">{T.shop}</span>
         </a>
-        <span aria-hidden="true" className="text-[#b9b6af]">/</span>
+        <span aria-hidden="true" className="text-[color:var(--faint)]">/</span>
         {POKER_CATS.includes(product.category) && (
           <>
-            <span className="font-medium text-[#a50d26]">{T.cat.poker}</span>
-            <span aria-hidden="true" className="text-[#b9b6af]">/</span>
+            <span className="font-medium text-[color:var(--poker-text)]">{T.cat.poker}</span>
+            <span aria-hidden="true" className="text-[color:var(--faint)]">/</span>
           </>
         )}
-        <span className={product.category === "games" ? "font-medium text-[#7a4f0c]" : ""}>{CATEGORY_LABEL[product.category]}</span>
+        <span className={product.category === "games" ? "font-medium text-[color:var(--games-text)]" : ""}>{CATEGORY_LABEL[product.category]}</span>
         {product.subcategory && (
           <>
-            <span aria-hidden="true" className="text-[#b9b6af]">/</span>
-            <span className="text-[#7a4f0c]">{T.gameSub[product.subcategory]}</span>
+            <span aria-hidden="true" className="text-[color:var(--faint)]">/</span>
+            <span className="text-[color:var(--games-text)]">{T.gameSub[product.subcategory]}</span>
           </>
         )}
       </nav>
@@ -1840,22 +1864,22 @@ function ProductPage({ product, cart, onNavigate }) {
           {(product.badge || discount > 0) && (
             <div className="flex flex-wrap gap-2">
               {discount > 0 && <span className="mp-num mp-badge-sale rounded-full px-2 py-1 text-[11px] font-semibold leading-4">−{discount}%</span>}
-              {product.badge && <span className="mp-badge rounded-full !bg-[#f5f5f4] px-2 py-1 text-[11px] font-medium leading-4">{product.badge}</span>}
+              {product.badge && <span className="mp-badge rounded-full !bg-[color:var(--surface-2)] px-2 py-1 text-[11px] font-medium leading-4">{product.badge}</span>}
             </div>
           )}
           <h1 className="mp-title mt-4 text-[24px] font-semibold leading-8 sm:text-[28px] sm:leading-9">{product.name}</h1>
-          {product.spec && <p className="mt-2 text-[14px] leading-6 text-[#514d49]">{product.spec}</p>}
+          {product.spec && <p className="mt-2 text-[14px] leading-6 text-[color:var(--muted)]">{product.spec}</p>}
 
           <div className="mt-6 flex flex-wrap items-baseline gap-3">
-            <span className={`mp-num mp-price text-[28px] font-semibold leading-8 ${product.oldPrice ? "text-[#c8102e]" : "text-[#18191c]"}`}>
+            <span className={`mp-num mp-price text-[28px] font-semibold leading-8 ${product.oldPrice ? "text-[color:var(--sale)]" : "text-[color:var(--ink)]"}`}>
               {formatPrice(product.price)}
             </span>
-            {product.oldPrice && <span className="mp-num text-[16px] leading-6 text-[#514d49] line-through decoration-[#514d49]/60">{formatPrice(product.oldPrice)}</span>}
+            {product.oldPrice && <span className="mp-num text-[16px] leading-6 text-[color:var(--muted)] line-through decoration-[color:var(--muted)]">{formatPrice(product.oldPrice)}</span>}
           </div>
           {product.oldPrice && product.saleEnds && (
-            <p className="mt-2 text-[13px] leading-5 text-[#c8102e]">{T.saleUntil(formatDate(product.saleEnds))}</p>
+            <p className="mt-2 text-[13px] leading-5 text-[color:var(--sale)]">{T.saleUntil(formatDate(product.saleEnds))}</p>
           )}
-          <p className={`mt-4 inline-flex items-center gap-2 text-[13px] leading-5 ${product.inStock ? "text-[#15803d]" : "text-[#b45309]"}`}>
+          <p className={`mt-4 inline-flex items-center gap-2 text-[13px] leading-5 ${product.inStock ? "text-[color:var(--ok)]" : "text-[color:var(--wait)]"}`}>
             <span className={`h-2 w-2 rounded-full ${product.inStock ? "mp-dot-ok" : "mp-dot-wait"}`} />
             {product.inStock ? T.inStock : T.onOrderLong}
           </p>
@@ -1881,14 +1905,14 @@ function ProductPage({ product, cart, onNavigate }) {
             </button>
           </div>
           {CONFIG.phoneDisplay && (
-            <p className="mt-4 text-[13px] leading-5 text-[#514d49]">
+            <p className="mt-4 text-[13px] leading-5 text-[color:var(--muted)]">
               {T.orCall}{" "}
-              <a href={`tel:${CONFIG.phoneTel}`} className="mp-num mp-link select-all font-semibold text-[#18191c] hover:text-[#15803d]">
+              <a href={`tel:${CONFIG.phoneTel}`} className="mp-num mp-link select-all font-semibold text-[color:var(--ink)] hover:text-[color:var(--cta)]">
                 {CONFIG.phoneDisplay}
               </a>
             </p>
           )}
-          <ul className="mp-panel mt-8 flex flex-col gap-3 p-4 text-[13px] leading-5 text-[#44403c]">
+          <ul className="mp-panel mt-8 flex flex-col gap-3 p-4 text-[13px] leading-5 text-[color:var(--ink-2)]">
             {[T.perkDelivery, T.perkConfirm].map((t) => (
               <li key={t} className="flex items-center gap-3">
                 <span className="mp-check grid h-5 w-5 shrink-0 place-items-center rounded-full">
@@ -1902,7 +1926,7 @@ function ProductPage({ product, cart, onNavigate }) {
       </div>
 
       {product.description.trim() && (
-        <section className="mt-16 border-t border-[#e7e5e4] pt-12" aria-labelledby="mp-desc">
+        <section className="mt-16 border-t border-[color:var(--line)] pt-12" aria-labelledby="mp-desc">
           <h2 id="mp-desc" className="mp-title text-[20px] font-semibold leading-7">{T.description}</h2>
           <div className="mt-6">
             <Description text={product.description} />
@@ -1911,7 +1935,7 @@ function ProductPage({ product, cart, onNavigate }) {
       )}
 
       {related.length > 0 && (
-        <section className="mt-16 border-t border-[#e7e5e4] pt-12" aria-labelledby="mp-related">
+        <section className="mt-16 border-t border-[color:var(--line)] pt-12" aria-labelledby="mp-related">
           <h2 id="mp-related" className="mp-title text-[20px] font-semibold leading-7">{T.related}</h2>
           <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {related.map((p, i) => (
@@ -1930,9 +1954,9 @@ function ProductPage({ product, cart, onNavigate }) {
 function NotFound({ onNavigate }) {
   return (
     <main className="mx-auto flex max-w-xl flex-col items-center px-4 py-24 text-center">
-      <p className="mp-rise text-[64px] leading-none text-[#18191c]">♠</p>
+      <p className="mp-rise text-[64px] leading-none text-[color:var(--ink)]">♠</p>
       <h1 className="mp-title mt-6 text-[24px] font-semibold leading-8">{T.notFound}</h1>
-      <p className="mt-2 text-[#514d49]">{T.notFoundText}</p>
+      <p className="mt-2 text-[color:var(--muted)]">{T.notFoundText}</p>
       <a
         href={HOME_PATH}
         onClick={handleNav(onNavigate, null)}
@@ -1964,17 +1988,17 @@ function CartDrawer({ open, onClose, cart, onOpenProduct }) {
 
   return (
     <div className="fixed inset-0 z-50" role="dialog" aria-modal="true" aria-label={T.cart}>
-      <button type="button" className="mp-fade absolute inset-0 bg-[#18191c]/30" onClick={onClose} aria-label={T.close} />
+      <button type="button" className="mp-fade absolute inset-0 bg-[color:var(--scrim)]" onClick={onClose} aria-label={T.close} />
       <aside className="mp-slide-in mp-drawer absolute inset-y-0 right-0 flex w-full max-w-md flex-col overflow-hidden pb-[env(safe-area-inset-bottom,0px)] pt-[env(safe-area-inset-top,0px)] sm:inset-y-4 sm:right-4">
-        <div className="flex items-center justify-between border-b border-[#e7e5e4] px-6 py-4">
+        <div className="flex items-center justify-between border-b border-[color:var(--line)] px-6 py-4">
           <div>
             <h2 className="mp-title text-[18px] font-semibold leading-7">{T.cart}</h2>
-            <p className="mp-num text-[12px] leading-4 text-[#514d49]">{T.items(cart.count)}</p>
+            <p className="mp-num text-[12px] leading-4 text-[color:var(--muted)]">{T.items(cart.count)}</p>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="mp-ctl grid h-10 w-10 place-items-center rounded-lg !text-[#57534e]"
+            className="mp-ctl grid h-10 w-10 place-items-center rounded-lg !text-[color:var(--muted)]"
             aria-label={T.closeCart}
           >
             <X className="h-5 w-5" />
@@ -1983,9 +2007,9 @@ function CartDrawer({ open, onClose, cart, onOpenProduct }) {
 
         {cart.lines.length === 0 ? (
           <div className="flex flex-1 flex-col items-center justify-center px-8 text-center">
-            <ShoppingBag className="h-8 w-8 text-[#a8a29e]" strokeWidth={1.5} />
-            <p className="mt-4 font-semibold text-[#18191c]">{T.cartEmpty}</p>
-            <p className="mt-1 text-[13px] text-[#514d49]">{T.cartEmptyText}</p>
+            <ShoppingBag className="h-8 w-8 text-[color:var(--faint)]" strokeWidth={1.5} />
+            <p className="mt-4 font-semibold text-[color:var(--ink)]">{T.cartEmpty}</p>
+            <p className="mt-1 text-[13px] text-[color:var(--muted)]">{T.cartEmptyText}</p>
             <button type="button" onClick={onClose} className="mp-cta mt-6 h-10 px-6 text-[13px] font-semibold">
               {T.continueShopping}
             </button>
@@ -2002,7 +2026,7 @@ function CartDrawer({ open, onClose, cart, onOpenProduct }) {
                     <a
                       href={productPath(product.id)}
                       onClick={handleNav(onOpenProduct, product.id)}
-                      className="line-clamp-2 text-[13px] font-medium leading-5 text-[#18191c] transition-colors duration-300 hover:text-[#c8102e]"
+                      className="line-clamp-2 text-[13px] font-medium leading-5 text-[color:var(--ink)] transition-colors duration-300 hover:text-[color:var(--brand)]"
                     >
                       {product.name}
                     </a>
@@ -2011,27 +2035,27 @@ function CartDrawer({ open, onClose, cart, onOpenProduct }) {
                         <button
                           type="button"
                           onClick={() => cart.decrement(product.id)}
-                          className="grid h-8 w-8 place-items-center text-[#514d49]"
+                          className="grid h-8 w-8 place-items-center text-[color:var(--muted)]"
                           aria-label={T.decrease}
                         >
                           <Minus className="h-3.5 w-3.5" />
                         </button>
-                        <span className="mp-num w-6 text-center text-[13px] font-semibold leading-4 text-[#18191c]">{qty}</span>
+                        <span className="mp-num w-6 text-center text-[13px] font-semibold leading-4 text-[color:var(--ink)]">{qty}</span>
                         <button
                           type="button"
                           onClick={() => cart.add(product.id)}
-                          className="grid h-8 w-8 place-items-center text-[#514d49]"
+                          className="grid h-8 w-8 place-items-center text-[color:var(--muted)]"
                           aria-label={T.increase}
                         >
                           <Plus className="h-3.5 w-3.5" />
                         </button>
                       </div>
                       <div className="flex items-center gap-3">
-                        <span className="mp-num mp-price text-[14px] font-semibold leading-5 text-[#18191c]">{formatPrice(product.price * qty)}</span>
+                        <span className="mp-num mp-price text-[14px] font-semibold leading-5 text-[color:var(--ink)]">{formatPrice(product.price * qty)}</span>
                         <button
                           type="button"
                           onClick={() => cart.remove(product.id)}
-                          className="grid h-8 w-8 place-items-center rounded-lg text-[#514d49] transition-colors duration-300 hover:bg-[#c8102e]/10 hover:text-[#c8102e]"
+                          className="grid h-8 w-8 place-items-center rounded-lg text-[color:var(--muted)] transition-colors duration-300 hover:bg-[color:var(--sale-tint)] hover:text-[color:var(--sale)]"
                           aria-label={T.removeAria(product.name)}
                         >
                           <Trash2 className="h-4 w-4" />
@@ -2043,9 +2067,9 @@ function CartDrawer({ open, onClose, cart, onOpenProduct }) {
               ))}
             </ul>
 
-            <div className="border-t border-[#e7e5e4] p-6">
+            <div className="border-t border-[color:var(--line)] p-6">
               <div className="flex items-baseline justify-between">
-                <span className="text-[13px] text-[#514d49]">{T.total}</span>
+                <span className="text-[13px] text-[color:var(--muted)]">{T.total}</span>
                 <span className="mp-num mp-price mp-title text-[24px] font-semibold leading-8">{formatPrice(cart.total)}</span>
               </div>
               <a
@@ -2057,8 +2081,8 @@ function CartDrawer({ open, onClose, cart, onOpenProduct }) {
                 <MessageCircle className="h-4 w-4" />
                 {T.orderCta}
               </a>
-              <p className="mt-4 text-center text-[12px] leading-4 text-[#514d49]">{T.paySoon}</p>
-              <button type="button" onClick={cart.clear} className="mx-auto mt-2 block w-fit rounded-lg px-2 py-1 text-[12px] leading-4 text-[#514d49] transition-colors duration-300 hover:bg-[#c8102e]/10 hover:text-[#c8102e]">
+              <p className="mt-4 text-center text-[12px] leading-4 text-[color:var(--muted)]">{T.paySoon}</p>
+              <button type="button" onClick={cart.clear} className="mx-auto mt-2 block w-fit rounded-lg px-2 py-1 text-[12px] leading-4 text-[color:var(--muted)] transition-colors duration-300 hover:bg-[color:var(--sale-tint)] hover:text-[color:var(--sale)]">
                 {T.clearCart}
               </button>
             </div>
@@ -2088,14 +2112,14 @@ function ContactDock() {
       className={`mp-dock fixed bottom-[calc(1rem+env(safe-area-inset-bottom,0px))] right-4 z-30 lg:bottom-6 lg:right-6 ${nearFooter ? "is-hidden" : ""}`}
       aria-label={T.waBoxTitle}
     >
-      <div className="mp-dock-card flex items-center gap-3 rounded-2xl bg-[#18191c] p-2 pr-4 text-white sm:pr-2 lg:p-3">
+      <div className="mp-dock-card flex items-center gap-3 rounded-2xl bg-[color:var(--dark)] p-2 pr-4 text-[color:var(--dark-text)] sm:pr-2 lg:p-3">
         <a href={`tel:${CONFIG.phoneTel}`} className="group flex min-w-0 items-center gap-3" aria-label={T.callAria(CONFIG.phoneDisplay)}>
-          <span className="relative grid h-8 w-8 shrink-0 place-items-center rounded-full bg-[#15803d] sm:h-10 sm:w-10">
-            <span className="mp-ping absolute inset-0 rounded-full bg-[#15803d]/50" aria-hidden="true" />
+          <span className="relative grid h-8 w-8 shrink-0 place-items-center rounded-full bg-[color:var(--call-on-dark)] text-[color:var(--ink)] sm:h-10 sm:w-10">
+            <span className="mp-ping absolute inset-0 rounded-full bg-[color:var(--call-ring)]" aria-hidden="true" />
             <Phone className="relative h-4 w-4 transition-transform duration-300 group-hover:rotate-12" strokeWidth={2.2} />
           </span>
           <span className="flex min-w-0 flex-col pr-1">
-            <span className="text-[11px] leading-4 text-white/65 lg:text-[12px]">{T.waBoxTitle}</span>
+            <span className="text-[11px] leading-4 text-[color:var(--dark-muted)] lg:text-[12px]">{T.waBoxTitle}</span>
             <span className="mp-num whitespace-nowrap text-[13px] font-semibold leading-4 sm:text-[14px] sm:leading-5 lg:text-[16px] lg:leading-6">{CONFIG.phoneDisplay}</span>
           </span>
         </a>
@@ -2118,21 +2142,21 @@ function ContactDock() {
 /* ------------------------------------------------------------------ */
 function Footer() {
   return (
-    <footer className="relative bg-[#18191c] text-white">
+    <footer className="relative bg-[color:var(--dark)] text-[color:var(--dark-text)]">
       <div className="mx-auto flex max-w-[1344px] flex-col gap-4 px-4 py-8 text-[13px] sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:px-8">
         <div className="flex items-center gap-3">
           <LogoMark size={24} />
-          <span className="text-[12px] text-white/65">© {new Date().getFullYear()} mypoker.ge · {T.rights}</span>
+          <span className="text-[12px] text-[color:var(--dark-muted)]">© {new Date().getFullYear()} mypoker.ge · {T.rights}</span>
         </div>
         <div className="flex flex-wrap items-center gap-6">
-          <a href={`tel:${CONFIG.phoneTel}`} className="mp-num mp-link select-all font-medium text-white hover:text-white/80">
+          <a href={`tel:${CONFIG.phoneTel}`} className="mp-num mp-link select-all font-medium text-[color:var(--dark-text)] hover:opacity-80">
             {CONFIG.phoneDisplay}
           </a>
           <a
             href={buildWhatsAppLink(T.waHello)}
             target="_blank"
             rel="noopener noreferrer"
-            className="mp-link inline-flex items-center gap-2 font-medium text-[#4ade80] hover:text-[#86efac]"
+            className="mp-link inline-flex items-center gap-2 font-medium text-[color:var(--dark-accent)] hover:text-[color:var(--dark-text)]"
           >
             <MessageCircle className="h-4 w-4" />
             WhatsApp
@@ -2180,7 +2204,7 @@ export default function App() {
   };
 
   return (
-    <div id="top" className="mp-sans mp-pattern flex min-h-screen flex-col text-[#18191c] antialiased">
+    <div id="top" className="mp-sans mp-pattern flex min-h-screen flex-col text-[color:var(--ink)] antialiased">
       <style>{GLOBAL_CSS}</style>
       <Header
         cartCount={cart.count}
@@ -2217,14 +2241,14 @@ export default function App() {
       {toast && (
         <div
           key={toast.id}
-          className="mp-toast mp-glass fixed bottom-[calc(5.5rem+env(safe-area-inset-bottom,0px))] left-1/2 z-50 lg:bottom-6 flex w-[calc(100%-2rem)] max-w-sm items-center gap-3 rounded-xl p-3 pr-4 text-white"
+          className="mp-toast mp-glass fixed bottom-[calc(5.5rem+env(safe-area-inset-bottom,0px))] left-1/2 z-50 lg:bottom-6 flex w-[calc(100%-2rem)] max-w-sm items-center gap-3 rounded-xl p-3 pr-4"
           role="status"
         >
           <span className="mp-call-dot grid h-8 w-8 shrink-0 place-items-center rounded-full">
             <Check className="h-4 w-4" />
           </span>
           <p className="min-w-0 flex-1 truncate text-[13px] leading-5">{T.added} {toast.name}</p>
-          <button type="button" onClick={openCart} className="mp-link shrink-0 text-[13px] font-semibold text-[#4ade80] hover:text-[#86efac]">
+          <button type="button" onClick={openCart} className="mp-link shrink-0 text-[13px] font-semibold text-[color:var(--dark-accent)] hover:text-[color:var(--dark-text)]">
             {T.view}
           </button>
         </div>
