@@ -7,7 +7,10 @@
   var STORE_KEY = 'mypoker-admin-v1';
   var SESSION_KEY = 'mypoker-admin-session';
   var API = 'https://api.github.com';
-  var CATEGORIES = [['cards', 'კარტები', '🂡'], ['chips', 'ჩიპები', '🪙'], ['tables', 'მაგიდები', '🟩'], ['accessories', 'აქსესუარები', '♠']];
+  var CATEGORIES = [['cards', 'კარტები', '🂡'], ['chips', 'ჩიპები', '🪙'], ['tables', 'მაგიდები', '🟩'], ['accessories', 'პოკერის აქსესუარები', '♠'], ['games', 'თამაშები და გართობა', '🎲']];
+  // „თამაშები და გართობა“ — ცალკე განყოფილება ქვეკატეგორიებით
+  var GAME_SUBS = [['backgammon', 'ნარდი'], ['domino', 'დომინო'], ['bingo', 'ბინგო და ლოტო'], ['boardgames', 'სამაგიდო თამაშები'], ['fun', 'სხვა გასართობი']];
+  var SUB_LABEL = {}; GAME_SUBS.forEach(function (c) { SUB_LABEL[c[0]] = c[1]; });
   var CAT_LABEL = {}; CATEGORIES.forEach(function (c) { CAT_LABEL[c[0]] = c[1]; });
   var CAT_ICON = {}; CATEGORIES.forEach(function (c) { CAT_ICON[c[0]] = c[2]; });
 
@@ -109,6 +112,7 @@
         description: String(p.description || ''), descriptionEn: String(p.descriptionEn || ''),
         images: normaliseImages(p), inStock: p.inStock !== false, visible: p.visible !== false
       };
+      if (o.category === 'games') o.subcategory = SUB_LABEL[p.subcategory] ? p.subcategory : 'fun';
       if (p.visual) o.visual = p.visual;
       out.products.push(o);
     });
@@ -249,7 +253,7 @@
       if (cat !== 'all' && p.category !== cat) return;
       if (q && p.name.toLowerCase().indexOf(q) < 0) return;
       shown++;
-      var tags = [el('span', { class: 'tag', text: CAT_LABEL[p.category] })];
+      var tags = [el('span', { class: 'tag' + (p.category === 'games' ? ' gold' : ''), text: CAT_LABEL[p.category] + (p.subcategory ? ' · ' + SUB_LABEL[p.subcategory] : '') })];
       if (p.badge) tags.push(el('span', { class: 'tag dark', text: p.badge }));
       if (saleActive(p)) tags.push(el('span', { class: 'tag red num', text: '−' + Math.round((1 - p.salePrice / p.price) * 100) + '%' }));
       if (!p.inStock) tags.push(el('span', { class: 'tag amber', text: 'შეკვეთით' }));
@@ -282,6 +286,8 @@
     CATEGORIES.forEach(function (c) { select.appendChild(el('option', { value: c[0], text: c[1] })); });
   }
   fillCats($('qCat'), true, 'ყველა კატეგორია'); fillCats($('fCat'), false); fillCats($('saleScope'), true, 'ყველა პროდუქტი');
+  GAME_SUBS.forEach(function (c) { $('fSub').appendChild(el('option', { value: c[0], text: c[1] })); });
+  function syncSub() { $('fSubWrap').hidden = $('fCat').value !== 'games'; }
 
   function renderEditImages() {
     var box = $('fImages'); box.innerHTML = '';
@@ -307,6 +313,8 @@
     $('dlgTitle').textContent = p ? 'პროდუქტის რედაქტირება' : 'ახალი პროდუქტი';
     $('fName').value = p ? p.name : '';
     $('fCat').value = p ? p.category : ($('qCat').value !== 'all' ? $('qCat').value : 'chips');
+    $('fSub').value = p && p.subcategory ? p.subcategory : 'fun';
+    syncSub();
     $('fBadge').value = p ? p.badge : '';
     $('fSpec').value = p ? p.spec : '';
     $('fDesc').value = p ? p.description : '';
@@ -327,7 +335,7 @@
   $('addProduct').addEventListener('click', function () { openEditor(null); });
   $('dlgClose').addEventListener('click', function () { $('dlg').close(); });
   $('dlgCancel').addEventListener('click', function () { $('dlg').close(); });
-  $('fCat').addEventListener('change', renderEditImages);
+  $('fCat').addEventListener('change', function () { syncSub(); renderEditImages(); });
 
   // თითო ფოტო ინახება ორ ზომად WebP-ში (ან JPEG-ში, თუ ბრაუზერი WebP-ს ვერ ქმნის):
   // დიდი — 2000 პიქსელამდე, პროდუქტის გვერდისთვის; პატარა — 640 პიქსელამდე, მაღაზიის ბარათისთვის
@@ -379,7 +387,11 @@
     if (sale !== null && !(sale > 0 && sale < price)) return showErr('ფასდაკლებული ფასი უნდა იყოს ჩვეულებრივ ფასზე ნაკლები.');
     var p = editingId ? draft.products.find(function (x) { return x.id === editingId; }) : null;
     if (!p) { p = { id: slug(name) }; draft.products.unshift(p); }
+    var prevKind = p.category + '/' + (p.subcategory || '');
     p.name = name; p.category = $('fCat').value; p.badge = $('fBadge').value.trim(); p.spec = $('fSpec').value.trim();
+    if (p.category === 'games') p.subcategory = $('fSub').value; else delete p.subcategory;
+    // სადემონსტრაციო ილუსტრაცია ეკუთვნის ძველ კატეგორიას — ახალზე საიტი თავის ილუსტრაციას აჩვენებს
+    if (prevKind !== p.category + '/' + (p.subcategory || '')) delete p.visual;
     p.description = $('fDesc').value.replace(/\s+$/, '');
     p.nameEn = $('fNameEn').value.trim(); p.specEn = $('fSpecEn').value.trim(); p.badgeEn = $('fBadgeEn').value.trim();
     p.descriptionEn = $('fDescEn').value.replace(/\s+$/, '');

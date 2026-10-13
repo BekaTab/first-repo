@@ -64,8 +64,8 @@ writeFileSync(join(dist, "favicon.svg"), iconSvg());
 const favicon = "data:image/svg+xml," + encodeURIComponent(iconSvg());
 const SITE = "https://mypoker.ge";
 const STORE = {
-  ka: { title: "mypoker.ge — პოკერის აქსესუარების მაღაზია", description: "პოკერის ჩიპები, კარტები, მაგიდები და აქსესუარები. შეკვეთა WhatsApp-ით, მიწოდება მთელ საქართველოში.", notFound: "გვერდი ვერ მოიძებნა — mypoker.ge" },
-  en: { title: "mypoker.ge — poker accessories store", description: "Poker chips, cards, tables and accessories. Order via WhatsApp, delivery across Georgia.", notFound: "Page not found — mypoker.ge" },
+  ka: { title: "mypoker.ge — პოკერის აქსესუარების მაღაზია", description: "პოკერის ჩიპები, კარტები, მაგიდები და აქსესუარები, ასევე ნარდი, დომინო, ბინგო და სამაგიდო თამაშები. შეკვეთა WhatsApp-ით, მიწოდება მთელ საქართველოში.", notFound: "გვერდი ვერ მოიძებნა — mypoker.ge" },
+  en: { title: "mypoker.ge — poker accessories store", description: "Poker chips, cards, tables and accessories, plus backgammon, dominoes, bingo and board games. Order via WhatsApp, delivery across Georgia.", notFound: "Page not found — mypoker.ge" },
 };
 const LANGS = { ka: "", en: "/en" }; // URL prefix per language
 const inlineData = JSON.stringify(data).replace(/</g, "\\u003c");

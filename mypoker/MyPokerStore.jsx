@@ -16,6 +16,7 @@ import {
   Maximize2,
   Truck,
   ArrowUpRight,
+  Dices,
 } from "lucide-react";
 
 /* ------------------------------------------------------------------ */
@@ -118,7 +119,9 @@ const TEXT = {
     waCartHead: "გამარჯობა, mypoker.ge-დან გწერთ, მაინტერესებს ეს პროდუქტები:",
     waCartLine: (i, n, q, p) => `${i}. ${n} × ${q} (ფასი: ${p}₾)`,
     waCartTotal: (t) => `ჯამი: ${t}₾`,
-    cat: { all: "ყველა", cards: "კარტები", chips: "ჩიპები", tables: "მაგიდები", accessories: "აქსესუარები" },
+    cat: { all: "ყველა", cards: "კარტები", chips: "ჩიპები", tables: "მაგიდები", accessories: "პოკერის აქსესუარები", games: "თამაშები და გართობა" },
+    allGames: "ყველა თამაში",
+    gameSub: { backgammon: "ნარდი", domino: "დომინო", bingo: "ბინგო და ლოტო", boardgames: "სამაგიდო თამაშები", fun: "სხვა გასართობი" },
     priceAny: "ნებისმიერი",
     priceOver: (n) => `${n} ₾-ზე მეტი`,
     sorts: { featured: "რეკომენდებული", "price-asc": "ჯერ იაფი", "price-desc": "ჯერ ძვირი", sale: "ჯერ ფასდაკლებული" },
@@ -201,7 +204,9 @@ const TEXT = {
     waCartHead: "Hello, I'm writing from mypoker.ge. I'm interested in these products:",
     waCartLine: (i, n, q, p) => `${i}. ${n} × ${q} (price: ${p}₾)`,
     waCartTotal: (t) => `Total: ${t}₾`,
-    cat: { all: "All", cards: "Cards", chips: "Chips", tables: "Tables", accessories: "Accessories" },
+    cat: { all: "All", cards: "Cards", chips: "Chips", tables: "Tables", accessories: "Poker accessories", games: "Games & fun" },
+    allGames: "All games",
+    gameSub: { backgammon: "Backgammon", domino: "Dominoes", bingo: "Bingo & lotto", boardgames: "Board games", fun: "Other fun" },
     priceAny: "Any",
     priceOver: (n) => `Over ${n} ₾`,
     sorts: { featured: "Recommended", "price-asc": "Price: low to high", "price-desc": "Price: high to low", sale: "Biggest discount" },
@@ -223,7 +228,18 @@ const CONFIG = {
 /* ------------------------------------------------------------------ */
 const CATEGORIES = ["all", "cards", "chips", "tables", "accessories"].map((id) => ({ id, label: T.cat[id] }));
 
-const CATEGORY_LABEL = Object.fromEntries(CATEGORIES.map((c) => [c.id, c.label]));
+/* ცალკე განყოფილება „თამაშები და გართობა“ თავისი ქვეკატეგორიებით; ფილტრის მნიშვნელობა: "games" ან "games:<ქვეკატეგორია>" */
+const GAME_SUBS = ["backgammon", "domino", "bingo", "boardgames", "fun"];
+const GAME_FILTERS = [{ id: "games", label: T.allGames }, ...GAME_SUBS.map((sub) => ({ id: `games:${sub}`, label: T.gameSub[sub] }))];
+const isGames = (category) => category === "games" || category.startsWith("games:");
+const inCategory = (p, category) =>
+  category === "all" || p.category === category || (category.startsWith("games:") && p.category === "games" && `games:${p.subcategory}` === category);
+
+const CATEGORY_LABEL = {
+  ...Object.fromEntries(CATEGORIES.map((c) => [c.id, c.label])),
+  games: T.cat.games,
+  ...Object.fromEntries(GAME_SUBS.map((sub) => [`games:${sub}`, T.gameSub[sub]])),
+};
 
 const PRICE_RANGES = [
   { id: "any", label: T.priceAny, min: 0, max: Infinity },
@@ -239,6 +255,11 @@ const DEFAULT_VISUAL = {
   cards: { kind: "cards", colors: ["#1e40af", "#fff", "#b91c1c"] },
   tables: { kind: "table", colors: ["#047857", "#7c4a1e", "#d6b25e"] },
   accessories: { kind: "dealer" },
+  "games:backgammon": { kind: "backgammon" },
+  "games:domino": { kind: "domino" },
+  "games:bingo": { kind: "bingo" },
+  "games:boardgames": { kind: "chess" },
+  "games:fun": { kind: "dice" },
 };
 
 /* დღევანდელი თარიღი თბილისის დროით, ფორმატში YYYY-MM-DD */
@@ -263,6 +284,7 @@ function normalizeProduct(p, today) {
   const onSale = sale > 0 && sale < regular && (!p.saleEnds || p.saleEnds >= today);
   const en = LANG === "en";
   const pick = (field) => (en && typeof p[`${field}En`] === "string" && p[`${field}En`].trim() ? p[`${field}En`] : p[field]);
+  const subcategory = p.category === "games" ? (GAME_SUBS.includes(p.subcategory) ? p.subcategory : "fun") : "";
   return {
     ...p,
     name: pick("name"),
@@ -275,7 +297,8 @@ function normalizeProduct(p, today) {
     images: normalizeImages(p),
     description: typeof pick("description") === "string" ? pick("description") : "",
     searchText: [p.name, p.nameEn, p.spec, p.specEn].filter((x) => typeof x === "string").join(" ").toLowerCase(),
-    visual: p.visual || DEFAULT_VISUAL[p.category] || DEFAULT_VISUAL.accessories,
+    visual: p.visual || DEFAULT_VISUAL[p.category === "games" ? `games:${subcategory}` : p.category] || DEFAULT_VISUAL.accessories,
+    subcategory,
   };
 }
 
@@ -450,7 +473,10 @@ function useProductFilter(products) {
 
   const counts = useMemo(() => {
     const c = { all: products.length };
-    products.forEach((p) => (c[p.category] = (c[p.category] || 0) + 1));
+    products.forEach((p) => {
+      c[p.category] = (c[p.category] || 0) + 1;
+      if (p.subcategory) c[`games:${p.subcategory}`] = (c[`games:${p.subcategory}`] || 0) + 1;
+    });
     return c;
   }, [products]);
 
@@ -459,7 +485,7 @@ function useProductFilter(products) {
     const range = PRICE_RANGES.find((r) => r.id === price) || PRICE_RANGES[0];
     const list = products.filter(
       (p) =>
-        (category === "all" || p.category === category) &&
+        inCategory(p, category) &&
         p.price >= range.min &&
         p.price < range.max &&
         (!q || p.searchText.includes(q))
@@ -592,7 +618,7 @@ const GLOBAL_CSS = `
     transition: opacity .4s var(--ease); }
   /* ვიწრო ბარათზე (1280px ეკრანი, 4 სვეტი) ღილაკის ტექსტი ერთ ხაზზე რჩება — ხატულა იმალება */
   .mp-card { container-type: inline-size; }
-  @container (max-width: 330px) { .mp-card .mp-cta { font-size: 12px; padding-left: 8px; padding-right: 8px; } .mp-card .mp-cta > svg { display: none; } }
+  @container (max-width: 310px) { .mp-card .mp-cta { font-size: 12px; padding-left: 8px; padding-right: 8px; } .mp-card .mp-cta > svg { display: none; } }
   .mp-card h3 > a:focus-visible { outline: none; color: var(--red); }
   .mp-card:has(h3 > a:focus-visible) { outline: 2px solid var(--red); outline-offset: 3px; }
   .mp-tile { position: relative; border-radius: var(--r); background: radial-gradient(120% 90% at 50% 10%, #ffffff 0%, #f4f2ee 55%, #e9e6e0 100%);
@@ -636,6 +662,22 @@ const GLOBAL_CSS = `
   .mp-bullet { background: linear-gradient(135deg, #ff4d63, #c8102e); box-shadow: 0 2px 6px rgba(200,16,46,.35); }
   .mp-check { color: #15803d; background: rgba(21,128,61,.1); box-shadow: inset 0 0 0 1px rgba(21,128,61,.2); }
 
+  /* ---------- „თამაშები და გართობა“ — ოქროსფერი ტონი (თბილი ქარვა, საერთო ოქროსფერ ნათებასთან ჰარმონიაში) ---------- */
+  .mp-games { background: linear-gradient(180deg, #fdf8ec 0%, #f8eedb 100%); border: 1px solid rgba(201,162,78,.4);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.9), 0 6px 16px -10px rgba(138,90,16,.35); }
+  .mp-opt.mp-opt-games { color: #4a3106; }
+  .mp-opt.mp-opt-games .mp-count { color: #8a6a33; }
+  .mp-opt.mp-opt-games.mp-opt-on { color: #fff; background: linear-gradient(180deg, #9c6a18, #7f530e); box-shadow: inset 0 1px 0 rgba(255,255,255,.18), 0 8px 18px -10px rgba(127,83,14,.75); }
+  .mp-opt.mp-opt-games.mp-opt-on::before { background: linear-gradient(#fde68a, #f3c96b); }
+  .mp-opt.mp-opt-games.mp-opt-on .mp-count { color: rgba(255,255,255,.7); }
+  .mp-chip.mp-chip-games { color: #4a3106; background: #fdf8ec; border-color: rgba(201,162,78,.5); }
+  .mp-chip.mp-chip-games:not(.mp-chip-on) .mp-count { color: #8a6a33; }
+  .mp-chip.mp-chip-games.mp-chip-on { color: #fff; border-color: #7f530e; background: linear-gradient(180deg, #9c6a18, #7f530e); box-shadow: inset 0 1px 0 rgba(255,255,255,.18), 0 6px 16px -8px rgba(127,83,14,.7); }
+  .mp-chip.mp-chip-games.mp-chip-on .mp-count { color: rgba(255,255,255,.7); }
+  .mp-card-games { border-color: rgba(201,162,78,.28); }
+  .mp-card-games .mp-tile, .mp-tile.mp-tile-games { background: radial-gradient(120% 90% at 50% 10%, #fffdf7 0%, #f8efdc 55%, #efdfbd 100%); }
+  .mp-card.mp-card-games::before { background: linear-gradient(135deg, rgba(201,162,78,.85), rgba(201,162,78,.15) 45%, rgba(127,83,14,.6)); }
+
   /* ---------- hover — მხოლოდ მაუსიან მოწყობილობებზე ---------- */
   @media (hover: hover) {
     .mp-ctl:hover { border-color: var(--line-strong); transform: translateY(-1px); box-shadow: var(--hl), 0 10px 22px -12px rgba(24,25,28,.35); }
@@ -656,6 +698,10 @@ const GLOBAL_CSS = `
     .mp-thumb-on:hover { border-color: #18191c; }
     .mp-stepper button:hover { color: var(--ink); background: rgba(24,25,28,.06); }
     .mp-link:hover { background-size: 100% 1px; }
+    .mp-opt.mp-opt-games:hover { color: #2e1f04; background: rgba(201,162,78,.18); }
+    .mp-opt.mp-opt-games.mp-opt-on:hover { color: #fff; background: linear-gradient(180deg, #a87420, #865810); }
+    .mp-chip.mp-chip-games:hover:not(.mp-chip-on) { color: #2e1f04; border-color: rgba(201,162,78,.85); }
+    .mp-card.mp-card-games:hover { box-shadow: var(--hl), var(--e3), 0 18px 44px -24px rgba(201,162,78,.45); }
   }
   .mp-card:has(:focus-visible) { transform: translateY(-4px); box-shadow: var(--hl), var(--e3); }
   /* დაჭერა hover-ის შემდეგ — რომ ყოველთვის იმოქმედოს */
@@ -822,6 +868,43 @@ function PlayingCard({ x, y, rotate, back, ink, suit, uid }) {
   );
 }
 
+/* კამათლის / დომინოს წერტილები: პოზიციები -1..1 ბადეზე */
+const PIPS = {
+  0: [],
+  1: [[0, 0]],
+  2: [[-1, -1], [1, 1]],
+  3: [[-1, -1], [0, 0], [1, 1]],
+  4: [[-1, -1], [1, -1], [-1, 1], [1, 1]],
+  5: [[-1, -1], [1, -1], [0, 0], [-1, 1], [1, 1]],
+  6: [[-1, -1], [1, -1], [-1, 0], [1, 0], [-1, 1], [1, 1]],
+};
+const pips = (n, cx, cy, step, r, fill) =>
+  PIPS[n].map(([dx, dy], i) => <circle key={i} cx={cx + dx * step} cy={cy + dy * step} r={r} fill={fill} />);
+
+function DominoTile({ x, y, rotate, a, b }) {
+  return (
+    <g transform={`translate(${x} ${y}) rotate(${rotate})`}>
+      <rect x="-19" y="-36" width="38" height="72" rx="7" fill="#0f172a" opacity="0.14" transform="translate(3 5)" />
+      <rect x="-19" y="-36" width="38" height="72" rx="7" fill="#fbf8f1" stroke="#e7e1d3" />
+      <line x1="-12" y1="0" x2="12" y2="0" stroke="#c9bfa8" strokeWidth="1.6" />
+      <circle cx="0" cy="0" r="2" fill="#c9a24e" />
+      {pips(a, 0, -18, 8.5, 3.1, "#1c1917")}
+      {pips(b, 0, 18, 8.5, 3.1, "#1c1917")}
+    </g>
+  );
+}
+
+function Die({ x, y, rotate, value, face, pip }) {
+  return (
+    <g transform={`translate(${x} ${y}) rotate(${rotate})`}>
+      <rect x="-27" y="-27" width="54" height="54" rx="12" fill="#0f172a" opacity="0.16" transform="translate(4 6)" />
+      <rect x="-27" y="-27" width="54" height="54" rx="12" fill={face} />
+      <rect x="-27" y="-27" width="54" height="54" rx="12" fill="url(#mp-die-shine)" />
+      {pips(value, 0, 0, 13, 4.6, pip)}
+    </g>
+  );
+}
+
 function ProductVisual({ visual, uid, label }) {
   const { kind, colors = [], octagon } = visual;
 
@@ -839,6 +922,10 @@ function ProductVisual({ visual, uid, label }) {
         <stop offset="0" stopColor="#fff1cc" />
         <stop offset="0.45" stopColor="#ecd08c" />
         <stop offset="1" stopColor="#9a7430" />
+      </linearGradient>
+      <linearGradient id="mp-die-shine" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stopColor="#fff" stopOpacity="0.35" />
+        <stop offset="0.55" stopColor="#fff" stopOpacity="0" />
       </linearGradient>
       <radialGradient id={`${uid}-felt`} cx="50%" cy="42%" r="68%">
         <stop offset="0" stopColor={colors[0] || "#047857"} />
@@ -917,6 +1004,120 @@ function ProductVisual({ visual, uid, label }) {
         <circle cx="116" cy="82" r="39" fill="none" stroke="#7a5418" strokeOpacity="0.55" strokeWidth="2" />
         <circle cx="116" cy="82" r="48" fill={`url(#${uid}-shine)`} />
         <text x="116" y="99" textAnchor="middle" fontSize="46" fill="#5b3d0f" opacity="0.85">♠</text>
+      </g>
+    );
+  } else if (kind === "backgammon") {
+    const points = (x0, top, n0) =>
+      Array.from({ length: 6 }).map((_, i) => {
+        const x = x0 + i * 14;
+        const tip = top ? 74 : 86;
+        const base = top ? 32 : 128;
+        return <polygon key={`${x0}-${top}-${i}`} points={`${x},${base} ${x + 14},${base} ${x + 7},${tip}`} fill={(i + n0) % 2 ? "#1f2937" : "#9f1d1d"} opacity="0.92" />;
+      });
+    art = (
+      <g>
+        <ellipse cx="116" cy="142" rx="100" ry="8" fill="#0f172a" opacity="0.14" />
+        <rect x="14" y="22" width="204" height="116" rx="9" fill="#6b3f17" />
+        <rect x="14" y="22" width="204" height="116" rx="9" fill={`url(#${uid}-shine)`} opacity="0.35" />
+        <rect x="22" y="30" width="88" height="100" rx="3" fill="#f2e2bf" />
+        <rect x="122" y="30" width="88" height="100" rx="3" fill="#f2e2bf" />
+        <rect x="111" y="22" width="10" height="116" fill="#4a2a0e" />
+        {points(23, true, 0)}
+        {points(123, true, 1)}
+        {points(23, false, 1)}
+        {points(123, false, 0)}
+        {[[30, 40], [30, 52], [30, 64], [144, 120], [144, 108], [186, 40]].map(([cx, cy], i) => (
+          <g key={`w${i}`}>
+            <circle cx={cx} cy={cy} r="6.6" fill="#fafaf9" stroke="#d6d3d1" />
+            <circle cx={cx} cy={cy} r="3.4" fill="none" stroke="#e7e5e4" />
+          </g>
+        ))}
+        {[[86, 120], [86, 108], [158, 40], [158, 52], [200, 120]].map(([cx, cy], i) => (
+          <g key={`b${i}`}>
+            <circle cx={cx} cy={cy} r="6.6" fill="#1f2937" stroke="#0b0f17" />
+            <circle cx={cx} cy={cy} r="3.4" fill="none" stroke="#374151" />
+          </g>
+        ))}
+      </g>
+    );
+  } else if (kind === "domino") {
+    art = (
+      <g>
+        <ellipse cx="116" cy="138" rx="84" ry="8" fill="#0f172a" opacity="0.14" />
+        <DominoTile x={74} y={84} rotate={-16} a={6} b={3} />
+        <DominoTile x={116} y={78} rotate={2} a={5} b={5} />
+        <DominoTile x={158} y={86} rotate={18} a={2} b={4} />
+      </g>
+    );
+  } else if (kind === "bingo") {
+    const nums = [[7, 21, 34, 52, 68], [12, 0, 41, 0, 73], [3, 29, 0, 57, 61]];
+    art = (
+      <g>
+        <ellipse cx="116" cy="140" rx="92" ry="8" fill="#0f172a" opacity="0.14" />
+        <g transform="rotate(-4 100 82)">
+          <rect x="34" y="26" width="132" height="106" rx="9" fill="#0f172a" opacity="0.12" transform="translate(3 5)" />
+          <rect x="34" y="26" width="132" height="106" rx="9" fill="#ffffff" stroke="#e7e1d3" />
+          <rect x="34" y="26" width="132" height="24" rx="9" fill="#c8102e" />
+          <rect x="34" y="40" width="132" height="10" fill="#c8102e" />
+          <text x="100" y="43" textAnchor="middle" fontSize="13" fontWeight="800" letterSpacing="5" fill="#fff" fontFamily="Manrope, sans-serif">BINGO</text>
+          {nums.map((row, ri) =>
+            row.map((n, ci) => {
+              const cx = 47 + ci * 26;
+              const cy = 64 + ri * 24;
+              return (
+                <g key={`${ri}-${ci}`}>
+                  <rect x={cx - 11} y={cy - 9} width="22" height="18" rx="4" fill="#f7f3ea" />
+                  {n ? (
+                    <text x={cx} y={cy + 4} textAnchor="middle" fontSize="10" fontWeight="700" fill="#1c1917" fontFamily="Manrope, sans-serif">{n}</text>
+                  ) : null}
+                  {(ri + ci) % 3 === 0 && <circle cx={cx} cy={cy} r="8.5" fill="#c8102e" opacity="0.28" />}
+                </g>
+              );
+            })
+          )}
+        </g>
+        <g>
+          <circle cx="182" cy="112" r="20" fill="#d6a43a" />
+          <circle cx="182" cy="112" r="20" fill={`url(#${uid}-shine)`} />
+          <circle cx="182" cy="112" r="10" fill="#fff" />
+          <text x="182" y="116" textAnchor="middle" fontSize="11" fontWeight="800" fill="#1c1917" fontFamily="Manrope, sans-serif">75</text>
+          <circle cx="160" cy="132" r="13" fill="#1d4ed8" />
+          <circle cx="160" cy="132" r="13" fill={`url(#${uid}-shine)`} />
+          <circle cx="160" cy="132" r="6.5" fill="#fff" />
+        </g>
+      </g>
+    );
+  } else if (kind === "chess") {
+    const pawn = (x, y, fill, stroke) => (
+      <g transform={`translate(${x} ${y})`}>
+        <ellipse cx="0" cy="30" rx="15" ry="4" fill="#0f172a" opacity="0.18" />
+        <rect x="-13" y="22" width="26" height="7" rx="3.5" fill={fill} stroke={stroke} />
+        <path d="M-8 22 L-5 4 H5 L8 22 Z" fill={fill} stroke={stroke} />
+        <rect x="-8" y="0" width="16" height="5" rx="2.5" fill={fill} stroke={stroke} />
+        <circle cx="0" cy="-6" r="7" fill={fill} stroke={stroke} />
+      </g>
+    );
+    art = (
+      <g>
+        <ellipse cx="116" cy="142" rx="92" ry="8" fill="#0f172a" opacity="0.14" />
+        <g transform="translate(116 80) scale(1 0.62) rotate(45)">
+          <rect x="-58" y="-58" width="116" height="116" rx="6" fill="#6b3f17" />
+          {Array.from({ length: 64 }).map((_, i) => {
+            const cx = i % 8;
+            const cy = Math.floor(i / 8);
+            return <rect key={i} x={-52 + cx * 13} y={-52 + cy * 13} width="13" height="13" fill={(cx + cy) % 2 ? "#7c4a1e" : "#f2e2bf"} />;
+          })}
+        </g>
+        {pawn(84, 66, "#fafaf9", "#d6d3d1")}
+        {pawn(146, 74, "#1f2937", "#0b0f17")}
+      </g>
+    );
+  } else if (kind === "dice") {
+    art = (
+      <g>
+        <ellipse cx="116" cy="136" rx="76" ry="8" fill="#0f172a" opacity="0.14" />
+        <Die x={88} y={86} rotate={-14} value={5} face="#c8102e" pip="#ffffff" />
+        <Die x={148} y={78} rotate={12} value={3} face="#fbf8f1" pip="#1c1917" />
       </g>
     );
   }
@@ -1036,18 +1237,18 @@ function FilterGroup({ title, children }) {
   return (
     <div>
       <p className="px-3 text-[11px] font-semibold uppercase tracking-[0.12em] text-[#6f7075]">{title}</p>
-      <div className="mt-2.5 flex flex-col gap-1">{children}</div>
+      <div className="mt-2 flex flex-col gap-0.5">{children}</div>
     </div>
   );
 }
 
-function FilterOption({ active, onClick, label, count }) {
+function FilterOption({ active, onClick, label, count, games = false }) {
   return (
     <button
       type="button"
       onClick={onClick}
       aria-pressed={active}
-      className={`mp-opt flex items-center justify-between px-3 py-[7px] text-left text-sm ${active ? "mp-opt-on font-semibold" : ""}`}
+      className={`mp-opt flex items-center justify-between px-3 py-1.5 text-left text-sm ${games ? "mp-opt-games" : ""} ${active ? "mp-opt-on font-semibold" : ""}`}
     >
       {label}
       {count !== undefined && <span className="mp-num mp-count text-xs">{count}</span>}
@@ -1060,12 +1261,33 @@ function Sidebar({ filter }) {
   return (
     <aside className="hidden lg:block">
       <div className={`mp-scroll sticky -mx-4 -mt-2 flex flex-col gap-5 overflow-y-auto px-4 pb-10 pt-2 [&>*]:shrink-0 ${CONFIG.freeShippingFrom > 0 ? "top-[7.25rem] max-h-[calc(100vh-8rem)] xl:top-24 xl:max-h-[calc(100vh-7rem)]" : "top-24 max-h-[calc(100vh-7rem)]"}`}>
-        <div className="mp-panel flex flex-col gap-5 p-3 pt-4">
+        <div className="mp-panel flex flex-col gap-4 p-3 pt-4">
         <FilterGroup title={T.category}>
           {CATEGORIES.map((c) => (
             <FilterOption key={c.id} active={category === c.id} onClick={() => setCategory(c.id)} label={c.label} count={counts[c.id] || 0} />
           ))}
         </FilterGroup>
+        {/* ცალკე განყოფილება — თამაშები და გართობა (ოქროსფერი); ქვეკატეგორიები იხსნება, როცა განყოფილება არჩეულია */}
+        <div className="mp-games -mx-1.5 flex flex-col gap-1 rounded-[14px] p-1">
+          <button
+            type="button"
+            onClick={() => setCategory("games")}
+            aria-pressed={category === "games"}
+            aria-expanded={isGames(category)}
+            className={`mp-opt mp-opt-games flex items-center gap-1 px-2 py-2 text-left text-sm font-semibold ${category === "games" ? "mp-opt-on" : ""}`}
+          >
+            <Dices className="h-4 w-4 shrink-0" strokeWidth={2.1} aria-hidden="true" />
+            <span className="min-w-0 flex-1 whitespace-nowrap tracking-[-0.02em]">{T.cat.games}</span>
+            <ChevronDown className={`h-3 w-3 shrink-0 transition-transform duration-300 ${isGames(category) ? "rotate-180" : ""}`} aria-hidden="true" />
+          </button>
+          {isGames(category) && (
+            <div className="mp-fade flex flex-col gap-0.5 pb-0.5 pl-3.5">
+              {GAME_FILTERS.slice(1).map((g) => (
+                <FilterOption key={g.id} games active={category === g.id} onClick={() => setCategory(g.id)} label={g.label} count={counts[g.id] || 0} />
+              ))}
+            </div>
+          )}
+        </div>
         <FilterGroup title={T.price}>
           {PRICE_RANGES.map((r) => (
             <FilterOption key={r.id} active={price === r.id} onClick={() => setPrice(r.id)} label={r.label} />
@@ -1157,7 +1379,34 @@ function MobileFilters({ filter }) {
             </button>
           );
         })}
+        <button
+          type="button"
+          role="tab"
+          aria-selected={isGames(category)}
+          onClick={() => setCategory("games")}
+          className={`mp-chip mp-chip-games inline-flex shrink-0 items-center gap-1.5 px-4 py-2 text-[13px] ${isGames(category) ? "mp-chip-on font-semibold" : ""}`}
+        >
+          <Dices className="h-4 w-4" strokeWidth={2} aria-hidden="true" />
+          {T.cat.games}
+          <span className="mp-num mp-count text-[11px]">{counts.games || 0}</span>
+        </button>
       </div>
+      {isGames(category) && (
+        <div className="mp-scroll mp-fade -m-1 mt-1 flex gap-1.5 overflow-x-auto p-1" aria-label={T.cat.games}>
+          {GAME_FILTERS.map((g) => (
+            <button
+              key={g.id}
+              type="button"
+              aria-pressed={category === g.id}
+              onClick={() => setCategory(g.id)}
+              className={`mp-chip mp-chip-games inline-flex shrink-0 items-center gap-1.5 px-3 py-1.5 text-[12px] ${category === g.id ? "mp-chip-on font-semibold" : ""}`}
+            >
+              {g.label}
+              <span className="mp-num mp-count text-[10px]">{counts[g.id] || 0}</span>
+            </button>
+          ))}
+        </div>
+      )}
       <label className="relative mt-2 block" htmlFor="mp-price-mobile">
         <span className="sr-only">{T.price}</span>
         <select
@@ -1197,7 +1446,7 @@ function ProductCard({ product, index, inCart, onAdd, onOpen }) {
 
   return (
     <article
-      className="mp-rise mp-card group flex min-w-0 flex-col p-1.5"
+      className={`mp-rise mp-card group flex min-w-0 flex-col p-1.5 ${product.category === "games" ? "mp-card-games" : ""}`}
       style={{ animationDelay: `${Math.min(index, 11) * 40}ms` }}
     >
       <a
@@ -1286,6 +1535,12 @@ function Shop({ filter, cart, onOpen }) {
 
         <div className="mt-5 flex items-end justify-between gap-3 lg:mt-0">
           <div className="min-w-0">
+            {!query.trim() && category.startsWith("games:") && (
+              <p className="mp-fade mb-1.5 inline-flex items-center gap-1.5 rounded-full bg-[#c9a24e]/[0.16] px-2.5 py-0.5 text-[12px] font-semibold text-[#7a4f0c] ring-1 ring-[#c9a24e]/40">
+                <Dices className="h-3.5 w-3.5" aria-hidden="true" />
+                {T.cat.games}
+              </p>
+            )}
             <h1 className="mp-title text-xl font-bold leading-tight sm:text-[28px]">{title}</h1>
             <p className="mp-num mt-1 text-sm text-[#6f7075]" aria-live="polite">
               {T.productCount(visible.length)}
@@ -1365,7 +1620,7 @@ function Gallery({ product }) {
 
   if (!count) {
     return (
-      <div className="mp-tile mp-tile-lg aspect-square overflow-hidden p-10">
+      <div className={`mp-tile mp-tile-lg aspect-square overflow-hidden p-10 ${product.category === "games" ? "mp-tile-games" : ""}`}>
         <ProductVisual visual={product.visual} uid={`g-${product.id}`} label={product.name} />
       </div>
     );
@@ -1384,7 +1639,7 @@ function Gallery({ product }) {
 
   return (
     <div className="flex flex-col gap-3">
-      <div className="mp-tile mp-tile-lg group aspect-square overflow-hidden" {...swipe}>
+      <div className={`mp-tile mp-tile-lg group aspect-square overflow-hidden ${product.category === "games" ? "mp-tile-games" : ""}`} {...swipe}>
         <button type="button" onClick={() => setZoom(true)} className="absolute inset-0 cursor-zoom-in" aria-label={T.zoom}>
           <img
             key={images[index].src}
@@ -1521,7 +1776,13 @@ function ProductPage({ product, cart, onNavigate }) {
           <span className="mp-link">{T.shop}</span>
         </a>
         <span aria-hidden="true" className="text-[#b9b6af]">/</span>
-        <span>{CATEGORY_LABEL[product.category]}</span>
+        <span className={product.category === "games" ? "font-medium text-[#7a4f0c]" : ""}>{CATEGORY_LABEL[product.category]}</span>
+        {product.subcategory && (
+          <>
+            <span aria-hidden="true" className="text-[#b9b6af]">/</span>
+            <span className="text-[#7a4f0c]">{T.gameSub[product.subcategory]}</span>
+          </>
+        )}
       </nav>
 
       <div className="mp-rise mt-6 grid gap-8 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] lg:gap-14">

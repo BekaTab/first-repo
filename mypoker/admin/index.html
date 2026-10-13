@@ -91,6 +91,7 @@
   .tag.red { background: #fdecee; color: var(--red); }
   .tag.amber { background: #fdf3e6; color: var(--amber); }
   .tag.dark { background: var(--ink); color: #fff; }
+  .tag.gold { background: #f8eedb; color: #7a4f0c; }
   .price { font-weight: 700; }
   .price s { color: var(--subtle); font-weight: 400; font-size: 12px; margin-left: 6px; }
   .price .now.sale { color: var(--red); }
@@ -287,6 +288,7 @@
         <label class="field"><span>კატეგორია</span><select id="fCat" class="input"></select></label>
         <label class="field"><span>ნიშანი (არ არის აუცილებელი)</span><input id="fBadge" class="input" placeholder="მაგ. ახალი, ბესტსელერი"></label>
       </div>
+      <label class="field" id="fSubWrap" hidden><span>ქვეკატეგორია (თამაშები და გართობა)</span><select id="fSub" class="input"></select></label>
       <label class="field"><span>მოკლე აღწერა (ჩანს ბარათზე)</span><input id="fSpec" class="input" placeholder="მაგ. 11.5 გ · თიხის კომპოზიტი · ალუმინის კეისი"></label>
       <label class="field"><span>დეტალური აღწერა (პროდუქტის გვერდზე)</span><textarea id="fDesc" class="input" rows="7" placeholder="რა შედის ნაკრებში, მასალა, ზომები, ვისთვის არის…&#10;&#10;- სიის პუნქტი იწყება ტირეთი&#10;- ცარიელი ხაზი ახალ აბზაცს იწყებს"></textarea></label>
       <details id="fEn" class="en-box">
