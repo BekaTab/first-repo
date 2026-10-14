@@ -554,7 +554,7 @@ const PAL = {
     brand: "#6e2c32", "brand-2": "#5a2328",
     "bar-bg": "#3b2e27", "bar-text": "#efe6d8", "pill-bg": "#c6a97f", "pill-text": "#2a201b",
     cta: "#2f4a3c", "cta-hover": "#253c30", "cta-text": "#f6f1e8",
-    call: "#2f4a3c", "call-on-dark": "#c6a97f", "call-ring": "rgba(198,169,127,.45)",
+    call: "#2f4a3c", "call-on-dark": "#4f7d60", "call-ring": "rgba(79,125,96,.5)",
     badge: "#6e2c32",
     sale: "#7a3037", "sale-badge": "#6e2c32", "sale-badge-text": "#f6f1e8", "sale-tint": "rgba(110,44,50,.1)",
     ok: "#2f5a43", "ok-tint": "rgba(47,90,67,.14)", wait: "#74552f", "wait-tint": "rgba(116,85,47,.14)",
@@ -663,7 +663,7 @@ const GLOBAL_CSS = `
   .mp-drawer { background: var(--surface); box-shadow: -24px 0 64px -24px var(--shadow-strong); }
   @media (min-width: 640px) { .mp-drawer { border-radius: var(--r-lg); } }
   .mp-glass { background: var(--dark); color: var(--dark-text); box-shadow: var(--e3); }
-  .mp-glass .mp-call-dot { color: var(--ink); background: var(--call-on-dark); }
+  .mp-glass .mp-call-dot, footer .mp-call-dot { color: var(--on-dark); background: var(--call-on-dark); }
   .mp-strip :focus-visible, .mp-dock :focus-visible, footer :focus-visible, .mp-glass :focus-visible { outline-color: var(--focus-dark); }
   .mp-float { color: var(--ink); background: var(--surface); box-shadow: var(--e1);
     transition: background-color .2s var(--ease), color .2s var(--ease), transform .3s var(--ease), scale .2s var(--ease), opacity .3s var(--ease), translate .3s var(--ease); }
@@ -1907,8 +1907,9 @@ function ProductPage({ product, cart, onNavigate }) {
           {CONFIG.phoneDisplay && (
             <p className="mt-4 text-[13px] leading-5 text-[color:var(--muted)]">
               {T.orCall}{" "}
-              <a href={`tel:${CONFIG.phoneTel}`} className="mp-num mp-link select-all font-semibold text-[color:var(--ink)] hover:text-[color:var(--cta)]">
-                {CONFIG.phoneDisplay}
+              <a href={`tel:${CONFIG.phoneTel}`} className="mp-num mp-link group inline-flex items-center gap-1 align-bottom font-semibold text-[color:var(--ink)] hover:text-[color:var(--cta)]">
+                <Phone className="h-3.5 w-3.5 shrink-0 text-[color:var(--call)] transition-transform duration-300 group-hover:rotate-12" strokeWidth={2.5} aria-hidden="true" />
+                <span className="select-all">{CONFIG.phoneDisplay}</span>
               </a>
             </p>
           )}
@@ -2114,7 +2115,7 @@ function ContactDock() {
     >
       <div className="mp-dock-card flex items-center gap-3 rounded-2xl bg-[color:var(--dark)] p-2 pr-4 text-[color:var(--dark-text)] sm:pr-2 lg:p-3">
         <a href={`tel:${CONFIG.phoneTel}`} className="group flex min-w-0 items-center gap-3" aria-label={T.callAria(CONFIG.phoneDisplay)}>
-          <span className="relative grid h-8 w-8 shrink-0 place-items-center rounded-full bg-[color:var(--call-on-dark)] text-[color:var(--ink)] sm:h-10 sm:w-10">
+          <span className="relative grid h-8 w-8 shrink-0 place-items-center rounded-full bg-[color:var(--call-on-dark)] text-[color:var(--on-dark)] sm:h-10 sm:w-10">
             <span className="mp-ping absolute inset-0 rounded-full bg-[color:var(--call-ring)]" aria-hidden="true" />
             <Phone className="relative h-4 w-4 transition-transform duration-300 group-hover:rotate-12" strokeWidth={2.2} />
           </span>
@@ -2149,8 +2150,11 @@ function Footer() {
           <span className="text-[12px] text-[color:var(--dark-muted)]">© {new Date().getFullYear()} mypoker.ge · {T.rights}</span>
         </div>
         <div className="flex flex-wrap items-center gap-6">
-          <a href={`tel:${CONFIG.phoneTel}`} className="mp-num mp-link select-all font-medium text-[color:var(--dark-text)] hover:opacity-80">
-            {CONFIG.phoneDisplay}
+          <a href={`tel:${CONFIG.phoneTel}`} className="mp-num mp-link group inline-flex items-center gap-2 font-medium text-[color:var(--dark-text)] hover:opacity-80">
+            <span className="mp-call-dot grid h-6 w-6 shrink-0 place-items-center rounded-full" aria-hidden="true">
+              <Phone className="h-3 w-3 transition-transform duration-300 group-hover:rotate-12" strokeWidth={2.5} />
+            </span>
+            <span className="select-all">{CONFIG.phoneDisplay}</span>
           </a>
           <a
             href={buildWhatsAppLink(T.waHello)}
