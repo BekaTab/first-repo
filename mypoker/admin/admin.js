@@ -13,6 +13,23 @@
   var SUB_LABEL = {}; GAME_SUBS.forEach(function (c) { SUB_LABEL[c[0]] = c[1]; });
   var CAT_LABEL = {}; CATEGORIES.forEach(function (c) { CAT_LABEL[c[0]] = c[1]; });
   var CAT_ICON = {}; CATEGORIES.forEach(function (c) { CAT_ICON[c[0]] = c[2]; });
+  // საიტის ფერები (დიზაინის ჩანართი): [გასაღები, სახელი, სად ჩანს, საწყისი ფერი, ტექსტის ფერი მასზე, მინ. კონტრასტი]
+  // ღია/მუქი ელფერებს (hover, ფონები) საიტი თვითონ ითვლის ამ ფერიდან
+  var THEME_FIELDS = [
+    ['bar', 'უფასო მიწოდების ზოლი', 'საიტის ყველაზე ზედა ზოლი', '#722d34', '#faf6ef', 4.5],
+    ['pill', '„80 ლარიდან“ ნიშანი', 'მომრგვალებული ნიშანი ზედა ზოლზე', '#cbab7c', '#2a201b', 4.5],
+    ['brand', 'მთავარი ფერი', 'ლოგო, „პოკერის“ განყოფილება, ფასდაკლების ფასები', '#722d34', '#faf6ef', 4.5],
+    ['games', 'სამაგიდო თამაშები', 'განყოფილების ფირფიტა და მისი ფონები', '#c6a674', '#2a201b', 4.5],
+    ['cta', 'შეკვეთის ღილაკი', '„შესაკვეთად დაგვიკავშირდით“', '#2c5240', '#faf6ef', 4.5],
+    ['call', 'ტელეფონის ნიშანი', 'ზედა ზოლში, ფუტერში და ნომრის ბლოკში', '#2a5641', '#faf6ef', 3],
+    ['dark', 'მუქი ზოლები', 'ფუტერი, ნომრის ბლოკი, „ყველა პროდუქტი“', '#2e2520', '#efe7da', 4.5],
+    ['bg', 'საიტის ფონი', 'გვერდის უკანა ფონი', '#efe9df', 'ink', 4.5],
+    ['surface', 'ბარათები', 'პროდუქტის ბარათები, ზედა ზოლი, მენიუ', '#fffdf9', 'ink', 4.5],
+    ['ink', 'ტექსტი', 'ძირითადი ტექსტი (მოწმდება ფონზე და ბარათზე)', '#2a201b', 'bg', 4.5]
+  ];
+  var THEME_DEFAULT = {}; THEME_FIELDS.forEach(function (f) { THEME_DEFAULT[f[0]] = f[3]; });
+  var MAX_VARIANTS = 12;
+  function isHex(v) { return typeof v === 'string' && /^#[0-9a-f]{6}$/i.test(v); }
 
   // ---------------------------------------------------------------- helpers
   var $ = function (id) { return document.getElementById(id); };
@@ -86,7 +103,7 @@
   // ---------------------------------------------------------------- state
   var published = null, draft = null, publishedSha = null, busy = false;
   var pending = {}; // images uploaded here, not yet published: { 'images/x.webp': { b64, dataUrl } }
-  var editingId = null, editImages = [];
+  var editingId = null, editImages = [], editVariants = [];
   var MAX_IMAGES = 10;
 
   // ფოტოები: [{ src: 'images/x.webp' (დიდი), thumb: 'images/x-sm.webp' (ბარათისთვის) }]; ძველი ფორმატი — ერთი `image`
@@ -97,11 +114,27 @@
       return x && typeof x.src === 'string' ? { src: x.src, thumb: typeof x.thumb === 'string' ? x.thumb : x.src } : null;
     }).filter(function (x) { return x && x.src; }).slice(0, MAX_IMAGES);
   }
+  // ფერის ვარიანტები: { id, hex, name, nameEn, image (ფოტოს ნომერი 0-დან, არ არის აუცილებელი), inStock }
+  function normaliseVariants(list, imageCount) {
+    if (!Array.isArray(list)) return [];
+    var seen = {};
+    return list.filter(function (v) {
+      if (!v || typeof v.id !== 'string' || !v.id || v.id.indexOf('~') >= 0 || seen[v.id] || !isHex(v.hex)) return false;
+      seen[v.id] = true; return true;
+    }).slice(0, MAX_VARIANTS).map(function (v) {
+      var o = { id: v.id, hex: v.hex.toLowerCase(), name: String(v.name || ''), nameEn: String(v.nameEn || ''), inStock: v.inStock !== false };
+      if (Number.isInteger(v.image) && v.image >= 0 && v.image < imageCount) o.image = v.image;
+      return o;
+    });
+  }
   function normalise(d) {
     d = d && typeof d === 'object' ? d : {};
     var s = d.settings || {};
     var free = Math.round(Number(s.freeShippingFrom) || 0);
     var out = { settings: { phoneDisplay: String(s.phoneDisplay || ''), phoneTel: String(s.phoneTel || ''), whatsappNumber: String(s.whatsappNumber || ''), freeShippingFrom: free > 0 ? free : null }, products: [] };
+    var theme = {};
+    if (s.theme && typeof s.theme === 'object') THEME_FIELDS.forEach(function (f) { if (isHex(s.theme[f[0]])) theme[f[0]] = s.theme[f[0]].toLowerCase(); });
+    if (Object.keys(theme).length) out.settings.theme = theme;
     (Array.isArray(d.products) ? d.products : []).forEach(function (p) {
       if (!p || !p.id) return;
       var price = Math.round(Number(p.price) || 0), sale = Math.round(Number(p.salePrice) || 0);
@@ -114,6 +147,8 @@
       };
       if (o.category === 'games') o.subcategory = SUB_LABEL[p.subcategory] ? p.subcategory : 'fun';
       if (p.visual) o.visual = p.visual;
+      var vs = normaliseVariants(p.variants, o.images.length);
+      if (vs.length) o.variants = vs;
       out.products.push(o);
     });
     return out;
@@ -204,7 +239,7 @@
     show('viewApp'); busy = true; setStatus('busy', 'იტვირთება…');
     readData().then(function (r) {
       published = r.data; publishedSha = r.sha; draft = clone(published); pending = {};
-      busy = false; fillSettings(); refresh();
+      busy = false; fillSettings(); renderDesign(); refresh();
     }).catch(function (e) {
       busy = false; setStatus('err', explain(e));
       var m = $('loadMsg'); m.className = 'msg err'; m.textContent = explain(e); m.hidden = false;
@@ -216,7 +251,7 @@
   Array.prototype.forEach.call(document.querySelectorAll('.tab'), function (t) {
     t.addEventListener('click', function () {
       Array.prototype.forEach.call(document.querySelectorAll('.tab'), function (x) { x.setAttribute('aria-selected', String(x === t)); });
-      ['products', 'sales', 'settings'].forEach(function (id) { $('tab-' + id).hidden = id !== t.dataset.tab; });
+      ['products', 'sales', 'design', 'settings'].forEach(function (id) { $('tab-' + id).hidden = id !== t.dataset.tab; });
     });
   });
 
@@ -258,6 +293,7 @@
       if (saleActive(p)) tags.push(el('span', { class: 'tag red num', text: '−' + Math.round((1 - p.salePrice / p.price) * 100) + '%' }));
       if (!p.inStock) tags.push(el('span', { class: 'tag amber', text: 'შეკვეთით' }));
       if (!p.visible) tags.push(el('span', { class: 'tag', text: 'დამალულია' }));
+      if (p.variants && p.variants.length) tags.push(el('span', { class: 'swatches', title: p.variants.map(function (v) { return v.name; }).join(', ') }, p.variants.map(function (v) { return el('span', { class: 'sw', style: 'background:' + v.hex }); })));
       ul.appendChild(el('li', { class: 'prow' + (p.visible ? '' : ' off') }, [
         thumb(p),
         el('div', { class: 'info', style: 'min-width:0' }, [el('div', { class: 'pname', text: p.name || '(უსახელო)' }), el('div', { class: 'pmeta' }, tags)]),
@@ -306,7 +342,39 @@
     });
     $('fImageCount').textContent = editImages.length + ' / ' + MAX_IMAGES;
     $('fImageAdd').hidden = editImages.length >= MAX_IMAGES;
+    renderVariants();
   }
+
+  // ფერის ვარიანტები რედაქტორში; ფოტო ინახება მისამართით, რომ ფოტოების გადალაგება/წაშლა არ არეოს
+  function renderVariants() {
+    var box = $('fVariants'); box.innerHTML = '';
+    editVariants.forEach(function (v, i) {
+      var color = el('input', { type: 'color', class: 'vcolor', value: v.hex, 'aria-label': 'ფერი ' + (i + 1) });
+      color.addEventListener('input', function () { v.hex = color.value.toLowerCase(); });
+      var name = el('input', { class: 'input', placeholder: 'სახელი, მაგ. წითელი', 'aria-label': 'ფერის სახელი ' + (i + 1) }); name.value = v.name;
+      name.addEventListener('input', function () { v.name = name.value; });
+      var nameEn = el('input', { class: 'input', lang: 'en', placeholder: 'English, e.g. Red', 'aria-label': 'ფერის სახელი ინგლისურად ' + (i + 1) }); nameEn.value = v.nameEn;
+      nameEn.addEventListener('input', function () { v.nameEn = nameEn.value; });
+      var photo = el('select', { class: 'input', 'aria-label': 'ფოტო ამ ფერისთვის ' + (i + 1), title: 'რომელი ფოტო გამოჩნდეს ამ ფერის არჩევისას' }, [el('option', { value: '', text: 'ფოტო —' })]);
+      editImages.forEach(function (img, j) { photo.appendChild(el('option', { value: img.src, text: 'ფოტო ' + (j + 1) })); });
+      photo.value = v.img && editImages.some(function (x) { return x.src === v.img; }) ? v.img : '';
+      photo.disabled = !editImages.length;
+      photo.addEventListener('change', function () { v.img = photo.value; });
+      var stock = el('input', { type: 'checkbox' }); stock.checked = v.inStock;
+      stock.addEventListener('change', function () { v.inStock = stock.checked; });
+      box.appendChild(el('div', { class: 'vrow' }, [
+        color, name, nameEn, photo,
+        el('label', { class: 'check', title: 'ეს ფერი მარაგშია' }, [stock, 'მარაგში']),
+        el('button', { class: 'btn ghost icon danger', type: 'button', title: 'წაშლა', 'aria-label': 'ფერის წაშლა', onclick: function () { editVariants.splice(i, 1); renderVariants(); } }, ['✕'])
+      ]));
+    });
+    $('fVarAdd').hidden = editVariants.length >= MAX_VARIANTS;
+  }
+  $('fVarAdd').addEventListener('click', function () {
+    editVariants.push({ id: 'c' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5), hex: '#722d34', name: '', nameEn: '', img: '', inStock: true });
+    renderVariants();
+    var rows = $('fVariants').querySelectorAll('.vrow input.input'); if (rows.length) rows[rows.length - 2].focus();
+  });
   function openEditor(id) {
     editingId = id;
     var p = id ? draft.products.find(function (x) { return x.id === id; }) : null;
@@ -327,6 +395,9 @@
     $('fStock').checked = p ? p.inStock : true;
     $('fVisible').checked = p ? p.visible : true;
     editImages = p ? clone(p.images) : [];
+    editVariants = (p && p.variants ? p.variants : []).map(function (v) {
+      return { id: v.id, hex: v.hex, name: v.name, nameEn: v.nameEn, img: Number.isInteger(v.image) && editImages[v.image] ? editImages[v.image].src : '', inStock: v.inStock };
+    });
     $('fErr').hidden = true;
     renderEditImages();
     $('dlg').showModal();
@@ -385,6 +456,7 @@
     if (!name) return showErr('შეიყვანეთ სახელი.');
     if (!(price > 0)) return showErr('შეიყვანეთ ფასი (დადებითი რიცხვი).');
     if (sale !== null && !(sale > 0 && sale < price)) return showErr('ფასდაკლებული ფასი უნდა იყოს ჩვეულებრივ ფასზე ნაკლები.');
+    if (editVariants.some(function (v) { return !v.name.trim(); })) return showErr('მიუთითეთ თითოეული ფერის სახელი (მაგ. წითელი) ან წაშალეთ ცარიელი ფერი.');
     var p = editingId ? draft.products.find(function (x) { return x.id === editingId; }) : null;
     if (!p) { p = { id: slug(name) }; draft.products.unshift(p); }
     var prevKind = p.category + '/' + (p.subcategory || '');
@@ -398,6 +470,13 @@
     p.price = price; p.salePrice = sale; p.saleEnds = sale ? $('fSaleEnds').value : '';
     p.images = clone(editImages); delete p.image; p.inStock = $('fStock').checked; p.visible = $('fVisible').checked;
     if (p.images.length) delete p.visual;
+    var vs = editVariants.map(function (v) {
+      var o = { id: v.id, hex: v.hex, name: v.name.trim(), nameEn: v.nameEn.trim(), inStock: v.inStock };
+      var j = editImages.findIndex(function (x) { return x.src === v.img; });
+      if (v.img && j >= 0) o.image = j;
+      return o;
+    });
+    if (vs.length) p.variants = vs; else delete p.variants;
     $('dlg').close(); refresh();
   });
 
@@ -433,6 +512,46 @@
     });
   }
 
+  // ---------------------------------------------------------------- design (site colours)
+  function lum(h) {
+    return [1, 3, 5].map(function (i) { var c = parseInt(h.slice(i, i + 2), 16) / 255; return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4); })
+      .reduce(function (a, c, i) { return a + c * [0.2126, 0.7152, 0.0722][i]; }, 0);
+  }
+  function contrast(a, b) { var x = lum(a), y = lum(b); return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05); }
+  function themeValue(k) { return (draft.settings.theme && draft.settings.theme[k]) || THEME_DEFAULT[k]; }
+  function setTheme(k, v) {
+    var t = draft.settings.theme || {};
+    if (!v || v === THEME_DEFAULT[k]) delete t[k]; else t[k] = v;
+    if (Object.keys(t).length) draft.settings.theme = t; else delete draft.settings.theme;
+    renderDesign(); refresh();
+  }
+  function renderDesign() {
+    var box = $('themeList'); box.innerHTML = '';
+    if (!draft) return;
+    THEME_FIELDS.forEach(function (f) {
+      var k = f[0], val = themeValue(k);
+      var text = f[4] === 'ink' ? themeValue('ink') : f[4] === 'bg' ? null : f[4];
+      var ratio = k === 'ink' ? Math.min(contrast(val, themeValue('bg')), contrast(val, themeValue('surface'))) : contrast(val, text);
+      var sampleStyle = k === 'ink' ? 'background:' + themeValue('surface') + ';color:' + val : 'background:' + val + ';color:' + text;
+      var picker = el('input', { type: 'color', class: 'vcolor', value: val, 'aria-label': f[1] });
+      picker.addEventListener('change', function () { setTheme(k, picker.value.toLowerCase()); });
+      var hex = el('input', { class: 'input num hex', value: val, maxlength: '7', 'aria-label': f[1] + ' — კოდი', spellcheck: 'false' });
+      hex.addEventListener('change', function () { var v = hex.value.trim().toLowerCase(); if (v[0] !== '#') v = '#' + v; if (isHex(v)) setTheme(k, v); else hex.value = val; });
+      box.appendChild(el('div', { class: 'trow' }, [
+        el('div', { class: 'tinfo' }, [el('b', { text: f[1] }), el('small', { text: f[2] })]),
+        el('span', { class: 'tsample', style: sampleStyle, text: 'Aa ნიმუში' }),
+        picker, hex,
+        el('button', { class: 'btn ghost', type: 'button', disabled: val === THEME_DEFAULT[k], title: 'საწყისი ფერი: ' + THEME_DEFAULT[k], onclick: function () { setTheme(k, null); } }, ['საწყისი']),
+        ratio < f[5] ? el('div', { class: 'twarn', text: 'ტექსტი ამ ფერზე ცუდად იკითხება (კონტრასტი ' + ratio.toFixed(1) + ', საჭიროა ' + f[5] + '). აირჩიეთ უფრო ' + (f[4] === '#2a201b' || f[4] === 'ink' ? 'ღია' : 'მუქი') + ' ფერი.' }) : null
+      ]));
+    });
+    $('themeReset').disabled = !draft.settings.theme;
+  }
+  $('themeReset').addEventListener('click', function () {
+    if (!window.confirm('ყველა ფერი დაბრუნდება საწყისზე. გავაგრძელო?')) return;
+    delete draft.settings.theme; renderDesign(); refresh();
+  });
+
   // ---------------------------------------------------------------- settings
   function fillSettings() { $('setPhone').value = draft.settings.phoneDisplay; $('setWa').value = draft.settings.whatsappNumber; $('setFree').value = draft.settings.freeShippingFrom || ''; }
   function settingsError() {
@@ -456,7 +575,7 @@
   // ---------------------------------------------------------------- discard / publish
   $('discard').addEventListener('click', function () {
     if (!window.confirm('ყველა გამოუქვეყნებელი ცვლილება გაუქმდება. გავაგრძელო?')) return;
-    draft = clone(published); pending = {}; fillSettings(); $('setMsg').hidden = true; refresh();
+    draft = clone(published); pending = {}; fillSettings(); renderDesign(); $('setMsg').hidden = true; refresh();
   });
 
   function pollDeploy(sha, started) {

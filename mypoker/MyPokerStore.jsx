@@ -33,6 +33,16 @@ function readData() {
 }
 const DATA = readData();
 
+/* ფერის დამხმარეები: ადმინიდან მოსული ფერი მხოლოდ #rrggbb ფორმატით მიიღება */
+const isHex = (v) => typeof v === "string" && /^#[0-9a-f]{6}$/i.test(v);
+const rgbOf = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));
+const toHex = (c) => `#${c.map((x) => Math.round(Math.max(0, Math.min(255, x))).toString(16).padStart(2, "0")).join("")}`;
+const mix = (a, b, t) => {
+  const A = rgbOf(a), B = rgbOf(b);
+  return toHex(A.map((x, i) => x + (B[i] - x) * t));
+};
+const alpha = (h, a) => `rgba(${rgbOf(h).join(",")},${a})`;
+
 /* ------------------------------------------------------------------ */
 /*  ენა: ქართული — „/“, ინგლისური — „/en/“ (ენის შეცვლა გვერდს ხელახლა ხსნის) */
 /* ------------------------------------------------------------------ */
@@ -62,6 +72,10 @@ const TEXT = {
     inStock: "მარაგშია",
     onOrder: "შეკვეთით",
     onOrderLong: "შეკვეთით — მიწოდების ვადას დაგიზუსტებთ",
+    color: "ფერი",
+    chooseColor: "ფერის არჩევა",
+    chooseColorAria: (n) => `${n} — ფერის არჩევა`,
+    colorsAria: (n) => `${n} ფერი`,
     orderCta: "შესაკვეთად დაგვიკავშირდით",
     inCart: "კალათაშია",
     addToCart: "კალათაში დამატება",
@@ -158,6 +172,10 @@ const TEXT = {
     inStock: "In stock",
     onOrder: "On order",
     onOrderLong: "On order — we'll confirm the delivery time",
+    color: "Colour",
+    chooseColor: "Choose a colour",
+    chooseColorAria: (n) => `${n} — choose a colour`,
+    colorsAria: (n) => `${n} ${n === 1 ? "colour" : "colours"}`,
     orderCta: "Contact us to order",
     inCart: "In cart",
     addToCart: "Add to cart",
@@ -297,6 +315,34 @@ function normalizeImages(p) {
     .map((x) => ({ src: assetUrl(x.src), thumb: assetUrl(x.thumb) }));
 }
 
+/* ფერის ვარიანტები (ადმინიდან): { id, hex, name, nameEn, image — რომელი ფოტო ჩანს (0-დან), inStock } */
+function normalizeVariants(list, en) {
+  if (!Array.isArray(list)) return [];
+  const seen = new Set();
+  return list
+    .filter((v) => v && typeof v.id === "string" && v.id && !v.id.includes("~") && !seen.has(v.id) && isHex(v.hex) && seen.add(v.id))
+    .slice(0, 12)
+    .map((v) => ({
+      id: v.id,
+      hex: v.hex,
+      name: (en && typeof v.nameEn === "string" && v.nameEn.trim() ? v.nameEn : typeof v.name === "string" ? v.name : "").trim() || v.hex,
+      image: Number.isInteger(v.image) && v.image >= 0 ? v.image : -1,
+      inStock: v.inStock !== false,
+    }));
+}
+
+/* კალათის გასაღები: პროდუქტი ან პროდუქტი~ფერი */
+const cartKey = (productId, variantId) => (variantId ? `${productId}~${variantId}` : productId);
+function resolveCartKey(key) {
+  const [id, vid] = String(key).split("~");
+  const product = PRODUCTS.find((p) => p.id === id);
+  if (!product) return null;
+  if (!vid) return product.variants.length ? null : { product, variant: null };
+  const variant = product.variants.find((v) => v.id === vid);
+  return variant ? { product, variant } : null;
+}
+const lineName = (product, variant) => (variant ? `${product.name} — ${variant.name}` : product.name);
+
 /* ფასდაკლება აქტიურია, თუ ფასი დაბალია ძველზე და ვადა (თუ მითითებულია) ჯერ არ გასულა */
 function normalizeProduct(p, today) {
   const regular = Number(p.price) || 0;
@@ -319,6 +365,7 @@ function normalizeProduct(p, today) {
     searchText: [p.name, p.nameEn, p.spec, p.specEn].filter((x) => typeof x === "string").join(" ").toLowerCase(),
     visual: p.visual || DEFAULT_VISUAL[p.category === "games" ? `games:${subcategory}` : p.category] || DEFAULT_VISUAL.accessories,
     subcategory,
+    variants: normalizeVariants(p.variants, en),
   };
 }
 
@@ -338,16 +385,16 @@ const formatPrice = (value) =>
 const buildWhatsAppLink = (text) =>
   `https://wa.me/${CONFIG.whatsappNumber}?text=${encodeURIComponent(text)}`;
 
-const productWhatsAppLink = (product) =>
+const productWhatsAppLink = (product, variant = null) =>
   buildWhatsAppLink(
-    T.waProduct(product.name, product.price)
+    T.waProduct(lineName(product, variant), product.price)
   );
 
 const cartWhatsAppLink = (lines, total) =>
   buildWhatsAppLink(
     [
       T.waCartHead,
-      ...lines.map((l, i) => T.waCartLine(i + 1, l.product.name, l.qty, l.product.price * l.qty)),
+      ...lines.map((l, i) => T.waCartLine(i + 1, lineName(l.product, l.variant), l.qty, l.product.price * l.qty)),
       T.waCartTotal(total),
     ].join("\n")
   );
@@ -455,9 +502,7 @@ function loadCart() {
     const raw = window.localStorage.getItem(CONFIG.storageKey);
     const parsed = raw ? JSON.parse(raw) : {};
     return Object.fromEntries(
-      Object.entries(parsed).filter(
-        ([id, qty]) => PRODUCTS.some((p) => p.id === id) && Number.isInteger(qty) && qty > 0
-      )
+      Object.entries(parsed).filter(([key, qty]) => resolveCartKey(key) && Number.isInteger(qty) && qty > 0)
     );
   } catch {
     return {};
@@ -478,7 +523,7 @@ function useCart() {
   const lines = useMemo(
     () =>
       Object.entries(items)
-        .map(([id, qty]) => ({ product: PRODUCTS.find((p) => p.id === id), qty }))
+        .map(([key, qty]) => ({ key, qty, ...resolveCartKey(key) }))
         .filter((l) => l.product),
     [items]
   );
@@ -631,6 +676,35 @@ const PAL = {
   },
 };
 
+/* ადმინიდან შეცვლილი ფერები (settings.theme): თითო მთავარი ფერიდან გამოიყვანება მისი ღია/მუქი ტონები */
+const THEME_DERIVE = {
+  bar: (c) => ({ "bar-bg": c }),
+  pill: (c) => ({ "pill-bg": c }),
+  brand: (c) => ({
+    brand: c, "brand-2": mix(c, "#000000", 0.18), badge: c, sale: c, "sale-badge": c, "sale-tint": alpha(c, 0.1), focus: c, selection: alpha(c, 0.16),
+    "poker-plate": c, "poker-plate-hover": mix(c, "#000000", 0.14), "poker-text": c, "poker-chip-on": c,
+    "poker-sub": mix(c, "#000000", 0.25), "poker-on-text": mix(c, "#000000", 0.25), "poker-ico": mix(c, "#ffffff", 0.2), "poker-count": mix(c, "#ffffff", 0.15),
+    "poker-tint": mix(c, "#ffffff", 0.92), "poker-on": mix(c, "#ffffff", 0.82), "poker-hover": alpha(c, 0.07), "poker-line": alpha(c, 0.22),
+  }),
+  games: (c) => ({
+    "games-plate": c, "games-plate-hover": mix(c, "#000000", 0.08), "games-chip-on": c,
+    "games-tint": mix(c, "#ffffff", 0.82), "games-tint-hover": mix(c, "#ffffff", 0.9), "games-on": mix(c, "#ffffff", 0.6), "games-hover": alpha(c, 0.18),
+    "games-sub": mix(c, "#000000", 0.62), "games-text": mix(c, "#000000", 0.62), "games-on-text": mix(c, "#000000", 0.62),
+    "games-ico": mix(c, "#000000", 0.4), "games-count": mix(c, "#000000", 0.4), "games-line": alpha(mix(c, "#000000", 0.4), 0.3),
+  }),
+  cta: (c) => ({ cta: c, "cta-hover": mix(c, "#000000", 0.2) }),
+  call: (c) => ({ call: c, "call-on-dark": mix(c, "#ffffff", 0.3), "call-ring": alpha(mix(c, "#ffffff", 0.3), 0.5) }),
+  dark: (c) => ({ dark: c, "all-plate": c, "all-plate-hover": mix(c, "#000000", 0.15), active: c, "active-hover": mix(c, "#000000", 0.15) }),
+  bg: (c) => ({ bg: c, "bg-glass": alpha(c, 0.9) }),
+  surface: (c) => ({ surface: c }),
+  ink: (c) => ({ ink: c }),
+};
+const THEME = DATA.settings && typeof DATA.settings.theme === "object" && DATA.settings.theme ? DATA.settings.theme : {};
+Object.keys(THEME_DERIVE).forEach((k) => {
+  if (isHex(THEME[k])) Object.assign(PAL.vars, THEME_DERIVE[k](THEME[k].toLowerCase()));
+});
+if (isHex(THEME.brand)) PAL.pattern.accent = THEME.brand;
+
 /* ფონის პატერნი: კარტის ოთხი ნიშანი, მკრთალად (♠ ♥ ♦ ♣) */
 const suitAt = (d, x, y, r, fill, opacity) =>
   `<path d="${d}" fill="${fill}" fill-opacity="${opacity}" transform="translate(${x} ${y}) rotate(${r} 12 12) scale(.75)"/>`;
@@ -781,6 +855,11 @@ const GLOBAL_CSS = `
   .mp-hero-crumb:hover { text-decoration: underline; }
   .mp-hero-poker :focus-visible, .mp-hero-plain :focus-visible { outline-color: var(--focus-dark); }
   .mp-hero .mp-title { color: inherit; }
+  .mp-swatch { position: relative; width: 32px; height: 32px; border-radius: 999px; background: var(--sw); box-shadow: inset 0 0 0 1px rgba(0,0,0,.14), 0 0 0 2px var(--bg); transition: box-shadow .2s var(--ease), transform .2s var(--ease); }
+  .mp-swatch:hover { transform: scale(1.06); }
+  .mp-swatch-on { box-shadow: inset 0 0 0 1px rgba(0,0,0,.14), 0 0 0 2px var(--bg), 0 0 0 4px var(--ink); }
+  .mp-swatch-out::after { content: ''; position: absolute; left: 50%; top: 2px; bottom: 2px; width: 2px; margin-left: -1px; border-radius: 2px; background: var(--surface); transform: rotate(45deg); box-shadow: 0 0 0 1px rgba(0,0,0,.18); }
+  .mp-dotsw { display: inline-block; flex-shrink: 0; width: 12px; height: 12px; border-radius: 999px; background: var(--sw); box-shadow: inset 0 0 0 1px rgba(0,0,0,.16); }
   .mp-plate-mark { position: absolute; z-index: -1; pointer-events: none; opacity: .12; transition: transform .6s var(--ease-out); }
   .mp-plate-poker.mp-plate-on { box-shadow: 0 0 0 2px var(--surface), 0 0 0 4px var(--poker-plate); }
   .mp-plate-games.mp-plate-on { box-shadow: 0 0 0 2px var(--surface), 0 0 0 4px var(--games-plate); }
@@ -1603,12 +1682,14 @@ function MobileFilters({ filter }) {
 /* ------------------------------------------------------------------ */
 /*  პროდუქტის სურათი: ატვირთული ფოტო ან ილუსტრაცია                     */
 /* ------------------------------------------------------------------ */
-function ProductMedia({ product, uid }) {
-  const first = product.images[0];
+function ProductMedia({ product, uid, variant = null }) {
+  /* არჩეული ფერი: მისი ფოტო, ან ფოტოს გარეშე — ილუსტრაცია ამ ფერში */
+  const first = (variant && product.images[variant.image]) || product.images[0];
   if (first) {
     return <img src={first.thumb} alt={product.name} loading="lazy" decoding="async" className="h-full w-full object-contain" />;
   }
-  return <ProductVisual visual={product.visual} uid={uid} label={product.name} />;
+  const visual = variant && product.visual ? { ...product.visual, colors: [variant.hex, ...(product.visual.colors || []).slice(1)] } : product.visual;
+  return <ProductVisual visual={visual} uid={uid} label={product.name} />;
 }
 
 /* ------------------------------------------------------------------ */
@@ -1654,6 +1735,14 @@ function ProductCard({ product, index, inCart, onAdd, onOpen }) {
           </a>
         </h3>
         <p className="mt-1 truncate text-[12px] leading-4 text-[color:var(--muted)]">{product.spec}</p>
+        {product.variants.length > 0 && (
+          <div className="mt-2 flex h-4 items-center gap-1" role="img" aria-label={T.colorsAria(product.variants.length)}>
+            {product.variants.slice(0, 6).map((v) => (
+              <span key={v.id} className="mp-dotsw" style={{ "--sw": v.hex }} title={v.name} />
+            ))}
+            {product.variants.length > 6 && <span className="mp-num ml-1 text-[11px] leading-4 text-[color:var(--muted)]">+{product.variants.length - 6}</span>}
+          </div>
+        )}
 
         <div className="mt-4 flex items-end justify-between gap-2">
           <div className="flex items-baseline gap-2">
@@ -1679,10 +1768,10 @@ function ProductCard({ product, index, inCart, onAdd, onOpen }) {
           </a>
           <button
             type="button"
-            onClick={() => onAdd(product.id)}
+            onClick={(e) => (product.variants.length ? handleNav(onOpen, product.id)(e) : onAdd(product.id))}
             className={`mp-ctl grid h-10 w-10 shrink-0 place-items-center rounded-lg ${inCart ? "mp-ctl-on" : ""}`}
-            aria-label={inCart ? T.inCartAria(product.name) : T.addAria(product.name)}
-            title={inCart ? T.inCart : T.addToCart}
+            aria-label={product.variants.length && !inCart ? T.chooseColorAria(product.name) : inCart ? T.inCartAria(product.name) : T.addAria(product.name)}
+            title={product.variants.length && !inCart ? T.chooseColor : inCart ? T.inCart : T.addToCart}
           >
             {inCart ? <Check className="mp-pop h-4 w-4" /> : <ShoppingBag className="h-4 w-4" />}
           </button>
@@ -1811,9 +1900,13 @@ function Shop({ filter, cart, onOpen }) {
 /* ------------------------------------------------------------------ */
 /*  ფოტო-გალერეა: მთავარი ფოტო, მინიატურები, გადაფურცვლა, სრული ეკრანი    */
 /* ------------------------------------------------------------------ */
-function Gallery({ product }) {
+function Gallery({ product, visual, focus = -1 }) {
   const images = product.images;
   const [index, setIndex] = useState(0);
+  /* ფერის არჩევისას ჩანს ამ ფერის ფოტო */
+  useEffect(() => {
+    if (focus >= 0 && focus < images.length) setIndex(focus);
+  }, [focus, images.length]);
   const [zoom, setZoom] = useState(false);
   const touch = useRef(null);
   const count = images.length;
@@ -1838,7 +1931,7 @@ function Gallery({ product }) {
   if (!count) {
     return (
       <div className={`mp-tile mp-tile-lg aspect-square overflow-hidden p-12 ${product.category === "games" ? "mp-tile-games" : ""}`}>
-        <ProductVisual visual={product.visual} uid={`g-${product.id}`} label={product.name} />
+        <ProductVisual visual={visual || product.visual} uid={`g-${product.id}`} label={product.name} />
       </div>
     );
   }
@@ -1977,7 +2070,18 @@ const formatDate = (iso) => {
 /* ------------------------------------------------------------------ */
 function ProductPage({ product, cart, onNavigate }) {
   const discount = product.oldPrice ? Math.round((1 - product.price / product.oldPrice) * 100) : 0;
-  const inCart = cart.lines.some((l) => l.product.id === product.id);
+  const firstVariant = () => (product.variants.find((v) => v.inStock) || product.variants[0] || {}).id || null;
+  const [variantId, setVariantId] = useState(firstVariant);
+  useEffect(() => setVariantId(firstVariant()), [product.id]);
+  const variant = product.variants.find((v) => v.id === variantId) || null;
+  const key = cartKey(product.id, variant && variant.id);
+  const inCart = cart.lines.some((l) => l.key === key);
+  const inStock = product.inStock && (!variant || variant.inStock);
+  /* ფოტოს გარეშე პროდუქტზე ილუსტრაცია არჩეულ ფერს იღებს */
+  const visual = useMemo(
+    () => (variant && product.visual ? { ...product.visual, colors: [variant.hex, ...(product.visual.colors || []).slice(1)] } : product.visual),
+    [product.visual, variant && variant.hex]
+  );
   const related = useMemo(() => {
     const same = PRODUCTS.filter((p) => p.id !== product.id && p.category === product.category);
     const others = PRODUCTS.filter((p) => p.id !== product.id && p.category !== product.category);
@@ -2009,7 +2113,7 @@ function ProductPage({ product, cart, onNavigate }) {
       </nav>
 
       <div className="mt-8 grid gap-8 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] lg:gap-16">
-        <Gallery key={product.id} product={product} />
+        <Gallery key={product.id} product={product} visual={visual} focus={variant ? variant.image : -1} />
 
         <div className="flex min-w-0 flex-col">
           {(product.badge || discount > 0) && (
@@ -2030,14 +2134,36 @@ function ProductPage({ product, cart, onNavigate }) {
           {product.oldPrice && product.saleEnds && (
             <p className="mt-2 text-[13px] leading-5 text-[color:var(--sale)]">{T.saleUntil(formatDate(product.saleEnds))}</p>
           )}
-          <p className={`mt-4 inline-flex items-center gap-2 text-[13px] leading-5 ${product.inStock ? "text-[color:var(--ok)]" : "text-[color:var(--wait)]"}`}>
-            <span className={`h-2 w-2 rounded-full ${product.inStock ? "mp-dot-ok" : "mp-dot-wait"}`} />
-            {product.inStock ? T.inStock : T.onOrderLong}
+          {product.variants.length > 0 && (
+            <div className="mt-6">
+              <p className="text-[13px] leading-5 text-[color:var(--muted)]">
+                {T.color}: <span className="font-semibold text-[color:var(--ink)]">{variant ? variant.name : ""}</span>
+              </p>
+              <div className="mt-2 flex flex-wrap gap-3 p-1" role="radiogroup" aria-label={T.color}>
+                {product.variants.map((v) => (
+                  <button
+                    key={v.id}
+                    type="button"
+                    role="radio"
+                    aria-checked={v.id === variantId}
+                    aria-label={v.inStock ? v.name : `${v.name} — ${T.onOrder}`}
+                    title={v.name}
+                    onClick={() => setVariantId(v.id)}
+                    className={`mp-swatch ${v.id === variantId ? "mp-swatch-on" : ""} ${v.inStock ? "" : "mp-swatch-out"}`}
+                    style={{ "--sw": v.hex }}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+          <p className={`mt-4 inline-flex items-center gap-2 text-[13px] leading-5 ${inStock ? "text-[color:var(--ok)]" : "text-[color:var(--wait)]"}`}>
+            <span className={`h-2 w-2 rounded-full ${inStock ? "mp-dot-ok" : "mp-dot-wait"}`} />
+            {inStock ? T.inStock : T.onOrderLong}
           </p>
 
           <div className="mt-8 flex gap-2">
             <a
-              href={productWhatsAppLink(product)}
+              href={productWhatsAppLink(product, variant)}
               target="_blank"
               rel="noopener noreferrer"
               className="mp-cta inline-flex h-12 min-w-0 flex-1 items-center justify-center gap-2 px-4 text-[14px] font-semibold"
@@ -2047,7 +2173,7 @@ function ProductPage({ product, cart, onNavigate }) {
             </a>
             <button
               type="button"
-              onClick={() => cart.add(product.id)}
+              onClick={() => cart.add(key)}
               className={`mp-ctl grid h-12 w-12 shrink-0 place-items-center rounded-lg ${inCart ? "mp-ctl-on" : ""}`}
               aria-label={inCart ? T.inCartMore : T.addToCart}
               title={inCart ? T.inCart : T.addToCart}
@@ -2169,10 +2295,10 @@ function CartDrawer({ open, onClose, cart, onOpenProduct }) {
         ) : (
           <>
             <ul className="flex-1 divide-y divide-[color:var(--line)] overflow-y-auto px-6">
-              {cart.lines.map(({ product, qty }) => (
-                <li key={product.id} className="mp-fade flex gap-4 py-4">
+              {cart.lines.map(({ key, product, variant, qty }) => (
+                <li key={key} className="mp-fade flex gap-4 py-4">
                   <div className="mp-tile h-16 w-20 shrink-0 overflow-hidden !rounded-lg p-2">
-                    <ProductMedia product={product} uid={`c-${product.id}`} />
+                    <ProductMedia product={product} variant={variant} uid={`c-${key.replace("~", "-")}`} />
                   </div>
                   <div className="flex min-w-0 flex-1 flex-col">
                     <a
@@ -2182,11 +2308,17 @@ function CartDrawer({ open, onClose, cart, onOpenProduct }) {
                     >
                       {product.name}
                     </a>
+                    {variant && (
+                      <span className="mt-1 inline-flex items-center gap-2 text-[12px] leading-4 text-[color:var(--muted)]">
+                        <span className="mp-dotsw" style={{ "--sw": variant.hex }} aria-hidden="true" />
+                        {variant.name}
+                      </span>
+                    )}
                     <div className="mt-auto flex items-center justify-between pt-2">
                       <div className="mp-stepper flex items-center">
                         <button
                           type="button"
-                          onClick={() => cart.decrement(product.id)}
+                          onClick={() => cart.decrement(key)}
                           className="grid h-8 w-8 place-items-center text-[color:var(--muted)]"
                           aria-label={T.decrease}
                         >
@@ -2195,7 +2327,7 @@ function CartDrawer({ open, onClose, cart, onOpenProduct }) {
                         <span className="mp-num w-6 text-center text-[13px] font-semibold leading-4 text-[color:var(--ink)]">{qty}</span>
                         <button
                           type="button"
-                          onClick={() => cart.add(product.id)}
+                          onClick={() => cart.add(key)}
                           className="grid h-8 w-8 place-items-center text-[color:var(--muted)]"
                           aria-label={T.increase}
                         >
@@ -2206,7 +2338,7 @@ function CartDrawer({ open, onClose, cart, onOpenProduct }) {
                         <span className="mp-num mp-price text-[14px] font-semibold leading-5 text-[color:var(--ink)]">{formatPrice(product.price * qty)}</span>
                         <button
                           type="button"
-                          onClick={() => cart.remove(product.id)}
+                          onClick={() => cart.remove(key)}
                           className="grid h-8 w-8 place-items-center rounded-lg text-[color:var(--muted)] transition-colors duration-300 hover:bg-[color:var(--sale-tint)] hover:text-[color:var(--sale)]"
                           aria-label={T.removeAria(product.name)}
                         >
@@ -2340,8 +2472,8 @@ export default function App() {
     ...cart,
     add: (id) => {
       cart.add(id);
-      const product = PRODUCTS.find((p) => p.id === id);
-      if (product && !cartOpen) setToast({ id: Date.now(), name: product.name });
+      const hit = resolveCartKey(id);
+      if (hit && !cartOpen) setToast({ id: Date.now(), name: lineName(hit.product, hit.variant) });
     },
   };
 

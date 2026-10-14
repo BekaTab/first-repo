@@ -125,6 +125,27 @@
   .gimg { position: relative; display: flex; flex-direction: column; gap: 4px; }
   .gimg .thumb, .gallery .thumb.empty { width: 96px; height: 96px; font-size: 36px; }
   .gmain { position: absolute; top: 4px; left: 4px; }
+  .vlist { display: flex; flex-direction: column; gap: 8px; }
+  .vlist:empty { display: none; }
+  .vrow { display: grid; grid-template-columns: 44px minmax(0, 1fr) minmax(0, 1fr) 116px auto 36px; gap: 8px; align-items: center; }
+  .vcolor { width: 44px; height: 40px; padding: 2px; border: 1px solid var(--line); border-radius: 10px; background: var(--card); cursor: pointer; }
+  .swatches { display: inline-flex; gap: 3px; align-items: center; }
+  .sw { width: 12px; height: 12px; border-radius: 50%; box-shadow: inset 0 0 0 1px rgba(0,0,0,.18); }
+  .panel-pad.wide { max-width: 880px; }
+  .theme-list { display: flex; flex-direction: column; }
+  .trow { display: grid; grid-template-columns: minmax(0, 1fr) 120px 44px 96px auto; gap: 10px; align-items: center; padding: 12px 0; border-top: 1px solid var(--line); }
+  .trow:first-child { border-top: 0; }
+  .tinfo { display: flex; flex-direction: column; min-width: 0; }
+  .tinfo small { color: var(--muted); font-size: 12px; }
+  .tsample { height: 36px; border-radius: 10px; display: grid; place-items: center; font-size: 13px; font-weight: 600; box-shadow: inset 0 0 0 1px rgba(0,0,0,.08); }
+  .hex { font-size: 13px; text-transform: lowercase; }
+  .twarn { grid-column: 1 / -1; font-size: 12px; color: var(--red); background: #f8eeea; border-radius: 8px; padding: 6px 10px; }
+  @media (max-width: 600px) {
+    .vrow { grid-template-columns: 44px minmax(0, 1fr) 36px; }
+    .vrow > :nth-child(3), .vrow > :nth-child(4), .vrow > :nth-child(5) { grid-column: 2 / -1; }
+    .trow { grid-template-columns: minmax(0, 1fr) 44px 96px; }
+    .trow .tsample { grid-column: 1 / -1; grid-row: 2; }
+  }
   .gact { display: flex; justify-content: space-between; }
   .gact .btn.icon { width: 30px; height: 26px; font-size: 13px; }
   .gadd { width: 96px; height: 96px; border: 2px dashed #c9bfae; border-radius: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; cursor: pointer; color: var(--muted); font-size: 12px; font-weight: 600; }
@@ -208,6 +229,7 @@
     <nav class="tabs" role="tablist">
       <button class="tab" role="tab" data-tab="products" aria-selected="true">პროდუქცია</button>
       <button class="tab" role="tab" data-tab="sales" aria-selected="false">ფასდაკლებები</button>
+      <button class="tab" role="tab" data-tab="design" aria-selected="false">დიზაინი</button>
       <button class="tab" role="tab" data-tab="settings" aria-selected="false">პარამეტრები</button>
     </nav>
   </header>
@@ -248,6 +270,16 @@
       </div></div>
     </section>
 
+    <!-- დიზაინი: საიტის ფერები -->
+    <section id="tab-design" hidden>
+      <div class="panel"><div class="panel-pad wide">
+        <h2>საიტის ფერები</h2>
+        <p class="lead">დააჭირეთ ფერს და აირჩიეთ ახალი (ან ჩაწერეთ კოდი, მაგ. #722d34). ღია და მუქი ელფერები — ფონები, hover — ავტომატურად გამოითვლება. საიტზე ცვლილება ჩანს „გამოქვეყნების“ შემდეგ. „საწყისი“ აბრუნებს თავდაპირველ ფერს.</p>
+        <div id="themeList" class="theme-list"></div>
+        <div><button id="themeReset" class="btn" type="button">ყველა ფერის დაბრუნება საწყისზე</button></div>
+      </div></div>
+    </section>
+
     <!-- პარამეტრები -->
     <section id="tab-settings" hidden>
       <div class="panel"><div class="panel-pad">
@@ -285,6 +317,12 @@
           </label>
         </div>
         <small>შეგიძლიათ რამდენიმე ფოტოს ერთად არჩევა. პირველი ფოტო მთავარია: ის ჩანს მაღაზიაში. რიგს ისრებით შეცვლით. ფოტო ინახება მაღალი ხარისხით (2000 პიქსელამდე).</small>
+      </div>
+      <div class="field">
+        <span>ფერები (არ არის აუცილებელი)</span>
+        <div id="fVariants" class="vlist"></div>
+        <div><button id="fVarAdd" class="btn" type="button">+ ფერის დამატება</button></div>
+        <small>თუ პროდუქტი რამდენიმე ფერშია, დაამატეთ თითოეული — მყიდველი საიტზე ფერს თვითონ აირჩევს და შეკვეთაში ჩანს არჩეული ფერი. „ფოტო“ — რომელი ფოტო გამოჩნდეს ამ ფერის არჩევისას.</small>
       </div>
       <label class="field"><span>სახელი *</span><input id="fName" class="input" required></label>
       <div class="row2">
