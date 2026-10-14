@@ -106,7 +106,7 @@ const pageHead = ({ lang, title, description, path, image, jsonld }) => `<title>
 <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="stylesheet" href="/app.css?v=${ASSET_V}">
-<style>html,body{background:#d9d0c2;color:#2a201b;margin:0}</style>`;
+<style>html,body{background:#efe9df;color:#2a201b;margin:0}</style>`;
 const body = `<noscript><p style="font:16px sans-serif;padding:24px;text-align:center">mypoker.ge მუშაობს JavaScript-ით. ჩართეთ JavaScript ან დაგვიკავშირდით WhatsApp-ით. · Please enable JavaScript.</p></noscript>
 <div id="root"></div>
 <script type="application/json" id="mp-data">${inlineData}</script>

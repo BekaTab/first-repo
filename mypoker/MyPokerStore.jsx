@@ -547,10 +547,10 @@ const SUIT = {
 const PAL = {
   pattern: { ink: "#3b2e27", accent: "#6e2c32" },
   vars: {
-    bg: "#d9d0c2", "bg-glass": "rgba(217,208,194,.9)",
+    bg: "#efe9df", "bg-glass": "rgba(239,233,223,.9)",
     surface: "#fffdf9", "surface-2": "#f9f5ee", "surface-3": "#f3ede3",
     line: "#e1d8c9", "line-strong": "#8a7965",
-    edge: "rgba(92,66,48,.17)", "edge-soft": "rgba(92,66,48,.09)", lift: "#fffefb",
+    edge: "rgba(92,66,48,.2)", "edge-soft": "rgba(92,66,48,.09)", lift: "#fffefb",
     ink: "#2a201b", "ink-2": "#43362e", muted: "#52453b", faint: "#8a7965",
     brand: "#722d34", "brand-2": "#5c2329",
     "bar-bg": "#3b2e27", "bar-text": "#efe6d8", "pill-bg": "#cbab7c", "pill-text": "#2a201b",
