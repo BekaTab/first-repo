@@ -25,6 +25,11 @@ if (!data || !Array.isArray(data.products) || typeof data.settings !== "object")
   throw new Error("products.json must contain { settings: {...}, products: [...] }");
 }
 
+// ადმინიდან შეცვლილი ფერები (settings.theme) — გვერდის ფონი და ტელეფონის ზედა ზოლი აპის ჩატვირთვამდეც სწორი იყოს
+const theme = data.settings.theme && typeof data.settings.theme === "object" ? data.settings.theme : {};
+const themeHex = (k, fallback) => (typeof theme[k] === "string" && /^#[0-9a-f]{6}$/i.test(theme[k]) ? theme[k] : fallback);
+const SHELL = { bar: themeHex("bar", "#722d34"), bg: themeHex("bg", "#efe9df"), ink: themeHex("ink", "#2a201b") };
+
 rmSync(dist, { recursive: true, force: true });
 mkdirSync(dist, { recursive: true });
 
@@ -100,13 +105,13 @@ const pageHead = ({ lang, title, description, path, image, jsonld }) => `<title>
 <meta property="og:title" content="${esc(title)}">
 <meta property="og:description" content="${esc(description)}">${image ? `\n<meta property="og:image" content="${SITE}/${esc(image.replace(/^\//, ""))}">` : ""}
 <meta name="twitter:card" content="${image ? "summary_large_image" : "summary"}">
-<meta name="theme-color" content="#722d34">${jsonld ? `\n<script type="application/ld+json">${JSON.stringify(jsonld).replace(/</g, "\\u003c")}</script>` : ""}
+<meta name="theme-color" content="${SHELL.bar}">${jsonld ? `\n<script type="application/ld+json">${JSON.stringify(jsonld).replace(/</g, "\\u003c")}</script>` : ""}
 <link rel="preload" href="/fonts/noto-sans-georgian-${lang === "en" ? "latin" : "georgian"}.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="icon" href="${favicon}" type="image/svg+xml">
 <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="stylesheet" href="/app.css?v=${ASSET_V}">
-<style>html,body{background:#efe9df;color:#2a201b;margin:0}</style>`;
+<style>html,body{background:${SHELL.bg};color:${SHELL.ink};margin:0}</style>`;
 const body = `<noscript><p style="font:16px sans-serif;padding:24px;text-align:center">mypoker.ge მუშაობს JavaScript-ით. ჩართეთ JavaScript ან დაგვიკავშირდით WhatsApp-ით. · Please enable JavaScript.</p></noscript>
 <div id="root"></div>
 <script type="application/json" id="mp-data">${inlineData}</script>
