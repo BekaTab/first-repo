@@ -547,10 +547,10 @@ const SUIT = {
 const PAL = {
   pattern: { ink: "#3b2e27", accent: "#6e2c32" },
   vars: {
-    bg: "#cdc3b4", "bg-glass": "rgba(205,195,180,.9)",
-    surface: "#fcf9f3", "surface-2": "#f5efe5", "surface-3": "#f0e9dd",
+    bg: "#d9d0c2", "bg-glass": "rgba(217,208,194,.9)",
+    surface: "#fffdf9", "surface-2": "#f9f5ee", "surface-3": "#f3ede3",
     line: "#e1d8c9", "line-strong": "#8a7965",
-    edge: "rgba(92,66,48,.14)", "edge-soft": "rgba(92,66,48,.09)", lift: "#fffcf6",
+    edge: "rgba(92,66,48,.17)", "edge-soft": "rgba(92,66,48,.09)", lift: "#fffefb",
     ink: "#2a201b", "ink-2": "#43362e", muted: "#52453b", faint: "#8a7965",
     brand: "#722d34", "brand-2": "#5c2329",
     "bar-bg": "#3b2e27", "bar-text": "#efe6d8", "pill-bg": "#cbab7c", "pill-text": "#2a201b",
@@ -572,7 +572,7 @@ const PAL = {
     dark: "#2e2520", "dark-text": "#efe7da", "dark-muted": "#b9a993", "dark-accent": "#d4bc94",
     focus: "#722d34", "focus-dark": "#d4bc94",
     scrim: "rgba(42,32,27,.35)", lightbox: "rgba(30,24,20,.94)", ring: "rgba(42,32,27,.08)", selection: "rgba(114,45,52,.16)", scrollbar: "#8a7965",
-    "shadow-soft": "rgba(70,46,32,.08)", shadow: "rgba(70,46,32,.19)", "shadow-strong": "rgba(60,38,26,.28)",
+    "shadow-soft": "rgba(70,46,32,.08)", shadow: "rgba(70,46,32,.22)", "shadow-strong": "rgba(60,38,26,.3)",
   },
 };
 

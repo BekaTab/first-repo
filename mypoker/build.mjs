@@ -10,6 +10,7 @@
 // Usage: node build.mjs [--fragment <file>]   (--fragment also writes a page body without <html>/<head>, for previews)
 import { build } from "esbuild";
 import { execFileSync } from "node:child_process";
+import { createHash } from "node:crypto";
 import { cpSync, existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -58,6 +59,8 @@ execFileSync(join(here, "node_modules", ".bin", "tailwindcss"), ["-c", join(here
   stdio: ["ignore", "ignore", "inherit"],
 });
 rmSync(cssIn);
+// cache-busting version: changes whenever the bundle or styles change
+const ASSET_V = createHash("sha256").update(readFileSync(join(dist, "app.js"))).update(readFileSync(join(dist, "app.css"))).digest("hex").slice(0, 10);
 
 if (existsSync(join(here, "public"))) cpSync(join(here, "public"), dist, { recursive: true });
 cpSync(join(here, "admin"), join(dist, "admin"), { recursive: true });
@@ -102,12 +105,12 @@ const pageHead = ({ lang, title, description, path, image, jsonld }) => `<title>
 <link rel="icon" href="${favicon}" type="image/svg+xml">
 <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-<link rel="stylesheet" href="/app.css">
-<style>html,body{background:#cdc3b4;color:#2a201b;margin:0}</style>`;
+<link rel="stylesheet" href="/app.css?v=${ASSET_V}">
+<style>html,body{background:#d9d0c2;color:#2a201b;margin:0}</style>`;
 const body = `<noscript><p style="font:16px sans-serif;padding:24px;text-align:center">mypoker.ge მუშაობს JavaScript-ით. ჩართეთ JavaScript ან დაგვიკავშირდით WhatsApp-ით. · Please enable JavaScript.</p></noscript>
 <div id="root"></div>
 <script type="application/json" id="mp-data">${inlineData}</script>
-<script src="/app.js" defer></script>`;
+<script src="/app.js?v=${ASSET_V}" defer></script>`;
 const page = (lang, head) =>
   `<!doctype html>\n<html lang="${lang}">\n<head>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">\n${head}\n</head>\n<body>\n${body}\n</body>\n</html>\n`;
 const write = (lang, path, html) => {
@@ -167,8 +170,8 @@ if (fragmentOut) {
   // preview page: styles and script inlined so it works without serving app.css/app.js alongside
   const css = readFileSync(join(dist, "app.css"), "utf8");
   const js = readFileSync(join(dist, "app.js"), "utf8").replace(/<\/script/gi, "<\\/script");
-  const previewHead = head.replace('<link rel="stylesheet" href="/app.css">', () => `<style>${css}</style>`);
-  const previewBody = body.replace('<script src="/app.js" defer></script>', () => `<script>${js}</script>`);
+  const previewHead = head.replace(`<link rel="stylesheet" href="/app.css?v=${ASSET_V}">`, () => `<style>${css}</style>`);
+  const previewBody = body.replace(`<script src="/app.js?v=${ASSET_V}" defer></script>`, () => `<script>${js}</script>`);
   writeFileSync(fragmentOut, `${previewHead}\n${previewBody}\n`);
 }
 
