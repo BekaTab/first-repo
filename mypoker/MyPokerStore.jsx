@@ -69,6 +69,21 @@ const TEXT = {
     inCartAria: (n) => `კალათაშია: ${n}. კიდევ ერთის დამატება`,
     addAria: (n) => `კალათაში დამატება: ${n}`,
     searchTitle: (q) => `ძიება: „${q}“`,
+    collection: "კოლექცია",
+    catDesc: {
+      all: "პოკერისა და სამაგიდო თამაშების რჩეული აქსესუარები — ერთ სივრცეში.",
+      poker: "ყველაფერი სრულფასოვანი პოკერის საღამოსთვის: კარტები, ჩიპები, მაგიდები და აქსესუარები.",
+      cards: "პლასტიკური და კლასიკური დასტები — გამძლე, ზუსტი და სასიამოვნო ხელში.",
+      chips: "წონიანი ჩიპების ნაკრებები კეისით — კაზინოს შეგრძნება სახლში.",
+      tables: "მაგიდები და ზედაპირები მაუდით — სახლის თამაშისთვისაც და კლუბისთვისაც.",
+      accessories: "დილერის ღილაკები, კარტის დამჭერები, მრევები და სხვა დეტალები.",
+      games: "ნარდი, დომინო, ჭადრაკი და Board Games — მეგობრებთან და ოჯახთან გასატარებლად.",
+      "games:backgammon": "ხის ნარდები — ქართული ტრადიცია, ხარისხიანად შესრულებული.",
+      "games:domino": "კლასიკური დომინოს ნაკრებები ხის ყუთში.",
+      "games:chess": "ხის ჭადრაკის ნაკრებები — სწავლისა და ტურნირისთვის.",
+      "games:boardgames": "საოჯახო და მეგობრული სამაგიდო თამაშები ყველა ასაკისთვის.",
+      "games:fun": "კამათლები და სხვა გასართობი წვრილმანები.",
+    },
     allProducts: "ყველა პროდუქტი",
     productsAria: "პროდუქტები",
     productCount: (n) => `${n} პროდუქტი`,
@@ -150,6 +165,21 @@ const TEXT = {
     inCartAria: (n) => `In cart: ${n}. Add one more`,
     addAria: (n) => `Add to cart: ${n}`,
     searchTitle: (q) => `Search: “${q}”`,
+    collection: "Collection",
+    catDesc: {
+      all: "Hand-picked accessories for poker and tabletop games — all in one place.",
+      poker: "Everything for a proper poker night: cards, chips, tables and accessories.",
+      cards: "Plastic and classic decks — durable, precise and a pleasure to hold.",
+      chips: "Weighted chip sets in cases — the casino feel at home.",
+      tables: "Felt tables and table tops — for home games and clubs alike.",
+      accessories: "Dealer buttons, card guards, shufflers and the finishing touches.",
+      games: "Backgammon, dominoes, chess and board games — for friends and family.",
+      "games:backgammon": "Wooden backgammon sets — a Georgian tradition, finely made.",
+      "games:domino": "Classic domino sets in wooden boxes.",
+      "games:chess": "Wooden chess sets — for learning and for tournaments.",
+      "games:boardgames": "Family and party board games for every age.",
+      "games:fun": "Dice and other fun little extras.",
+    },
     allProducts: "All products",
     productsAria: "Products",
     productCount: (n) => `${n} ${n === 1 ? "product" : "products"}`,
@@ -578,7 +608,7 @@ const PAL = {
     edge: "rgba(92,66,48,.2)", "edge-soft": "rgba(92,66,48,.09)", lift: "#fffefb",
     ink: "#2a201b", "ink-2": "#43362e", muted: "#52453b", faint: "#8a7965",
     brand: "#722d34", "brand-2": "#5c2329",
-    "bar-bg": "#3b2e27", "bar-text": "#efe6d8", "pill-bg": "#cbab7c", "pill-text": "#2a201b",
+    "bar-bg": "#722d34", "bar-text": "#faf6ef", "pill-bg": "#cbab7c", "pill-text": "#2a201b",
     cta: "#2c5240", "cta-hover": "#223f31", "cta-text": "#faf6ef",
     call: "#2a5641", "call-on-dark": "#4b8a64", "call-ring": "rgba(75,138,100,.5)",
     badge: "#722d34",
@@ -730,6 +760,24 @@ const GLOBAL_CSS = `
   .mp-plate-games .mp-plate-ico { background: var(--games-plate-ico); }
   .mp-plate-all .mp-plate-ico { background: var(--all-plate-ico); }
   .mp-plate-sub { opacity: .8; }
+  .mp-hero { position: relative; isolation: isolate; overflow: hidden; border-radius: var(--r-lg); box-shadow: 0 0 0 1px var(--edge), var(--e2); }
+  .mp-hero-plain { color: var(--ink); background: var(--surface); }
+  .mp-hero-poker { color: var(--poker-plate-text); background: var(--poker-plate); }
+  .mp-hero-games { color: var(--games-plate-text); background: var(--games-plate); }
+  .mp-hero::after { content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none; border-radius: inherit; box-shadow: inset 0 1px 0 rgba(255,255,255,.14); }
+  .mp-hero-mark { position: absolute; z-index: -1; pointer-events: none; opacity: .1; transform: rotate(-12deg); }
+  .mp-hero-plain .mp-hero-mark { color: var(--brand); opacity: .06; }
+  .mp-hero-rule { display: inline-block; width: 24px; height: 1px; background: currentColor; opacity: .6; }
+  .mp-hero-soft { color: var(--muted); }
+  .mp-hero-poker .mp-hero-soft { color: rgba(250,246,239,.82); }
+  .mp-hero-games .mp-hero-soft { color: var(--ink-2); }
+  .mp-hero-count { background: var(--surface-2); }
+  .mp-hero-poker .mp-hero-count { background: rgba(250,246,239,.14); }
+  .mp-hero-games .mp-hero-count { background: rgba(42,32,27,.1); }
+  .mp-hero-crumb { border-radius: 4px; text-underline-offset: 3px; }
+  .mp-hero-crumb:hover { text-decoration: underline; }
+  .mp-hero-poker :focus-visible { outline-color: var(--focus-dark); }
+  .mp-hero .mp-title { color: inherit; }
   .mp-plate-mark { position: absolute; z-index: -1; pointer-events: none; opacity: .12; transition: transform .6s var(--ease-out); }
   .mp-plate-poker.mp-plate-on { box-shadow: 0 0 0 2px var(--surface), 0 0 0 4px var(--poker-plate); }
   .mp-plate-games.mp-plate-on { box-shadow: 0 0 0 2px var(--surface), 0 0 0 4px var(--games-plate); }
@@ -1493,24 +1541,6 @@ function Sidebar({ filter }) {
               </button>
             )}
           </div>
-          {/* „ყველა პროდუქტი“ — იგივე ფირფიტა, რაც განყოფილებებს აქვს, ნეიტრალურ (ესპრესოს) ფერში */}
-          <div className="mp-sec mp-sec-all rounded-2xl p-2">
-            <button
-              type="button"
-              onClick={() => setCategory("all")}
-              aria-pressed={category === "all"}
-              className={`mp-plate mp-plate-all flex w-full items-center gap-3 p-3 text-left ${category === "all" ? "mp-plate-on" : ""}`}
-            >
-              <span className="mp-plate-ico h-8 w-8">
-                <CatIcon id="all" className="h-4 w-4" />
-              </span>
-              <span className="min-w-0 flex-1">
-                <span className="block text-[13px] font-semibold leading-4">{T.allProducts}</span>
-                <span className="mp-plate-sub mp-num mt-1 block text-[11px] leading-4">{T.productCount(counts.all || 0)}</span>
-              </span>
-              <CatIcon id="all" className="mp-plate-mark -bottom-5 -right-3 h-16 w-16 rotate-[-12deg]" />
-            </button>
-          </div>
           {/* ორი მთავარი განყოფილება: პოკერი (წითელი) და სამაგიდო თამაშები და აქსესუარები (ოქროსფერი) */}
           {SECTIONS.map((section) => (
             <FilterSection key={section.id} section={section} category={category} setCategory={setCategory} counts={counts} />
@@ -1673,15 +1703,71 @@ function ProductCard({ product, index, inCart, onAdd, onOpen }) {
   );
 }
 
+/* კატეგორიის თავსართი: სად ხარ (ნავიგაცია), სათაური, მოკლე აღწერა, რაოდენობა და დალაგება —
+   განყოფილების ფერის ფირფიტაზე (პოკერი — ბორდო, თამაშები — აქლემისფერი, დანარჩენი — სპილოსძვლისფერი) */
+function CatalogHero({ filter, count, title }) {
+  const { category, setCategory, query, sort, setSort, reset } = filter;
+  const searching = query.trim() !== "";
+  const section = searching ? null : category === "poker" || POKER_CATS.includes(category) ? "poker" : category === "games" || category.startsWith("games:") ? "games" : null;
+  const tone = section || "plain";
+  const isSub = section && category !== section;
+  const desc = searching ? null : T.catDesc[category];
+  return (
+    <div className={`mp-hero mp-hero-${tone} mp-fade mt-6 px-6 pb-6 pt-6 sm:px-8 sm:pt-8 lg:mt-0`}>
+      {!searching && <CatIcon id={category} className="mp-hero-mark -bottom-12 -right-8 h-48 w-48 sm:-bottom-16 sm:h-64 sm:w-64" />}
+      {category === "all" && !searching ? (
+        <p className="mp-hero-soft flex items-center gap-3 text-[12px] font-medium leading-4 tracking-[0.08em]">
+          <span className="mp-hero-rule" aria-hidden="true" />
+          {T.collection}
+        </p>
+      ) : (
+        <nav className="mp-hero-soft flex flex-wrap items-center gap-2 text-[12px] font-medium leading-4" aria-label={T.breadcrumb}>
+          <button type="button" onClick={reset} className="mp-hero-crumb">{T.shop}</button>
+          {isSub && (
+            <>
+              <span aria-hidden="true">/</span>
+              <button type="button" onClick={() => setCategory(section)} className="mp-hero-crumb">{T.cat[section]}</button>
+            </>
+          )}
+          <span aria-hidden="true">/</span>
+          <span aria-current="page" className="font-semibold">{searching ? T.search : title}</span>
+        </nav>
+      )}
+      <h1 className="mp-title mt-4 max-w-[640px] text-[28px] font-semibold leading-9 [text-wrap:balance] sm:text-[32px] sm:leading-10">{title}</h1>
+      {desc && <p className="mp-hero-soft mt-2 max-w-[480px] text-[14px] leading-6">{desc}</p>}
+      <div className="mt-6 flex items-center justify-between gap-4">
+        <span className="mp-hero-count mp-num inline-flex h-8 items-center gap-2 rounded-full px-3 text-[12px] font-semibold leading-4" aria-live="polite">
+          {T.productCount(count)}
+        </span>
+        <label className="relative shrink-0" htmlFor="mp-sort">
+          <span className="sr-only">{T.sort}</span>
+          <select
+            id="mp-sort"
+            value={sort}
+            onChange={(e) => setSort(e.target.value)}
+            className="mp-field h-10 max-w-[10.5rem] appearance-none truncate pl-4 pr-10 text-[13px] sm:max-w-[13rem]"
+          >
+            {SORTS.map((s) => (
+              <option key={s.id} value={s.id}>
+                {s.label}
+              </option>
+            ))}
+          </select>
+          <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[color:var(--muted)]" />
+        </label>
+      </div>
+    </div>
+  );
+}
+
 /* ------------------------------------------------------------------ */
 /*  მაღაზია                                                            */
 /* ------------------------------------------------------------------ */
 function Shop({ filter, cart, onOpen }) {
-  const { category, query, sort, setSort, visible, hasFilters, reset } = filter;
+  const { category, query, sort, visible, hasFilters, reset } = filter;
   const inCart = useMemo(() => new Set(cart.lines.map((l) => l.product.id)), [cart.lines]);
   const gridKey = `${category}|${sort}|${query.trim()}`;
   const title = query.trim() ? T.searchTitle(query.trim()) : category === "all" ? T.allProducts : CATEGORY_LABEL[category];
-  const section = query.trim() ? null : category.startsWith("games:") ? "games" : POKER_CATS.includes(category) ? "poker" : null;
 
   /* კატეგორიის ან ძიების შეცვლისას სია თავიდან ჩანს — გვერდის შუაში აღარ რჩება მომხმარებელი */
   const mounted = useRef(false);
@@ -1700,41 +1786,7 @@ function Shop({ filter, cart, onOpen }) {
       <section className="min-w-0" aria-label={T.productsAria}>
         <MobileFilters filter={filter} />
 
-        {/* ქვეკატეგორიის სათაურს თავზე მისი განყოფილება აწერია, განყოფილების ფერით */}
-        {section && (
-          <p
-            className={`mp-fade mb-2 mt-6 inline-flex max-w-full items-center gap-2 rounded-full px-3 py-1 text-[12px] font-medium leading-4 lg:mt-0 ${
-              section === "games" ? "bg-[color:var(--games-tint)] text-[color:var(--games-text)]" : "bg-[color:var(--poker-tint)] text-[color:var(--poker-text)]"
-            }`}
-          >
-            <CatIcon id={section} className="h-3.5 w-3.5 shrink-0" />
-            {T.cat[section]}
-          </p>
-        )}
-        <div className={`flex items-end justify-between gap-4 ${section ? "" : "mt-6 lg:mt-0"}`}>
-          <div className="min-w-0">
-            <h1 className="mp-title text-[20px] font-semibold leading-7 sm:text-[24px] sm:leading-8">{title}</h1>
-            <p className="mp-num mt-1 text-[13px] leading-5 text-[color:var(--muted)]" aria-live="polite">
-              {T.productCount(visible.length)}
-            </p>
-          </div>
-          <label className="relative shrink-0" htmlFor="mp-sort">
-            <span className="sr-only">{T.sort}</span>
-            <select
-              id="mp-sort"
-              value={sort}
-              onChange={(e) => setSort(e.target.value)}
-              className="mp-field h-10 max-w-[10.5rem] appearance-none truncate pl-4 pr-10 text-[13px] sm:max-w-[13rem]"
-            >
-              {SORTS.map((s) => (
-                <option key={s.id} value={s.id}>
-                  {s.label}
-                </option>
-              ))}
-            </select>
-            <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[color:var(--muted)]" />
-          </label>
-        </div>
+        <CatalogHero key={query.trim() ? "search" : category} filter={filter} count={visible.length} title={title} />
 
         {visible.length > 0 ? (
           <div key={gridKey} className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3">

@@ -100,7 +100,7 @@ const pageHead = ({ lang, title, description, path, image, jsonld }) => `<title>
 <meta property="og:title" content="${esc(title)}">
 <meta property="og:description" content="${esc(description)}">${image ? `\n<meta property="og:image" content="${SITE}/${esc(image.replace(/^\//, ""))}">` : ""}
 <meta name="twitter:card" content="${image ? "summary_large_image" : "summary"}">
-<meta name="theme-color" content="#3b2e27">${jsonld ? `\n<script type="application/ld+json">${JSON.stringify(jsonld).replace(/</g, "\\u003c")}</script>` : ""}
+<meta name="theme-color" content="#722d34">${jsonld ? `\n<script type="application/ld+json">${JSON.stringify(jsonld).replace(/</g, "\\u003c")}</script>` : ""}
 <link rel="preload" href="/fonts/noto-sans-georgian-${lang === "en" ? "latin" : "georgian"}.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="icon" href="${favicon}" type="image/svg+xml">
 <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png">
