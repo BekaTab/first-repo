@@ -51,7 +51,8 @@ const TEXT = {
     callUs: "დაგვირეკეთ",
     callAria: (p) => `დაგვირეკეთ: ${p}`,
     cartAria: (n) => `კალათა, ${n} ნივთი`,
-    category: "კატეგორია",
+    categories: "კატეგორიები",
+    clear: "გასუფთავება",
     clearFilters: "ფილტრების გასუფთავება",
     waBoxTitle: "შესაკვეთად დაგვიკავშირდით",
     waBoxText: "აირჩიეთ პროდუქტი და დაგვირეკეთ ან მოგვწერეთ — გიპასუხებთ რამდენიმე წუთში.",
@@ -131,7 +132,8 @@ const TEXT = {
     callUs: "Call us",
     callAria: (p) => `Call us: ${p}`,
     cartAria: (n) => `Cart, ${n} ${n === 1 ? "item" : "items"}`,
-    category: "Category",
+    categories: "Categories",
+    clear: "Clear",
     clearFilters: "Clear filters",
     waBoxTitle: "Contact us to order",
     waBoxText: "Pick a product and call or message us — we reply within minutes.",
@@ -345,6 +347,15 @@ const handleNav = (navigate, productId) => (e) => {
   navigate(productId);
 };
 
+/* გვერდის შეცვლისას გადახვევა მყისიერია (html-ის smooth scroll აქ ზედმეტ ანიმაციას იძლევა) */
+function jumpTo(y) {
+  const root = document.documentElement;
+  const prev = root.style.scrollBehavior;
+  root.style.scrollBehavior = "auto";
+  window.scrollTo(0, y);
+  root.style.scrollBehavior = prev;
+}
+
 function useRoute() {
   const [route, setRoute] = useState(routeFromLocation);
   const shopScroll = useRef(0);
@@ -361,15 +372,17 @@ function useRoute() {
   }, []);
 
   useEffect(() => {
-    window.scrollTo(0, route.productId ? 0 : shopScroll.current);
+    jumpTo(route.productId ? 0 : shopScroll.current);
   }, [route.productId]);
 
-  const navigate = (productId) => {
+  /* toTop: მაღაზიაში დაბრუნებისას წინა პოზიციის ნაცვლად თავში გადასვლა (ლოგო) */
+  const navigate = (productId, { toTop = false } = {}) => {
     if (productId === route.productId) {
       window.scrollTo({ top: 0, behavior: "smooth" });
       return;
     }
     if (!route.productId) shopScroll.current = window.scrollY;
+    if (toTop) shopScroll.current = 0;
     try {
       window.history.pushState({}, "", productId ? productPath(productId) : HOME_PATH);
     } catch {
@@ -521,8 +534,18 @@ function useProductFilter(products) {
     setCategory("all");
     setQuery("");
   };
+  /* ძიება ყოველთვის ყველა პროდუქტში ეძებს, კატეგორიის არჩევა კი ძიებას ასუფთავებს —
+     სათაური („ძიება: …“ ან კატეგორია) ყოველთვის ზუსტად აღწერს, რა ჩანს სიაში */
+  const chooseCategory = (c) => {
+    setCategory(c);
+    setQuery("");
+  };
+  const search = (q) => {
+    setQuery(q);
+    if (q.trim()) setCategory("all");
+  };
 
-  return { category, setCategory, query, setQuery, sort, setSort, counts, visible, hasFilters, reset };
+  return { category, setCategory: chooseCategory, query, setQuery: search, sort, setSort, counts, visible, hasFilters, reset };
 }
 
 
@@ -549,6 +572,8 @@ const PAL = {
   vars: {
     bg: "#efe9df", "bg-glass": "rgba(239,233,223,.9)",
     surface: "#fffdf9", "surface-2": "#f9f5ee", "surface-3": "#f3ede3",
+    /* ძიების ველი: მუდმივად ის ფერი, რაც ადრე hover-ზე ჰქონდა; hover-ზე ორჯერ მეტად მუქდება */
+    field: "#f3ede3", "field-hover": "#e7ddcd",
     line: "#e1d8c9", "line-strong": "#8a7965",
     edge: "rgba(92,66,48,.2)", "edge-soft": "rgba(92,66,48,.09)", lift: "#fffefb",
     ink: "#2a201b", "ink-2": "#43362e", muted: "#52453b", faint: "#8a7965",
@@ -567,9 +592,9 @@ const PAL = {
     "games-tint": "#f7efe1", "games-tint-hover": "#fbf5ea", "games-sub": "#4f3c25", "games-ico": "#806240", "games-count": "#806240",
     "games-on": "#ecdec4", "games-on-text": "#4f3c25", "games-hover": "rgba(198,166,116,.18)", "games-line": "rgba(128,98,64,.3)",
     "games-text": "#4f3c25", "games-chip-on": "#c6a674", "games-chip-on-text": "#2a201b",
+    "all-plate": "#3b2e27", "all-plate-text": "#f6f1e8", "all-plate-hover": "#2e2520", "all-plate-ico": "rgba(246,241,232,.14)",
     active: "#3b2e27", "active-hover": "#2e2520", "on-dark": "#f6f1e8", "on-dark-muted": "rgba(246,241,232,.72)",
-    "opt-hover": "rgba(252,249,243,.65)",
-    dark: "#2e2520", "dark-text": "#efe7da", "dark-muted": "#b9a993", "dark-accent": "#d4bc94",
+    dark: "#2e2520", "dock-ring": "rgba(246,241,232,.12)", "dark-text": "#efe7da", "dark-muted": "#b9a993", "dark-accent": "#d4bc94",
     focus: "#722d34", "focus-dark": "#d4bc94",
     scrim: "rgba(42,32,27,.35)", lightbox: "rgba(30,24,20,.94)", ring: "rgba(42,32,27,.08)", selection: "rgba(114,45,52,.16)", scrollbar: "#8a7965",
     "shadow-soft": "rgba(70,46,32,.08)", shadow: "rgba(70,46,32,.22)", "shadow-strong": "rgba(60,38,26,.3)",
@@ -628,7 +653,7 @@ const GLOBAL_CSS = `
   .mp-header { background: var(--surface); border-bottom: 1px solid var(--edge); box-shadow: 0 1px 2px var(--shadow-soft), 0 10px 24px -16px var(--shadow); transition: box-shadow .3s var(--ease); }
   .mp-header-scrolled { box-shadow: 0 1px 2px var(--shadow-soft), 0 12px 28px -14px var(--shadow-strong); }
   .mp-strip { background: var(--bar-bg); }
-  .mp-header .mp-field { background: var(--surface-2); }
+  .mp-header .mp-field { background: var(--field); }
 
   /* ---------- მართვის ელემენტები ---------- */
   .mp-ctl { color: var(--ink); background: var(--surface); border: 1px solid var(--line);
@@ -673,10 +698,6 @@ const GLOBAL_CSS = `
     transition: background-color .2s var(--ease), color .2s var(--ease), transform .3s var(--ease), scale .2s var(--ease), opacity .3s var(--ease), translate .3s var(--ease); }
 
   /* ---------- ფილტრები და ჩიპები ---------- */
-  .mp-opt { position: relative; border-radius: var(--r); color: var(--ink-2); transition: background-color .2s var(--ease), color .2s var(--ease); }
-  .mp-opt .mp-count { color: var(--muted); }
-  .mp-opt-on { color: var(--ink); background: var(--surface); box-shadow: 0 0 0 1px var(--edge), var(--e1); }
-  .mp-opt-on::before { content: ''; position: absolute; left: 0; top: 8px; bottom: 8px; width: 2px; border-radius: 2px; background: var(--active); }
   .mp-chip { border-radius: var(--r); color: var(--ink-2); background: var(--surface); border: 1px solid var(--line); transition: background-color .2s var(--ease), border-color .2s var(--ease), color .2s var(--ease); }
   .mp-chip:not(.mp-chip-on) .mp-count { color: var(--muted); }
   .mp-chip-on { color: var(--on-dark); border-color: var(--active); background: var(--active); }
@@ -697,18 +718,22 @@ const GLOBAL_CSS = `
   /* ---------- ორი განყოფილება: პოკერი და სამაგიდო თამაშები ---------- */
   .mp-sec-poker { background: var(--poker-tint); }
   .mp-sec-games { background: var(--games-tint); }
+  .mp-sec-all { background: var(--surface); }
   .mp-sec { box-shadow: 0 0 0 1px var(--edge-soft); }
   aside .mp-sec { box-shadow: 0 0 0 1px var(--edge), var(--e1); }
   .mp-plate { position: relative; overflow: hidden; isolation: isolate; border-radius: var(--r); transition: background-color .2s var(--ease), transform .2s var(--ease); }
   .mp-plate-poker { color: var(--poker-plate-text); background: var(--poker-plate); }
   .mp-plate-games { color: var(--games-plate-text); background: var(--games-plate); }
+  .mp-plate-all { color: var(--all-plate-text); background: var(--all-plate); }
   .mp-plate-ico { display: grid; place-items: center; flex-shrink: 0; border-radius: var(--r); }
   .mp-plate-poker .mp-plate-ico { background: var(--poker-plate-ico); }
   .mp-plate-games .mp-plate-ico { background: var(--games-plate-ico); }
+  .mp-plate-all .mp-plate-ico { background: var(--all-plate-ico); }
   .mp-plate-sub { opacity: .8; }
   .mp-plate-mark { position: absolute; z-index: -1; pointer-events: none; opacity: .12; transition: transform .6s var(--ease-out); }
   .mp-plate-poker.mp-plate-on { box-shadow: 0 0 0 2px var(--surface), 0 0 0 4px var(--poker-plate); }
   .mp-plate-games.mp-plate-on { box-shadow: 0 0 0 2px var(--surface), 0 0 0 4px var(--games-plate); }
+  .mp-plate-all.mp-plate-on { box-shadow: 0 0 0 2px var(--surface), 0 0 0 4px var(--all-plate); }
   .mp-sub { position: relative; border-radius: var(--r); transition: background-color .2s var(--ease), color .2s var(--ease); }
   .mp-sub-ico { display: grid; place-items: center; flex-shrink: 0; border-radius: var(--r); background: var(--surface); transition: background-color .2s var(--ease), color .2s var(--ease); }
   .mp-sub-poker { color: var(--poker-sub); }
@@ -738,7 +763,7 @@ const GLOBAL_CSS = `
     .mp-ctl-on:hover { background: var(--active-hover); border-color: var(--active-hover); }
     .mp-seg:hover { color: var(--ink); }
     .mp-field:hover:not(:focus) { border-color: var(--line-strong); }
-    .mp-header .mp-field:hover:not(:focus) { background: var(--surface-3); border-color: transparent; }
+    .mp-header .mp-field:hover:not(:focus) { background: var(--field-hover); border-color: transparent; }
     .mp-dock-card:hover { transform: translateY(-2px); }
     .mp-cta:hover { background: var(--cta-hover); }
     .mp-cta:hover svg { transform: translateX(2px) rotate(-8deg); }
@@ -748,7 +773,6 @@ const GLOBAL_CSS = `
     .mp-card:hover .mp-tile-media { transform: scale(1.06); }
     .mp-card:hover h3 a { color: var(--brand); }
     .mp-float:hover { color: var(--on-dark); background: var(--active); scale: 1.06; }
-    .mp-opt:hover:not(.mp-opt-on) { color: var(--ink); background: var(--opt-hover); }
     .mp-chip:hover:not(.mp-chip-on) { color: var(--ink); border-color: var(--line-strong); }
     .mp-thumb:hover { transform: translateY(-2px); border-color: var(--line-strong); }
     .mp-thumb-on:hover { border-color: var(--ink); }
@@ -758,6 +782,7 @@ const GLOBAL_CSS = `
     .mp-plate:hover .mp-plate-mark { transform: rotate(-4deg) scale(1.08); }
     .mp-plate-poker:hover { background: var(--poker-plate-hover); }
     .mp-plate-games:hover { background: var(--games-plate-hover); }
+    .mp-plate-all:hover { background: var(--all-plate-hover); }
     .mp-sub-poker:hover:not(.mp-sub-on) { color: var(--ink); background: var(--poker-hover); }
     .mp-sub-games:hover:not(.mp-sub-on) { color: var(--ink); background: var(--games-hover); }
     .mp-chip.mp-chip-poker:hover:not(.mp-chip-on) { color: var(--ink); border-color: var(--poker-ico); }
@@ -787,11 +812,32 @@ const GLOBAL_CSS = `
   .mp-ping { animation: mp-ping 2s cubic-bezier(0,0,.2,1) infinite; }
   .mp-slide-in { animation: mp-slide-in .45s var(--ease-out) both; }
   .mp-toast { animation: mp-toast .35s var(--ease-out) both; }
-  .mp-drive { animation: mp-drive 1.6s ease-in-out infinite; }
-  @keyframes mp-drive { 0%, 100% { transform: translateX(-2px); } 50% { transform: translateX(2px); } }
-  .mp-dock { transition: opacity .3s var(--ease), translate .3s var(--ease), visibility .3s; animation: mp-rise .6s var(--ease-out) .5s backwards; }
-  .mp-dock.is-hidden { opacity: 0; translate: 0 16px; visibility: hidden; }
-  .mp-dock-card { box-shadow: 0 16px 40px -12px var(--shadow-strong); transition: transform .3s var(--ease); }
+  /* უფასო მიწოდების ზოლი: სატვირთო მიდის, თანხის აბრა ბრწყინავს */
+  .mp-truck { animation: mp-sway 3.2s ease-in-out infinite; }
+  .mp-truck-body { animation: mp-bounce .6s ease-in-out infinite; transform-origin: 50% 100%; }
+  .mp-wind { position: absolute; left: 0; height: 1.5px; width: 7px; border-radius: 2px; background: currentColor; opacity: 0; animation: mp-wind .9s linear infinite; }
+  .mp-wind:nth-child(1) { top: 30%; }
+  .mp-wind:nth-child(2) { top: 52%; width: 9px; animation-delay: .3s; }
+  .mp-wind:nth-child(3) { top: 74%; animation-delay: .6s; }
+  .mp-road { position: absolute; left: 6px; right: -2px; bottom: -3px; height: 1.5px; opacity: .45;
+    background: repeating-linear-gradient(90deg, currentColor 0 4px, transparent 4px 8px); animation: mp-road .5s linear infinite; }
+  .mp-pill { position: relative; overflow: hidden; isolation: isolate; animation: mp-pill 4.5s var(--ease) 1.6s infinite; }
+  .mp-pill::after { content: ""; position: absolute; inset: 0; z-index: -1; transform: translateX(-130%);
+    background: linear-gradient(110deg, transparent 30%, rgba(255,251,243,.85) 50%, transparent 70%); animation: mp-shine 4.5s var(--ease) 1.6s infinite; }
+  @keyframes mp-sway { 0%, 100% { transform: translateX(-2px); } 50% { transform: translateX(2px); } }
+  @keyframes mp-bounce { 0%, 100% { transform: translateY(0) rotate(0); } 30% { transform: translateY(-1.5px) rotate(-3deg); } 60% { transform: translateY(0) rotate(1deg); } }
+  @keyframes mp-wind { 0% { opacity: 0; transform: translateX(4px) scaleX(.3); } 35% { opacity: .85; } 100% { opacity: 0; transform: translateX(-8px) scaleX(1); } }
+  @keyframes mp-road { from { background-position: 0 0; } to { background-position: -8px 0; } }
+  @keyframes mp-shine { 0%, 55% { transform: translateX(-130%); } 80%, 100% { transform: translateX(130%); } }
+  @keyframes mp-pill {
+    0%, 55%, 100% { transform: none; box-shadow: 0 0 0 0 rgba(203,171,124,.6); }
+    63% { transform: scale(1.1) rotate(-2deg); }
+    71% { transform: scale(.97) rotate(1deg); }
+    79% { transform: scale(1.03); }
+    88% { transform: none; box-shadow: 0 0 0 8px rgba(203,171,124,0); }
+  }
+  .mp-dock { animation: mp-rise .6s var(--ease-out) .5s backwards; }
+  .mp-dock-card { box-shadow: 0 0 0 1px var(--dock-ring), 0 16px 40px -12px var(--shadow-strong); transition: transform .3s var(--ease); }
   .mp-scroll::-webkit-scrollbar { display: none; }
   .mp-scroll { scrollbar-width: none; }
   @media (prefers-reduced-motion: reduce) {
@@ -824,11 +870,11 @@ function LogoMark({ size = 34 }) {
   );
 }
 
-function Logo({ onNavigate }) {
+function Logo({ onHome }) {
   return (
     <a
       href={HOME_PATH}
-      onClick={onNavigate ? handleNav(onNavigate, null) : undefined}
+      onClick={onHome ? handleNav(onHome, null) : undefined}
       className="group flex shrink-0 items-center gap-2"
       aria-label={T.homeAria}
     >
@@ -1193,26 +1239,65 @@ function SearchField({ id, query, onQuery, className = "" }) {
   );
 }
 
-/* „უფასო მიწოდება N ₾-დან“ — ზედა ზოლის შუაში (დიდ ეკრანზე) ან ცალკე ზოლად (ტელეფონზე) */
+/* რიცხვი 0-დან სამიზნემდე „ითვლება“ (ერთხელ, ჩატვირთვისას); შემცირებული მოძრაობისას — მაშინვე სამიზნე */
+function useCountUp(target, duration = 1100, delay = 350) {
+  const reduce = typeof window !== "undefined" && window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const [value, setValue] = useState(reduce ? target : 0);
+  useEffect(() => {
+    if (reduce) return undefined;
+    let frame = 0;
+    let start = 0;
+    const tick = (now) => {
+      if (!start) start = now;
+      const t = Math.min((now - start) / duration, 1);
+      setValue(Math.round(target * (1 - Math.pow(1 - t, 3))));
+      if (t < 1) frame = requestAnimationFrame(tick);
+    };
+    const timer = setTimeout(() => (frame = requestAnimationFrame(tick)), delay);
+    return () => {
+      clearTimeout(timer);
+      cancelAnimationFrame(frame);
+    };
+  }, [target, duration, delay, reduce]);
+  return value;
+}
+
+/* „უფასო მიწოდება N ₾-დან“ — ზედა ზოლში. სატვირთო „მიდის“ (ქარის ხაზები, გზა, რესორი),
+   თანხა ჩატვირთვისას 0-დან ითვლება, შემდეგ აბრა პერიოდულად ბრწყინავს და ოდნავ ხტება */
 function FreeShipping() {
+  const amount = useCountUp(CONFIG.freeShippingFrom);
   if (!CONFIG.freeShippingFrom) return null;
+  const finalText = T.freeFrom(CONFIG.freeShippingFrom);
   return (
     <p className="flex items-center justify-center gap-2 whitespace-nowrap text-[13px] font-medium leading-4 tracking-[0.02em] text-[color:var(--bar-text)] md:gap-3 md:text-[15px] md:leading-6 md:tracking-[0.04em]">
-      <Truck className="mp-drive h-4 w-4 shrink-0 md:h-5 md:w-5" strokeWidth={2} aria-hidden="true" />
+      <span className="mp-truck relative inline-flex shrink-0 pl-2 md:pl-3" aria-hidden="true">
+        <span className="mp-wind" />
+        <span className="mp-wind" />
+        <span className="mp-wind" />
+        <span className="mp-truck-body inline-flex">
+          <Truck className="h-4 w-4 md:h-5 md:w-5" strokeWidth={2} />
+        </span>
+        <span className="mp-road" />
+      </span>
       <span className="md:hidden">
         <span className="font-semibold">{T.freeDeliveryShort[0]}</span> {T.freeDeliveryShort[1]}
       </span>
       <span className="hidden md:inline">
         <span className="font-semibold">{T.freeDelivery[0]}</span> {T.freeDelivery[1]}
       </span>
-      <span className="mp-num rounded-full bg-[color:var(--pill-bg)] px-2 py-0.5 text-[12px] font-bold leading-4 tracking-normal text-[color:var(--pill-text)] md:px-3 md:py-1 md:text-[14px]">
-        {T.freeFrom(CONFIG.freeShippingFrom)}
+      <span className="mp-pill mp-num rounded-full bg-[color:var(--pill-bg)] px-2 py-0.5 text-[12px] font-bold leading-4 tracking-normal text-[color:var(--pill-text)] md:px-3 md:py-1 md:text-[14px]">
+        <span className="sr-only">{finalText}</span>
+        {/* საბოლოო ტექსტი უხილავად იკავებს ადგილს, რომ თვლისას ზოლი არ „ცახცახებდეს“ */}
+        <span className="inline-grid" aria-hidden="true">
+          <span className="invisible col-start-1 row-start-1">{finalText}</span>
+          <span className="col-start-1 row-start-1 text-center">{T.freeFrom(amount)}</span>
+        </span>
       </span>
     </p>
   );
 }
 
-function Header({ cartCount, onOpenCart, query, onQuery, onNavigate, productId }) {
+function Header({ cartCount, onOpenCart, query, onQuery, onHome, productId }) {
   const scrolled = useScrolled();
   return (
     <header className={`mp-header sticky top-[env(safe-area-inset-top,0px)] z-40 text-[color:var(--ink)] ${scrolled ? "mp-header-scrolled" : ""}`}>
@@ -1225,7 +1310,7 @@ function Header({ cartCount, onOpenCart, query, onQuery, onNavigate, productId }
       {/* ლოგო | ძიება შუაში | ტელეფონი, კალათა */}
       <div className="mx-auto flex h-16 max-w-[1344px] items-center gap-4 px-4 sm:px-6 lg:px-8 xl:gap-6">
         <div className="flex min-w-0 items-center gap-4">
-          <Logo onNavigate={onNavigate} />
+          <Logo onHome={onHome} />
           <LangSwitch productId={productId} className="hidden sm:flex" />
         </div>
 
@@ -1255,11 +1340,11 @@ function Header({ cartCount, onOpenCart, query, onQuery, onNavigate, productId }
             className="mp-ctl group relative grid h-10 w-10 place-items-center rounded-lg"
             aria-label={T.cartAria(cartCount)}
           >
-            <span key={cartCount} className={cartCount > 0 ? "mp-bump" : "inline-flex"}>
+            <span key={`bag-${cartCount}`} className={cartCount > 0 ? "mp-bump" : "inline-flex"}>
               <ShoppingBag className="h-5 w-5" strokeWidth={1.8} />
             </span>
             {cartCount > 0 && (
-              <span key={cartCount} className="mp-num mp-pop mp-count-badge absolute -right-2 -top-2 grid h-5 min-w-5 place-items-center rounded-full px-1 text-[11px] font-semibold leading-4">
+              <span key={`n-${cartCount}`} className="mp-num mp-pop mp-count-badge absolute -right-2 -top-2 grid h-5 min-w-5 place-items-center rounded-full px-1 text-[11px] font-semibold leading-4">
                 {cartCount}
               </span>
             )}
@@ -1278,32 +1363,17 @@ function Header({ cartCount, onOpenCart, query, onQuery, onNavigate, productId }
 /* ------------------------------------------------------------------ */
 /*  ფილტრები                                                           */
 /* ------------------------------------------------------------------ */
-function FilterGroup({ title, children }) {
-  return (
-    <div>
-      <p className="px-3 text-[12px] font-medium leading-4 text-[color:var(--muted)]">{title}</p>
-      <div className="mt-2 flex flex-col gap-1">{children}</div>
-    </div>
-  );
-}
-
-function FilterOption({ active, onClick, label, count }) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      aria-pressed={active}
-      className={`mp-opt flex h-8 items-center justify-between px-3 text-left text-[13px] leading-4 ${active ? "mp-opt-on font-semibold" : ""}`}
-    >
-      {label}
-      {count !== undefined && <span className="mp-num mp-count text-xs">{count}</span>}
-    </button>
-  );
-}
-
 /* კატეგორიების ნიშნები: მთლიანი გლიფები 24×24 ბადეზე, ფერს currentColor-იდან იღებს.
-   პოკერი — ლოგოს აგური, თამაშები — კამათლების წყვილი, ნარდი — კამათელი, ჭადრაკი — მხედარი, Board Games — მიპლი */
+   ყველა — ოთხი უჯრა, პოკერი — ლოგოს აგური, თამაშები — კამათლების წყვილი, ნარდი — კამათელი, ჭადრაკი — მხედარი, Board Games — მიპლი */
 const CAT_ICONS = {
+  all: (
+    <>
+      <rect x="3" y="3" width="8" height="8" rx="2.2" />
+      <rect x="13" y="3" width="8" height="8" rx="2.2" opacity=".55" />
+      <rect x="3" y="13" width="8" height="8" rx="2.2" opacity=".55" />
+      <rect x="13" y="13" width="8" height="8" rx="2.2" />
+    </>
+  ),
   poker: <path d={DIAMOND_PATH} transform="scale(.6)" />,
   games: (
     <>
@@ -1413,21 +1483,38 @@ function Sidebar({ filter }) {
   return (
     <aside className="hidden lg:block">
       <div className={`mp-scroll sticky -mx-4 -mt-2 flex flex-col gap-8 overflow-y-auto px-4 pb-8 pt-2 [&>*]:shrink-0 ${CONFIG.freeShippingFrom > 0 ? "top-[7.5rem] max-h-[calc(100vh-8.5rem)]" : "top-24 max-h-[calc(100vh-7rem)]"}`}>
-        <div className="flex flex-col gap-6">
-        <FilterGroup title={T.category}>
-          <FilterOption active={category === "all"} onClick={() => setCategory("all")} label={T.cat.all} count={counts.all || 0} />
-        </FilterGroup>
-        {/* ორი მთავარი განყოფილება: პოკერი (წითელი) და სამაგიდო თამაშები და აქსესუარები (ოქროსფერი) */}
         <div className="flex flex-col gap-4">
+          {/* სათაური და „გასუფთავება“ ერთ ხაზზე */}
+          <div className="flex h-6 items-center justify-between gap-2 px-1">
+            <h2 className="text-[15px] font-semibold leading-6 text-[color:var(--ink)]">{T.categories}</h2>
+            {hasFilters && (
+              <button type="button" onClick={reset} className="mp-link mp-fade text-[12px] font-medium leading-4 text-[color:var(--brand)] hover:text-[color:var(--brand-2)]" aria-label={T.clearFilters}>
+                {T.clear}
+              </button>
+            )}
+          </div>
+          {/* „ყველა პროდუქტი“ — იგივე ფირფიტა, რაც განყოფილებებს აქვს, ნეიტრალურ (ესპრესოს) ფერში */}
+          <div className="mp-sec mp-sec-all rounded-2xl p-2">
+            <button
+              type="button"
+              onClick={() => setCategory("all")}
+              aria-pressed={category === "all"}
+              className={`mp-plate mp-plate-all flex w-full items-center gap-3 p-3 text-left ${category === "all" ? "mp-plate-on" : ""}`}
+            >
+              <span className="mp-plate-ico h-8 w-8">
+                <CatIcon id="all" className="h-4 w-4" />
+              </span>
+              <span className="min-w-0 flex-1">
+                <span className="block text-[13px] font-semibold leading-4">{T.allProducts}</span>
+                <span className="mp-plate-sub mp-num mt-1 block text-[11px] leading-4">{T.productCount(counts.all || 0)}</span>
+              </span>
+              <CatIcon id="all" className="mp-plate-mark -bottom-5 -right-3 h-16 w-16 rotate-[-12deg]" />
+            </button>
+          </div>
+          {/* ორი მთავარი განყოფილება: პოკერი (წითელი) და სამაგიდო თამაშები და აქსესუარები (ოქროსფერი) */}
           {SECTIONS.map((section) => (
             <FilterSection key={section.id} section={section} category={category} setCategory={setCategory} counts={counts} />
           ))}
-        </div>
-        {hasFilters && (
-          <button type="button" onClick={reset} className="mp-link mx-3 self-start text-left text-[13px] font-medium leading-4 text-[color:var(--brand)] hover:text-[color:var(--brand-2)]">
-            {T.clearFilters}
-          </button>
-        )}
         </div>
       </div>
     </aside>
@@ -1449,15 +1536,18 @@ function MobileFilters({ filter }) {
         {SECTIONS.map(({ id, items }, i) => (
           <div key={id} className="mp-scroll -m-1 flex items-center gap-2 overflow-x-auto p-1">
             {i === 0 && (
-              <button
-                type="button"
-                aria-pressed={category === "all"}
-                onClick={() => setCategory("all")}
-                className={`mp-chip inline-flex h-8 shrink-0 items-center gap-2 px-3 text-[12px] leading-4 ${category === "all" ? "mp-chip-on font-semibold" : ""}`}
-              >
-                {T.cat.all}
-                <span className="mp-num mp-count text-[11px]">{counts.all || 0}</span>
-              </button>
+              <div className="mp-sec mp-sec-all flex shrink-0 items-center rounded-xl p-1">
+                <button
+                  type="button"
+                  aria-pressed={category === "all"}
+                  onClick={() => setCategory("all")}
+                  className={`mp-plate mp-plate-all inline-flex h-8 shrink-0 items-center gap-2 px-3 text-[12px] font-semibold leading-4 ${category === "all" ? "mp-plate-on" : ""}`}
+                >
+                  <CatIcon id="all" className="h-3.5 w-3.5" />
+                  {T.cat.all}
+                  <span className="mp-plate-sub mp-num text-[11px] font-medium">{counts.all || 0}</span>
+                </button>
+              </div>
             )}
             <div className={`mp-sec mp-sec-${id} flex shrink-0 items-center gap-1 rounded-xl p-1`} role="group" aria-label={T.cat[id]}>
               <button
@@ -1592,6 +1682,16 @@ function Shop({ filter, cart, onOpen }) {
   const gridKey = `${category}|${sort}|${query.trim()}`;
   const title = query.trim() ? T.searchTitle(query.trim()) : category === "all" ? T.allProducts : CATEGORY_LABEL[category];
   const section = query.trim() ? null : category.startsWith("games:") ? "games" : POKER_CATS.includes(category) ? "poker" : null;
+
+  /* კატეგორიის ან ძიების შეცვლისას სია თავიდან ჩანს — გვერდის შუაში აღარ რჩება მომხმარებელი */
+  const mounted = useRef(false);
+  useEffect(() => {
+    if (!mounted.current) {
+      mounted.current = true;
+      return;
+    }
+    if (window.scrollY > 0) window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [category, query]);
 
   return (
     <main id="shop" className="mx-auto grid max-w-[1344px] gap-8 px-4 pb-24 sm:px-6 lg:grid-cols-[256px_1fr] lg:gap-12 lg:px-8 lg:pt-12">
@@ -2023,7 +2123,7 @@ function CartDrawer({ open, onClose, cart, onOpenProduct }) {
           </div>
         ) : (
           <>
-            <ul className="flex-1 divide-y divide-[#f0efed] overflow-y-auto px-6">
+            <ul className="flex-1 divide-y divide-[color:var(--line)] overflow-y-auto px-6">
               {cart.lines.map(({ product, qty }) => (
                 <li key={product.id} className="mp-fade flex gap-4 py-4">
                   <div className="mp-tile h-16 w-20 shrink-0 overflow-hidden !rounded-lg p-2">
@@ -2101,24 +2201,13 @@ function CartDrawer({ open, onClose, cart, onOpenProduct }) {
 }
 
 /* ------------------------------------------------------------------ */
-/*  მცურავი კონტაქტი — მარჯვენა ქვედა კუთხეში, გადახვევას მიჰყვება;     */
-/*  ფუტერთან იმალება (იქ იგივე ინფორმაციაა)                           */
+/*  მცურავი კონტაქტი — მარჯვენა ქვედა კუთხეში, გადახვევას მიჰყვება     */
+/*  და ყოველთვის ჩანს (ფუტერს ქვემოთ ადგილი აქვს დატოვებული)            */
 /* ------------------------------------------------------------------ */
 function ContactDock() {
-  const [nearFooter, setNearFooter] = useState(false);
-  useEffect(() => {
-    const footer = document.querySelector("footer");
-    if (!footer || typeof IntersectionObserver === "undefined") return undefined;
-    const io = new IntersectionObserver(([entry]) => setNearFooter(entry.isIntersecting));
-    io.observe(footer);
-    return () => io.disconnect();
-  }, []);
   if (!CONFIG.phoneDisplay) return null;
   return (
-    <aside
-      className={`mp-dock fixed bottom-[calc(1rem+env(safe-area-inset-bottom,0px))] right-4 z-30 lg:bottom-6 lg:right-6 ${nearFooter ? "is-hidden" : ""}`}
-      aria-label={T.waBoxTitle}
-    >
+    <aside className="mp-dock fixed bottom-[calc(1rem+env(safe-area-inset-bottom,0px))] right-4 z-30 lg:bottom-6 lg:right-6" aria-label={T.waBoxTitle}>
       <div className="mp-dock-card flex items-center gap-3 rounded-2xl bg-[color:var(--dark)] p-2 pr-4 text-[color:var(--dark-text)] sm:pr-2 lg:p-3">
         <a href={`tel:${CONFIG.phoneTel}`} className="group flex min-w-0 items-center gap-3" aria-label={T.callAria(CONFIG.phoneDisplay)}>
           <span className="relative grid h-8 w-8 shrink-0 place-items-center rounded-full bg-[color:var(--call-on-dark)] text-[color:var(--on-dark)] sm:h-10 sm:w-10">
@@ -2147,12 +2236,15 @@ function ContactDock() {
 /* ------------------------------------------------------------------ */
 /*  ფუტერი                                                             */
 /* ------------------------------------------------------------------ */
-function Footer() {
+function Footer({ onHome }) {
   return (
     <footer className="relative bg-[color:var(--dark)] text-[color:var(--dark-text)]">
-      <div className="mx-auto flex max-w-[1344px] flex-col gap-4 px-4 py-8 text-[13px] sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:px-8">
+      {/* ქვედა დაშორება — რომ მცურავმა კონტაქტმა ფუტერის ბმულები არ დაფაროს */}
+      <div className="mx-auto flex max-w-[1344px] flex-col gap-4 px-4 pb-[calc(5.5rem+env(safe-area-inset-bottom,0px))] pt-8 text-[13px] sm:flex-row sm:items-center sm:justify-between sm:px-6 sm:pb-24 lg:px-8 lg:pb-28">
         <div className="flex items-center gap-3">
-          <LogoMark size={24} />
+          <a href={HOME_PATH} onClick={handleNav(onHome, null)} aria-label={T.homeAria} className="rounded-full transition-transform duration-500 hover:rotate-[-8deg]">
+            <LogoMark size={24} />
+          </a>
           <span className="text-[12px] text-[color:var(--dark-muted)]">© {new Date().getFullYear()} mypoker.ge · {T.rights}</span>
         </div>
         <div className="flex flex-wrap items-center gap-6">
@@ -2208,6 +2300,13 @@ export default function App() {
     },
   };
 
+  /* ლოგო: ყოველთვის საწყისი გვერდი — ყველა პროდუქტი, ძიებისა და ფილტრების გარეშე, გვერდის თავში */
+  const goHome = () => {
+    filter.reset();
+    filter.setSort("featured");
+    navigate(null, { toTop: true });
+  };
+
   const openCart = () => {
     setToast(null);
     setCartOpen(true);
@@ -2224,7 +2323,7 @@ export default function App() {
           filter.setQuery(q);
           if (route.productId) navigate(null);
         }}
-        onNavigate={navigate}
+        onHome={goHome}
         productId={route.productId}
       />
       <div className="flex-1">
@@ -2236,7 +2335,7 @@ export default function App() {
           <NotFound onNavigate={navigate} />
         )}
       </div>
-      <Footer />
+      <Footer onHome={goHome} />
       <ContactDock />
       <CartDrawer
         open={cartOpen}
@@ -2251,7 +2350,7 @@ export default function App() {
       {toast && (
         <div
           key={toast.id}
-          className="mp-toast mp-glass fixed bottom-[calc(5.5rem+env(safe-area-inset-bottom,0px))] left-1/2 z-50 lg:bottom-6 flex w-[calc(100%-2rem)] max-w-sm items-center gap-3 rounded-xl p-3 pr-4"
+          className="mp-toast mp-glass fixed bottom-[calc(5.5rem+env(safe-area-inset-bottom,0px))] left-1/2 z-50 flex sm:bottom-24 lg:bottom-28 w-[calc(100%-2rem)] max-w-sm items-center gap-3 rounded-xl p-3 pr-4"
           role="status"
         >
           <span className="mp-call-dot grid h-8 w-8 shrink-0 place-items-center rounded-full">
