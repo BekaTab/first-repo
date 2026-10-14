@@ -239,9 +239,9 @@ const CATEGORY_LABEL = {
 const SORTS = ["featured", "price-asc", "price-desc", "sale"].map((id) => ({ id, label: T.sorts[id] }));
 
 const DEFAULT_VISUAL = {
-  chips: { kind: "chips", colors: ["#6e2c32", "#3b2e27", "#b0916a"] },
-  cards: { kind: "cards", colors: ["#3a4553", "#f6f1e8", "#7a3037"] },
-  tables: { kind: "table", colors: ["#3d5a4a", "#5a4030", "#c9b78c"] },
+  chips: { kind: "chips", colors: ["#80303a", "#3b2e27", "#c09c6b"] },
+  cards: { kind: "cards", colors: ["#384b60", "#fbf7f0", "#82323a"] },
+  tables: { kind: "table", colors: ["#356550", "#5e4231", "#d8c393"] },
   accessories: { kind: "dealer" },
   "games:backgammon": { kind: "backgammon" },
   "games:domino": { kind: "domino" },
@@ -548,30 +548,31 @@ const PAL = {
   pattern: { ink: "#3b2e27", accent: "#6e2c32" },
   vars: {
     bg: "#cdc3b4", "bg-glass": "rgba(205,195,180,.9)",
-    surface: "#f6f1e8", "surface-2": "#ece5d9", "surface-3": "#e4dbcc",
-    line: "#d8cebe", "line-strong": "#8a7965",
+    surface: "#fcf9f3", "surface-2": "#f5efe5", "surface-3": "#f0e9dd",
+    line: "#e1d8c9", "line-strong": "#8a7965",
+    edge: "rgba(92,66,48,.14)", "edge-soft": "rgba(92,66,48,.09)", lift: "#fffcf6",
     ink: "#2a201b", "ink-2": "#43362e", muted: "#52453b", faint: "#8a7965",
-    brand: "#6e2c32", "brand-2": "#5a2328",
-    "bar-bg": "#3b2e27", "bar-text": "#efe6d8", "pill-bg": "#c6a97f", "pill-text": "#2a201b",
-    cta: "#2f4a3c", "cta-hover": "#253c30", "cta-text": "#f6f1e8",
-    call: "#2f4a3c", "call-on-dark": "#4f7d60", "call-ring": "rgba(79,125,96,.5)",
-    badge: "#6e2c32",
-    sale: "#7a3037", "sale-badge": "#6e2c32", "sale-badge-text": "#f6f1e8", "sale-tint": "rgba(110,44,50,.1)",
+    brand: "#722d34", "brand-2": "#5c2329",
+    "bar-bg": "#3b2e27", "bar-text": "#efe6d8", "pill-bg": "#cbab7c", "pill-text": "#2a201b",
+    cta: "#2c5240", "cta-hover": "#223f31", "cta-text": "#faf6ef",
+    call: "#2a5641", "call-on-dark": "#4b8a64", "call-ring": "rgba(75,138,100,.5)",
+    badge: "#722d34",
+    sale: "#7c3139", "sale-badge": "#722d34", "sale-badge-text": "#faf6ef", "sale-tint": "rgba(114,45,52,.1)",
     ok: "#2f5a43", "ok-tint": "rgba(47,90,67,.14)", wait: "#74552f", "wait-tint": "rgba(116,85,47,.14)",
-    "poker-plate": "#6e2c32", "poker-plate-text": "#f6f1e8", "poker-plate-hover": "#5f262b", "poker-plate-ico": "rgba(246,241,232,.16)",
-    "poker-tint": "#f1e5e0", "poker-sub": "#552429", "poker-ico": "#8c4d52", "poker-count": "#8c4d52",
-    "poker-on": "#e6d3cd", "poker-on-text": "#552429", "poker-hover": "rgba(110,44,50,.07)", "poker-line": "rgba(110,44,50,.22)",
-    "poker-text": "#6e2c32", "poker-chip-on": "#6e2c32", "poker-chip-on-text": "#f6f1e8",
-    "games-plate": "#c2a274", "games-plate-text": "#2a201b", "games-plate-hover": "#b5946a", "games-plate-ico": "rgba(42,32,27,.08)",
-    "games-tint": "#f0e8d8", "games-tint-hover": "#e9dfcb", "games-sub": "#4f3c25", "games-ico": "#806240", "games-count": "#806240",
-    "games-on": "#e5d8bf", "games-on-text": "#4f3c25", "games-hover": "rgba(194,162,116,.18)", "games-line": "rgba(128,98,64,.3)",
-    "games-text": "#4f3c25", "games-chip-on": "#c2a274", "games-chip-on-text": "#2a201b",
+    "poker-plate": "#722d34", "poker-plate-text": "#faf6ef", "poker-plate-hover": "#61272c", "poker-plate-ico": "rgba(250,246,239,.16)",
+    "poker-tint": "#f8eeea", "poker-sub": "#552429", "poker-ico": "#8c4d52", "poker-count": "#8c4d52",
+    "poker-on": "#efded8", "poker-on-text": "#552429", "poker-hover": "rgba(114,45,52,.07)", "poker-line": "rgba(114,45,52,.22)",
+    "poker-text": "#722d34", "poker-chip-on": "#722d34", "poker-chip-on-text": "#faf6ef",
+    "games-plate": "#c6a674", "games-plate-text": "#2a201b", "games-plate-hover": "#b8976a", "games-plate-ico": "rgba(42,32,27,.08)",
+    "games-tint": "#f7efe1", "games-tint-hover": "#fbf5ea", "games-sub": "#4f3c25", "games-ico": "#806240", "games-count": "#806240",
+    "games-on": "#ecdec4", "games-on-text": "#4f3c25", "games-hover": "rgba(198,166,116,.18)", "games-line": "rgba(128,98,64,.3)",
+    "games-text": "#4f3c25", "games-chip-on": "#c6a674", "games-chip-on-text": "#2a201b",
     active: "#3b2e27", "active-hover": "#2e2520", "on-dark": "#f6f1e8", "on-dark-muted": "rgba(246,241,232,.72)",
-    "opt-hover": "rgba(246,241,232,.6)",
+    "opt-hover": "rgba(252,249,243,.65)",
     dark: "#2e2520", "dark-text": "#efe7da", "dark-muted": "#b9a993", "dark-accent": "#d4bc94",
-    focus: "#6e2c32", "focus-dark": "#d4bc94",
-    scrim: "rgba(42,32,27,.35)", lightbox: "rgba(30,24,20,.94)", ring: "rgba(42,32,27,.08)", selection: "rgba(110,44,50,.16)", scrollbar: "#8a7965",
-    "shadow-soft": "rgba(42,32,27,.06)", shadow: "rgba(42,32,27,.12)", "shadow-strong": "rgba(42,32,27,.22)",
+    focus: "#722d34", "focus-dark": "#d4bc94",
+    scrim: "rgba(42,32,27,.35)", lightbox: "rgba(30,24,20,.94)", ring: "rgba(42,32,27,.08)", selection: "rgba(114,45,52,.16)", scrollbar: "#8a7965",
+    "shadow-soft": "rgba(70,46,32,.08)", shadow: "rgba(70,46,32,.19)", "shadow-strong": "rgba(60,38,26,.28)",
   },
 };
 
@@ -580,10 +581,10 @@ const suitAt = (d, x, y, r, fill, opacity) =>
   `<path d="${d}" fill="${fill}" fill-opacity="${opacity}" transform="translate(${x} ${y}) rotate(${r} 12 12) scale(.75)"/>`;
 const PATTERN_SVG =
   `<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 120 120">` +
-  suitAt(SUIT.spade, 10, 12, -12, PAL.pattern.ink, 0.055) +
-  suitAt(SUIT.heart, 72, 8, 10, PAL.pattern.accent, 0.065) +
-  suitAt(SUIT.diamond, 40, 70, 8, PAL.pattern.accent, 0.065) +
-  suitAt(SUIT.club, 92, 76, -10, PAL.pattern.ink, 0.055) +
+  suitAt(SUIT.spade, 10, 12, -12, PAL.pattern.ink, 0.05) +
+  suitAt(SUIT.heart, 72, 8, 10, PAL.pattern.accent, 0.06) +
+  suitAt(SUIT.diamond, 40, 70, 8, PAL.pattern.accent, 0.06) +
+  suitAt(SUIT.club, 92, 76, -10, PAL.pattern.ink, 0.05) +
   `</svg>`;
 const PATTERN_URL = `url("data:image/svg+xml,${encodeURIComponent(PATTERN_SVG)}")`;
 
@@ -602,8 +603,9 @@ const GLOBAL_CSS = `
     --ease: cubic-bezier(.4,0,.2,1); --ease-out: cubic-bezier(.16,1,.3,1);
     --r: 8px; --r-lg: 16px;
     --e1: 0 1px 2px var(--shadow-soft);
-    --e2: 0 8px 24px -8px var(--shadow);
-    --e3: 0 16px 40px -16px var(--shadow-strong);
+    --e2: 0 1px 2px var(--shadow-soft), 0 14px 30px -16px var(--shadow);
+    --e3: 0 2px 6px var(--shadow-soft), 0 20px 44px -18px var(--shadow-strong);
+    --e-hover: 0 2px 4px var(--shadow-soft), 0 24px 44px -18px var(--shadow-strong);
   }
   html { scrollbar-color: var(--scrollbar) var(--bg); scroll-behavior: smooth; }
   body { margin: 0; background: var(--bg); color: var(--ink); -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; text-rendering: optimizeLegibility; }
@@ -623,8 +625,8 @@ const GLOBAL_CSS = `
   .mp-pattern { background-color: var(--bg); background-image: ${PATTERN_URL}; background-size: 120px 120px; }
 
   /* ---------- ზედა ზოლი ---------- */
-  .mp-header { background: var(--surface); border-bottom: 1px solid var(--line); transition: box-shadow .3s var(--ease); }
-  .mp-header-scrolled { box-shadow: 0 8px 24px -12px var(--shadow-strong); }
+  .mp-header { background: var(--surface); border-bottom: 1px solid var(--edge); box-shadow: 0 1px 2px var(--shadow-soft), 0 10px 24px -16px var(--shadow); transition: box-shadow .3s var(--ease); }
+  .mp-header-scrolled { box-shadow: 0 1px 2px var(--shadow-soft), 0 12px 28px -14px var(--shadow-strong); }
   .mp-strip { background: var(--bar-bg); }
   .mp-header .mp-field { background: var(--surface-2); }
 
@@ -642,6 +644,7 @@ const GLOBAL_CSS = `
   .mp-field { color: var(--ink); background: var(--surface); border: 1px solid transparent; border-radius: var(--r);
     transition: border-color .2s var(--ease), box-shadow .2s var(--ease), background-color .2s var(--ease); }
   .mp-field::placeholder { color: var(--muted); }
+  select.mp-field { box-shadow: 0 0 0 1px var(--edge), var(--e1); }
   .mp-field:focus { outline: none; background: var(--surface); border-color: var(--ink); box-shadow: 0 0 0 4px var(--ring); }
 
   /* ---------- შეკვეთის ღილაკი ---------- */
@@ -650,28 +653,29 @@ const GLOBAL_CSS = `
   .mp-cta svg { transition: transform .3s var(--ease-out); }
 
   /* ---------- ზედაპირები ---------- */
-  .mp-panel { border-radius: var(--r-lg); background: var(--surface); border: 1px solid var(--line); }
-  .mp-card { position: relative; container-type: inline-size; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-lg); transition: transform .3s var(--ease), box-shadow .3s var(--ease); }
+  .mp-panel { border-radius: var(--r-lg); background: var(--surface); background-clip: padding-box; border: 1px solid var(--edge); box-shadow: var(--e2); }
+  .mp-card { position: relative; container-type: inline-size; background: var(--surface); background-clip: padding-box; border: 1px solid var(--edge); border-radius: var(--r-lg); box-shadow: var(--e2); transition: transform .3s var(--ease), box-shadow .3s var(--ease); }
   /* ვიწრო ბარათზე ღილაკის ტექსტი ერთ ხაზზე რჩება — ხატულა იმალება */
   @container (max-width: 300px) { .mp-card .mp-cta { font-size: 12px; padding-left: 8px; padding-right: 8px; } .mp-card .mp-cta > svg { display: none; } }
   .mp-card h3 > a:focus-visible { outline: none; color: var(--brand); text-decoration: underline; }
-  .mp-tile { position: relative; border-radius: var(--r); background: var(--surface-2); transition: background-color .4s var(--ease); }
-  .mp-tile.mp-tile-lg { border-radius: var(--r-lg); background-color: var(--surface); }
+  .mp-tile { position: relative; border-radius: var(--r); background-color: var(--surface-2); background-image: radial-gradient(90% 80% at 50% 36%, var(--lift) 0%, rgba(255,252,246,0) 100%); box-shadow: inset 0 0 0 1px var(--edge-soft); transition: background-color .4s var(--ease); }
+  .mp-tile.mp-tile-lg { border-radius: var(--r-lg); background-color: var(--surface-2); box-shadow: 0 0 0 1px var(--edge), var(--e2); }
   .mp-tile :focus-visible { outline-offset: -4px; border-radius: inherit; }
   .mp-tile-media { transition: transform .7s var(--ease-out); }
-  .mp-card-games .mp-tile, .mp-tile.mp-tile-games { background: var(--games-tint); }
+  .mp-tile img { mix-blend-mode: multiply; }
+  .mp-card-games .mp-tile, .mp-tile.mp-tile-games { background-color: var(--games-tint); }
   .mp-drawer { background: var(--surface); box-shadow: -24px 0 64px -24px var(--shadow-strong); }
   @media (min-width: 640px) { .mp-drawer { border-radius: var(--r-lg); } }
   .mp-glass { background: var(--dark); color: var(--dark-text); box-shadow: var(--e3); }
   .mp-glass .mp-call-dot, footer .mp-call-dot { color: var(--on-dark); background: var(--call-on-dark); }
   .mp-strip :focus-visible, .mp-dock :focus-visible, footer :focus-visible, .mp-glass :focus-visible { outline-color: var(--focus-dark); }
-  .mp-float { color: var(--ink); background: var(--surface); box-shadow: var(--e1);
+  .mp-float { color: var(--ink); background: var(--surface); box-shadow: 0 0 0 1px var(--edge-soft), var(--e1);
     transition: background-color .2s var(--ease), color .2s var(--ease), transform .3s var(--ease), scale .2s var(--ease), opacity .3s var(--ease), translate .3s var(--ease); }
 
   /* ---------- ფილტრები და ჩიპები ---------- */
   .mp-opt { position: relative; border-radius: var(--r); color: var(--ink-2); transition: background-color .2s var(--ease), color .2s var(--ease); }
   .mp-opt .mp-count { color: var(--muted); }
-  .mp-opt-on { color: var(--ink); background: var(--surface); }
+  .mp-opt-on { color: var(--ink); background: var(--surface); box-shadow: 0 0 0 1px var(--edge), var(--e1); }
   .mp-opt-on::before { content: ''; position: absolute; left: 0; top: 8px; bottom: 8px; width: 2px; border-radius: 2px; background: var(--active); }
   .mp-chip { border-radius: var(--r); color: var(--ink-2); background: var(--surface); border: 1px solid var(--line); transition: background-color .2s var(--ease), border-color .2s var(--ease), color .2s var(--ease); }
   .mp-chip:not(.mp-chip-on) .mp-count { color: var(--muted); }
@@ -684,7 +688,7 @@ const GLOBAL_CSS = `
 
   /* ---------- ბეჯები ---------- */
   .mp-badge-sale { color: var(--sale-badge-text); background: var(--sale-badge); }
-  .mp-badge { color: var(--ink); background: var(--surface); }
+  .mp-badge { color: var(--ink); background: var(--surface); box-shadow: 0 0 0 1px var(--edge), var(--e1); }
   .mp-dot-ok { background: var(--ok); box-shadow: 0 0 0 4px var(--ok-tint); }
   .mp-dot-wait { background: var(--wait); box-shadow: 0 0 0 4px var(--wait-tint); }
   .mp-bullet { background: var(--brand); }
@@ -693,6 +697,8 @@ const GLOBAL_CSS = `
   /* ---------- ორი განყოფილება: პოკერი და სამაგიდო თამაშები ---------- */
   .mp-sec-poker { background: var(--poker-tint); }
   .mp-sec-games { background: var(--games-tint); }
+  .mp-sec { box-shadow: 0 0 0 1px var(--edge-soft); }
+  aside .mp-sec { box-shadow: 0 0 0 1px var(--edge), var(--e1); }
   .mp-plate { position: relative; overflow: hidden; isolation: isolate; border-radius: var(--r); transition: background-color .2s var(--ease), transform .2s var(--ease); }
   .mp-plate-poker { color: var(--poker-plate-text); background: var(--poker-plate); }
   .mp-plate-games { color: var(--games-plate-text); background: var(--games-plate); }
@@ -736,9 +742,9 @@ const GLOBAL_CSS = `
     .mp-dock-card:hover { transform: translateY(-2px); }
     .mp-cta:hover { background: var(--cta-hover); }
     .mp-cta:hover svg { transform: translateX(2px) rotate(-8deg); }
-    .mp-card:hover { transform: translateY(-4px); box-shadow: 0 16px 32px -16px var(--shadow-strong); }
-    .mp-card:hover .mp-tile { background: var(--surface-3); }
-    .mp-card.mp-card-games:hover .mp-tile { background: var(--games-tint-hover); }
+    .mp-card:hover { transform: translateY(-4px); box-shadow: var(--e-hover); }
+    .mp-card:hover .mp-tile { background-color: var(--surface); }
+    .mp-card.mp-card-games:hover .mp-tile { background-color: var(--games-tint-hover); }
     .mp-card:hover .mp-tile-media { transform: scale(1.06); }
     .mp-card:hover h3 a { color: var(--brand); }
     .mp-float:hover { color: var(--on-dark); background: var(--active); scale: 1.06; }
@@ -870,11 +876,11 @@ function ChipStack({ x, baseY, count, color, uid }) {
             <ellipse cx={x} cy={cy + 2.5} rx="26" ry="9" fill={color} />
             <ellipse cx={x} cy={cy + 2.5} rx="26" ry="9" fill="#2a201b" opacity="0.22" />
             <ellipse cx={x} cy={cy} rx="26" ry="9" fill={color} />
-            <ellipse cx={x} cy={cy} rx="26" ry="9" fill="none" stroke="#efe6d8" strokeOpacity="0.85" strokeWidth="2.4" strokeDasharray="7 9" />
+            <ellipse cx={x} cy={cy} rx="26" ry="9" fill="none" stroke="#faf5ec" strokeOpacity="0.9" strokeWidth="2.4" strokeDasharray="7 9" />
             {i === count - 1 && (
               <>
                 <ellipse cx={x} cy={cy} rx="16" ry="5.4" fill={`url(#${uid}-shine)`} />
-                <ellipse cx={x} cy={cy} rx="16" ry="5.4" fill="none" stroke="#efe6d8" strokeOpacity="0.55" />
+                <ellipse cx={x} cy={cy} rx="16" ry="5.4" fill="none" stroke="#faf5ec" strokeOpacity="0.6" />
               </>
             )}
           </g>
@@ -890,7 +896,7 @@ function PlayingCard({ x, y, rotate, back, ink, suit, uid }) {
       <rect x="-30" y="-44" width="60" height="88" rx="7" fill="#2a201b" opacity="0.14" transform="translate(3 5)" />
       {suit ? (
         <>
-          <rect x="-30" y="-44" width="60" height="88" rx="7" fill="#efe7d8" />
+          <rect x="-30" y="-44" width="60" height="88" rx="7" fill="#fbf7f0" />
           <text x="-20" y="-26" fontSize="14" textAnchor="middle" fill={ink}>{suit}</text>
           <text x="0" y="12" fontSize="34" textAnchor="middle" fill={ink}>{suit}</text>
           <text x="20" y="36" fontSize="14" textAnchor="middle" fill={ink} transform="rotate(180 20 31)">{suit}</text>
@@ -898,7 +904,7 @@ function PlayingCard({ x, y, rotate, back, ink, suit, uid }) {
       ) : (
         <>
           <rect x="-30" y="-44" width="60" height="88" rx="7" fill={back} />
-          <rect x="-25" y="-39" width="50" height="78" rx="4" fill={`url(#${uid}-diamond)`} stroke="#efe6d8" strokeOpacity="0.65" />
+          <rect x="-25" y="-39" width="50" height="78" rx="4" fill={`url(#${uid}-diamond)`} stroke="#faf5ec" strokeOpacity="0.7" />
         </>
       )}
     </g>
@@ -922,9 +928,9 @@ function DominoTile({ x, y, rotate, a, b }) {
   return (
     <g transform={`translate(${x} ${y}) rotate(${rotate})`}>
       <rect x="-19" y="-36" width="38" height="72" rx="7" fill="#2a201b" opacity="0.14" transform="translate(3 5)" />
-      <rect x="-19" y="-36" width="38" height="72" rx="7" fill="#efe7d8" stroke="#8a7965" />
+      <rect x="-19" y="-36" width="38" height="72" rx="7" fill="#fbf7f0" stroke="#8a7965" />
       <line x1="-12" y1="0" x2="12" y2="0" stroke="#8f7e6a" strokeWidth="1.6" />
-      <circle cx="0" cy="0" r="2" fill="#a8915f" />
+      <circle cx="0" cy="0" r="2" fill="#b59a62" />
       {pips(a, 0, -18, 8.5, 3.1, "#2a201b")}
       {pips(b, 0, 18, 8.5, 3.1, "#2a201b")}
     </g>
@@ -956,9 +962,9 @@ function ProductVisual({ visual, uid, label }) {
         <rect width="4" height="4" fill="#efe6d8" opacity="0.18" />
       </pattern>
       <linearGradient id={`${uid}-gold`} x1="0" y1="0" x2="1" y2="1">
-        <stop offset="0" stopColor="#c9b78c" />
-        <stop offset="0.45" stopColor="#a8915f" />
-        <stop offset="1" stopColor="#7d6a44" />
+        <stop offset="0" stopColor="#d8c393" />
+        <stop offset="0.45" stopColor="#b59a62" />
+        <stop offset="1" stopColor="#836c42" />
       </linearGradient>
       <linearGradient id="mp-die-shine" x1="0" y1="0" x2="0" y2="1">
         <stop offset="0" stopColor="#fff" stopOpacity="0.35" />
@@ -985,7 +991,7 @@ function ProductVisual({ visual, uid, label }) {
       <g>
         <PlayingCard x={80} y={82} rotate={-16} back={colors[0]} uid={uid} />
         <PlayingCard x={116} y={76} rotate={-2} ink="#2a201b" suit="♠" uid={uid} />
-        <PlayingCard x={152} y={84} rotate={14} ink="#7a3037" suit="♥" uid={uid} />
+        <PlayingCard x={152} y={84} rotate={14} ink="#82323a" suit="♥" uid={uid} />
       </g>
     );
   } else if (kind === "table") {
@@ -1004,16 +1010,16 @@ function ProductVisual({ visual, uid, label }) {
             <rect x="52" y="58" width="128" height="46" rx="23" fill="none" stroke={colors[2]} strokeOpacity="0.5" strokeDasharray="4 5" />
           </>
         )}
-        <circle cx="96" cy="81" r="7" fill="#7a3037" stroke="#efe6d8" strokeDasharray="3 3" strokeWidth="1.5" />
-        <circle cx="116" cy="87" r="7" fill="#3b2e27" stroke="#efe6d8" strokeDasharray="3 3" strokeWidth="1.5" />
-        <circle cx="136" cy="79" r="7" fill={colors[2]} stroke="#efe6d8" strokeDasharray="3 3" strokeWidth="1.5" />
+        <circle cx="96" cy="81" r="7" fill="#82323a" stroke="#faf5ec" strokeDasharray="3 3" strokeWidth="1.5" />
+        <circle cx="116" cy="87" r="7" fill="#3b2e27" stroke="#faf5ec" strokeDasharray="3 3" strokeWidth="1.5" />
+        <circle cx="136" cy="79" r="7" fill={colors[2]} stroke="#faf5ec" strokeDasharray="3 3" strokeWidth="1.5" />
       </g>
     );
   } else if (kind === "dealer") {
     art = (
       <g>
         <ellipse cx="116" cy="134" rx="52" ry="8" fill="#2a201b" opacity="0.14" />
-        <circle cx="116" cy="84" r="50" fill="#efe7d8" />
+        <circle cx="116" cy="84" r="50" fill="#fbf7f0" />
         <circle cx="116" cy="84" r="50" fill={`url(#${uid}-shine)`} />
         <circle cx="116" cy="84" r="40" fill="none" stroke={`url(#${uid}-gold)`} strokeWidth="3" />
         <text x="116" y="91" textAnchor="middle" fontSize="19" fontWeight="700" fill="#2a201b" fontFamily="'Noto Sans Georgian', sans-serif">
@@ -1028,9 +1034,9 @@ function ProductVisual({ visual, uid, label }) {
         <rect x="44" y="62" width="144" height="66" rx="12" fill="#3b2e27" stroke="#5a4a40" />
         <rect x="56" y="74" width="50" height="42" rx="6" fill="#2a201b" />
         <rect x="126" y="74" width="50" height="42" rx="6" fill="#2a201b" />
-        <rect x="62" y="44" width="38" height="50" rx="4" fill="#3a4553" stroke="#efe6d8" strokeOpacity="0.55" transform="rotate(-8 81 69)" />
-        <rect x="132" y="44" width="38" height="50" rx="4" fill="#6e2c32" stroke="#efe6d8" strokeOpacity="0.55" transform="rotate(8 151 69)" />
-        <circle cx="116" cy="112" r="6" fill="#c6a97f" />
+        <rect x="62" y="44" width="38" height="50" rx="4" fill="#384b60" stroke="#faf5ec" strokeOpacity="0.6" transform="rotate(-8 81 69)" />
+        <rect x="132" y="44" width="38" height="50" rx="4" fill="#80303a" stroke="#faf5ec" strokeOpacity="0.6" transform="rotate(8 151 69)" />
+        <circle cx="116" cy="112" r="6" fill="#cbab7c" />
       </g>
     );
   } else if (kind === "guard") {
@@ -1049,15 +1055,15 @@ function ProductVisual({ visual, uid, label }) {
         const x = x0 + i * 14;
         const tip = top ? 74 : 86;
         const base = top ? 32 : 128;
-        return <polygon key={`${x0}-${top}-${i}`} points={`${x},${base} ${x + 14},${base} ${x + 7},${tip}`} fill={(i + n0) % 2 ? "#3b2e27" : "#6e2c32"} opacity="0.92" />;
+        return <polygon key={`${x0}-${top}-${i}`} points={`${x},${base} ${x + 14},${base} ${x + 7},${tip}`} fill={(i + n0) % 2 ? "#3b2e27" : "#80303a"} opacity="0.92" />;
       });
     art = (
       <g>
         <ellipse cx="116" cy="142" rx="100" ry="8" fill="#2a201b" opacity="0.14" />
-        <rect x="14" y="22" width="204" height="116" rx="9" fill="#4a3428" />
+        <rect x="14" y="22" width="204" height="116" rx="9" fill="#563b2b" />
         <rect x="14" y="22" width="204" height="116" rx="9" fill={`url(#${uid}-shine)`} opacity="0.35" />
-        <rect x="22" y="30" width="88" height="100" rx="3" fill="#e6dccb" />
-        <rect x="122" y="30" width="88" height="100" rx="3" fill="#e6dccb" />
+        <rect x="22" y="30" width="88" height="100" rx="3" fill="#f1e9db" />
+        <rect x="122" y="30" width="88" height="100" rx="3" fill="#f1e9db" />
         <rect x="111" y="22" width="10" height="116" fill="#3e2c22" />
         {points(23, true, 0)}
         {points(123, true, 1)}
@@ -1065,8 +1071,8 @@ function ProductVisual({ visual, uid, label }) {
         {points(123, false, 0)}
         {[[30, 40], [30, 52], [30, 64], [144, 120], [144, 108], [186, 40]].map(([cx, cy], i) => (
           <g key={`w${i}`}>
-            <circle cx={cx} cy={cy} r="6.6" fill="#efe7d8" stroke="#cbbfa9" />
-            <circle cx={cx} cy={cy} r="3.4" fill="none" stroke="#d9cdb8" />
+            <circle cx={cx} cy={cy} r="6.6" fill="#fbf7f0" stroke="#d6cab4" />
+            <circle cx={cx} cy={cy} r="3.4" fill="none" stroke="#e3d8c4" />
           </g>
         ))}
         {[[86, 120], [86, 108], [158, 40], [158, 52], [200, 120]].map(([cx, cy], i) => (
@@ -1088,7 +1094,7 @@ function ProductVisual({ visual, uid, label }) {
     );
   } else if (kind === "boardgame") {
     /* სამაგიდო თამაშის დაფა პერსპექტივაში: ფერადი გზა კიდეებზე, ორი მიპლი და კამათელი */
-    const track = ["#6e2c32", "#b0916a", "#3a4553", "#3d5a4a"];
+    const track = ["#80303a", "#c09c6b", "#384b60", "#356550"];
     const cells = [
       ...Array.from({ length: 8 }, (_, i) => [i, 0]),
       ...Array.from({ length: 7 }, (_, i) => [7, i + 1]),
@@ -1107,19 +1113,19 @@ function ProductVisual({ visual, uid, label }) {
         <ellipse cx="116" cy="142" rx="98" ry="9" fill="#2a201b" opacity="0.14" />
         <g transform="translate(116 88) scale(1 0.56) rotate(45)">
           <rect x="-62" y="-62" width="124" height="124" rx="9" fill="#3e2c22" transform="translate(8 8)" />
-          <rect x="-62" y="-62" width="124" height="124" rx="9" fill="#6a4c38" />
-          <rect x="-57" y="-57" width="114" height="114" rx="6" fill="#efe7d8" />
+          <rect x="-62" y="-62" width="124" height="124" rx="9" fill="#74533b" />
+          <rect x="-57" y="-57" width="114" height="114" rx="6" fill="#fbf7f0" />
           {cells.map(([cx, cy], i) => (
             <rect key={i} x={-55.8 + cx * 14.25} y={-55.8 + cy * 14.25} width="11.85" height="11.85" rx="2.5" fill={track[i % 4]} opacity="0.92" />
           ))}
-          <rect x="-41" y="-41" width="82" height="82" rx="5" fill="#e6dccb" />
-          <circle r="19" fill="none" stroke="#a8915f" strokeWidth="3" />
-          <path d={DIAMOND_PATH} transform="translate(-12 -12) scale(.6)" fill="#6e2c32" />
+          <rect x="-41" y="-41" width="82" height="82" rx="5" fill="#f1e9db" />
+          <circle r="19" fill="none" stroke="#b59a62" strokeWidth="3" />
+          <path d={DIAMOND_PATH} transform="translate(-12 -12) scale(.6)" fill="#80303a" />
         </g>
-        {meeple(84, 86, "#6e2c32")}
+        {meeple(84, 86, "#80303a")}
         {meeple(146, 96, "#3a4553")}
         <g transform="translate(176 116) scale(.6) translate(-176 -116)">
-          <Die x={176} y={116} rotate={14} value={4} face="#efe7d8" pip="#2a201b" />
+          <Die x={176} y={116} rotate={14} value={4} face="#fbf7f0" pip="#2a201b" />
         </g>
       </g>
     );
@@ -1137,14 +1143,14 @@ function ProductVisual({ visual, uid, label }) {
       <g>
         <ellipse cx="116" cy="142" rx="92" ry="8" fill="#2a201b" opacity="0.14" />
         <g transform="translate(116 80) scale(1 0.62) rotate(45)">
-          <rect x="-58" y="-58" width="116" height="116" rx="6" fill="#4a3428" />
+          <rect x="-58" y="-58" width="116" height="116" rx="6" fill="#563b2b" />
           {Array.from({ length: 64 }).map((_, i) => {
             const cx = i % 8;
             const cy = Math.floor(i / 8);
-            return <rect key={i} x={-52 + cx * 13} y={-52 + cy * 13} width="13" height="13" fill={(cx + cy) % 2 ? "#6a4c38" : "#e6dccb"} />;
+            return <rect key={i} x={-52 + cx * 13} y={-52 + cy * 13} width="13" height="13" fill={(cx + cy) % 2 ? "#74533b" : "#f1e9db"} />;
           })}
         </g>
-        {pawn(84, 66, "#efe7d8", "#cbbfa9")}
+        {pawn(84, 66, "#fbf7f0", "#cbbfa9")}
         {pawn(146, 74, "#3b2e27", "#2a201b")}
       </g>
     );
@@ -1152,8 +1158,8 @@ function ProductVisual({ visual, uid, label }) {
     art = (
       <g>
         <ellipse cx="116" cy="136" rx="76" ry="8" fill="#2a201b" opacity="0.14" />
-        <Die x={88} y={86} rotate={-14} value={5} face="#6e2c32" pip="#efe6d8" />
-        <Die x={148} y={78} rotate={12} value={3} face="#efe7d8" pip="#2a201b" />
+        <Die x={88} y={86} rotate={-14} value={5} face="#80303a" pip="#faf5ec" />
+        <Die x={148} y={78} rotate={12} value={3} face="#fbf7f0" pip="#2a201b" />
       </g>
     );
   }
@@ -1516,7 +1522,7 @@ function ProductCard({ product, index, inCart, onAdd, onOpen }) {
         aria-label={T.detailsAria(product.name)}
         tabIndex={-1}
       >
-        <div className="mp-tile-media absolute inset-0 p-8 drop-shadow-[0_12px_16px_rgba(24,25,28,0.18)]">
+        <div className="mp-tile-media absolute inset-0 p-8 drop-shadow-[0_12px_16px_rgba(60,38,26,0.2)]">
           <ProductMedia product={product} uid={`p-${product.id}`} />
         </div>
         <span className="mp-float absolute right-4 top-4 grid h-8 w-8 translate-y-1 place-items-center rounded-lg opacity-0 group-hover:translate-y-0 group-hover:opacity-100" aria-hidden="true">

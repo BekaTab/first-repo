@@ -24,9 +24,9 @@
       "visual": {
         "kind": "chips",
         "colors": [
-          "#6e2c32",
+          "#80303a",
           "#3b2e27",
-          "#b0916a"
+          "#c09c6b"
         ]
       },
       "descriptionEn": ""
@@ -48,9 +48,9 @@
       "visual": {
         "kind": "cards",
         "colors": [
-          "#3a4553",
-          "#f6f1e8",
-          "#7a3037"
+          "#384b60",
+          "#fbf7f0",
+          "#82323a"
         ]
       },
       "salePrice": null,
@@ -73,9 +73,9 @@
       "visual": {
         "kind": "chips",
         "colors": [
-          "#2f4a3c",
+          "#2f5e48",
           "#e9e0d0",
-          "#3a4553"
+          "#384b60"
         ]
       },
       "salePrice": null,
@@ -98,8 +98,8 @@
       "visual": {
         "kind": "cards",
         "colors": [
-          "#6e2c32",
-          "#f6f1e8",
+          "#80303a",
+          "#fbf7f0",
           "#2a201b"
         ]
       },
@@ -123,9 +123,9 @@
       "visual": {
         "kind": "table",
         "colors": [
-          "#3d5a4a",
-          "#5a4030",
-          "#c9b78c"
+          "#356550",
+          "#5e4231",
+          "#d8c393"
         ]
       },
       "salePrice": null,
@@ -148,9 +148,9 @@
       "visual": {
         "kind": "table",
         "colors": [
-          "#5a2a2f",
-          "#2e2520",
-          "#d9cdb8"
+          "#652c32",
+          "#33281f",
+          "#e3d8c4"
         ]
       },
       "salePrice": null,
@@ -173,9 +173,9 @@
       "visual": {
         "kind": "table",
         "colors": [
-          "#4a4239",
-          "#3e2c22",
-          "#c9b78c"
+          "#4f463c",
+          "#46322a",
+          "#d8c393"
         ],
         "octagon": true
       },
@@ -259,9 +259,9 @@
       "visual": {
         "kind": "chips",
         "colors": [
-          "#3a4553",
+          "#384b60",
           "#3b2e27",
-          "#b0916a"
+          "#c09c6b"
         ]
       },
       "salePrice": null,
@@ -284,8 +284,8 @@
       "visual": {
         "kind": "cards",
         "colors": [
-          "#2f4a3c",
-          "#f6f1e8",
+          "#2f5e48",
+          "#fbf7f0",
           "#2a201b"
         ]
       },
