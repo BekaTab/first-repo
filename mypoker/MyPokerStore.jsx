@@ -761,22 +761,25 @@ const GLOBAL_CSS = `
   .mp-plate-all .mp-plate-ico { background: var(--all-plate-ico); }
   .mp-plate-sub { opacity: .8; }
   .mp-hero { position: relative; isolation: isolate; overflow: hidden; border-radius: var(--r-lg); box-shadow: 0 0 0 1px var(--edge), var(--e2); }
-  .mp-hero-plain { color: var(--ink); background: var(--surface); }
+  .mp-hero-plain { color: var(--on-dark); background: var(--all-plate); }
+  .mp-hero-plain::before { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 4px; background: linear-gradient(90deg, var(--poker-plate) 0 50%, var(--games-plate) 50% 100%); }
   .mp-hero-poker { color: var(--poker-plate-text); background: var(--poker-plate); }
   .mp-hero-games { color: var(--games-plate-text); background: var(--games-plate); }
   .mp-hero::after { content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none; border-radius: inherit; box-shadow: inset 0 1px 0 rgba(255,255,255,.14); }
   .mp-hero-mark { position: absolute; z-index: -1; pointer-events: none; opacity: .1; transform: rotate(-12deg); }
-  .mp-hero-plain .mp-hero-mark { color: var(--brand); opacity: .06; }
-  .mp-hero-rule { display: inline-block; width: 24px; height: 1px; background: currentColor; opacity: .6; }
+  .mp-hero-plain .mp-hero-mark { color: var(--games-plate); opacity: .14; }
+  .mp-hero-rule { display: inline-block; width: 16px; height: 1px; background: currentColor; opacity: .6; }
   .mp-hero-soft { color: var(--muted); }
+  .mp-hero-plain .mp-hero-soft { color: rgba(250,246,239,.78); }
   .mp-hero-poker .mp-hero-soft { color: rgba(250,246,239,.82); }
   .mp-hero-games .mp-hero-soft { color: var(--ink-2); }
   .mp-hero-count { background: var(--surface-2); }
+  .mp-hero-plain .mp-hero-count { background: rgba(250,246,239,.12); }
   .mp-hero-poker .mp-hero-count { background: rgba(250,246,239,.14); }
   .mp-hero-games .mp-hero-count { background: rgba(42,32,27,.1); }
   .mp-hero-crumb { border-radius: 4px; text-underline-offset: 3px; }
   .mp-hero-crumb:hover { text-decoration: underline; }
-  .mp-hero-poker :focus-visible { outline-color: var(--focus-dark); }
+  .mp-hero-poker :focus-visible, .mp-hero-plain :focus-visible { outline-color: var(--focus-dark); }
   .mp-hero .mp-title { color: inherit; }
   .mp-plate-mark { position: absolute; z-index: -1; pointer-events: none; opacity: .12; transition: transform .6s var(--ease-out); }
   .mp-plate-poker.mp-plate-on { box-shadow: 0 0 0 2px var(--surface), 0 0 0 4px var(--poker-plate); }
@@ -1561,24 +1564,10 @@ function MobileFilters({ filter }) {
           : "top-[calc(env(safe-area-inset-top,0px)+7.5rem)] md:top-[calc(env(safe-area-inset-top,0px)+4rem)]"
       }`}
     >
-      {/* თითო განყოფილება თავის გადასახვევ ზოლზე (პირველს წინ „ყველა“ უძღვის), ორივე ყოველთვის გაშლილი */}
+      {/* თითო განყოფილება თავის გადასახვევ ზოლზე, ორივე ყოველთვის გაშლილი; ყველა პროდუქტზე დაბრუნება — ლოგოთი ან ნავიგაციით */}
       <div className="flex flex-col gap-2" role="group" aria-label={T.categoriesAria}>
         {SECTIONS.map(({ id, items }, i) => (
           <div key={id} className="mp-scroll -m-1 flex items-center gap-2 overflow-x-auto p-1">
-            {i === 0 && (
-              <div className="mp-sec mp-sec-all flex shrink-0 items-center rounded-xl p-1">
-                <button
-                  type="button"
-                  aria-pressed={category === "all"}
-                  onClick={() => setCategory("all")}
-                  className={`mp-plate mp-plate-all inline-flex h-8 shrink-0 items-center gap-2 px-3 text-[12px] font-semibold leading-4 ${category === "all" ? "mp-plate-on" : ""}`}
-                >
-                  <CatIcon id="all" className="h-3.5 w-3.5" />
-                  {T.cat.all}
-                  <span className="mp-plate-sub mp-num text-[11px] font-medium">{counts.all || 0}</span>
-                </button>
-              </div>
-            )}
             <div className={`mp-sec mp-sec-${id} flex shrink-0 items-center gap-1 rounded-xl p-1`} role="group" aria-label={T.cat[id]}>
               <button
                 type="button"
@@ -1713,49 +1702,53 @@ function CatalogHero({ filter, count, title }) {
   const isSub = section && category !== section;
   const desc = searching ? null : T.catDesc[category];
   return (
-    <div className={`mp-hero mp-hero-${tone} mp-fade mt-6 px-6 pb-6 pt-6 sm:px-8 sm:pt-8 lg:mt-0`}>
-      {!searching && <CatIcon id={category} className="mp-hero-mark -bottom-12 -right-8 h-48 w-48 sm:-bottom-16 sm:h-64 sm:w-64" />}
-      {category === "all" && !searching ? (
-        <p className="mp-hero-soft flex items-center gap-3 text-[12px] font-medium leading-4 tracking-[0.08em]">
-          <span className="mp-hero-rule" aria-hidden="true" />
-          {T.collection}
-        </p>
-      ) : (
-        <nav className="mp-hero-soft flex flex-wrap items-center gap-2 text-[12px] font-medium leading-4" aria-label={T.breadcrumb}>
-          <button type="button" onClick={reset} className="mp-hero-crumb">{T.shop}</button>
-          {isSub && (
-            <>
-              <span aria-hidden="true">/</span>
-              <button type="button" onClick={() => setCategory(section)} className="mp-hero-crumb">{T.cat[section]}</button>
-            </>
-          )}
-          <span aria-hidden="true">/</span>
-          <span aria-current="page" className="font-semibold">{searching ? T.search : title}</span>
-        </nav>
-      )}
-      <h1 className="mp-title mt-4 max-w-[640px] text-[28px] font-semibold leading-9 [text-wrap:balance] sm:text-[32px] sm:leading-10">{title}</h1>
-      {desc && <p className="mp-hero-soft mt-2 max-w-[480px] text-[14px] leading-6">{desc}</p>}
-      <div className="mt-6 flex items-center justify-between gap-4">
-        <span className="mp-hero-count mp-num inline-flex h-8 items-center gap-2 rounded-full px-3 text-[12px] font-semibold leading-4" aria-live="polite">
-          {T.productCount(count)}
-        </span>
-        <label className="relative shrink-0" htmlFor="mp-sort">
-          <span className="sr-only">{T.sort}</span>
-          <select
-            id="mp-sort"
-            value={sort}
-            onChange={(e) => setSort(e.target.value)}
-            className="mp-field h-10 max-w-[10.5rem] appearance-none truncate pl-4 pr-10 text-[13px] sm:max-w-[13rem]"
-          >
-            {SORTS.map((s) => (
-              <option key={s.id} value={s.id}>
-                {s.label}
-              </option>
-            ))}
-          </select>
-          <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[color:var(--muted)]" />
-        </label>
+    <div className={`mp-hero mp-hero-${tone} mp-fade mt-6 flex items-center gap-4 px-4 py-4 sm:px-6 lg:mt-0`}>
+      {!searching && <CatIcon id={category} className="mp-hero-mark -bottom-8 right-40 h-28 w-28 max-sm:right-16" />}
+      <div className="min-w-0 flex-1">
+        {category === "all" && !searching ? (
+          <p className="mp-hero-soft flex items-center gap-2 text-[11px] font-medium leading-4 tracking-[0.08em]">
+            <span className="mp-hero-rule" aria-hidden="true" />
+            {T.collection}
+            <span className="mp-num whitespace-nowrap sm:hidden">· {T.productCount(count)}</span>
+          </p>
+        ) : (
+          <nav className="mp-hero-soft flex min-w-0 flex-wrap items-center gap-x-2 text-[11px] font-medium leading-4" aria-label={T.breadcrumb}>
+            <button type="button" onClick={reset} className="mp-hero-crumb">{T.shop}</button>
+            {isSub && (
+              <>
+                <span aria-hidden="true">/</span>
+                <button type="button" onClick={() => setCategory(section)} className="mp-hero-crumb">{T.cat[section]}</button>
+              </>
+            )}
+            <span aria-hidden="true">/</span>
+            <span aria-current="page" className="font-semibold">{searching ? T.search : title}</span>
+            <span className="mp-num whitespace-nowrap sm:hidden">· {T.productCount(count)}</span>
+          </nav>
+        )}
+        <div className="mt-1 flex min-w-0 items-center gap-2">
+          <h1 className="mp-title truncate text-[18px] font-semibold leading-6 sm:text-[24px] sm:leading-8">{title}</h1>
+          <span className="mp-hero-count mp-num hidden h-6 shrink-0 items-center rounded-full px-2 text-[11px] font-semibold leading-4 sm:inline-flex" aria-live="polite">
+            {T.productCount(count)}
+          </span>
+        </div>
+        {desc && <p className="mp-hero-soft mt-1 hidden truncate text-[13px] leading-5 md:block">{desc}</p>}
       </div>
+      <label className="relative shrink-0" htmlFor="mp-sort">
+        <span className="sr-only">{T.sort}</span>
+        <select
+          id="mp-sort"
+          value={sort}
+          onChange={(e) => setSort(e.target.value)}
+          className="mp-field h-10 max-w-[7.5rem] appearance-none truncate pl-3 pr-8 text-[13px] sm:max-w-[13rem] sm:pl-4 sm:pr-10"
+        >
+          {SORTS.map((s) => (
+            <option key={s.id} value={s.id}>
+              {s.label}
+            </option>
+          ))}
+        </select>
+        <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[color:var(--muted)]" />
+      </label>
     </div>
   );
 }
