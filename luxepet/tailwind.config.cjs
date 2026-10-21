@@ -9,8 +9,7 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        // Playfair Display and Inter have no Georgian letters; the Noto Georgian faces pick those up
-        serif: ['"Playfair Display"', '"Noto Serif Georgian"', "Georgia", '"Times New Roman"', "serif"],
+        // Inter has no Georgian letters; Noto Sans Georgian picks those up
         sans: ["Inter", '"Noto Sans Georgian"', "system-ui", "-apple-system", '"Segoe UI"', "Helvetica", "Arial", "sans-serif"],
       },
     },
