@@ -24,6 +24,15 @@ jobs:
       - uses: actions/checkout@v4
       - name: Apply content edited in /admin
         run: node tools/apply-content.mjs .
+      # LuxePet store: build it and publish the built page in place of its sources (served at /luxepet/)
+      - name: Build LuxePet store
+        run: |
+          npm ci --prefix luxepet --no-audit --no-fund
+          npm run build --prefix luxepet
+          mv luxepet/dist "$RUNNER_TEMP/luxepet"
+          rm -rf luxepet
+          mv "$RUNNER_TEMP/luxepet" luxepet
+          rm luxepet/standalone.html
       - uses: actions/configure-pages@v5
         with:
           enablement: true
