@@ -17,12 +17,17 @@ npm run preview    # builds and serves dist/ at http://localhost:3000
 
 Add New → Project → `first-repo` → **Root Directory: `luxepet`** → Deploy. Install, build and output settings come from `luxepet/vercel.json`.
 
+## Languages
+
+The site is in Georgian and English. It opens in Georgian (`BRAND.defaultLang`); the **ქა / EN** switch in the header (in the menu on phones) changes every text on the page, and the visitor's choice is remembered. Georgian letters are set in Noto Serif Georgian and Noto Sans Georgian, which sit behind Playfair Display and Inter in the font stacks.
+
 ## Where to change things
 
 Everything lives in `LuxePetStore.jsx`:
 
-- **Brand name, tagline, currency, season line** — the `BRAND` object at the top. The name is used in the header, footer, menu and confirmation.
-- **Products** — the `PRODUCTS` array (`name`, `category`: `walk` / `sleep` / `eat`, `material`, `price`, `image`). `image` is an Unsplash photo id: the part after `photo-` in an `images.unsplash.com/photo-…` URL.
+- **Brand name, currency, default language** — the `BRAND` object at the top. The name is used in the header, footer, menu and confirmation.
+- **All site text** — the `TEXT` object, with a `ka` and an `en` block holding the same keys.
+- **Products** — the `PRODUCTS` array (`name` and `material` each as `{ ka, en }`, `category`: `walk` / `sleep` / `eat`, `price`, `image`). `image` is an Unsplash photo id: the part after `photo-` in an `images.unsplash.com/photo-…` URL.
 - **Hero photo** — `HERO_IMAGE`.
 - **Logo** — `GREYHOUND` is the single SVG path of the line-art mark (the favicon in `build.mjs` uses the same path).
 - **Colours** — written as Tailwind arbitrary values (`bg-[#F9F9F8]`, `text-[#2C2C2C]`, `bg-[#E6E2DD]`, `text-[#A9A297]`, `bg-[#1A1A1A]`, `border-[#E5E5E5]`).

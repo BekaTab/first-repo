@@ -43,6 +43,9 @@ writeFileSync(
   html { background: #F9F9F8; color: #2C2C2C; -webkit-tap-highlight-color: transparent; }
   ::selection { background: #E6E2DD; color: #1A1A1A; }
   :focus-visible { outline: 1px solid #2C2C2C; outline-offset: 4px; }
+  /* Georgian: no capitals to letter-space and no true italic, so labels stay lowercase with light tracking and emphasis stays upright */
+  :lang(ka) .uppercase { text-transform: none; letter-spacing: 0.04em; }
+  :lang(ka) em, :lang(ka) .italic { font-style: normal; }
 }
 `
 );
@@ -53,8 +56,9 @@ rmSync(cssIn);
 // cache-busting version: changes whenever the bundle or styles change
 const ASSET_V = createHash("sha256").update(readFileSync(join(dist, "app.js"))).update(readFileSync(join(dist, "app.css"))).digest("hex").slice(0, 10);
 
-const TITLE = "LuxePet — Objects for the considered companion";
-const DESCRIPTION = "Hand-made leather leads, bouclé beds and stoneware for dogs and cats. Made in small numbers, designed to last a lifetime.";
+// the page opens in Georgian (BRAND.defaultLang); the app switches lang and title when the visitor changes language
+const TITLE = "LuxePet — ნივთები ოთხფეხა მეგობრებისთვის";
+const DESCRIPTION = "ხელით დამზადებული ტყავის საბლები, ბუკლეს საწოლები და კერამიკა ძაღლებისა და კატებისთვის. Hand-made leather leads, bouclé beds and stoneware for dogs and cats.";
 const favicon =
   "data:image/svg+xml," +
   encodeURIComponent(
@@ -68,19 +72,19 @@ const head = (styles) => `<title>${TITLE}</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preconnect" href="https://images.unsplash.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Playfair+Display:ital,wght@0,400;0,500;1,400&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Noto+Sans+Georgian:wght@300;400;500&family=Noto+Serif+Georgian:wght@400;500&family=Playfair+Display:ital,wght@0,400;0,500;1,400&display=swap">
 ${styles}
 <style>html,body{background:#F9F9F8;color:#2C2C2C;margin:0}</style>`;
 const page = (styles, script) =>
   `<!doctype html>
-<html lang="en">
+<html lang="ka">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 ${head(styles)}
 </head>
 <body>
-<noscript><p style="font:16px sans-serif;padding:24px;text-align:center">LuxePet needs JavaScript to run.</p></noscript>
+<noscript><p style="font:16px sans-serif;padding:24px;text-align:center">LuxePet მუშაობს JavaScript-ით. · LuxePet needs JavaScript to run.</p></noscript>
 <div id="root"></div>
 ${script}
 </body>
