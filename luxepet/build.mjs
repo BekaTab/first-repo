@@ -91,7 +91,8 @@ ${script}
 </html>
 `;
 
-writeFileSync(join(dist, "index.html"), page(`<link rel="stylesheet" href="/app.css?v=${ASSET_V}">`, `<script src="/app.js?v=${ASSET_V}" defer></script>`));
+// relative asset paths, so the page works at a domain root (Vercel) and in a subfolder (GitHub Pages: /first-repo/luxepet/)
+writeFileSync(join(dist, "index.html"), page(`<link rel="stylesheet" href="app.css?v=${ASSET_V}">`, `<script src="app.js?v=${ASSET_V}" defer></script>`));
 
 const css = readFileSync(join(dist, "app.css"), "utf8");
 const js = readFileSync(join(dist, "app.js"), "utf8").replace(/<\/script/gi, "<\\/script");

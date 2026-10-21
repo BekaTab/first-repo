@@ -13,6 +13,10 @@ npm run preview    # builds and serves dist/ at http://localhost:3000
 
 `dist/standalone.html` has the CSS and JavaScript inlined, so it also opens straight from disk (double-click) with no server.
 
+## Live on GitHub Pages
+
+Every push to `main` builds the store and publishes it at **https://bekatab.github.io/first-repo/luxepet/** (`.github/workflows/pages.yml`, step "Build LuxePet store").
+
 ## Deploy (Vercel)
 
 Add New → Project → `first-repo` → **Root Directory: `luxepet`** → Deploy. Install, build and output settings come from `luxepet/vercel.json`.
