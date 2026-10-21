@@ -1,0 +1,7 @@
+# Scraping
+playwright>=1.45
+# Data + UI
+pandas>=2.1
+streamlit>=1.45
+# Tests
+pytest>=8.0

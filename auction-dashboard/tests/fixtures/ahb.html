@@ -1,0 +1,20 @@
+<!doctype html>
+<html><head><title>AutoHelperBot</title></head>
+<body>
+<form id="f"><input name="vin" placeholder="Enter VIN"><button>Search</button></form>
+<div id="out"></div>
+<script>
+  const DATA = {
+    "4T1B11HK5JU123456": "<dl><dt>Reserve price</dt><dd>$7,250</dd><dt>Final bid</dt><dd>$6,900</dd></dl>",
+    "1FTEW1EP7JFA00003": "<p>Lot 34567893 · Reserve: not available</p><p>Final bid $12,000</p>",
+  };
+  document.getElementById('f').addEventListener('submit', e => {
+    e.preventDefault();
+    const vin = e.target.vin.value.trim();
+    setTimeout(() => {
+      document.getElementById('out').innerHTML =
+        `<h2>${vin}</h2>` + (DATA[vin] || '<p>Nothing found</p>');
+    }, 300);
+  });
+</script>
+</body></html>

@@ -1,0 +1,27 @@
+<!doctype html>
+<html><head><title>Search Results | IAAI</title></head>
+<body>
+<label><input type="checkbox" id="timed"> Timed Auction</label>
+<div class="search-results">
+  <div class="table-row table-row-border">
+    <a>2018 TOYOTA CAMRY SE</a>
+    <span>Stock#: 34567890</span>
+    <span>VIN: 4T1B11HK5JU123456</span>
+    <span>Timed Auction</span>
+  </div>
+  <div class="table-row table-row-border">
+    <a>2020 LAND ROVER RANGE ROVER SPORT HSE</a>
+    <span>Stock#: 34567891</span>
+    <span>VIN: SALWR2RV0LA700001</span>
+    <span>Live Auction</span>
+  </div>
+</div>
+<div id="json-results"></div>
+<button aria-label="Next page" onclick="location.href='iaai_page2.html'">Next</button>
+<script>
+  // Mimic IAAI loading extra results over XHR.
+  fetch('api/search.json').then(r => r.json()).then(d => {
+    document.getElementById('json-results').dataset.loaded = d.items.length;
+  });
+</script>
+</body></html>
