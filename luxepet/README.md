@@ -1,6 +1,14 @@
-# LuxePet — premium pet accessories store
+# LuxePet — dog & cat shop
 
-A single-page "quiet luxury" shop built with React, Tailwind CSS, Framer Motion, Lucide icons and Zustand.
+A single-page online pet shop in Georgian and English, built with React, Tailwind CSS, Framer Motion, Lucide icons and Zustand.
+
+- Header: delivery and phone bar, ქა / EN switch, search, cart button that shows the running total
+- Category bar (dogs, cats, sale, food, treats, accessories, clothing, beds, toys, care) and category tiles
+- Catalogue: filters for pet, category, price, sale and stock; sorting; pages of 12 products
+- Product cards with discount and "new" badges, old and new prices, stock status, and an add-to-cart button that turns into a quantity stepper
+- Product popup with a description and quantity
+- Cart: quantities, free-delivery progress bar, delivery cost, then an order form (name, phone, city, address, payment) with validation and a confirmation. Ordering is simulated; nothing is sent.
+- Cart and language choice are remembered in the browser
 
 ## Run it
 
@@ -21,24 +29,12 @@ Every push to `main` builds the store and publishes it at **https://bekatab.gith
 
 Add New → Project → `first-repo` → **Root Directory: `luxepet`** → Deploy. Install, build and output settings come from `luxepet/vercel.json`.
 
-## Languages
-
-The site is in Georgian and English. It opens in Georgian (`BRAND.defaultLang`); the **ქა / EN** switch in the header (in the menu on phones) changes every text on the page, and the visitor's choice is remembered. Georgian letters are set in Noto Serif Georgian and Noto Sans Georgian, which sit behind Playfair Display and Inter in the font stacks.
-
 ## Where to change things
 
 Everything lives in `LuxePetStore.jsx`:
 
-- **Brand name, currency, default language** — the `BRAND` object at the top. The name is used in the header, footer, menu and confirmation.
-- **All site text** — the `TEXT` object, with a `ka` and an `en` block holding the same keys.
-- **Products** — the `PRODUCTS` array (`name` and `material` each as `{ ka, en }`, `category`: `walk` / `sleep` / `eat`, `price`, `image`). `image` is an Unsplash photo id: the part after `photo-` in an `images.unsplash.com/photo-…` URL.
-- **Hero photo** — `HERO_IMAGE`.
-- **Logo** — `GREYHOUND` is the single SVG path of the line-art mark (the favicon in `build.mjs` uses the same path).
-- **Colours** — written as Tailwind arbitrary values (`bg-[#F9F9F8]`, `text-[#2C2C2C]`, `bg-[#E6E2DD]`, `text-[#A9A297]`, `bg-[#1A1A1A]`, `border-[#E5E5E5]`).
-- **Fonts** — Playfair Display and Inter, loaded from Google Fonts in `build.mjs` and mapped in `tailwind.config.cjs`.
-
-If a photo fails to load, its frame shows the greyhound mark on cashmere beige instead of a broken image.
-
-## How the cart works
-
-`useBag` (Zustand) keeps the bag as `[{ id, qty }]` in add order and saves it in `localStorage` (`luxepet-bag`), so it survives a reload. Entries that no longer match a product are dropped on load. Quantities run from 1 to 10. Checkout is simulated: it shows a short processing state, confirms an order number and empties the bag. No payment is taken.
+- **Shop name, phone, email, social links, delivery prices, free-delivery threshold, products per page, default language**: the `BRAND` object at the top. The phone number is a placeholder (`+995 5XX XX XX XX`).
+- **All site text**: the `TEXT` object, with a `ka` and an `en` block holding the same keys.
+- **Products**: the `PRODUCTS` array. Each product has `animal` (`dog` / `cat`), `category`, `brand`, `name` and `desc` as `{ ka, en }`, `size`, `price`, optional `oldPrice` (shows the discount badge), `isNew`, `inStock: false`, and `rank` for the "Most popular" order. The 24 products are examples: replace them with the shop's real range and prices.
+- **Pictures**: each product has a simple drawing (`art` + `color`). Add `image: "https://…"` to a product to show a real photo instead.
+- **Colours**: Tailwind arbitrary values, listed in a comment under `BRAND` (orange `#F26B1D`, ink `#1F2933`).

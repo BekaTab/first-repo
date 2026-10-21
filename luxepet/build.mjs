@@ -40,12 +40,9 @@ writeFileSync(
 @tailwind components;
 @tailwind utilities;
 @layer base {
-  html { background: #F9F9F8; color: #2C2C2C; -webkit-tap-highlight-color: transparent; }
-  ::selection { background: #E6E2DD; color: #1A1A1A; }
-  :focus-visible { outline: 1px solid #2C2C2C; outline-offset: 4px; }
-  /* Georgian: no capitals to letter-space and no true italic, so labels stay lowercase with light tracking and emphasis stays upright */
-  :lang(ka) .uppercase { text-transform: none; letter-spacing: 0.04em; }
-  :lang(ka) em, :lang(ka) .italic { font-style: normal; }
+  html { background: #FAFAF9; color: #1F2933; -webkit-tap-highlight-color: transparent; }
+  ::selection { background: #FFD8BF; color: #1F2933; }
+  :focus-visible { outline: 2px solid #F26B1D; outline-offset: 2px; }
 }
 `
 );
@@ -57,24 +54,24 @@ rmSync(cssIn);
 const ASSET_V = createHash("sha256").update(readFileSync(join(dist, "app.js"))).update(readFileSync(join(dist, "app.css"))).digest("hex").slice(0, 10);
 
 // the page opens in Georgian (BRAND.defaultLang); the app switches lang and title when the visitor changes language
-const TITLE = "LuxePet — ნივთები ოთხფეხა მეგობრებისთვის";
-const DESCRIPTION = "ხელით დამზადებული ტყავის საბლები, ბუკლეს საწოლები და კერამიკა ძაღლებისა და კატებისთვის. Hand-made leather leads, bouclé beds and stoneware for dogs and cats.";
+const TITLE = "LuxePet — ძაღლისა და კატის საკვები და აქსესუარები";
+const DESCRIPTION = "ძაღლისა და კატის საკვები, აქსესუარები, ტანსაცმელი და სათამაშოები. მიწოდება თბილისში იმავე დღეს. Dog and cat food, accessories and toys with same-day delivery in Tbilisi.";
+// tab icon: the white paw on orange from the header logo
 const favicon =
   "data:image/svg+xml," +
   encodeURIComponent(
-    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"><rect width="48" height="48" rx="10" fill="#E6E2DD"/><path d="M4.5 41.8C6.2 44.2 9 45 12 44.6C8.4 41.2 8.6 34.2 13.2 30.4C16.8 27.6 19.2 23.6 20.6 19.2C21.8 15.2 23.2 11.4 25.8 9.6Q24.4 8.4 22.8 9.2Q24.8 7.6 27.4 8.2C30.6 8.6 34.6 10 38.8 11.8C36 12.9 32.4 12.7 29.8 13.8C29 17.2 29.6 21 31.2 24.4C32.6 27.6 31.6 31 28.8 32.8C28.2 36.4 28.6 40.6 29 44.6H32.2" fill="none" stroke="#2C2C2C" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>`
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" rx="9" fill="#F26B1D"/><g fill="#fff"><ellipse cx="16" cy="20.5" rx="5.6" ry="4.8"/><ellipse cx="9.2" cy="14.6" rx="2.3" ry="2.9" transform="rotate(-18 9.2 14.6)"/><ellipse cx="13.6" cy="10.4" rx="2.3" ry="3" transform="rotate(-6 13.6 10.4)"/><ellipse cx="18.4" cy="10.4" rx="2.3" ry="3" transform="rotate(6 18.4 10.4)"/><ellipse cx="22.8" cy="14.6" rx="2.3" ry="2.9" transform="rotate(18 22.8 14.6)"/></g></svg>`
   );
 
 const head = (styles) => `<title>${TITLE}</title>
 <meta name="description" content="${DESCRIPTION}">
-<meta name="theme-color" content="#F9F9F8">
+<meta name="theme-color" content="#1F2933">
 <link rel="icon" href="${favicon}" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preconnect" href="https://images.unsplash.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Noto+Sans+Georgian:wght@300;400;500&family=Noto+Serif+Georgian:wght@400;500&family=Playfair+Display:ital,wght@0,400;0,500;1,400&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+Georgian:wght@400;500;600;700&display=swap">
 ${styles}
-<style>html,body{background:#F9F9F8;color:#2C2C2C;margin:0}</style>`;
+<style>html,body{background:#FAFAF9;color:#1F2933;margin:0}</style>`;
 const page = (styles, script) =>
   `<!doctype html>
 <html lang="ka">
