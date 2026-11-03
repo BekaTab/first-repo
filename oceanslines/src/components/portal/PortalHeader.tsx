@@ -36,7 +36,7 @@ export function PortalHeader() {
   };
 
   return (
-    <header className="sticky top-0 z-30 border-b border-line bg-surface-raised/80 backdrop-blur-xl transition-colors duration-700">
+    <header className="sticky top-0 z-30 border-b border-line bg-surface-raised/95 transition-colors duration-700">
       <div className="container flex h-16 items-center gap-3 sm:gap-4">
         <Link href="/" aria-label={t.common.homeAria} className="shrink-0 text-[15px] sm:text-[17px]">
           <Logo tone={theme === "super" ? "inverse" : "brand"} />
@@ -76,10 +76,10 @@ export function PortalHeader() {
         </div>
       </div>
 
-      {/* Below md: admin nav + tier preview move to a second row. */}
+      {/* Below md: admin nav (phones only) and the tier preview get their own rows, so nothing overflows. */}
       {isAdmin ? (
-        <div className="container flex items-center justify-between gap-3 pb-3 md:hidden">
-          <nav aria-label={t.portal.navAria} className="flex items-center gap-1 sm:invisible">
+        <div className="container flex flex-col items-start gap-2 pb-3 sm:flex-row sm:items-center sm:justify-end md:hidden">
+          <nav aria-label={t.portal.navAria} className="flex items-center gap-1 sm:hidden">
             {links.map((l) => (
               <Link
                 key={l.href}

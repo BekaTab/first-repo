@@ -69,7 +69,8 @@ export function UsersTable({ onCredentials }: UsersTableProps) {
         </div>
       </div>
 
-      <div className="overflow-x-auto">
+      {/* relative: keeps absolutely-positioned children (e.g. sr-only labels) inside the scroll box */}
+      <div className="relative overflow-x-auto">
         <table className="w-full min-w-[760px] text-left text-sm">
           <thead>
             <tr className="border-b border-line text-xs uppercase tracking-[0.08em] text-fg-subtle">

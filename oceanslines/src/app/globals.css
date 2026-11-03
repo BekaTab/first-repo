@@ -107,7 +107,7 @@
 
   /* Frosted panel used on the landing page and login. */
   .glass {
-    @apply border border-white/60 bg-white/55 shadow-soft backdrop-blur-xl;
+    @apply border border-white/70 bg-white/80 shadow-soft;
   }
 
   .hairline {
@@ -261,5 +261,37 @@
   }
   .ol-arc-head {
     display: none;
+  }
+}
+
+/*
+ * Entrance animations for above-the-fold content. Pure CSS, so they start as
+ * soon as the HTML arrives — the hero never waits for JavaScript to appear.
+ * Stagger with an inline animation-delay.
+ */
+.ol-rise {
+  animation: ol-rise 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.ol-drop {
+  animation: ol-drop 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@keyframes ol-rise {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes ol-drop {
+  from {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
   }
 }

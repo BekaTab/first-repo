@@ -3,13 +3,15 @@
 import { useId, useState } from "react";
 import { useT, type Dictionary } from "@/i18n";
 import { cn } from "@/lib/utils";
-import { GLOBE, GRATICULE_PATH, LAND_PATH, PORT_POINTS, POTI_POINT, ROUTE_PATHS } from "./globe-geometry";
+import { asset } from "@/lib/asset";
+import { GLOBE, PORT_POINTS, POTI_POINT, ROUTE_PATHS } from "./globe-geometry";
 
 /*
  * Night globe with shipping routes from the main US export ports to Poti.
  *
- * Lightweight by design: the map is pre-computed into static SVG paths
- * (scripts/build-globe.mjs), the arcs draw with a CSS dash animation and the
+ * Lightweight by design: the map is a pre-rendered image (public/globe-base.svg,
+ * from scripts/build-globe.mjs) that the browser draws once and caches; only
+ * the small route layer is inline. Arcs draw with a CSS dash animation and the
  * arrowheads ride along them with native SVG <animateMotion>. No JavaScript
  * runs per frame. Hovering a port highlights its route.
  */
@@ -26,8 +28,7 @@ const PORTS: readonly { key: PortKey; label: { anchor: "start" | "end"; dx: numb
 const PERIOD = 7.5; // s — one draw / hold / fade cycle per route
 const STAGGER = 1.1; // s between routes
 
-const { r: R, cx: CX, cy: CY } = GLOBE;
-const VIEWBOX = "-104 12 644 500";
+const VIEWBOX = GLOBE.viewBox;
 const ARROW = "M8 0L-5.5 -6L-2.5 0L-5.5 6Z";
 const LABEL_HALO = "[paint-order:stroke] [stroke-linejoin:round] [stroke-width:5px] [stroke:rgb(11_19_40/0.85)]";
 
@@ -38,30 +39,16 @@ export function GlobeRoutes({ className }: { className?: string }) {
 
   return (
     <div role="img" aria-label={t.hero.routeAria} className={cn("relative select-none", className)}>
-      {/* Static base on its own GPU layer, so the animated routes above never repaint the map. */}
-      <svg viewBox={VIEWBOX} aria-hidden className="block h-auto w-full [transform:translateZ(0)]">
-        <defs>
-        <radialGradient id={`${uid}-sphere`} cx="40%" cy="34%" r="72%">
-          <stop offset="0%" stopColor="#243A6B" />
-          <stop offset="55%" stopColor="#152447" />
-          <stop offset="100%" stopColor="#0A1430" />
-        </radialGradient>
-        <radialGradient id={`${uid}-atmo`} cx="50%" cy="50%" r="50%">
-          <stop offset="84%" stopColor="#3A7DD8" stopOpacity="0.45" />
-          <stop offset="92%" stopColor="#3A7DD8" stopOpacity="0.12" />
-          <stop offset="100%" stopColor="#3A7DD8" stopOpacity="0" />
-        </radialGradient>
-        <radialGradient id={`${uid}-spec`} cx="34%" cy="26%" r="45%">
-          <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.16" />
-          <stop offset="100%" stopColor="#FFFFFF" stopOpacity="0" />
-        </radialGradient>
-        </defs>
-        <circle cx={CX} cy={CY} r={R + 34} fill={`url(#${uid}-atmo)`} />
-        <circle cx={CX} cy={CY} r={R} fill={`url(#${uid}-sphere)`} />
-        <path d={GRATICULE_PATH} fill="none" stroke="rgb(236 232 224 / 0.07)" strokeWidth="0.75" />
-        <path d={LAND_PATH} fill="rgb(236 232 224 / 0.17)" stroke="rgb(236 232 224 / 0.28)" strokeWidth="0.6" />
-        <circle cx={CX} cy={CY} r={R} fill={`url(#${uid}-spec)`} stroke="rgb(197 168 128 / 0.35)" strokeWidth="1" />
-      </svg>
+      {/* Static base map: a cached image, drawn once. */}
+      {/* eslint-disable-next-line @next/next/no-img-element -- static file from /public, works in the static export */}
+      <img
+        src={asset("/globe-base.svg")}
+        alt=""
+        width={GLOBE.width}
+        height={GLOBE.height}
+        decoding="async"
+        className="block h-auto w-full"
+      />
 
       {/* Animated routes, ports and labels */}
       <svg viewBox={VIEWBOX} className="absolute inset-0 h-full w-full">

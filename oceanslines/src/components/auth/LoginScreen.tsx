@@ -4,7 +4,6 @@ import Link from "next/link";
 import { Suspense } from "react";
 import { Logo } from "@/components/brand/Logo";
 import { SiteBackground } from "@/components/landing/SiteBackground";
-import { Reveal } from "@/components/motion/Reveal";
 import { LanguageSwitch } from "@/components/ui/language-switch";
 import { useT } from "@/i18n";
 import { LoginForm } from "./LoginForm";
@@ -16,7 +15,7 @@ export function LoginScreen() {
       <SiteBackground />
       <LanguageSwitch className="absolute right-4 top-4 sm:right-6 sm:top-6" />
 
-      <Reveal className="w-full max-w-[420px]">
+      <div className="ol-rise w-full max-w-[420px]">
         <Link href="/" aria-label={t.common.homeAria} className="mx-auto block w-fit text-[20px] sm:text-[22px]">
           <Logo variant="full" />
         </Link>
@@ -36,7 +35,7 @@ export function LoginScreen() {
             {t.login.back}
           </Link>
         </p>
-      </Reveal>
+      </div>
     </main>
   );
 }

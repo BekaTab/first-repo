@@ -62,7 +62,7 @@ function ServiceCard({ service, index }: { service: Service; index: number }) {
       animate="rest"
       variants={{ rest: { y: 0 }, hover: { y: -6 } }}
       transition={{ duration: 0.6, ease: EASE_LUXE }}
-      className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-charcoal/[0.07] bg-white/60 p-8 shadow-soft backdrop-blur-sm transition-shadow duration-700 ease-luxe hover:shadow-lifted"
+      className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-charcoal/[0.07] bg-white/80 p-8 shadow-soft transition-shadow duration-700 ease-luxe hover:shadow-lifted"
     >
       {/* Gold hairline that draws across on hover. */}
       <motion.span
