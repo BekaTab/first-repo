@@ -1,63 +1,74 @@
 "use client";
 
 import { useReducedMotion } from "framer-motion";
-import { geoGraticule10, geoInterpolate, geoOrthographic, geoPath } from "d3-geo";
+import { geoDistance, geoGraticule10, geoInterpolate, geoOrthographic, geoPath } from "d3-geo";
 import type { FeatureCollection, Geometry } from "geojson";
+import { Move } from "lucide-react";
 import { feature } from "topojson-client";
 import type { GeometryCollection, Topology } from "topojson-specification";
-import { useEffect, useId, useMemo, useRef } from "react";
+import { useEffect, useId, useMemo, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
 import landTopology from "world-atlas/land-110m.json";
 import { useT, type Dictionary } from "@/i18n";
 import { cn } from "@/lib/utils";
 
 /*
- * Animated globe: shipping arcs from the main US export ports to Poti.
+ * Interactive night globe: shipping arcs from the main US export ports to Poti.
  *
- * Geometry is computed with d3-geo (orthographic projection) and written
- * straight to the SVG attributes on each animation frame — no React
- * re-renders while animating. The first frame is rendered on the server, so
- * the globe is visible before JavaScript runs.
+ * - Arcs draw themselves in sequence with an arrowhead travelling to Poti.
+ * - Drag (mouse or touch) to rotate; on release it eases back to the home view.
+ * - Hover / focus a port to highlight its route.
+ *
+ * Geometry comes from d3-geo (orthographic projection) and is written straight
+ * to SVG attributes each animation frame — no React re-renders while animating.
+ * The first frame is rendered on the server.
  */
 
 type LonLat = [number, number];
-type PortKey = keyof Dictionary["hero"]["ports"];
+type Pt = { x: number; y: number };
+type PortKey = Exclude<keyof Dictionary["hero"]["ports"], "poti">;
 
 interface Port {
-  key: Exclude<PortKey, "poti">;
+  key: PortKey;
   coords: LonLat;
-  /** Label placement relative to the dot. */
   label: { anchor: "start" | "middle" | "end"; dx: number; dy: number };
 }
 
 const PORTS: readonly Port[] = [
-  { key: "newark", coords: [-74.17, 40.69], label: { anchor: "start", dx: 10, dy: -8 } },
-  { key: "savannah", coords: [-81.09, 32.08], label: { anchor: "start", dx: 9, dy: 20 } },
-  { key: "houston", coords: [-95.27, 29.73], label: { anchor: "end", dx: -6, dy: 24 } },
-  { key: "losAngeles", coords: [-118.26, 33.73], label: { anchor: "end", dx: -10, dy: -6 } },
+  { key: "newark", coords: [-74.17, 40.69], label: { anchor: "start", dx: 11, dy: -9 } },
+  { key: "savannah", coords: [-81.09, 32.08], label: { anchor: "start", dx: 10, dy: 21 } },
+  { key: "houston", coords: [-95.27, 29.73], label: { anchor: "end", dx: -7, dy: 25 } },
+  { key: "losAngeles", coords: [-118.26, 33.73], label: { anchor: "end", dx: -11, dy: -7 } },
 ];
 const POTI: LonLat = [41.67, 42.15];
 
-// View: centred over the North Atlantic so both coasts are on the visible face.
 const R = 230;
 const CX = 260;
 const CY = 260;
-const BASE_ROTATION: [number, number] = [38, -26];
-const SWAY_DEG = 5; // slow side-to-side rotation
-const SWAY_PERIOD = 48; // s
+const HOME: [number, number] = [38, -26]; // rotation: centred over the North Atlantic
+const SWAY_DEG = 5;
+const SWAY_PERIOD = 48;
+const DRAG_SPEED = 0.35; // degrees per viewBox unit
+const LAT_LIMIT = 35;
+const RETURN_DELAY = 1.4; // s after release before easing home
+const RETURN_RATE = 1.8; // higher = faster ease home
 
-// Arc timing.
 const SAMPLES = 80;
-const PERIOD = 7.5; // s, one full cycle per arc
-const STAGGER = 1.1; // s between arcs
-const DRAW = 0.5; // share of the cycle spent drawing
-const HOLD = 0.8; // …then holding until this point, then fading
-const ARC_HEIGHT = 0.14; // peak altitude as a share of the radius
+const PERIOD = 7.5;
+const STAGGER = 1.1;
+const DRAW = 0.5;
+const HOLD = 0.8;
+const ARC_HEIGHT = 0.14;
+
+// Tight frame around the globe, with room for the port labels on the left.
+const VIEW_X = -104;
+const VIEW_Y = 12;
+const VIEW_W = 644;
+const VIEW_H = 500;
 
 const topology = landTopology as unknown as Topology<{ land: GeometryCollection }>;
 const LAND = feature(topology, topology.objects.land) as FeatureCollection<Geometry>;
 const GRATICULE = geoGraticule10();
 
-/** Great-circle samples for each route (static). */
 const ROUTES: readonly LonLat[][] = PORTS.map((p) => {
   const interpolate = geoInterpolate(p.coords, POTI);
   return Array.from({ length: SAMPLES + 1 }, (_, i) => interpolate(i / SAMPLES) as LonLat);
@@ -65,78 +76,128 @@ const ROUTES: readonly LonLat[][] = PORTS.map((p) => {
 
 const easeInOut = (x: number) => (x < 0.5 ? 4 * x * x * x : 1 - (-2 * x + 2) ** 3 / 2);
 
+interface ArcFrame {
+  d: string;
+  opacity: number;
+  width: number;
+  head: (Pt & { angle: number }) | null;
+}
+
 interface Frame {
   land: string;
   graticule: string;
-  ports: { x: number; y: number }[];
-  poti: { x: number; y: number };
+  ports: (Pt & { visible: boolean })[];
+  poti: Pt & { visible: boolean };
   tracks: string[];
-  arcs: { d: string; opacity: number; head: { x: number; y: number; angle: number } | null }[];
+  arcs: ArcFrame[];
 }
 
-function computeFrame(time: number, animate: boolean): Frame {
-  const sway = animate ? SWAY_DEG * Math.sin((2 * Math.PI * time) / SWAY_PERIOD) : 0;
-  const projection = geoOrthographic()
-    .scale(R)
-    .translate([CX, CY])
-    .rotate([BASE_ROTATION[0] + sway, BASE_ROTATION[1]])
-    .clipAngle(90);
-  const path = geoPath(projection);
+interface View {
+  time: number;
+  animate: boolean;
+  offset: { lon: number; lat: number };
+  hovered: number | null;
+}
 
-  const project = (c: LonLat, altitude = 0) => {
-    const [x, y] = projection(c) ?? [CX, CY];
-    return { x: CX + (x - CX) * (1 + altitude), y: CY + (y - CY) * (1 + altitude) };
-  };
-
-  const lifted = ROUTES.map((pts) => pts.map((c, i) => project(c, ARC_HEIGHT * Math.sin((Math.PI * i) / SAMPLES))));
-  const toPath = (pts: { x: number; y: number }[]) =>
-    pts.map((p, i) => `${i ? "L" : "M"}${p.x.toFixed(1)} ${p.y.toFixed(1)}`).join("");
-
-  const arcs = lifted.map((pts, i) => {
-    const local = time - i * STAGGER;
-    if (!animate) return { d: toPath(pts), opacity: 1, head: headAt(pts, SAMPLES) };
-    if (local < 0) return { d: "", opacity: 0, head: null };
-
-    const phase = (local % PERIOD) / PERIOD;
-    const progress = phase < DRAW ? easeInOut(phase / DRAW) : 1;
-    const opacity = phase < HOLD ? 1 : 1 - (phase - HOLD) / (1 - HOLD);
-
-    const exact = progress * SAMPLES;
-    const whole = Math.floor(exact);
-    const partial = pts.slice(0, whole + 1);
-    const next = pts[Math.min(whole + 1, SAMPLES)]!;
-    const last = pts[whole]!;
-    const f = exact - whole;
-    partial.push({ x: last.x + (next.x - last.x) * f, y: last.y + (next.y - last.y) * f });
-
-    return { d: progress > 0 ? toPath(partial) : "", opacity, head: progress > 0.01 ? headAt(partial, partial.length - 1) : null };
+/** Polyline through visible points only, breaking where the route passes behind the globe. */
+function toPath(pts: Pt[], visible: boolean[]): string {
+  let d = "";
+  let pen = false;
+  pts.forEach((p, i) => {
+    if (!visible[i]) {
+      pen = false;
+      return;
+    }
+    d += `${pen ? "L" : "M"}${p.x.toFixed(1)} ${p.y.toFixed(1)}`;
+    pen = true;
   });
-
-  return {
-    land: path(LAND) ?? "",
-    graticule: path(GRATICULE) ?? "",
-    ports: PORTS.map((p) => project(p.coords)),
-    poti: project(POTI),
-    tracks: lifted.map(toPath),
-    arcs,
-  };
+  return d;
 }
 
-function headAt(pts: { x: number; y: number }[], index: number) {
+function headAt(pts: Pt[], index: number) {
   const p = pts[index]!;
   const prev = pts[Math.max(0, index - 2)]!;
   return { x: p.x, y: p.y, angle: (Math.atan2(p.y - prev.y, p.x - prev.x) * 180) / Math.PI };
 }
 
-const ARROW = "M7 0L-5 -5.5L-2.5 0L-5 5.5Z";
+function computeFrame({ time, animate, offset, hovered }: View): Frame {
+  const sway = animate ? SWAY_DEG * Math.sin((2 * Math.PI * time) / SWAY_PERIOD) : 0;
+  const rotation: [number, number] = [HOME[0] + sway + offset.lon, HOME[1] + offset.lat];
+  const centre: LonLat = [-rotation[0], -rotation[1]];
+  const projection = geoOrthographic().scale(R).translate([CX, CY]).rotate(rotation).clipAngle(90);
+  const path = geoPath(projection);
+
+  const isVisible = (c: LonLat) => geoDistance(c, centre) < Math.PI / 2 - 0.02;
+  const project = (c: LonLat, altitude = 0): Pt => {
+    const [x, y] = projection(c) ?? [CX, CY];
+    return { x: CX + (x - CX) * (1 + altitude), y: CY + (y - CY) * (1 + altitude) };
+  };
+
+  const routes = ROUTES.map((geo) => ({
+    pts: geo.map((c, i) => project(c, ARC_HEIGHT * Math.sin((Math.PI * i) / SAMPLES))),
+    visible: geo.map(isVisible),
+  }));
+
+  const arcs = routes.map(({ pts, visible }, i): ArcFrame => {
+    const isHovered = hovered === i;
+    const dimmed = hovered !== null && !isHovered;
+
+    let progress = 1;
+    let opacity = 1;
+    if (animate && !isHovered) {
+      const local = time - i * STAGGER;
+      if (local < 0) {
+        progress = 0;
+      } else {
+        const phase = (local % PERIOD) / PERIOD;
+        progress = phase < DRAW ? easeInOut(phase / DRAW) : 1;
+        opacity = phase < HOLD ? 1 : 1 - (phase - HOLD) / (1 - HOLD);
+      }
+    }
+    if (dimmed) opacity *= 0.25;
+
+    if (progress <= 0) return { d: "", opacity: 0, width: 2.4, head: null };
+
+    const exact = progress * SAMPLES;
+    const whole = Math.floor(exact);
+    const partial = pts.slice(0, whole + 1);
+    const vis = visible.slice(0, whole + 1);
+    if (whole < SAMPLES) {
+      const a = pts[whole]!;
+      const b = pts[whole + 1]!;
+      const f = exact - whole;
+      partial.push({ x: a.x + (b.x - a.x) * f, y: a.y + (b.y - a.y) * f });
+      vis.push(visible[whole + 1]!);
+    }
+    const last = partial.length - 1;
+    return {
+      d: toPath(partial, vis),
+      opacity,
+      width: isHovered ? 3.6 : 2.4,
+      head: vis[last] && progress > 0.01 ? headAt(partial, last) : null,
+    };
+  });
+
+  return {
+    land: path(LAND) ?? "",
+    graticule: path(GRATICULE) ?? "",
+    ports: PORTS.map((p) => ({ ...project(p.coords), visible: isVisible(p.coords) })),
+    poti: { ...project(POTI), visible: isVisible(POTI) },
+    tracks: routes.map(({ pts, visible }) => toPath(pts, visible)),
+    arcs,
+  };
+}
+
+const ARROW = "M8 0L-5.5 -6L-2.5 0L-5.5 6Z";
+const LABEL_HALO = "[paint-order:stroke] [stroke-linejoin:round] [stroke-width:5px] [stroke:rgb(11_19_40/0.85)]";
 
 export function GlobeRoutes({ className }: { className?: string }) {
   const t = useT();
   const reduceMotion = useReducedMotion();
   const uid = useId().replace(/:/g, "");
+  const [hintVisible, setHintVisible] = useState(true);
 
-  // Server + first client render: a static frame with all routes drawn.
-  const initial = useMemo(() => computeFrame(0, false), []);
+  const initial = useMemo(() => computeFrame({ time: 0, animate: false, offset: { lon: 0, lat: 0 }, hovered: null }), []);
 
   const svgRef = useRef<SVGSVGElement>(null);
   const landRef = useRef<SVGPathElement>(null);
@@ -147,26 +208,40 @@ export function GlobeRoutes({ className }: { className?: string }) {
   const arcRefs = useRef<(SVGPathElement | null)[]>([]);
   const headRefs = useRef<(SVGPathElement | null)[]>([]);
 
+  // Interaction state lives in refs: read by the animation loop, never re-renders.
+  const offset = useRef({ lon: 0, lat: 0 });
+  const hovered = useRef<number | null>(null);
+  const drag = useRef<{ id: number; x: number; y: number; lon: number; lat: number } | null>(null);
+  const releasedAt = useRef(0);
+
   useEffect(() => {
-    if (reduceMotion) return;
     const svg = svgRef.current;
     if (!svg) return;
 
     let raf = 0;
     let visible = true;
-    const start = performance.now();
+    let last = performance.now();
+    const start = last;
 
-    const paint = (frame: Frame) => {
-      landRef.current?.setAttribute("d", frame.land);
-      gratRef.current?.setAttribute("d", frame.graticule);
-      potiRef.current?.setAttribute("transform", `translate(${frame.poti.x} ${frame.poti.y})`);
-      frame.ports.forEach((p, i) => portRefs.current[i]?.setAttribute("transform", `translate(${p.x} ${p.y})`));
-      frame.tracks.forEach((d, i) => trackRefs.current[i]?.setAttribute("d", d));
-      frame.arcs.forEach((arc, i) => {
+    const paint = (f: Frame) => {
+      landRef.current?.setAttribute("d", f.land);
+      gratRef.current?.setAttribute("d", f.graticule);
+      const poti = potiRef.current;
+      poti?.setAttribute("transform", `translate(${f.poti.x} ${f.poti.y})`);
+      poti?.setAttribute("opacity", f.poti.visible ? "1" : "0");
+      f.ports.forEach((p, i) => {
+        const g = portRefs.current[i];
+        const active = hovered.current === i;
+        g?.setAttribute("transform", `translate(${p.x} ${p.y}) scale(${active ? 1.25 : 1})`);
+        g?.setAttribute("opacity", p.visible ? (hovered.current === null || active ? "1" : "0.55") : "0");
+      });
+      f.tracks.forEach((d, i) => trackRefs.current[i]?.setAttribute("d", d));
+      f.arcs.forEach((arc, i) => {
         const el = arcRefs.current[i];
-        const head = headRefs.current[i];
         el?.setAttribute("d", arc.d);
         el?.setAttribute("opacity", String(arc.opacity));
+        el?.setAttribute("stroke-width", String(arc.width));
+        const head = headRefs.current[i];
         if (head) {
           head.setAttribute("opacity", arc.head ? String(arc.opacity) : "0");
           if (arc.head) head.setAttribute("transform", `translate(${arc.head.x} ${arc.head.y}) rotate(${arc.head.angle})`);
@@ -176,14 +251,25 @@ export function GlobeRoutes({ className }: { className?: string }) {
 
     const tick = (now: number) => {
       raf = 0;
-      paint(computeFrame((now - start) / 1000, true));
+      const dt = Math.min(0.05, (now - last) / 1000);
+      last = now;
+
+      // Ease back to the home view a moment after the user lets go.
+      if (!drag.current && now - releasedAt.current > RETURN_DELAY * 1000) {
+        const k = Math.exp(-RETURN_RATE * dt);
+        offset.current = { lon: offset.current.lon * k, lat: offset.current.lat * k };
+      }
+
+      paint(computeFrame({ time: (now - start) / 1000, animate: !reduceMotion, offset: offset.current, hovered: hovered.current }));
       if (visible) raf = requestAnimationFrame(tick);
     };
 
-    // Only animate while on screen.
     const io = new IntersectionObserver(([entry]) => {
       visible = !!entry?.isIntersecting;
-      if (visible && !raf) raf = requestAnimationFrame(tick);
+      if (visible && !raf) {
+        last = performance.now();
+        raf = requestAnimationFrame(tick);
+      }
     });
     io.observe(svg);
     raf = requestAnimationFrame(tick);
@@ -191,132 +277,207 @@ export function GlobeRoutes({ className }: { className?: string }) {
     return () => {
       io.disconnect();
       if (raf) cancelAnimationFrame(raf);
-      paint(initial);
     };
-  }, [reduceMotion, initial]);
+  }, [reduceMotion]);
+
+  // --- Pointer handling -------------------------------------------------------
+
+  const toViewBox = (e: ReactPointerEvent) => {
+    const rect = svgRef.current!.getBoundingClientRect();
+    const scale = VIEW_W / rect.width;
+    return { x: e.clientX * scale, y: e.clientY * scale };
+  };
+
+  const onPointerDown = (e: ReactPointerEvent<SVGSVGElement>) => {
+    if (e.button !== 0) return;
+    const p = toViewBox(e);
+    drag.current = { id: e.pointerId, x: p.x, y: p.y, lon: offset.current.lon, lat: offset.current.lat };
+    e.currentTarget.setPointerCapture(e.pointerId);
+    setHintVisible(false);
+  };
+
+  const onPointerMove = (e: ReactPointerEvent<SVGSVGElement>) => {
+    const d = drag.current;
+    if (!d || d.id !== e.pointerId) return;
+    const p = toViewBox(e);
+    offset.current = {
+      lon: d.lon + (p.x - d.x) * DRAG_SPEED,
+      lat: Math.max(-LAT_LIMIT, Math.min(LAT_LIMIT, d.lat - (p.y - d.y) * DRAG_SPEED)),
+    };
+  };
+
+  const endDrag = (e: ReactPointerEvent<SVGSVGElement>) => {
+    if (drag.current?.id !== e.pointerId) return;
+    drag.current = null;
+    releasedAt.current = performance.now();
+  };
 
   return (
-    <svg
-      ref={svgRef}
-      viewBox="-76 14 628 494"
-      role="img"
-      aria-label={t.hero.routeAria}
-      className={cn("h-auto w-full", className)}
-    >
-      <defs>
-        <radialGradient id={`${uid}-sphere`} cx="38%" cy="32%" r="75%">
-          <stop offset="0%" stopColor="#FFFFFF" />
-          <stop offset="70%" stopColor="#F4F1EC" />
-          <stop offset="100%" stopColor="#E6E0D6" />
-        </radialGradient>
-        <radialGradient id={`${uid}-glow`} cx="50%" cy="50%" r="50%">
-          <stop offset="80%" stopColor="rgb(var(--gold))" stopOpacity="0.18" />
-          <stop offset="100%" stopColor="rgb(var(--gold))" stopOpacity="0" />
-        </radialGradient>
-        <linearGradient id={`${uid}-arc`} x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0%" stopColor="rgb(var(--gold))" stopOpacity="0.45" />
-          <stop offset="100%" stopColor="rgb(var(--gold))" />
-        </linearGradient>
-        <filter id={`${uid}-soft`} x="-20%" y="-20%" width="140%" height="140%">
-          <feGaussianBlur stdDeviation="2.2" result="blur" />
-          <feMerge>
-            <feMergeNode in="blur" />
-            <feMergeNode in="SourceGraphic" />
-          </feMerge>
-        </filter>
-        <clipPath id={`${uid}-clip`}>
-          <circle cx={CX} cy={CY} r={R} />
-        </clipPath>
-      </defs>
+    <div className={cn("relative", className)}>
+      <svg
+        ref={svgRef}
+        viewBox={`${VIEW_X} ${VIEW_Y} ${VIEW_W} ${VIEW_H}`}
+        role="img"
+        aria-label={t.hero.routeAria}
+        className="h-auto w-full cursor-grab touch-pan-y select-none active:cursor-grabbing"
+        onPointerDown={onPointerDown}
+        onPointerMove={onPointerMove}
+        onPointerUp={endDrag}
+        onPointerCancel={endDrag}
+      >
+        <defs>
+          <radialGradient id={`${uid}-sphere`} cx="40%" cy="34%" r="72%">
+            <stop offset="0%" stopColor="#243A6B" />
+            <stop offset="55%" stopColor="#152447" />
+            <stop offset="100%" stopColor="#0A1430" />
+          </radialGradient>
+          <radialGradient id={`${uid}-atmo`} cx="50%" cy="50%" r="50%">
+            <stop offset="84%" stopColor="#3A7DD8" stopOpacity="0.45" />
+            <stop offset="92%" stopColor="#3A7DD8" stopOpacity="0.12" />
+            <stop offset="100%" stopColor="#3A7DD8" stopOpacity="0" />
+          </radialGradient>
+          <radialGradient id={`${uid}-spec`} cx="34%" cy="26%" r="45%">
+            <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.16" />
+            <stop offset="100%" stopColor="#FFFFFF" stopOpacity="0" />
+          </radialGradient>
+          <linearGradient id={`${uid}-arc`} x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stopColor="#E9CF9E" stopOpacity="0.55" />
+            <stop offset="100%" stopColor="#E3B66A" />
+          </linearGradient>
+          <filter id={`${uid}-glow`} x="-30%" y="-30%" width="160%" height="160%">
+            <feGaussianBlur stdDeviation="3" result="blur" />
+            <feMerge>
+              <feMergeNode in="blur" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+          <clipPath id={`${uid}-clip`}>
+            <circle cx={CX} cy={CY} r={R} />
+          </clipPath>
+        </defs>
 
-      {/* Halo + sphere */}
-      <circle cx={CX} cy={CY} r={R + 26} fill={`url(#${uid}-glow)`} />
-      <circle cx={CX} cy={CY} r={R} fill={`url(#${uid}-sphere)`} stroke="rgb(var(--gold) / 0.35)" strokeWidth="1" />
+        {/* Atmosphere + ocean */}
+        <circle cx={CX} cy={CY} r={R + 34} fill={`url(#${uid}-atmo)`} />
+        <circle cx={CX} cy={CY} r={R} fill={`url(#${uid}-sphere)`} />
 
-      <g clipPath={`url(#${uid}-clip)`}>
-        <path ref={gratRef} d={initial.graticule} fill="none" stroke="rgb(var(--charcoal) / 0.06)" strokeWidth="0.75" />
-        <path ref={landRef} d={initial.land} fill="rgb(var(--navy) / 0.13)" stroke="rgb(var(--navy) / 0.18)" strokeWidth="0.5" />
-      </g>
+        <g clipPath={`url(#${uid}-clip)`}>
+          <path ref={gratRef} d={initial.graticule} fill="none" stroke="rgb(236 232 224 / 0.07)" strokeWidth="0.75" />
+          <path ref={landRef} d={initial.land} fill="rgb(236 232 224 / 0.17)" stroke="rgb(236 232 224 / 0.28)" strokeWidth="0.6" />
+          <circle cx={CX} cy={CY} r={R} fill={`url(#${uid}-spec)`} />
+        </g>
+        <circle cx={CX} cy={CY} r={R} fill="none" stroke="rgb(197 168 128 / 0.35)" strokeWidth="1" />
 
-      {/* Faint dashed tracks */}
-      {initial.tracks.map((d, i) => (
-        <path
-          key={`track-${i}`}
-          ref={(el) => {
-            trackRefs.current[i] = el;
-          }}
-          d={d}
-          fill="none"
-          stroke="rgb(var(--gold) / 0.6)"
-          strokeWidth="1.3"
-          strokeDasharray="2 6"
-          strokeLinecap="round"
-        />
-      ))}
-
-      {/* Animated arcs + arrowheads */}
-      <g filter={`url(#${uid}-soft)`}>
-        {initial.arcs.map((arc, i) => (
+        {/* Faint dashed tracks */}
+        {initial.tracks.map((d, i) => (
           <path
-            key={`arc-${i}`}
+            key={`track-${i}`}
             ref={(el) => {
-              arcRefs.current[i] = el;
+              trackRefs.current[i] = el;
             }}
-            d={arc.d}
+            d={d}
             fill="none"
-            stroke={`url(#${uid}-arc)`}
-            strokeWidth="2.4"
+            stroke="rgb(227 182 106 / 0.4)"
+            strokeWidth="1.2"
+            strokeDasharray="2 6"
             strokeLinecap="round"
           />
         ))}
-        {initial.arcs.map((arc, i) => (
-          <path
-            key={`head-${i}`}
-            ref={(el) => {
-              headRefs.current[i] = el;
-            }}
-            d={ARROW}
-            fill="rgb(var(--gold))"
-            transform={arc.head ? `translate(${arc.head.x} ${arc.head.y}) rotate(${arc.head.angle})` : undefined}
-            opacity={arc.head ? 1 : 0}
-          />
-        ))}
-      </g>
 
-      {/* US ports */}
-      {PORTS.map((port, i) => {
-        const p = initial.ports[i]!;
-        return (
-          <g
-            key={port.key}
-            ref={(el) => {
-              portRefs.current[i] = el;
-            }}
-            transform={`translate(${p.x} ${p.y})`}
-          >
-            <circle r="7" fill="rgb(var(--cashmere))" opacity="0.9" />
-            <circle r="4.2" fill="rgb(var(--navy))" />
-            <text
-              x={port.label.dx}
-              y={port.label.dy}
-              textAnchor={port.label.anchor}
-              className="fill-charcoal/80 font-sans text-[16px] font-medium [paint-order:stroke] [stroke-linejoin:round] [stroke-width:4px] [stroke:rgb(var(--cashmere)/0.85)]"
+        {/* Animated arcs + arrowheads */}
+        <g filter={`url(#${uid}-glow)`}>
+          {initial.arcs.map((arc, i) => (
+            <path
+              key={`arc-${i}`}
+              ref={(el) => {
+                arcRefs.current[i] = el;
+              }}
+              d={arc.d}
+              fill="none"
+              stroke={`url(#${uid}-arc)`}
+              strokeWidth={arc.width}
+              strokeLinecap="round"
+            />
+          ))}
+          {initial.arcs.map((arc, i) => (
+            <path
+              key={`head-${i}`}
+              ref={(el) => {
+                headRefs.current[i] = el;
+              }}
+              d={ARROW}
+              fill="#E9C27E"
+              transform={arc.head ? `translate(${arc.head.x} ${arc.head.y}) rotate(${arc.head.angle})` : undefined}
+              opacity={arc.head ? 1 : 0}
+            />
+          ))}
+        </g>
+
+        {/* US ports (hover / focus to highlight the route) */}
+        {PORTS.map((port, i) => {
+          const p = initial.ports[i]!;
+          const enter = () => {
+            hovered.current = i;
+          };
+          const leave = () => {
+            if (hovered.current === i) hovered.current = null;
+          };
+          return (
+            <g
+              key={port.key}
+              ref={(el) => {
+                portRefs.current[i] = el;
+              }}
+              transform={`translate(${p.x} ${p.y})`}
+              className="cursor-pointer outline-none"
+              onPointerEnter={enter}
+              onPointerLeave={leave}
+              onFocus={enter}
+              onBlur={leave}
+              tabIndex={0}
+              aria-label={t.hero.ports[port.key]}
             >
-              {t.hero.ports[port.key]}
-            </text>
-          </g>
-        );
-      })}
+              <circle r="16" fill="transparent" />
+              <circle r="7.5" fill="rgb(197 168 128 / 0.25)" />
+              <circle r="4.4" fill="#F3EFE7" />
+              <text
+                x={port.label.dx}
+                y={port.label.dy}
+                textAnchor={port.label.anchor}
+                className={cn("pointer-events-none fill-[#F3EFE7] font-sans text-[17px] font-medium", LABEL_HALO)}
+              >
+                {t.hero.ports[port.key]}
+              </text>
+            </g>
+          );
+        })}
 
-      {/* Poti */}
-      <g ref={potiRef} transform={`translate(${initial.poti.x} ${initial.poti.y})`}>
-        <circle r="6" fill="none" stroke="rgb(var(--gold))" strokeWidth="1.4" className="origin-center animate-[ol-pulse_2.8s_ease-out_infinite] [transform-box:fill-box]" />
-        <circle r="8.5" fill="rgb(var(--cashmere))" opacity="0.9" />
-        <circle r="5.6" fill="rgb(var(--gold))" />
-        <text x="12" y="-12" className="fill-charcoal font-serif text-[21px] italic [paint-order:stroke] [stroke-linejoin:round] [stroke-width:4px] [stroke:rgb(var(--cashmere)/0.85)]">
-          {t.hero.ports.poti}
-        </text>
-      </g>
-    </svg>
+        {/* Poti */}
+        <g ref={potiRef} transform={`translate(${initial.poti.x} ${initial.poti.y})`} className="pointer-events-none">
+          <circle
+            r="6.5"
+            fill="none"
+            stroke="#E3B66A"
+            strokeWidth="1.5"
+            className="origin-center animate-[ol-pulse_2.8s_ease-out_infinite] [transform-box:fill-box]"
+          />
+          <circle r="9" fill="rgb(227 182 106 / 0.25)" />
+          <circle r="5.8" fill="#E3B66A" />
+          <text x="13" y="-13" className={cn("fill-[#F5E3C0] font-serif text-[23px] italic", LABEL_HALO)}>
+            {t.hero.ports.poti}
+          </text>
+        </g>
+      </svg>
+
+      <p
+        aria-hidden
+        className={cn(
+          "pointer-events-none absolute bottom-1 left-1/2 flex -translate-x-1/2 items-center gap-1.5 whitespace-nowrap text-[11px] text-[#F3EFE7]/55 transition-opacity duration-700",
+          hintVisible ? "opacity-100" : "opacity-0",
+        )}
+      >
+        <Move className="h-3 w-3" />
+        {t.hero.dragHint}
+      </p>
+    </div>
   );
 }

@@ -34,21 +34,18 @@ export const en: Dictionary = {
     about: "About",
     services: "Services",
     contact: "Contact",
-    portalLogin: "Portal Login",
+    portalLogin: "Sign in",
     portalLoginShort: "Log in",
     openPortal: "Open portal",
   },
 
   hero: {
-    eyebrow: "US auctions · Ocean freight · Georgian customs",
+    eyebrow: "US auctions · Ocean freight",
     titleLead: "Every car, carried",
     titleAccent: "with intent.",
     body:
       "Oceans Lines buys at Copart and IAAI, moves your vehicle across the Atlantic and clears it through Georgian customs — one accountable line from the first bid to the final key.",
-    explore: "Explore services",
     routeAria: "Shipping routes: from US ports to Poti, Georgia",
-    routeTitle: "The line",
-    routeDirection: "USA → Georgia",
     ports: {
       newark: "Newark",
       savannah: "Savannah",
@@ -56,13 +53,13 @@ export const en: Dictionary = {
       losAngeles: "Los Angeles",
       poti: "Poti",
     },
-    steps: ["Auction", "US port", "Ocean", "Poti"],
+    steps: ["Auction", "US port", "Poti"],
+    dragHint: "Drag to rotate",
   },
 
   partners: {
     eyebrow: "Auctions",
     title: "Copart and IAAI, through one account.",
-    body: "We buy at both, and the calculator prices every yard of each.",
     facilities: (count, states) => `${count} facilities · ${states} states`,
     hub: "One line",
   },
@@ -108,7 +105,6 @@ export const en: Dictionary = {
     hidePassword: "Hide password",
     error: "That email and password don’t match an account.",
     submit: "Sign in",
-    demo: "Demo accounts · mock auth",
     back: "← Back to the home page",
     checking: "Checking your session…",
   },
@@ -148,20 +144,7 @@ export const en: Dictionary = {
   },
 
   quote: {
-    total: "Estimated total",
-    pickup: "Pickup",
-    exportPort: "Export port",
-    destination: "Poti, Georgia",
-    lines: {
-      inland: "Inland towing",
-      ocean: "Ocean freight",
-      handling: "Auction handling",
-      service: "Service fee",
-    },
-    handlingDetail: (auction) => `${auction} pickup & paperwork`,
-    serviceDetail: "Coordination & tracking",
-    disclaimer:
-      "Estimate for transport only; auction price, customs duties and taxes are not included. Final price is confirmed on booking.",
+    total: "Total cost to Poti",
     errorUnknownLocation: (auction, city, state) => `${auction} has no facility in ${city}, ${state}.`,
     errorNoPort: (state) => `No export port configured for ${state}.`,
   },

@@ -179,3 +179,29 @@
     opacity: 0;
   }
 }
+
+/* Light travelling along the hero step trail. */
+@keyframes ol-travel {
+  0% {
+    left: 16.67%;
+    opacity: 0;
+  }
+  15%,
+  80% {
+    opacity: 1;
+  }
+  100% {
+    left: calc(83.33% - 3.5rem);
+    opacity: 0;
+  }
+}
+
+/* Slow drift of the background wave lines. */
+@keyframes ol-drift {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-240px);
+  }
+}

@@ -9,13 +9,10 @@ import { asset } from "@/lib/asset";
 import { EASE_LUXE } from "@/lib/motion";
 import type { Auction } from "@/types/domain";
 
-/**
- * Logos live in /public/brands. The shipped files are neutral placeholders —
- * drop the official artwork in under the same names (SVG preferred).
- */
-const PARTNERS: readonly { auction: Auction; logo: `/${string}` }[] = [
-  { auction: "Copart", logo: "/brands/copart.svg" },
-  { auction: "IAAI", logo: "/brands/iaai.svg" },
+/** Official auction logos, in /public/brands. */
+const PARTNERS: readonly { auction: Auction; logo: `/${string}`; width: number; height: number }[] = [
+  { auction: "Copart", logo: "/brands/copart.png", width: 471, height: 180 },
+  { auction: "IAAI", logo: "/brands/iaai.png", width: 302, height: 180 },
 ];
 
 /** Facility coverage per auction, straight from the calculator dataset. */
@@ -37,7 +34,6 @@ export function AuctionPartners() {
           <h2 id="partners-title" className="mt-4 font-serif text-[clamp(1.75rem,3.5vw,2.5rem)] leading-tight text-charcoal">
             {t.partners.title}
           </h2>
-          <p className="mt-4 text-slate-blue">{t.partners.body}</p>
         </Reveal>
 
         <div className="relative mx-auto mt-14 grid max-w-4xl items-center gap-6 md:grid-cols-[1fr_auto_1fr] md:gap-0">
@@ -50,7 +46,7 @@ export function AuctionPartners() {
   );
 }
 
-function PartnerCard({ auction, logo, index }: { auction: Auction; logo: `/${string}`; index: number }) {
+function PartnerCard({ auction, logo, width, height, index }: (typeof PARTNERS)[number] & { index: number }) {
   const t = useT();
   const { facilities, states } = COVERAGE[auction];
 
@@ -78,14 +74,14 @@ function PartnerCard({ auction, logo, index }: { auction: Auction; logo: `/${str
           />
           <span aria-hidden className="absolute inset-x-8 top-0 h-px origin-center scale-x-0 bg-gold transition-transform duration-700 ease-luxe group-hover:scale-x-100" />
 
-          {/* eslint-disable-next-line @next/next/no-img-element -- static SVG from /public, works in the static export */}
+          {/* eslint-disable-next-line @next/next/no-img-element -- static file from /public, works in the static export */}
           <img
             src={asset(logo)}
             alt={auction}
-            width={240}
-            height={64}
+            width={width}
+            height={height}
             loading="lazy"
-            className="mx-auto h-12 w-auto max-w-[200px] object-contain opacity-75 grayscale transition-[filter,opacity,transform] duration-700 ease-luxe group-hover:scale-[1.03] group-hover:opacity-100 group-hover:grayscale-0"
+            className="mx-auto h-16 w-auto max-w-[220px] object-contain drop-shadow-[0_6px_14px_rgb(28_25_23/0.12)] transition-transform duration-700 ease-luxe group-hover:scale-105 sm:h-20"
           />
           <div className="mx-auto mt-7 h-px w-12 bg-gold/50" />
           <p className="mt-5 text-sm tabular-nums text-slate-blue">{t.partners.facilities(facilities, states)}</p>

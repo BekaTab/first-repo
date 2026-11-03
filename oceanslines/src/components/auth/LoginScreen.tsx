@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { Suspense } from "react";
 import { Logo } from "@/components/brand/Logo";
+import { SiteBackground } from "@/components/landing/SiteBackground";
 import { Reveal } from "@/components/motion/Reveal";
 import { LanguageSwitch } from "@/components/ui/language-switch";
 import { useT } from "@/i18n";
@@ -12,10 +13,7 @@ export function LoginScreen() {
   const t = useT();
   return (
     <main className="relative isolate flex min-h-[100dvh] items-center justify-center px-4 py-16">
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(50%_45%_at_50%_0%,rgb(var(--gold)/0.18),transparent_70%)]"
-      />
+      <SiteBackground />
       <LanguageSwitch className="absolute right-4 top-4 sm:right-6 sm:top-6" />
 
       <Reveal className="w-full max-w-[420px]">
