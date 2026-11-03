@@ -57,20 +57,16 @@ function PartnerCard({ auction, logo, width, height, index }: (typeof PARTNERS)[
       viewport={{ once: true, margin: "-60px" }}
       transition={{ duration: 0.9, delay: 0.15 + index * 0.12, ease: EASE_LUXE }}
     >
-      {/* Gentle, out-of-phase float. */}
-      <motion.div
-        animate={{ y: [0, -7, 0] }}
-        transition={{ duration: 6.5, delay: index * 1.6, repeat: Infinity, ease: "easeInOut" }}
+      {/* Gentle, out-of-phase float (CSS transform — runs on the compositor). */}
+      <div
+        className="animate-[ol-float_6.5s_ease-in-out_infinite] will-change-transform"
+        style={{ animationDelay: `${index * -3.2}s` }}
       >
-        <motion.article
-          whileHover={{ y: -4 }}
-          transition={{ duration: 0.5, ease: EASE_LUXE }}
-          className="group relative overflow-hidden rounded-2xl border border-charcoal/[0.07] bg-white/70 px-8 py-9 text-center shadow-soft backdrop-blur-sm transition-shadow duration-700 ease-luxe hover:shadow-lifted"
-        >
+        <article className="group relative overflow-hidden rounded-2xl border border-charcoal/[0.07] bg-white/85 px-8 py-9 text-center shadow-soft transition-[transform,box-shadow] duration-500 ease-luxe hover:-translate-y-1 hover:shadow-lifted">
           {/* Gold light sweep on hover. */}
           <span
             aria-hidden
-            className="pointer-events-none absolute inset-y-0 -left-1/2 w-1/2 -skew-x-12 bg-gradient-to-r from-transparent via-gold/20 to-transparent opacity-0 transition-[left,opacity] duration-1000 ease-luxe group-hover:left-[120%] group-hover:opacity-100"
+            className="pointer-events-none absolute inset-y-0 left-0 w-1/2 -translate-x-full -skew-x-12 bg-gradient-to-r from-transparent via-gold/20 to-transparent opacity-0 transition-[transform,opacity] duration-1000 ease-luxe group-hover:translate-x-[260%] group-hover:opacity-100"
           />
           <span aria-hidden className="absolute inset-x-8 top-0 h-px origin-center scale-x-0 bg-gold transition-transform duration-700 ease-luxe group-hover:scale-x-100" />
 
@@ -85,8 +81,8 @@ function PartnerCard({ auction, logo, width, height, index }: (typeof PARTNERS)[
           />
           <div className="mx-auto mt-7 h-px w-12 bg-gold/50" />
           <p className="mt-5 text-sm tabular-nums text-slate-blue">{t.partners.facilities(facilities, states)}</p>
-        </motion.article>
-      </motion.div>
+        </article>
+      </div>
     </motion.div>
   );
 }

@@ -180,10 +180,10 @@
   }
 }
 
-/* Light travelling along the hero step trail. */
+/* Light travelling along the hero step trail (transform only — no layout). */
 @keyframes ol-travel {
   0% {
-    left: 16.67%;
+    transform: translateX(-50%);
     opacity: 0;
   }
   15%,
@@ -191,17 +191,75 @@
     opacity: 1;
   }
   100% {
-    left: calc(83.33% - 3.5rem);
+    transform: translateX(50%);
     opacity: 0;
   }
 }
 
-/* Slow drift of the background wave lines. */
-@keyframes ol-drift {
-  from {
-    transform: translateX(0);
+/* Gentle float for the auction logo cards. */
+@keyframes ol-float {
+  0%,
+  100% {
+    transform: translateY(0);
   }
-  to {
-    transform: translateX(-240px);
+  50% {
+    transform: translateY(-7px);
+  }
+}
+
+/* Globe routes: the arc draws, holds, then fades; the arrowhead fades with it. */
+.ol-arc {
+  animation-name: ol-arc-draw;
+  animation-iteration-count: infinite;
+  animation-fill-mode: backwards;
+}
+.ol-arc-hold {
+  animation: none;
+  stroke-dashoffset: 0;
+}
+.ol-arc-head {
+  animation-name: ol-arc-head;
+  animation-iteration-count: infinite;
+  animation-fill-mode: backwards;
+}
+
+@keyframes ol-arc-draw {
+  0% {
+    stroke-dashoffset: 1;
+    opacity: 1;
+    animation-timing-function: cubic-bezier(0.45, 0, 0.55, 1);
+  }
+  50%,
+  80% {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+  100% {
+    stroke-dashoffset: 0;
+    opacity: 0;
+  }
+}
+
+@keyframes ol-arc-head {
+  0% {
+    opacity: 0;
+  }
+  3%,
+  80% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+/* Reduced motion: routes shown fully drawn, no travelling arrowheads. */
+@media (prefers-reduced-motion: reduce) {
+  .ol-arc {
+    animation: none !important;
+    stroke-dashoffset: 0;
+  }
+  .ol-arc-head {
+    display: none;
   }
 }

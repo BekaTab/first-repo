@@ -42,10 +42,13 @@ The landing page shows both auctions in animated cards. The logo files are `publ
 
 ## Hero globe
 
-`src/components/landing/GlobeRoutes.tsx` draws a globe with animated arcs from Newark, Savannah, Houston and Los Angeles to Poti. It uses the `d3-geo` orthographic projection and `world-atlas` land outlines.
+The globe is lightweight: the map is pre-computed into static SVG paths, so the site ships no map data or projection code.
 
-- The animation pauses while the globe is off screen.
-- It is replaced by a still frame when the OS asks for reduced motion.
+- `scripts/build-globe.mjs` generates `src/components/landing/globe-geometry.ts`. Re-run it after changing the view or the ports with `node scripts/build-globe.mjs`. The `d3-geo`, `topojson-client` and `world-atlas` packages are dev-only.
+- `src/components/landing/GlobeRoutes.tsx` draws the arcs with a CSS dash animation and moves the arrowheads with native SVG `<animateMotion>`. No JavaScript runs per frame.
+- The static base sits on its own GPU layer, so the moving routes never repaint the map.
+- Hovering or focusing a port highlights its route.
+- With reduced motion, the routes are shown fully drawn.
 
 ## Live on GitHub Pages
 

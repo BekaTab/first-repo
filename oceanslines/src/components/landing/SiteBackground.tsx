@@ -1,10 +1,10 @@
 /**
  * Page backdrop for the public pages: warm cashmere with soft gold / ocean
- * light and fine ocean-current lines that drift slowly. Fixed behind content,
- * purely decorative.
+ * light and fine ocean-current lines. Fixed behind content, purely decorative,
+ * and fully static so it costs nothing while scrolling.
  */
 
-const W = 1680; // wider than the viewBox so the drift never shows an edge
+const W = 1440;
 const LINES = 22;
 
 // Gentle sine "currents", each with its own phase and amplitude.
@@ -23,10 +23,8 @@ const WAVES = Array.from({ length: LINES }, (_, i) => {
 export function SiteBackground() {
   return (
     <div aria-hidden className="pointer-events-none fixed inset-0 -z-20 overflow-hidden bg-cashmere">
-      {/* Soft light */}
-      <div className="absolute -right-[10%] -top-[15%] h-[70vh] w-[60vw] rounded-full bg-gold/25 blur-[120px]" />
-      <div className="absolute -left-[15%] top-[35%] h-[60vh] w-[50vw] rounded-full bg-ocean/[0.12] blur-[130px]" />
-      <div className="absolute -bottom-[20%] right-[10%] h-[50vh] w-[50vw] rounded-full bg-navy/[0.08] blur-[120px]" />
+      {/* Soft light — plain gradients (no blur filters) */}
+      <div className="absolute inset-0 bg-[radial-gradient(45%_55%_at_88%_6%,rgb(var(--gold)/0.24),transparent_70%),radial-gradient(40%_45%_at_4%_55%,rgb(var(--ocean)/0.10),transparent_70%),radial-gradient(45%_40%_at_75%_100%,rgb(var(--navy)/0.07),transparent_70%)]" />
 
       {/* Ocean-current lines */}
       <svg
@@ -34,7 +32,7 @@ export function SiteBackground() {
         viewBox="0 0 1440 960"
         preserveAspectRatio="xMidYMid slice"
       >
-        <g className="animate-[ol-drift_60s_linear_infinite]" fill="none" stroke="rgb(var(--navy) / 0.07)" strokeWidth="1">
+        <g fill="none" stroke="rgb(var(--navy) / 0.07)" strokeWidth="1">
           {WAVES.map((d, i) => (
             <path key={i} d={d} />
           ))}

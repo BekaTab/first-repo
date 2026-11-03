@@ -54,7 +54,6 @@ export const en: Dictionary = {
       poti: "Poti",
     },
     steps: ["Auction", "US port", "Poti"],
-    dragHint: "Drag to rotate",
   },
 
   partners: {

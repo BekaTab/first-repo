@@ -70,10 +70,9 @@ function StepTrail({ steps }: { steps: readonly string[] }) {
   return (
     <ol className="relative mx-auto mt-1 grid max-w-md grid-cols-3 pb-2">
       <span aria-hidden className="absolute left-[16.67%] right-[16.67%] top-5 h-px bg-gradient-to-r from-gold/30 via-gold/60 to-gold/90" />
-      <span
-        aria-hidden
-        className="absolute top-5 h-[3px] w-14 -translate-y-1/2 rounded-full bg-gradient-to-r from-transparent via-[#F5E3C0] to-transparent blur-[1px] animate-[ol-travel_3.6s_cubic-bezier(0.45,0,0.55,1)_infinite]"
-      />
+      <span aria-hidden className="absolute left-[16.67%] right-[16.67%] top-5 h-[3px] -translate-y-1/2 overflow-hidden">
+        <span className="block h-full w-full animate-[ol-travel_3.6s_cubic-bezier(0.45,0,0.55,1)_infinite] bg-[linear-gradient(90deg,transparent_38%,#F5E3C0_50%,transparent_62%)] will-change-transform" />
+      </span>
       {steps.map((step, i) => {
         const Icon = STEP_ICONS[i] ?? MapPin;
         const last = i === steps.length - 1;
