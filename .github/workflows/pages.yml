@@ -33,12 +33,23 @@ jobs:
           rm -rf luxepet
           mv "$RUNNER_TEMP/luxepet" luxepet
           rm luxepet/standalone.html
-      # Oceans Lines is a Next.js app deployed on Vercel (Root Directory: oceanslines); keep its sources off Pages.
-      - name: Exclude Oceans Lines sources
-        run: rm -rf oceanslines
-      - uses: actions/configure-pages@v5
+      - id: pages
+        uses: actions/configure-pages@v5
         with:
           enablement: true
+      # Oceans Lines (Next.js): export it as static files and publish them in place of its sources (served at /oceanslines/)
+      - name: Build Oceans Lines
+        env:
+          PAGES_BASE_PATH: ${{ steps.pages.outputs.base_path }}/oceanslines
+          NEXT_TELEMETRY_DISABLED: "1"
+        run: |
+          npm ci --prefix oceanslines --no-audit --no-fund
+          npm run build --prefix oceanslines
+          mv oceanslines/out "$RUNNER_TEMP/oceanslines"
+          rm -rf oceanslines
+          mv "$RUNNER_TEMP/oceanslines" oceanslines
+          # Next 14 export fetches the home page's navigation data from <base>.txt (one level up)
+          cp oceanslines/index.txt oceanslines.txt
       - uses: actions/upload-pages-artifact@v3
         with:
           path: .

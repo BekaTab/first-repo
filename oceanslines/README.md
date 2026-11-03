@@ -27,6 +27,13 @@ Demo accounts (seeded on first visit, also listed on the login page):
 | Member | member@oceanslines.ge | Member#2026 |
 | Super Member | super@oceanslines.ge | Super#2026 |
 
+## Live on GitHub Pages
+
+Every push to `main` exports the app as static files and publishes it at
+**https://bekatab.github.io/first-repo/oceanslines/** (`.github/workflows/pages.yml`, step "Build Oceans Lines").
+
+To build that version locally: `PAGES_BASE_PATH=/first-repo/oceanslines npm run build` writes it to `out/`.
+
 ## Deploy (Vercel) and the domain
 
 1. Vercel → Add New → Project → `first-repo` → **Root Directory: `oceanslines`** → Deploy. Next.js is detected automatically, and `vercel.json` pins `npm ci`.
