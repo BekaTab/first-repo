@@ -41,6 +41,11 @@ if errorlevel 1 (
 )
 
 rem --- 3. Start the app ---
+if not exist "%USERPROFILE%\.streamlit" mkdir "%USERPROFILE%\.streamlit"
+if not exist "%USERPROFILE%\.streamlit\credentials.toml" (
+    echo [general]> "%USERPROFILE%\.streamlit\credentials.toml"
+    echo email = "">> "%USERPROFILE%\.streamlit\credentials.toml"
+)
 echo [3/3] Starting... the browser will open by itself.
 echo Keep this window open while you use the app. Close it to stop.
 echo.

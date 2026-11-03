@@ -21,6 +21,10 @@ if ! command -v uv >/dev/null 2>&1; then
 fi
 echo "[1/2] Tools ready."
 
+# skip Streamlit's first-run "Email:" question
+mkdir -p "$HOME/.streamlit"
+[ -f "$HOME/.streamlit/credentials.toml" ] || printf '[general]\nemail = ""\n' > "$HOME/.streamlit/credentials.toml"
+
 echo "[2/2] Starting... the browser will open by itself (first time takes 1-2 min)."
 echo "Keep this window open while you use the app. Close it to stop."
 echo
