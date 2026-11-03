@@ -7,7 +7,6 @@ import { useEffect, useState, type FormEvent } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { DEMO_ACCOUNTS } from "@/lib/auth/mock-db";
 import { useT } from "@/i18n";
 import type { Role } from "@/types/domain";
 import { useAuth } from "./AuthProvider";
@@ -113,28 +112,6 @@ export function LoginForm() {
           {t.login.submit}
         </Button>
       </form>
-
-      <div className="mt-10 border-t border-charcoal/[0.07] pt-6">
-        <p className="eyebrow text-slate-blue/80">{t.login.demo}</p>
-        <ul className="mt-4 grid gap-2">
-          {DEMO_ACCOUNTS.map((acc) => (
-            <li key={acc.email}>
-              <button
-                type="button"
-                onClick={() => {
-                  setEmail(acc.email);
-                  setPassword(acc.password);
-                  setError(null);
-                }}
-                className="flex w-full items-center justify-between gap-3 rounded-xl border border-transparent px-3 py-2.5 text-left text-sm transition-colors duration-300 hover:border-gold/40 hover:bg-white/60"
-              >
-                <span className="truncate text-charcoal">{acc.email}</span>
-                <span className="shrink-0 text-xs text-gold">{t.roles[acc.role]}</span>
-              </button>
-            </li>
-          ))}
-        </ul>
-      </div>
     </div>
   );
 }

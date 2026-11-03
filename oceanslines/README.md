@@ -19,7 +19,7 @@ npm run dev        # http://localhost:3000
 
 Other scripts: `npm run build`, `npm start`, `npm run lint`, `npm run typecheck`.
 
-Demo accounts (seeded on first visit, also listed on the login page):
+Demo accounts, seeded on first visit (not shown on the login page):
 
 | Role | Email | Password |
 |---|---|---|
@@ -38,7 +38,7 @@ Georgian is the default language and English is the alternative. The **ქა / 
 
 ## Auction logos (Copart, IAAI)
 
-The landing page shows both auctions in animated cards, with logos from `public/brands/copart.svg` and `public/brands/iaai.svg`. **The shipped files are plain-text placeholders.** Replace them with the official logo files under the same names. SVG is preferred, but PNG works if you also update the paths in `src/components/landing/AuctionPartners.tsx`. Logos show in monochrome and turn to full color on hover.
+The landing page shows both auctions in animated cards. The logo files are `public/brands/copart.png` and `public/brands/iaai.png`. To swap a logo, replace the file under the same name. If you change the format, also update `src/components/landing/AuctionPartners.tsx`.
 
 ## Hero globe
 
