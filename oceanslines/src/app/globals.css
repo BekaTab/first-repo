@@ -1,0 +1,147 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ------------------------------------------------------------------ */
+/* Brand tokens (landing, login) — "Quiet Luxury"                      */
+/* Values are RGB channels so Tailwind alpha modifiers work.           */
+/* ------------------------------------------------------------------ */
+:root {
+  --cashmere: 249 248 246;   /* #F9F8F6 */
+  --charcoal: 44 44 44;      /* #2C2C2C */
+  --gold: 197 168 128;       /* #C5A880 */
+  --gold-soft: 232 220 202;  /* gold tint for hairlines and fills */
+  --slate-blue: 74 85 104;   /* #4A5568 */
+  --ocean: 58 125 216;       /* logo blue  #3A7DD8 */
+  --navy: 31 42 77;          /* logo navy  #1F2A4D */
+  --shadow: 28 25 23;
+
+  /* Portal defaults = MEMBER theme, so portal components render sensibly
+     even outside a themed scope. */
+  --surface: 241 243 246;
+  --surface-raised: 255 255 255;
+  --surface-sunken: 233 236 241;
+  --fg: 28 35 48;
+  --fg-muted: 90 100 117;
+  --fg-subtle: 140 149 163;
+  --line: 222 226 233;
+  --line-strong: 200 206 216;
+  --primary: 29 111 216;      /* standard corporate blue */
+  --primary-hover: 22 94 186;
+  --primary-fg: 255 255 255;
+  --accent: 29 111 216;
+  --accent-fg: 255 255 255;
+  --danger: 200 55 55;
+  --ring: 29 111 216;
+}
+
+/* ------------------------------------------------------------------ */
+/* Role themes — identical DOM, swapped variables.                     */
+/* Set on the portal scope element by <PortalThemeScope>.              */
+/* ------------------------------------------------------------------ */
+[data-portal-theme="member"] {
+  --surface: 241 243 246;      /* light gray canvas */
+  --surface-raised: 255 255 255;
+  --surface-sunken: 233 236 241;
+  --fg: 28 35 48;
+  --fg-muted: 90 100 117;
+  --fg-subtle: 140 149 163;
+  --line: 222 226 233;
+  --line-strong: 200 206 216;
+  --primary: 29 111 216;
+  --primary-hover: 22 94 186;
+  --primary-fg: 255 255 255;
+  --accent: 29 111 216;
+  --accent-fg: 255 255 255;
+  --danger: 200 55 55;
+  --ring: 29 111 216;
+  --shadow: 15 23 42;
+  color-scheme: light;
+}
+
+[data-portal-theme="super"] {
+  --surface: 10 13 22;          /* obsidian */
+  --surface-raised: 18 24 41;   /* midnight blue */
+  --surface-sunken: 13 18 31;
+  --fg: 236 232 224;
+  --fg-muted: 160 167 184;
+  --fg-subtle: 112 120 140;
+  --line: 37 46 70;
+  --line-strong: 56 67 96;
+  --primary: 212 170 92;        /* gold / amber */
+  --primary-hover: 228 190 116;
+  --primary-fg: 24 18 8;
+  --accent: 197 168 128;
+  --accent-fg: 24 18 8;
+  --danger: 239 120 110;
+  --ring: 212 170 92;
+  --shadow: 0 0 0;
+  color-scheme: dark;
+}
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    @apply bg-cashmere font-sans text-charcoal;
+  }
+
+  ::selection {
+    background: rgb(var(--gold) / 0.35);
+  }
+
+  :focus-visible {
+    outline: 2px solid rgb(var(--ring));
+    outline-offset: 2px;
+  }
+}
+
+@layer components {
+  .eyebrow {
+    @apply text-[11px] font-medium uppercase tracking-eyebrow;
+  }
+
+  /* Frosted panel used on the landing page and login. */
+  .glass {
+    @apply border border-white/60 bg-white/55 shadow-soft backdrop-blur-xl;
+  }
+
+  .hairline {
+    background: linear-gradient(90deg, transparent, rgb(var(--gold) / 0.7), transparent);
+    height: 1px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}
+
+/* Keyframes used by Radix menus and dialogs (via Tailwind arbitrary `animate-[…]`). */
+@keyframes ol-pop {
+  from {
+    opacity: 0;
+    transform: translateY(-4px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes ol-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
