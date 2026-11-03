@@ -1,0 +1,277 @@
+{
+  "$comment": "PLACEHOLDER PRICES — replace the numbers with real rates. Structure is validated at startup (src/lib/pricing/pricing-matrix.ts).",
+  "meta": {
+    "version": "placeholder-2026-11",
+    "currency": "USD",
+    "destination": "Poti, Georgia"
+  },
+  "rounding": 5,
+  "ports": {
+    "NJ": {
+      "label": "Newark, NJ",
+      "ocean": {
+        "Sedan": 1150,
+        "SUV": 1350
+      }
+    },
+    "GA": {
+      "label": "Savannah, GA",
+      "ocean": {
+        "Sedan": 1100,
+        "SUV": 1300
+      }
+    },
+    "TX": {
+      "label": "Houston, TX",
+      "ocean": {
+        "Sedan": 1250,
+        "SUV": 1450
+      }
+    },
+    "CA": {
+      "label": "Los Angeles, CA",
+      "ocean": {
+        "Sedan": 1750,
+        "SUV": 1950
+      }
+    }
+  },
+  "states": {
+    "AK": {
+      "port": "CA",
+      "inland": 1450
+    },
+    "AL": {
+      "port": "GA",
+      "inland": 425
+    },
+    "AR": {
+      "port": "TX",
+      "inland": 450
+    },
+    "AZ": {
+      "port": "CA",
+      "inland": 400
+    },
+    "CA": {
+      "port": "CA",
+      "inland": 275
+    },
+    "CO": {
+      "port": "TX",
+      "inland": 650
+    },
+    "CT": {
+      "port": "NJ",
+      "inland": 300
+    },
+    "DE": {
+      "port": "NJ",
+      "inland": 275
+    },
+    "FL": {
+      "port": "GA",
+      "inland": 400
+    },
+    "GA": {
+      "port": "GA",
+      "inland": 275
+    },
+    "HI": {
+      "port": "CA",
+      "inland": 1650
+    },
+    "IA": {
+      "port": "NJ",
+      "inland": 700
+    },
+    "ID": {
+      "port": "CA",
+      "inland": 650
+    },
+    "IL": {
+      "port": "NJ",
+      "inland": 575
+    },
+    "IN": {
+      "port": "NJ",
+      "inland": 525
+    },
+    "KS": {
+      "port": "TX",
+      "inland": 575
+    },
+    "KY": {
+      "port": "GA",
+      "inland": 500
+    },
+    "LA": {
+      "port": "TX",
+      "inland": 375
+    },
+    "MA": {
+      "port": "NJ",
+      "inland": 350
+    },
+    "MD": {
+      "port": "NJ",
+      "inland": 300
+    },
+    "ME": {
+      "port": "NJ",
+      "inland": 450
+    },
+    "MI": {
+      "port": "NJ",
+      "inland": 550
+    },
+    "MN": {
+      "port": "NJ",
+      "inland": 800
+    },
+    "MO": {
+      "port": "TX",
+      "inland": 600
+    },
+    "MS": {
+      "port": "TX",
+      "inland": 425
+    },
+    "MT": {
+      "port": "CA",
+      "inland": 900
+    },
+    "NC": {
+      "port": "GA",
+      "inland": 375
+    },
+    "ND": {
+      "port": "NJ",
+      "inland": 950
+    },
+    "NE": {
+      "port": "TX",
+      "inland": 700
+    },
+    "NH": {
+      "port": "NJ",
+      "inland": 400
+    },
+    "NJ": {
+      "port": "NJ",
+      "inland": 225
+    },
+    "NM": {
+      "port": "TX",
+      "inland": 600
+    },
+    "NV": {
+      "port": "CA",
+      "inland": 375
+    },
+    "NY": {
+      "port": "NJ",
+      "inland": 275
+    },
+    "OH": {
+      "port": "NJ",
+      "inland": 450
+    },
+    "OK": {
+      "port": "TX",
+      "inland": 425
+    },
+    "OR": {
+      "port": "CA",
+      "inland": 600
+    },
+    "PA": {
+      "port": "NJ",
+      "inland": 300
+    },
+    "RI": {
+      "port": "NJ",
+      "inland": 350
+    },
+    "SC": {
+      "port": "GA",
+      "inland": 325
+    },
+    "SD": {
+      "port": "NJ",
+      "inland": 900
+    },
+    "TN": {
+      "port": "GA",
+      "inland": 450
+    },
+    "TX": {
+      "port": "TX",
+      "inland": 300
+    },
+    "UT": {
+      "port": "CA",
+      "inland": 600
+    },
+    "VA": {
+      "port": "NJ",
+      "inland": 375
+    },
+    "VT": {
+      "port": "NJ",
+      "inland": 425
+    },
+    "WA": {
+      "port": "CA",
+      "inland": 750
+    },
+    "WI": {
+      "port": "NJ",
+      "inland": 650
+    },
+    "WV": {
+      "port": "NJ",
+      "inland": 425
+    },
+    "WY": {
+      "port": "TX",
+      "inland": 850
+    }
+  },
+  "locationInlandOverrides": {
+    "copart-ca-long-beach": 175,
+    "iaai-ca-los-angeles": 200,
+    "copart-ga-savannah": 150,
+    "iaai-ga-savannah": 150,
+    "copart-tx-houston": 150,
+    "iaai-tx-houston": 150,
+    "iaai-nj-avenel": 175,
+    "copart-nj-somerville": 200
+  },
+  "auctionHandlingFee": {
+    "Copart": 75,
+    "IAAI": 75
+  },
+  "carTypes": {
+    "Sedan": {
+      "inlandMultiplier": 1
+    },
+    "SUV": {
+      "inlandMultiplier": 1.15
+    }
+  },
+  "tiers": {
+    "MEMBER": {
+      "serviceFee": 250,
+      "inlandMultiplier": 1,
+      "oceanMultiplier": 1,
+      "auctionHandlingMultiplier": 1
+    },
+    "SUPER_MEMBER": {
+      "serviceFee": 100,
+      "inlandMultiplier": 0.9,
+      "oceanMultiplier": 0.92,
+      "auctionHandlingMultiplier": 0
+    }
+  }
+}
