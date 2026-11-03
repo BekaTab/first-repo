@@ -4,25 +4,27 @@ import { AnimatePresence, motion } from "framer-motion";
 import { KeyRound, Search, ShieldCheck, Trash2 } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useAuth } from "@/components/auth/AuthProvider";
-import { TIER_OPTIONS } from "@/components/portal/TierPreviewToggle";
+import { useTierOptions } from "@/components/portal/TierPreviewToggle";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { SegmentedControl } from "@/components/ui/segmented-control";
 import type { IssuedCredentials, PublicUser } from "@/lib/auth/types";
 import { EASE_LUXE } from "@/lib/motion";
-import { ROLE_LABELS, type Role } from "@/types/domain";
+import { useT } from "@/i18n";
+import type { Role } from "@/types/domain";
 
 const ROLE_ORDER: Record<Role, number> = { ADMIN: 0, SUPER_MEMBER: 1, MEMBER: 2 };
 
-const dateFmt = new Intl.DateTimeFormat("en-GB", { day: "2-digit", month: "short", year: "numeric" });
-const formatDate = (iso: string | null) => (iso ? dateFmt.format(new Date(iso)) : "Never");
 
 interface UsersTableProps {
   onCredentials: (credentials: IssuedCredentials) => void;
 }
 
 export function UsersTable({ onCredentials }: UsersTableProps) {
+  const t = useT();
+  const tierOptions = useTierOptions();
   const { users, user: me, setUserRole, resetPassword, deleteUser } = useAuth();
+  const formatDate = (iso: string | null) => (iso ? t.meta.formatDate(new Date(iso)) : t.admin.never);
   const [query, setQuery] = useState("");
   const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
 
@@ -49,7 +51,7 @@ export function UsersTable({ onCredentials }: UsersTableProps) {
         <dl className="flex gap-6 text-sm">
           {(["MEMBER", "SUPER_MEMBER", "ADMIN"] as const).map((r) => (
             <div key={r}>
-              <dt className="text-xs text-fg-subtle">{ROLE_LABELS[r]}s</dt>
+              <dt className="text-xs text-fg-subtle">{t.rolesPlural[r]}</dt>
               <dd className="mt-0.5 text-lg font-semibold tabular-nums text-fg">{counts[r]}</dd>
             </div>
           ))}
@@ -58,8 +60,8 @@ export function UsersTable({ onCredentials }: UsersTableProps) {
           <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-fg-subtle" aria-hidden />
           <Input
             type="search"
-            placeholder="Search name or email"
-            aria-label="Search users"
+            placeholder={t.admin.search}
+            aria-label={t.admin.searchAria}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             className="h-10 pl-10 text-sm"
@@ -71,12 +73,12 @@ export function UsersTable({ onCredentials }: UsersTableProps) {
         <table className="w-full min-w-[760px] text-left text-sm">
           <thead>
             <tr className="border-b border-line text-xs uppercase tracking-[0.08em] text-fg-subtle">
-              <th scope="col" className="px-6 py-3 font-medium">User</th>
-              <th scope="col" className="px-6 py-3 font-medium">Role</th>
-              <th scope="col" className="px-6 py-3 font-medium">Last sign-in</th>
-              <th scope="col" className="px-6 py-3 font-medium">Created</th>
+              <th scope="col" className="px-6 py-3 font-medium">{t.admin.colUser}</th>
+              <th scope="col" className="px-6 py-3 font-medium">{t.admin.colRole}</th>
+              <th scope="col" className="px-6 py-3 font-medium">{t.admin.colLastLogin}</th>
+              <th scope="col" className="px-6 py-3 font-medium">{t.admin.colCreated}</th>
               <th scope="col" className="px-6 py-3 text-right font-medium">
-                <span className="sr-only">Actions</span>
+                <span className="sr-only">{t.admin.colActions}</span>
               </th>
             </tr>
           </thead>
@@ -98,7 +100,7 @@ export function UsersTable({ onCredentials }: UsersTableProps) {
                     <td className="px-6 py-4">
                       <p className="font-medium text-fg">
                         {u.name}
-                        {u.id === me?.id ? <span className="ml-2 text-xs font-normal text-fg-subtle">(you)</span> : null}
+                        {u.id === me?.id ? <span className="ml-2 text-xs font-normal text-fg-subtle">{t.admin.you}</span> : null}
                       </p>
                       <p className="text-fg-muted">{u.email}</p>
                     </td>
@@ -106,14 +108,14 @@ export function UsersTable({ onCredentials }: UsersTableProps) {
                       {isAdmin ? (
                         <span className="inline-flex items-center gap-1.5 rounded-lg border border-line px-2.5 py-1.5 text-xs font-medium text-fg-muted">
                           <ShieldCheck className="h-3.5 w-3.5 text-accent" aria-hidden />
-                          Admin
+                          {t.roles.ADMIN}
                         </span>
                       ) : (
                         <SegmentedControl
-                          aria-label={`Role for ${u.name}`}
+                          aria-label={t.admin.roleFor(u.name)}
                           value={u.role === "SUPER_MEMBER" ? "SUPER_MEMBER" : "MEMBER"}
                           onChange={(role) => setUserRole(u.id, role)}
-                          options={TIER_OPTIONS}
+                          options={tierOptions}
                         />
                       )}
                     </td>
@@ -121,22 +123,22 @@ export function UsersTable({ onCredentials }: UsersTableProps) {
                     <td className="px-6 py-4 tabular-nums text-fg-muted">{formatDate(u.createdAt)}</td>
                     <td className="px-6 py-4">
                       <div className="flex items-center justify-end gap-1">
-                        <Button variant="ghost" size="sm" onClick={() => onReset(u)} title="Generate a new password">
+                        <Button variant="ghost" size="sm" onClick={() => onReset(u)} title={t.admin.resetPasswordTitle}>
                           <KeyRound className="h-4 w-4" aria-hidden />
-                          <span>Reset password</span>
+                          <span>{t.admin.resetPassword}</span>
                         </Button>
                         {!isAdmin ? (
                           confirming ? (
                             <>
                               <Button variant="danger" size="sm" onClick={() => { deleteUser(u.id); setConfirmDelete(null); }}>
-                                Confirm delete
+                                {t.admin.confirmDelete}
                               </Button>
                               <Button variant="ghost" size="sm" onClick={() => setConfirmDelete(null)}>
-                                Cancel
+                                {t.common.cancel}
                               </Button>
                             </>
                           ) : (
-                            <Button variant="danger" size="icon" onClick={() => setConfirmDelete(u.id)} aria-label={`Delete ${u.name}`} title="Delete user">
+                            <Button variant="danger" size="icon" onClick={() => setConfirmDelete(u.id)} aria-label={t.admin.deleteUser(u.name)} title={t.admin.deleteTitle}>
                               <Trash2 className="h-4 w-4" aria-hidden />
                             </Button>
                           )
@@ -149,7 +151,7 @@ export function UsersTable({ onCredentials }: UsersTableProps) {
             </AnimatePresence>
           </tbody>
         </table>
-        {rows.length === 0 ? <p className="px-6 py-10 text-center text-sm text-fg-muted">No users match “{query}”.</p> : null}
+        {rows.length === 0 ? <p className="px-6 py-10 text-center text-sm text-fg-muted">{t.admin.noMatch(query)}</p> : null}
       </div>
     </div>
   );

@@ -1,14 +1,8 @@
 import type { Metadata } from "next";
-import { TransportCalculator } from "@/components/calculator/TransportCalculator";
-import { PortalPageHeading } from "@/components/portal/PortalPageHeading";
+import { CalculatorPage } from "@/components/calculator/CalculatorPage";
 
-export const metadata: Metadata = { title: "Calculator" };
+export const metadata: Metadata = { title: "კალკულატორი" };
 
-export default function CalculatorPage() {
-  return (
-    <>
-      <PortalPageHeading eyebrow="Member portal" title="Shipping estimate" description="Price any Copart or IAAI facility to Poti in a few clicks." />
-      <TransportCalculator />
-    </>
-  );
+export default function Page() {
+  return <CalculatorPage />;
 }

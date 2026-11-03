@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { FileCheck2, Gavel, Ship, type LucideIcon } from "lucide-react";
 import { Reveal, RevealGroup, RevealItem } from "@/components/motion/Reveal";
+import { useT } from "@/i18n";
 import { EASE_LUXE } from "@/lib/motion";
 
 interface Service {
@@ -12,59 +13,36 @@ interface Service {
   points: readonly string[];
 }
 
-const SERVICES: readonly Service[] = [
-  {
-    icon: Gavel,
-    title: "Auction buying",
-    summary: "Access to Copart and IAAI without the guesswork. We vet the lot, set the ceiling with you, and bid.",
-    points: ["Lot history and photo review", "Bidding to your agreed limit", "Auction payment and title handling"],
-  },
-  {
-    icon: Ship,
-    title: "Logistics",
-    summary: "From the auction yard to the port of Poti, one coordinated chain with a single point of contact.",
-    points: ["Inland towing to the nearest export port", "Container loading and ocean freight", "Status updates at every hand-off"],
-  },
-  {
-    icon: FileCheck2,
-    title: "Clearing",
-    summary: "Georgian customs, duties and paperwork handled precisely, so the car is ready when it lands.",
-    points: ["Customs declaration and duties", "Document preparation and checks", "Release and hand-over in Georgia"],
-  },
-];
+const SERVICE_ICONS: readonly LucideIcon[] = [Gavel, Ship, FileCheck2];
 
 export function About() {
+  const t = useT();
+  const services: Service[] = t.about.services.map((svc, i) => ({ ...svc, icon: SERVICE_ICONS[i] ?? Gavel }));
   return (
     <section id="about" className="scroll-mt-24 py-24 sm:py-32">
       <div className="container">
         <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:gap-20">
           <Reveal>
-            <p className="eyebrow text-gold">About us</p>
+            <p className="eyebrow text-gold">{t.about.eyebrow}</p>
             <h2 className="mt-5 font-serif text-[clamp(2rem,4vw,3rem)] leading-[1.1] tracking-[-0.01em] text-charcoal">
-              A quieter way to import a car.
+              {t.about.title}
             </h2>
           </Reveal>
           <Reveal delay={0.12} className="space-y-5 text-[17px] leading-relaxed text-slate-blue lg:pt-10">
-            <p>
-              Importing from the United States involves auctions, towing companies, shipping lines and customs
-              officers — each with their own timing and paperwork. Oceans Lines brings all of it onto one line.
-            </p>
-            <p>
-              Members see every rate before they commit, follow each stage from the portal, and deal with one team
-              from the first bid to the moment the keys change hands.
-            </p>
+            <p>{t.about.p1}</p>
+            <p>{t.about.p2}</p>
           </Reveal>
         </div>
 
         <div id="services" className="scroll-mt-28 pt-20">
           <Reveal className="flex items-center gap-4">
             <span className="hairline w-10" />
-            <p className="eyebrow text-slate-blue">Core services</p>
+            <p className="eyebrow text-slate-blue">{t.about.servicesEyebrow}</p>
           </Reveal>
 
           <RevealGroup className="mt-10 grid gap-5 md:grid-cols-3 md:gap-6">
-            {SERVICES.map((service, i) => (
-              <RevealItem key={service.title} className="h-full">
+            {services.map((service, i) => (
+              <RevealItem key={i} className="h-full">
                 <ServiceCard service={service} index={i} />
               </RevealItem>
             ))}

@@ -27,6 +27,26 @@ Demo accounts (seeded on first visit, also listed on the login page):
 | Member | member@oceanslines.ge | Member#2026 |
 | Super Member | super@oceanslines.ge | Super#2026 |
 
+## Languages
+
+Georgian is the default language and English is the alternative. The **ქა / EN** switch is in the site header, on the login page, and in the portal header. The visitor's choice is saved in their browser.
+
+- All interface text is in `src/i18n/ka.ts` (Georgian, the source of truth) and `src/i18n/en.ts`.
+- English is typed against the Georgian dictionary, so a missing or extra key fails the build.
+- Components read text with `const t = useT()`.
+- Pages are prerendered in Georgian. A saved English choice is applied right after the page loads.
+
+## Auction logos (Copart, IAAI)
+
+The landing page shows both auctions in animated cards, with logos from `public/brands/copart.svg` and `public/brands/iaai.svg`. **The shipped files are plain-text placeholders.** Replace them with the official logo files under the same names. SVG is preferred, but PNG works if you also update the paths in `src/components/landing/AuctionPartners.tsx`. Logos show in monochrome and turn to full color on hover.
+
+## Hero globe
+
+`src/components/landing/GlobeRoutes.tsx` draws a globe with animated arcs from Newark, Savannah, Houston and Los Angeles to Poti. It uses the `d3-geo` orthographic projection and `world-atlas` land outlines.
+
+- The animation pauses while the globe is off screen.
+- It is replaced by a still frame when the OS asks for reduced motion.
+
 ## Live on GitHub Pages
 
 Every push to `main` exports the app as static files and publishes it at

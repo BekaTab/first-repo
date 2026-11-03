@@ -16,11 +16,6 @@ export type Role = (typeof ROLES)[number];
 export const PRICING_TIERS = ["MEMBER", "SUPER_MEMBER"] as const;
 export type PricingTier = (typeof PRICING_TIERS)[number];
 
-export const ROLE_LABELS: Record<Role, string> = {
-  ADMIN: "Admin",
-  MEMBER: "Member",
-  SUPER_MEMBER: "Super Member",
-};
 
 export const isAuction = (v: unknown): v is Auction =>
   typeof v === "string" && (AUCTIONS as readonly string[]).includes(v);

@@ -19,6 +19,8 @@ const securityHeaders = [
 const nextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
+  // Lets plain <img> tags resolve files in /public under the Pages base path (see src/lib/asset.ts).
+  env: { NEXT_PUBLIC_BASE_PATH: pagesBasePath ?? "" },
   ...(pagesBasePath !== undefined
     ? {
         output: "export",
