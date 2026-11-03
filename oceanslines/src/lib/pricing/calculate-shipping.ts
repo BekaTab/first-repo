@@ -49,26 +49,18 @@ export function calculateShipping(
 
   const inland: QuoteLine = {
     key: "inland",
-    label: "Inland towing",
-    detail: `${location.city}, ${state} → ${port.label}`,
     amount: roundUp(baseInland * matrix.carTypes[carType].inlandMultiplier * tier.inlandMultiplier, step),
   };
   const ocean: QuoteLine = {
     key: "ocean",
-    label: "Ocean freight",
-    detail: `${port.label} → ${matrix.meta.destination}`,
     amount: roundUp(port.ocean[carType] * tier.oceanMultiplier, step),
   };
   const handling: QuoteLine = {
     key: "handling",
-    label: "Auction handling",
-    detail: `${auction} pickup & paperwork`,
     amount: roundUp(matrix.auctionHandlingFee[auction] * tier.auctionHandlingMultiplier, step),
   };
   const service: QuoteLine = {
     key: "service",
-    label: "Service fee",
-    detail: "Coordination & tracking",
     amount: roundUp(tier.serviceFee, step),
   };
 

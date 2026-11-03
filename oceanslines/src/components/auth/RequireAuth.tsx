@@ -3,6 +3,7 @@
 import { Loader2 } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, type ReactNode } from "react";
+import { useT } from "@/i18n";
 import type { Role } from "@/types/domain";
 import { useAuth } from "./AuthProvider";
 
@@ -21,6 +22,7 @@ interface RequireAuthProps {
  * route handlers) — a client guard only controls what is rendered.
  */
 export function RequireAuth({ roles, children }: RequireAuthProps) {
+  const t = useT();
   const { status, user } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
@@ -42,7 +44,7 @@ export function RequireAuth({ roles, children }: RequireAuthProps) {
     return (
       <div className="flex min-h-[60vh] items-center justify-center" role="status" aria-live="polite">
         <Loader2 className="h-5 w-5 animate-spin text-fg-subtle" aria-hidden />
-        <span className="sr-only">Checking your session…</span>
+        <span className="sr-only">{t.login.checking}</span>
       </div>
     );
   }

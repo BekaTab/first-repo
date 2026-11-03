@@ -3,6 +3,7 @@
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { X } from "lucide-react";
 import type { ReactNode } from "react";
+import { useT } from "@/i18n";
 import { cn } from "@/lib/utils";
 import { usePortalContainer } from "./portal-container";
 
@@ -19,6 +20,7 @@ interface DialogContentProps {
 
 export function DialogContent({ title, description, children, className }: DialogContentProps) {
   const container = usePortalContainer();
+  const t = useT();
   return (
     <DialogPrimitive.Portal container={container}>
       <DialogPrimitive.Overlay className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm data-[state=open]:animate-[ol-fade_250ms_ease-out]" />
@@ -40,7 +42,7 @@ export function DialogContent({ title, description, children, className }: Dialo
         <div className="mt-6">{children}</div>
         <DialogPrimitive.Close
           className="absolute right-4 top-4 rounded-lg p-1.5 text-fg-subtle transition-colors hover:bg-surface-sunken hover:text-fg"
-          aria-label="Close"
+          aria-label={t.common.close}
         >
           <X className="h-4 w-4" aria-hidden />
         </DialogPrimitive.Close>

@@ -4,16 +4,18 @@ import Link from "next/link";
 import { motion, useMotionValueEvent, useScroll } from "framer-motion";
 import { useState } from "react";
 import { Logo } from "@/components/brand/Logo";
+import { LanguageSwitch } from "@/components/ui/language-switch";
+import { useT } from "@/i18n";
 import { cn } from "@/lib/utils";
 import { PortalButton } from "./PortalButton";
 
-const NAV = [
-  { href: "#about", label: "About" },
-  { href: "#services", label: "Services" },
-  { href: "#contact", label: "Contact" },
-];
-
 export function SiteHeader() {
+  const t = useT();
+  const nav = [
+    { href: "#about", label: t.nav.about },
+    { href: "#services", label: t.nav.services },
+    { href: "#contact", label: t.nav.contact },
+  ];
   const { scrollY } = useScroll();
   const [scrolled, setScrolled] = useState(false);
   useMotionValueEvent(scrollY, "change", (y) => setScrolled(y > 24));
@@ -28,13 +30,13 @@ export function SiteHeader() {
         scrolled ? "border-b border-charcoal/[0.06] bg-cashmere/75 backdrop-blur-xl" : "border-b border-transparent",
       )}
     >
-      <div className="container flex h-[72px] items-center justify-between gap-6">
-        <Link href="/" aria-label="Oceans Lines — home" className="text-[19px] sm:text-[21px]">
+      <div className="container flex h-[72px] items-center justify-between gap-3 sm:gap-6">
+        <Link href="/" aria-label={t.common.homeAria} className="shrink-0 text-[17px] sm:text-[21px]">
           <Logo />
         </Link>
 
-        <nav aria-label="Primary" className="hidden items-center gap-9 md:flex">
-          {NAV.map((item) => (
+        <nav className="hidden items-center gap-8 lg:flex">
+          {nav.map((item) => (
             <a
               key={item.href}
               href={item.href}
@@ -45,7 +47,10 @@ export function SiteHeader() {
           ))}
         </nav>
 
-        <PortalButton size="sm" className="h-10 px-4" />
+        <div className="flex items-center gap-2 sm:gap-3">
+          <LanguageSwitch />
+          <PortalButton size="sm" compact className="h-10 px-3.5 sm:px-4" />
+        </div>
       </div>
     </motion.header>
   );

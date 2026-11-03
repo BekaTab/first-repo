@@ -56,10 +56,9 @@ export interface TierPricing {
 
 export type QuoteLineKey = "inland" | "ocean" | "handling" | "service";
 
+/** Language-neutral: the UI labels each line from its `key` in the active language. */
 export interface QuoteLine {
   key: QuoteLineKey;
-  label: string;
-  detail: string;
   amount: number;
 }
 
@@ -80,4 +79,5 @@ export type QuoteErrorCode = "UNKNOWN_LOCATION" | "LOCATION_MISMATCH";
 
 export type QuoteResult =
   | { ok: true; quote: ShippingQuote }
+  /** `message` is an English, developer-facing description; the UI shows a translated text per `code`. */
   | { ok: false; code: QuoteErrorCode; message: string };

@@ -9,15 +9,15 @@ import { Select, type SelectOption } from "@/components/ui/select";
 import { getLocations } from "@/data/locations";
 import { US_STATES, type StateCode } from "@/data/us-states";
 import { usePricingTier } from "@/hooks/use-pricing-tier";
+import { useT } from "@/i18n";
 import { EASE_LUXE } from "@/lib/motion";
 import { selectIsComplete, useCalculatorStore } from "@/store/calculator-store";
 import { AUCTIONS, CAR_TYPES, type Auction, type CarType } from "@/types/domain";
 import { QuoteSummary } from "./QuoteSummary";
 
-// Static option lists — built once.
+// Language-independent option lists — built once.
 const AUCTION_OPTIONS: readonly SelectOption<Auction>[] = AUCTIONS.map((a) => ({ value: a, label: a }));
 const STATE_OPTIONS: readonly SelectOption<StateCode>[] = US_STATES.map((s) => ({ value: s.code, label: s.code, hint: s.name }));
-const CAR_TYPE_OPTIONS: readonly SelectOption<CarType>[] = CAR_TYPES.map((t) => ({ value: t, label: t }));
 
 /**
  * Transportation Calculator.
@@ -26,7 +26,12 @@ const CAR_TYPE_OPTIONS: readonly SelectOption<CarType>[] = CAR_TYPES.map((t) => 
  * `[data-portal-theme]` scope and the price from the user's pricing tier.
  */
 export function TransportCalculator() {
+  const t = useT();
   const { tier } = usePricingTier();
+  const carTypeOptions = useMemo<readonly SelectOption<CarType>[]>(
+    () => CAR_TYPES.map((c) => ({ value: c, label: t.carTypes[c] })),
+    [t],
+  );
 
   const auction = useCalculatorStore((s) => s.auction);
   const state = useCalculatorStore((s) => s.state);
@@ -48,10 +53,10 @@ export function TransportCalculator() {
   }, [tier, calculate]);
 
   const cityHint = !auction || !state
-    ? "Choose an auction and state first."
+    ? t.calculator.cityHintChoose
     : cityOptions.length === 0
-      ? `${auction} has no facility in ${state}. Try a neighbouring state.`
-      : `${cityOptions.length} ${auction} ${cityOptions.length === 1 ? "facility" : "facilities"} in ${state}.`;
+      ? t.calculator.cityHintNone(auction, state)
+      : t.calculator.cityHintCount(cityOptions.length, auction, state);
 
   const onSubmit = (e: FormEvent) => {
     e.preventDefault();
@@ -74,43 +79,43 @@ export function TransportCalculator() {
           </span>
           <div>
             <h2 id="calculator-heading" className="text-lg font-semibold text-fg">
-              Transportation Calculator
+              {t.calculator.title}
             </h2>
-            <p className="mt-1 text-sm text-fg-muted">Auction yard → US port → Poti, Georgia.</p>
+            <p className="mt-1 text-sm text-fg-muted">{t.calculator.subtitle}</p>
           </div>
         </div>
 
         <div className="mt-8 grid gap-x-5 gap-y-6 sm:grid-cols-2">
-          <Field id="calc-auction" label="Auction">
-            <Select id="calc-auction" value={auction} onValueChange={setAuction} options={AUCTION_OPTIONS} placeholder="Select auction" />
+          <Field id="calc-auction" label={t.calculator.auction}>
+            <Select id="calc-auction" value={auction} onValueChange={setAuction} options={AUCTION_OPTIONS} placeholder={t.calculator.selectAuction} />
           </Field>
 
-          <Field id="calc-state" label="State">
-            <Select id="calc-state" value={state} onValueChange={setState} options={STATE_OPTIONS} placeholder="Select state" />
+          <Field id="calc-state" label={t.calculator.state}>
+            <Select id="calc-state" value={state} onValueChange={setState} options={STATE_OPTIONS} placeholder={t.calculator.selectState} />
           </Field>
 
-          <Field id="calc-city" label="City" hint={cityHint} className="sm:col-span-2">
+          <Field id="calc-city" label={t.calculator.city} hint={cityHint} className="sm:col-span-2">
             <Select
               id="calc-city"
               value={city}
               onValueChange={setCity}
               options={cityOptions}
-              placeholder={cityOptions.length ? "Select city" : "No cities available"}
+              placeholder={cityOptions.length ? t.calculator.selectCity : t.calculator.noCities}
               disabled={cityOptions.length === 0}
               aria-describedby="calc-city-hint"
             />
           </Field>
 
-          <Field id="calc-cartype" label="Car type" className="sm:col-span-2">
-            <Select id="calc-cartype" value={carType} onValueChange={setCarType} options={CAR_TYPE_OPTIONS} placeholder="Select car type" />
+          <Field id="calc-cartype" label={t.calculator.carType} className="sm:col-span-2">
+            <Select id="calc-cartype" value={carType} onValueChange={setCarType} options={carTypeOptions} placeholder={t.calculator.selectCarType} />
           </Field>
         </div>
 
         <Button type="submit" size="lg" disabled={!isComplete} className="mt-8 h-14 w-full text-base">
-          Calculate
+          {t.calculator.calculate}
         </Button>
         <p className="mt-3 text-center text-xs text-fg-subtle" aria-live="polite">
-          {isComplete ? "Prices are per vehicle, in US dollars." : "Fill in all four fields to calculate."}
+          {isComplete ? t.calculator.ready : t.calculator.incomplete}
         </p>
       </motion.form>
 

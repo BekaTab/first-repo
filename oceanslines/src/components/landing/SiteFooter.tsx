@@ -1,8 +1,12 @@
+"use client";
+
 import { Logo } from "@/components/brand/Logo";
+import { useT } from "@/i18n";
 import { Reveal } from "@/components/motion/Reveal";
 import { PortalButton } from "./PortalButton";
 
 export function SiteFooter() {
+  const t = useT();
   return (
     <footer id="contact" className="scroll-mt-24">
       <div className="container">
@@ -13,12 +17,12 @@ export function SiteFooter() {
           />
           <div className="relative flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
             <div>
-              <p className="eyebrow text-gold">Member portal</p>
+              <p className="eyebrow text-gold">{t.footer.eyebrow}</p>
               <h2 className="mt-4 max-w-md font-serif text-3xl leading-tight sm:text-4xl">
-                See your rate before you bid.
+                {t.footer.title}
               </h2>
               <p className="mt-4 max-w-md text-cashmere/70">
-                Members price any Copart or IAAI yard to Poti in seconds. Ask us for an account.
+                {t.footer.body}
               </p>
             </div>
             <PortalButton size="lg" className="self-start bg-cashmere text-charcoal hover:bg-white md:self-auto" />
@@ -33,7 +37,7 @@ export function SiteFooter() {
             <a href="https://oceanslines.ge" className="transition-colors hover:text-charcoal">
               oceanslines.ge
             </a>
-            <span>© {new Date().getFullYear()} Oceans Lines. All rights reserved.</span>
+            <span>© {new Date().getFullYear()} Oceans Lines. {t.footer.rights}</span>
           </div>
         </div>
       </div>

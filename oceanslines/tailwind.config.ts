@@ -44,8 +44,8 @@ const config: Config = {
         ring: v("ring"),
       },
       fontFamily: {
-        sans: ["var(--font-sans)", "ui-sans-serif", "system-ui", "sans-serif"],
-        serif: ["var(--font-serif)", "ui-serif", "Georgia", "serif"],
+        sans: ["var(--font-sans)", "var(--font-sans-ka)", "ui-sans-serif", "system-ui", "sans-serif"],
+        serif: ["var(--font-serif)", "var(--font-serif-ka)", "ui-serif", "Georgia", "serif"],
         slab: ["var(--font-slab)", "ui-serif", "Georgia", "serif"],
       },
       borderRadius: {
