@@ -16,7 +16,7 @@ const variants = {
   // Landing (brand tokens)
   luxe: "bg-charcoal text-cashmere shadow-soft hover:bg-black hover:shadow-lifted focus-visible:ring-gold focus-visible:ring-offset-cashmere",
   "luxe-outline":
-    "border border-charcoal/15 bg-white/40 text-charcoal backdrop-blur hover:border-gold hover:bg-white/70 focus-visible:ring-gold focus-visible:ring-offset-cashmere",
+    "border border-charcoal/15 bg-white/60 text-charcoal hover:border-gold hover:bg-white/70 focus-visible:ring-gold focus-visible:ring-offset-cashmere",
 } as const;
 
 const sizes = {

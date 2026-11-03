@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 const TONES = {
   // Landing / login (brand palette)
   brand: {
-    wrap: "border-charcoal/10 bg-white/50 backdrop-blur",
+    wrap: "border-charcoal/10 bg-white/70",
     active: "bg-charcoal text-cashmere",
     idle: "text-slate-blue hover:text-charcoal",
   },

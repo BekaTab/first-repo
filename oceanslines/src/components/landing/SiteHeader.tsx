@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { motion, useMotionValueEvent, useScroll } from "framer-motion";
+import { useMotionValueEvent, useScroll } from "framer-motion";
 import { useState } from "react";
 import { Logo } from "@/components/brand/Logo";
 import { LanguageSwitch } from "@/components/ui/language-switch";
@@ -21,13 +21,10 @@ export function SiteHeader() {
   useMotionValueEvent(scrollY, "change", (y) => setScrolled(y > 24));
 
   return (
-    <motion.header
-      initial={{ opacity: 0, y: -12 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+    <header
       className={cn(
-        "fixed inset-x-0 top-0 z-40 transition-[background-color,border-color,backdrop-filter] duration-500 ease-luxe",
-        scrolled ? "border-b border-charcoal/[0.06] bg-cashmere/75 backdrop-blur-xl" : "border-b border-transparent",
+        "ol-drop fixed inset-x-0 top-0 z-40 transition-[background-color,border-color,box-shadow] duration-500 ease-luxe",
+        scrolled ? "border-b border-charcoal/[0.06] bg-cashmere/95 shadow-[0_1px_12px_rgb(28_25_23/0.04)]" : "border-b border-transparent",
       )}
     >
       <div className="container flex h-[72px] items-center justify-between gap-3 sm:gap-6">
@@ -52,6 +49,6 @@ export function SiteHeader() {
           <PortalButton size="sm" compact className="h-10 px-3.5 sm:px-4" />
         </div>
       </div>
-    </motion.header>
+    </header>
   );
 }
