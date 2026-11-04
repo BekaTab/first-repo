@@ -583,7 +583,7 @@ a[data-tel],a[data-mail]{display:inline-block;padding-block:10px;margin-block:-1
 </div>
 <div style="display: flex; flex-direction: column; gap: 6px; padding: 22px 0; border-top: 1px solid #E3E0D8; border-bottom: 1px solid #E3E0D8">
 <dt data-edit="contact.labelAddress" style="font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; color: #5A6475">მისამართი</dt>
-<dd data-edit="contact.address" style="margin: 0; font-size: 17px">თბილისი</dd>
+<dd data-edit="contact.address" style="margin: 0; font-size: 17px">მელიტონ ქანთარიას ქუჩა №5, თბილისი 0186</dd>
 </div>
 </dl>
 </div>
@@ -764,8 +764,10 @@ a[data-tel],a[data-mail]{display:inline-block;padding-block:10px;margin-block:-1
     btn.disabled = true; btn.setAttribute('aria-busy', 'true');
     var ctl = window.AbortController ? new AbortController() : null, timer = ctl && setTimeout(function () { ctl.abort(); }, 15000);
     fetch(endpoint, { method: 'POST', signal: ctl ? ctl.signal : undefined, headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
-      body: JSON.stringify({ _subject: (document.documentElement.lang === 'en' ? 'New request from the website' : 'ახალი მოთხოვნა საიტიდან') + ' — ' + v('name'), _replyto: v('email') || undefined, name: v('name'), company: v('company'), phone: v('phone'), email: v('email'), message: v('message'), page: location.href }) })
-      .then(function (r) { if (!r.ok) throw new Error(r.status); show('sent'); form.reset(); if (window.gtag) gtag('event', 'generate_lead', { method: 'form' }); })
+      body: JSON.stringify({ _subject: (document.documentElement.lang === 'en' ? 'New request from the website' : 'ახალი მოთხოვნა საიტიდან') + ' — ' + v('name'), _template: 'table', _captcha: 'false', _replyto: v('email') || undefined, Name: v('name'), Company: v('company'), Phone: v('phone'), email: v('email'), Message: v('message'), Page: location.href }) })
+      .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json().catch(function () { return {}; }); })
+      .then(function (d) { if (d && (d.success === false || d.success === 'false')) throw new Error('not delivered');   // the service answered but did not send it
+        show('sent'); form.reset(); if (window.gtag) gtag('event', 'generate_lead', { method: 'form' }); })
       .catch(function () { show('fail'); })
       .then(function () { clearTimeout(timer); btn.disabled = false; btn.removeAttribute('aria-busy'); });
   });
