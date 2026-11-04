@@ -394,6 +394,15 @@ a[data-tel],a[data-mail]{display:inline-block;padding-block:10px;margin-block:-1
 <style id="eib-theme"></style>
 </head>
 <body>
+<script>
+// Always open at the top. Without this, phones that reload a tab in the background restore the old
+// scroll position and the site reopens in the middle (e.g. on the video). Links to a section (#contact) still work.
+(function () {
+  if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+  function top() { if (!location.hash) window.scrollTo(0, 0); }
+  top(); window.addEventListener('pageshow', function (e) { if (!e.persisted) top(); });
+})();
+</script>
 <a class="skip-link" href="#top">მთავარ შინაარსზე გადასვლა</a>
 
 
@@ -574,7 +583,7 @@ a[data-tel],a[data-mail]{display:inline-block;padding-block:10px;margin-block:-1
 </div>
 <div style="display: flex; flex-direction: column; gap: 6px; padding: 22px 0; border-top: 1px solid #E3E0D8; border-bottom: 1px solid #E3E0D8">
 <dt data-edit="contact.labelAddress" style="font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; color: #5A6475">მისამართი</dt>
-<dd data-edit="contact.address" style="margin: 0; font-size: 17px">თბილისი, [ქუჩა და ნომერი]</dd>
+<dd data-edit="contact.address" style="margin: 0; font-size: 17px">თბილისი</dd>
 </div>
 </dl>
 </div>
@@ -909,6 +918,20 @@ a[data-tel],a[data-mail]{display:inline-block;padding-block:10px;margin-block:-1
     window.scrollTo({ top: Math.max(0, y), behavior: reduce ? 'instant' : 'smooth' });
     settle();
   });
+
+  // Opening a link into the page (eib.ge/#contact from Google or a shared message): go there the same
+  // way the menu does, otherwise the video section catches the browser's jump and holds the page.
+  function goHash() {
+    var id = decodeURIComponent(location.hash.slice(1)), el = id && id !== 'top' && document.getElementById(id);
+    if (!el) return;
+    var y = id === 'eib-scrub' ? naturalTop(mark) : naturalTop(el) - (header ? header.offsetHeight : 0);
+    nav = true; token++; cancelAnimationFrame(raf); scene = -1;
+    try { vid.pause(); } catch (err) {}
+    window.scrollTo(0, Math.max(0, y));
+    settle();
+  }
+  if (location.hash) { goHash(); window.addEventListener('load', goHash); }
+  window.addEventListener('hashchange', goHash);
 
   // Entering the section by normal scrolling starts from the matching end; a scrollbar drag inside it
   // jumps to the nearest scene.
