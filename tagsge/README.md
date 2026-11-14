@@ -56,7 +56,8 @@ The form (`#quote-form`) collects name, shop or company, phone, email, area of i
 ## SEO
 
 - One `<h1>`, semantic sections (`header`, `nav`, `main`, `section`, `article`, `aside`, `footer`), Georgian `lang="ka"`, canonical `https://tags.ge/`.
-- The copy is short and plain, in the words Georgian shops use for this equipment (ჩიპი, მაგნიტი, სტიკერი, დეაქტივატორი, ანტენა), with no literal translations of English trade names. Each of the 16 target search terms still appears verbatim on the page at least once, and all of them are in the keywords meta, without forced repetition.
+- The copy is short and plain, in the words Georgian shops use for this equipment (ჩიპი, მაგნიტი, სტიკერი, დეაქტივატორი, ანტენა), with no literal translations of English trade names. The general term is „დაცვის სისტემები“ and the antenna category is „დამცავი ანტენები“.
+- The word „ანტიქურდული“ is not used anywhere a visitor can see it. The search terms that contain it are kept only in the hidden keywords meta and the JSON-LD `knowsAbout` list. The other target terms appear verbatim on the page at least once.
 - JSON-LD `@graph`: `LocalBusiness` + `WholesaleStore` (with `OfferCatalog` per category), `WebSite`, `WebPage`, 20 `Product` items and a `FAQPage` whose answers match the visible FAQ word for word.
 - Open Graph and Twitter cards, `sitemap.xml`, `robots.txt`, manifest, favicons.
 - To show Google product rich results (price in search results), add `"offers": { "@type": "Offer", "price": "…", "priceCurrency": "GEL", "availability": "https://schema.org/InStock" }` to each `Product`. Google requires a price for those.
