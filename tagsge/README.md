@@ -33,7 +33,7 @@ Also check the product specs (sizes, gauss values, detection widths, roll quanti
 
 ## Contact form
 
-The form (`#quote-form`) collects name, company, phone, email, area of interest, the visitor's **request list** (products added with "ფასის მოთხოვნა" or "+"), and a message.
+The form (`#quote-form`) collects name, shop or company, phone, email, area of interest, the products the visitor selected in the catalogue ("ფასის მოთხოვნა" or "+"), and a comment.
 
 - **As shipped** (`data-endpoint=""`), sending the form opens the visitor's email app with a ready-made message addressed to `data-email`.
 - **To receive submissions directly**, set `data-endpoint` to a form service. For example, with FormSubmit (free, no account): `data-endpoint="https://formsubmit.co/ajax/info@tags.ge"`. The first submission sends an activation email to that address; confirm it once. Any service that accepts a JSON POST and returns `{ "success": true }` works.
@@ -41,12 +41,13 @@ The form (`#quote-form`) collects name, company, phone, email, area of interest,
 
 ## Catalogue
 
-20 products in 4 categories (8 + 4 + 4 + 4), each with an image, technology badges, description, specs, a **ფასის მოთხოვნა** button (adds the product to the request list, picks the matching category in the form and scrolls to it) and a **+** button (adds it to the list without scrolling).
+20 products in 4 categories (8 + 4 + 4 + 4), each with an image, a one-line description, key specs, RF/AM badges where the system matters, a **ფასის მოთხოვნა** button (selects the product, picks the matching category in the form and scrolls to it) and a **+** button (selects it without scrolling).
 
 - Filters: by category and by technology (RF / AM). Products tagged `data-tech="rf am"` show under both.
 - On phones, each category becomes a swipeable row.
 - Footer links (`data-cat-link`) open a single category. Links such as `tags.ge/#detachers` also work.
-- The request list is saved in the visitor's browser, so it survives a reload.
+- The selected products are saved in the visitor's browser, so they survive a reload.
+- Pins, magnets and the key have no RF/AM badge (no `<ul class="badges">`), because they work with both systems.
 
 **Adding a product:** copy an `<article class="product">` block inside the right `<section class="cat-group">`, give it a unique `id`, and update the image, `alt`, title, description, specs and both `data-product` attributes (they must match the title). Add a matching `Product` entry to the JSON-LD and an `Offer` in that category's `OfferCatalog`.
 
@@ -55,7 +56,7 @@ The form (`#quote-form`) collects name, company, phone, email, area of interest,
 ## SEO
 
 - One `<h1>`, semantic sections (`header`, `nav`, `main`, `section`, `article`, `aside`, `footer`), Georgian `lang="ka"`, canonical `https://tags.ge/`.
-- All 16 target Georgian search terms are used verbatim in the title, description, keywords meta, headings, image `alt` text and body copy.
+- The copy is short and plain, in the words Georgian shops use for this equipment (ჩიპი, მაგნიტი, სტიკერი, დეაქტივატორი, ანტენა), with no literal translations of English trade names. Each of the 16 target search terms still appears verbatim on the page at least once, and all of them are in the keywords meta, without forced repetition.
 - JSON-LD `@graph`: `LocalBusiness` + `WholesaleStore` (with `OfferCatalog` per category), `WebSite`, `WebPage`, 20 `Product` items and a `FAQPage` whose answers match the visible FAQ word for word.
 - Open Graph and Twitter cards, `sitemap.xml`, `robots.txt`, manifest, favicons.
 - To show Google product rich results (price in search results), add `"offers": { "@type": "Offer", "price": "…", "priceCurrency": "GEL", "availability": "https://schema.org/InStock" }` to each `Product`. Google requires a price for those.
@@ -73,4 +74,5 @@ The form (`#quote-form`) collects name, company, phone, email, area of interest,
 - `html-validate` (recommended rules): no errors.
 - axe-core (WCAG 2 A/AA + best practices): no violations on desktop or mobile.
 - Respects `prefers-reduced-motion`. Keyboard accessible: skip link, visible focus, Escape closes the menu, native `<details>` FAQ.
-- Page weight: about 40 KB gzipped for `index.html` (CSS and JS inline), plus small SVG images.
+- Page weight: about 33 KB gzipped for `index.html` (CSS and JS inline), plus small SVG images.
+- Opening a category link directly (for example `/#antennas`) lands on that category, and Tab stays inside the open mobile menu.
