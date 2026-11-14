@@ -60,6 +60,7 @@
   --font:"Inter","Noto Sans Georgian",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
   --ease:cubic-bezier(.2,.7,.2,1);
   --header-h:64px; --gutter:clamp(16px,4vw,40px); --max:1160px;
+  --hero-bg:#E9EEF6;
 }
 
 /* ===== base ===== */
@@ -110,8 +111,8 @@ h1,h2,h3,h4,p,ul,ol,figure{margin:0}
 }
 
 /* ===== header ===== */
-.site-header{position:sticky;top:0;z-index:50;height:var(--header-h);background:rgba(255,255,255,.86);-webkit-backdrop-filter:saturate(180%) blur(16px);backdrop-filter:saturate(180%) blur(16px);border-bottom:1px solid transparent;transition:border-color .25s}
-.site-header.is-scrolled,.menu-open .site-header{border-bottom-color:var(--line)}
+.site-header{position:sticky;top:0;z-index:50;height:var(--header-h);background:var(--hero-bg);-webkit-backdrop-filter:saturate(180%) blur(16px);backdrop-filter:saturate(180%) blur(16px);border-bottom:1px solid transparent;transition:border-color .25s,background-color .25s}
+.site-header.is-scrolled,.menu-open .site-header{background:rgba(255,255,255,.88);border-bottom-color:var(--line)}
 .header-inner{height:100%;display:flex;align-items:center;gap:24px}
 .brand{display:inline-flex;flex:none;border-radius:8px}
 .logo{width:118px;height:auto;color:var(--text)}
@@ -139,20 +140,46 @@ h1,h2,h3,h4,p,ul,ol,figure{margin:0}
 html.menu-open{overflow:hidden}
 
 /* ===== hero ===== */
-.hero{padding:clamp(40px,7vw,88px) 0 clamp(48px,6vw,72px);background:linear-gradient(180deg,#F5F8FD 0%,#FFFFFF 75%)}
+.hero{position:relative;isolation:isolate;padding:clamp(36px,6vw,80px) 0 clamp(48px,6vw,72px);background:linear-gradient(180deg,var(--hero-bg) 0%,#F1F4F9 100%)}
+.hero::before{content:"";position:absolute;inset:0;z-index:-1;background-image:radial-gradient(rgba(31,94,255,.14) 1px,transparent 1.5px);background-size:22px 22px;-webkit-mask-image:radial-gradient(55% 65% at 78% 42%,#000 0%,transparent 75%);mask-image:radial-gradient(55% 65% at 78% 42%,#000 0%,transparent 75%)}
+.hero-pill{display:inline-flex;align-items:center;gap:8px;margin-bottom:22px;padding:6px 14px 6px 10px;border-radius:999px;background:#fff;border:1px solid var(--line);font-size:13.5px;font-weight:600;color:var(--text-2);box-shadow:0 1px 2px rgba(16,24,40,.04)}
+.hero-pill-dot{width:8px;height:8px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 4px var(--accent-soft)}
+.hero-stats{display:flex;flex-wrap:wrap;gap:16px 0;margin-top:36px;list-style:none;padding:0}
+.hero-stats li{padding:0 24px;border-left:1px solid var(--line-strong)}
+.hero-stats li:first-child{padding-left:0;border-left:0}
+.hero-stats b{display:block;font-size:22px;font-weight:700;letter-spacing:-.02em;line-height:1.2}
+.hero-stats span{display:block;margin-top:2px;font-size:13.5px;color:var(--muted)}
+.hero-visual{position:relative}
+.float{position:absolute;z-index:2;display:flex;align-items:center;gap:10px;padding:7px 14px 7px 7px;border-radius:16px;background:rgba(255,255,255,.94);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border:1px solid var(--line);box-shadow:0 18px 36px -16px rgba(16,24,40,.28);line-height:1.3;transition:transform .3s var(--ease),box-shadow .3s var(--ease)}
+.float:hover{transform:translateY(-3px);box-shadow:0 22px 40px -16px rgba(16,24,40,.34)}
+.float img{flex:none;width:46px;height:38px;object-fit:contain;border-radius:10px;background:var(--bg-soft)}
+.float b{display:block;font-size:13.5px;font-weight:600;white-space:nowrap}
+.float small{display:block;font-size:12px;color:var(--muted)}
+.f1{top:11%;left:-32px}
+.f2{top:44%;right:-32px}
+.f3{bottom:12%;left:-32px}
+@media (prefers-reduced-motion:no-preference){.float{animation:bob 6s ease-in-out infinite}.f2{animation-delay:-2s}.f3{animation-delay:-4s}.float:hover{animation-play-state:paused}}
+@keyframes bob{0%,100%{translate:0 0}50%{translate:0 -5px}}
 .hero-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:clamp(32px,5vw,64px);align-items:center}
 .hero-sub{margin-top:20px;max-width:500px}
 .hero-cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:32px}
-.hero-art{position:relative;aspect-ratio:5/4;border-radius:28px;overflow:hidden;border:1px solid var(--line);background:radial-gradient(80% 70% at 50% 35%,#FFFFFF 0%,#EDF2FA 100%)}
+.hero-art{position:relative;aspect-ratio:5/4;border-radius:28px;overflow:hidden;border:1px solid rgba(11,13,18,.06);background:radial-gradient(80% 70% at 50% 35%,#FFFFFF 0%,#F2F6FC 100%);box-shadow:0 40px 80px -40px rgba(16,24,40,.30)}
 .hero-art img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
-.features{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:24px;margin-top:clamp(48px,6vw,72px);padding:32px 0 0;border-top:1px solid var(--line);list-style:none}
-.feature{display:flex;gap:14px;align-items:flex-start}
+.features{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:clamp(48px,6vw,72px);padding:0;list-style:none}
+.feature{display:flex;gap:14px;align-items:flex-start;padding:18px;border-radius:18px;background:#fff;border:1px solid rgba(11,13,18,.06);box-shadow:0 1px 2px rgba(16,24,40,.04)}
 .feature-icon{display:grid;place-items:center;flex:none;width:40px;height:40px;border-radius:12px;background:var(--accent-soft);color:var(--accent)}
 .feature-icon svg{width:20px;height:20px}
-.feature p{margin-top:4px;font-size:14px;line-height:1.5;color:var(--muted)}
+.feature p{margin-top:4px;font-size:14px;line-height:1.5;color:var(--muted);overflow-wrap:anywhere}
 .feature .feature-title{margin-top:0;font-size:15.5px;font-weight:600;line-height:1.4;color:var(--text)}
-@media (max-width:900px){.hero-grid{grid-template-columns:minmax(0,1fr)}.features{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media (max-width:480px){.features{grid-template-columns:minmax(0,1fr);gap:18px}.hero-cta .btn{flex:1}}
+@media (min-width:901px) and (max-width:1279px){.f1,.f3{left:-56px}.f2{display:none}.float{padding:6px 12px 6px 6px}.float img{width:38px;height:32px}.float b{font-size:13px}}
+@media (max-width:900px){.hero-grid{grid-template-columns:minmax(0,1fr)}.features{grid-template-columns:repeat(2,minmax(0,1fr))}.f1,.f3{left:-12px}.f2{right:-12px}}
+@media (max-width:600px){
+  .float{display:none}
+  .feature{flex-direction:column;gap:10px}
+  .hero-stats li{padding:0 16px}
+}
+@media (max-width:480px){.hero-cta .btn{flex:1}.feature{padding:14px}}
+@media (max-width:359px){.features{grid-template-columns:minmax(0,1fr)}}
 
 /* ===== sections ===== */
 .section{padding-block:clamp(64px,9vw,112px)}
@@ -312,22 +339,33 @@ html.menu-open{overflow:hidden}
   <div class="container">
     <div class="hero-grid">
       <div data-reveal>
+        <p class="hero-pill"><span class="hero-pill-dot" aria-hidden="true"></span>საბითუმო მიწოდება · მონტაჟი</p>
         <h1 class="h1" id="hero-title">დაცვის სისტემები <em>მაღაზიისთვის</em></h1>
         <p class="lead hero-sub">ანტენები, ჩიპები, სტიკერები და მაგნიტები — საბითუმოდ, მონტაჟით მთელ საქართველოში.</p>
         <div class="hero-cta">
           <a class="btn btn-primary" href="#contact">ფასის მოთხოვნა <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
           <a class="btn btn-secondary" href="#catalog">კატალოგი</a>
         </div>
+        <ul class="hero-stats">
+          <li><b>20+</b><span>მოდელი</span></li>
+          <li><b>24 სთ</b><span>პასუხი</span></li>
+          <li><b>უფასო</b><span>აზომვა</span></li>
+        </ul>
       </div>
-      <figure class="hero-art" data-reveal>
-        <img src="img/hero-light.svg" width="800" height="640" alt="დამცავი ანტენები მაღაზიის შესასვლელთან" fetchpriority="high" decoding="async">
-      </figure>
+      <div class="hero-visual" data-reveal>
+        <figure class="hero-art">
+          <img src="img/hero-light.svg" width="800" height="640" alt="დამცავი ანტენები მაღაზიის შესასვლელთან" fetchpriority="high" decoding="async">
+        </figure>
+        <a class="float f1" href="#hard-tags"><img src="img/hard-tag-golf.svg" alt="" width="400" height="300" decoding="async"><span><b>პლასტმასის ჩიპები</b><small>8 მოდელი</small></span></a>
+        <a class="float f2" href="#soft-labels"><img src="img/label-rf.svg" alt="" width="400" height="300" decoding="async"><span><b>დამცავი სტიკერები</b><small>4 მოდელი</small></span></a>
+        <a class="float f3" href="#detachers"><img src="img/detacher-golf.svg" alt="" width="400" height="300" decoding="async"><span><b>მაგნიტები</b><small>4 მოდელი</small></span></a>
+      </div>
     </div>
     <ul class="features">
-      <li class="feature"><span class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 16.5 16.5 3.5l4 4-13 13z"/><path d="M7.5 12.5l2 2M10.5 9.5l2 2M13.5 6.5l2 2"/></svg></span><div><p class="feature-title">უფასო აზომვა</p><p>შესასვლელს ადგილზე ვზომავთ.</p></div></li>
       <li class="feature"><span class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.6 6.4a4.2 4.2 0 0 0-5.5 5.5L3.8 17.2a1.9 1.9 0 0 0 2.7 2.7l5.3-5.3a4.2 4.2 0 0 0 5.5-5.5l-2.6 2.6-2.5-.6-.6-2.5z"/></svg></span><div><p class="feature-title">მონტაჟი და სერვისი</p><p>მთელ საქართველოში.</p></div></li>
       <li class="feature"><span class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 12.2V4.5a1 1 0 0 1 1-1h7.7a1 1 0 0 1 .7.3l7.6 7.6a1 1 0 0 1 0 1.4l-7.7 7.7a1 1 0 0 1-1.4 0l-7.6-7.6a1 1 0 0 1-.3-.7z"/><circle cx="8" cy="8" r="1.5"/></svg></span><div><p class="feature-title">საბითუმო ფასი</p><p>პირდაპირი იმპორტი.</p></div></li>
       <li class="feature"><span class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7 3v5.5c0 4.2-2.9 7.9-7 9.5-4.1-1.6-7-5.3-7-9.5V6z"/><path d="M9 12l2 2 4-4"/></svg></span><div><p class="feature-title">თავსებადობა</p><p>სტანდარტული RF და AM.</p></div></li>
+      <li class="feature"><span class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 6.5h11v10h-11z"/><path d="M13.5 9.5h4l3.5 3.5v3.5h-7.5"/><circle cx="6.5" cy="17.5" r="1.8"/><circle cx="17" cy="17.5" r="1.8"/></svg></span><div><p class="feature-title">მარაგის შევსება</p><p>ჩიპები და სტიკერები დროულად.</p></div></li>
     </ul>
   </div>
 </section>
@@ -849,6 +887,12 @@ html.menu-open{overflow:hidden}
     tabs.forEach(function (t) { t.setAttribute('aria-pressed', String(t.getAttribute('data-filter') === id)); });
   }
   tabs.forEach(function (t) { t.addEventListener('click', function () { showCat(t.getAttribute('data-filter')); }); });
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest('a[href^="#"]'); if (!a) return;
+    var id = a.getAttribute('href').slice(1); if (ids.indexOf(id) < 0) return;
+    e.preventDefault(); showCat(id);
+    document.getElementById(id).scrollIntoView({ behavior: behavior, block: 'start' });
+  });
   var startCat = ids.indexOf(location.hash.slice(1)) > -1 ? location.hash.slice(1) : null;
   if (startCat) {
     showCat(startCat);

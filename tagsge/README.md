@@ -19,7 +19,7 @@ tagsge/
 
 Light, minimal layout with one accent colour (blue `#1F5EFF`):
 
-1. **Hero:** headline, one line of text, "ფასის მოთხოვნა" and "კატალოგი" buttons, the antenna illustration, and four short points (free measuring, installation and service, wholesale price, RF/AM compatibility).
+1. **Hero** (light grey-blue background with a faint dot texture): a small label, the headline, one line of text, "ფასის მოთხოვნა" and "კატალოგი" buttons and three figures (models in the catalogue, 24 h reply, free measuring). Next to it, the antenna illustration with three small product cards that open their catalogue category (two cards on mid-size screens, none on phones). Below, four short points: installation and service, wholesale price, RF/AM compatibility, restocking.
 2. **კატალოგი:** category tabs and 20 products.
 3. **RF თუ AM?:** two cards comparing the systems.
 4. **ხშირი კითხვები:** five questions.
