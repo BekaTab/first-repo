@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>მაღაზიის დაცვის სისტემები და ტანსაცმლის ჩიპები — tags.ge</title>
-<meta name="description" content="მაღაზიის დაცვის სისტემები: RF, AM და RFID ანტენები, ტანსაცმლის ჩიპები, დამცავი სტიკერები და დეტაჩერი. საბითუმოდ, მონტაჟით მთელ საქართველოში.">
+<meta name="description" content="მაღაზიის დაცვის სისტემები: RF, AM და RFID ანტენები, ტანსაცმლის ჩიპები, დამცავი სტიკერები და ჩიპის მოსახსნელი მაგნიტები. პირდაპირ მწარმოებლისგან, მონტაჟით მთელ საქართველოში.">
 <meta name="keywords" content="ანტიქურდული სისტემები, ტანსაცმლის ჩიპები, დამცავი სტიკერები, მაგნიტური ჩიპები, ჩიპის მოსახსნელი მაგნიტი, ანტიქურდული ანტენები, მაღაზიის სიგნალიზაცია, პლასტმასის ჩიპები, სენსორული სტიკერები, მოპარვის საწინააღმდეგო სისტემები, პროდუქციის დაცვა ქურდობისგან, დეტაჩერი, სტიკერის დეაქტივატორი, RF ანტენა, AM ანტენა, RFID, მრავალჯერადი ჩიპები, EAS სისტემა, tags.ge">
 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
 <link rel="canonical" href="https://tags.ge/">
@@ -250,13 +250,13 @@ html.menu-open{overflow:hidden}
 }
 
 /* ===== product dialog ===== */
-.pdp{width:min(1100px,calc(100vw - 40px));max-width:none;height:min(780px,calc(100dvh - 40px));max-height:none;margin:auto;padding:0;border:0;border-radius:28px;background:#fff;color:var(--text);box-shadow:0 50px 120px -40px rgba(11,13,18,.55);overflow:hidden}
+.pdp{width:min(1200px,calc(100vw - 40px));max-width:none;height:min(780px,calc(100dvh - 40px));max-height:none;margin:auto;padding:0;border:0;border-radius:28px;background:#fff;color:var(--text);box-shadow:0 50px 120px -40px rgba(11,13,18,.55);overflow:hidden}
 .pdp::backdrop{background:rgba(11,13,18,.42);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
 @media (prefers-reduced-motion:no-preference){.pdp[open]{animation:pdpIn .45s var(--ease)}.pdp[open]::backdrop{animation:fadeIn .35s ease}}
 @keyframes pdpIn{from{opacity:0;transform:translateY(26px) scale(.98)}to{opacity:1;transform:none}}
 @keyframes fadeIn{from{opacity:0}}
 .pdp-body{height:100%}
-.pdp-body > .fam-detail{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);height:100%}
+.pdp-body > .fam-detail{display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);height:100%}
 .pdp-close{position:absolute;top:16px;right:16px;z-index:5;display:grid;place-items:center;width:42px;height:42px;border:0;border-radius:50%;background:rgba(255,255,255,.94);color:var(--text);box-shadow:0 1px 2px rgba(16,24,40,.08),0 8px 20px -10px rgba(16,24,40,.35);transition:transform .3s var(--ease),background-color .2s}
 .pdp-close:hover{transform:rotate(90deg);background:#fff}
 .pdp-close svg{width:18px;height:18px}
@@ -280,9 +280,10 @@ html.menu-open{overflow:hidden}
 .pdp-facts b{font-size:13.5px;font-weight:600}
 .vt-wrap{flex:none;max-height:360px;overflow:auto;overscroll-behavior:contain;border:1px solid var(--line);border-radius:16px}
 .vt{width:100%;border-collapse:collapse;font-size:14px;line-height:1.45}
-.vt thead th{position:sticky;top:0;z-index:1;padding:10px;background:#F7F8FA;border-bottom:1px solid var(--line);text-align:left;font-size:12px;font-weight:600;color:var(--muted);white-space:nowrap}
-.vt td,.vt tbody th{padding:10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:middle;white-space:nowrap}
-.vt .w{white-space:normal;min-width:180px}
+.vt thead th{position:sticky;top:0;z-index:1;padding:10px;background:#F7F8FA;border-bottom:1px solid var(--line);text-align:left;vertical-align:bottom;font-size:12px;font-weight:600;line-height:1.35;color:var(--muted)}
+.vt td,.vt tbody th{padding:10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:middle}
+.vt tbody th{white-space:nowrap}
+.vt .w{min-width:120px}
 .vt-hint{margin-bottom:-6px;font-size:13px;color:var(--muted)}
 .vt tbody th{font-weight:650;white-space:nowrap}
 .vt tbody tr:last-child td,.vt tbody tr:last-child th{border-bottom:0}
@@ -514,10 +515,10 @@ a.cv::after{content:"";position:absolute;inset:0;border-radius:16px}
       </figure>
     </div>
     <ul class="services">
-      <li class="service" data-reveal style="--c:var(--blue)"><span class="service-num" aria-hidden="true">01</span><span class="service-icon">{{I_RULER}}</span><p class="service-title">აზომვა და შერჩევა</p><p class="service-text">უფასოდ ავზომავთ შესასვლელს და შევარჩევთ სისტემას.</p></li>
-      <li class="service" data-reveal style="--c:var(--violet);--d:1"><span class="service-num" aria-hidden="true">02</span><span class="service-icon">{{I_TOOL}}</span><p class="service-title">მონტაჟი</p><p class="service-text">ვამონტაჟებთ, ვაწყობთ და პერსონალს ვასწავლით.</p></li>
-      <li class="service" data-reveal style="--c:var(--teal);--d:2"><span class="service-num" aria-hidden="true">03</span><span class="service-icon">{{I_SHIELD}}</span><p class="service-title">სერვისი და გარანტია</p><p class="service-text">შეკეთება და გამართვა მთელ საქართველოში.</p></li>
-      <li class="service" data-reveal style="--c:var(--orange);--d:3"><span class="service-num" aria-hidden="true">04</span><span class="service-icon">{{I_TRUCK}}</span><p class="service-title">მარაგის მიწოდება</p><p class="service-text">ჩიპები და სტიკერები საბითუმოდ, დროულად.</p></li>
+      <li class="service" data-reveal style="--c:var(--blue)"><span class="service-num" aria-hidden="true">01</span><span class="service-icon">{{I_RULER}}</span><p class="service-title">აზომვა და შერჩევა</p><p class="service-text">მოვალთ, უფასოდ ავზომავთ შესასვლელს და შეგირჩევთ სისტემას.</p></li>
+      <li class="service" data-reveal style="--c:var(--violet);--d:1"><span class="service-num" aria-hidden="true">02</span><span class="service-icon">{{I_TOOL}}</span><p class="service-title">მონტაჟი</p><p class="service-text">დავამონტაჟებთ, გავმართავთ და თანამშრომლებს ვასწავლით.</p></li>
+      <li class="service" data-reveal style="--c:var(--teal);--d:2"><span class="service-num" aria-hidden="true">03</span><span class="service-icon">{{I_SHIELD}}</span><p class="service-title">სერვისი და გარანტია</p><p class="service-text">გარანტია, შეკეთება და მომსახურება მთელ საქართველოში.</p></li>
+      <li class="service" data-reveal style="--c:var(--orange);--d:3"><span class="service-num" aria-hidden="true">04</span><span class="service-icon">{{I_TRUCK}}</span><p class="service-title">მარაგის მიწოდება</p><p class="service-text">ჩიპებს და სტიკერებს საბითუმოდ, დროულად მოგაწვდით.</p></li>
     </ul>
   </div>
 </section>
@@ -529,7 +530,7 @@ a.cv::after{content:"";position:absolute;inset:0;border-radius:16px}
       <div class="search" role="search">
         {{I_SEARCH}}
         <label for="cat-search" class="sr-only">ძიება კატალოგში</label>
-        <input id="cat-search" type="search" placeholder="ძიება: სახელი ან მოდელი" autocomplete="off" enterkeyhint="search">
+        <input id="cat-search" type="search" placeholder="მოძებნეთ პროდუქტი ან მოდელი" autocomplete="off" enterkeyhint="search">
         <button type="button" class="search-clear" id="search-clear" aria-label="ძიების გასუფთავება" hidden>{{I_CLOSE}}</button>
       </div>
     </div>
@@ -537,7 +538,7 @@ a.cv::after{content:"";position:absolute;inset:0;border-radius:16px}
       <span class="note-icon">{{I_BOX}}</span>
       <div class="note-text">
         <p class="note-title">ეძებთ პროდუქტს, რომელიც კატალოგში არ არის?</p>
-        <p class="note-sub">აქ მხოლოდ ძირითადი მოდელებია. ნებისმიერ სხვა პროდუქტს ჩამოვიტანთ ან დავამზადებთ შეკვეთით — თქვენი ზომით, ფერით და ლოგოთი.</p>
+        <p class="note-sub">აქ ძირითადი მოდელებია. ნებისმიერ სხვა პროდუქტს ჩამოვიტანთ ან დავამზადებთ შეკვეთით — სასურველი ზომით, ფერით და თქვენი ლოგოთი.</p>
       </div>
       <a class="btn btn-primary btn-sm" href="#contact">დაგვიკავშირდით {{I_ARROW_BTN}}</a>
     </aside>
@@ -564,9 +565,9 @@ a.cv::after{content:"";position:absolute;inset:0;border-radius:16px}
         <div class="tech-body">
           <div class="tech-head"><h3 class="tech-name">RF</h3><span class="tech-freq">8.2 MHz</span></div>
           <p class="tech-kind">რადიოსიხშირული</p>
-          <p class="tech-how">ანტენა 8.2 MHz-ის სიგნალს გამოსცემს. ჩიპში ან სტიკერში მოთავსებული რეზონანსული წრედი ამ სიხშირეზე პასუხობს და ანტენა განგაშს რთავს.</p>
+          <p class="tech-how">ანტენა 8.2 MHz სიხშირის სიგნალს გამოსცემს. ჩიპში ან სტიკერში მოთავსებული პატარა წრედი ამ სიგნალს ეხმიანება და ანტენა სიგნალიზაციას რთავს.</p>
           <dl class="facts">
-            <div><dt>გასასვლელი</dt><dd>0.9–1.2 მ</dd></div>
+            <div><dt>ანტენებს შორის</dt><dd>1–2.5 მ, მოდელის მიხედვით</dd></div>
             <div><dt>უპირატესობა</dt><dd>თხელი და იაფი სტიკერები</dd></div>
             <div><dt>ნაკლი</dt><dd>ფოლგა და ლითონი ხელს უშლის</dd></div>
             <div><dt>ვისთვის</dt><dd>ტანსაცმელი, ფეხსაცმელი, ბუტიკები</dd></div>
@@ -578,9 +579,9 @@ a.cv::after{content:"";position:absolute;inset:0;border-radius:16px}
         <div class="tech-body">
           <div class="tech-head"><h3 class="tech-name">AM</h3><span class="tech-freq">58 kHz</span></div>
           <p class="tech-kind">აკუსტომაგნიტური</p>
-          <p class="tech-how">ანტენა 58 kHz-ის მოკლე იმპულსებს აგზავნის. სტიკერში მოთავსებული ლითონის ფირფიტები ვიბრირებს და იმპულსის შემდეგაც „ჟღერს“. ანტენა ამ ექოს პაუზებში უსმენს, ამიტომ ცრუ განგაში იშვიათია.</p>
+          <p class="tech-how">ანტენა 58 kHz სიხშირის მოკლე იმპულსებს აგზავნის. სტიკერში მოთავსებული თხელი ლითონის ფირფიტები ვიბრირებს და იმპულსის შემდეგაც „ჟღერს“. ანტენა ამ ექოს პაუზებში უსმენს, ამიტომ ცრუ სიგნალი იშვიათია.</p>
           <dl class="facts">
-            <div><dt>გასასვლელი</dt><dd>2 მ-მდე</dd></div>
+            <div><dt>ანტენებს შორის</dt><dd>2.4 მ-მდე</dd></div>
             <div><dt>უპირატესობა</dt><dd>მუშაობს ლითონზე, ფოლგასა და სითხეებზე</dd></div>
             <div><dt>ნაკლი</dt><dd>სტიკერი უფრო სქელი და ძვირია</dd></div>
             <div><dt>ვისთვის</dt><dd>სუპერმარკეტი, აფთიაქი, ელექტრონიკა</dd></div>
@@ -592,11 +593,11 @@ a.cv::after{content:"";position:absolute;inset:0;border-radius:16px}
         <div class="tech-body">
           <div class="tech-head"><h3 class="tech-name">RFID</h3><span class="tech-freq">860–960 MHz</span></div>
           <p class="tech-kind">რადიოსიხშირული იდენტიფიკაცია (UHF)</p>
-          <p class="tech-how">ყველა ტეგს უნიკალური ციფრული კოდი აქვს. მკითხველი რადიოტალღით კვებავს ტეგს და მის კოდს რამდენიმე მეტრიდან, პირდაპირი ხილვადობის გარეშე კითხულობს — ასობით ნივთს წამში.</p>
+          <p class="tech-how">ყოველ ეტიკეტს საკუთარი ციფრული კოდი აქვს. მკითხველი მას რადიოტალღით კვებავს და კოდს რამდენიმე მეტრიდან კითხულობს, თუნდაც ეტიკეტი არ ჩანდეს — ასობით ნივთს წამში.</p>
           <dl class="facts">
-            <div><dt>მანძილი</dt><dd>9 მ-მდე</dd></div>
-            <div><dt>უპირატესობა</dt><dd>დაცვა და ინვენტარიზაცია ერთად, ცნობს კონკრეტულ ნივთს</dd></div>
-            <div><dt>ნაკლი</dt><dd>ტეგი და სისტემა უფრო ძვირია</dd></div>
+            <div><dt>წაკითხვის მანძილი</dt><dd>10 მ-მდე</dd></div>
+            <div><dt>უპირატესობა</dt><dd>დაცვა და ინვენტარიზაცია ერთად; ცნობს, რომელი ნივთი გავიდა</dd></div>
+            <div><dt>ნაკლი</dt><dd>ეტიკეტი და სისტემა უფრო ძვირია</dd></div>
             <div><dt>ვისთვის</dt><dd>ქსელები, ბრენდები, საწყობები</dd></div>
           </dl>
         </div>
@@ -699,7 +700,7 @@ a.cv::after{content:"";position:absolute;inset:0;border-radius:16px}
         <li><a href="#contact">კონტაქტი</a></li>
       </ul>
     </nav>
-    <p>© <span id="year">2026</span> tags.ge — მოპარვის საწინააღმდეგო სისტემები მაღაზიებისთვის</p>
+    <p>© <span id="year">2026</span> tags.ge — დაცვის სისტემები მაღაზიებისთვის</p>
   </div>
 </footer>
 

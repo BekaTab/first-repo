@@ -33,7 +33,7 @@ Animations are short and calm, and all of them switch off for visitors who ask f
 
 ## Catalogue
 
-10 categories, 42 product families, 266 models, 216 product photos. The product data and photos come from the two supplier catalogues (EAS and RFID). Small catalogue photos were enlarged with Real-ESRGAN (4×) and all photos were cleaned to a white background.
+10 categories, 42 product families, 266 models, 213 product photos. The product data and photos come from the two supplier catalogues (EAS and RFID). Small catalogue photos were enlarged with Real-ESRGAN (4×) and all photos were cleaned to a white background.
 
 - **Card:** photo, name, one-line description, number of models and the technology (RF, AM, RFID, NFC). A blue tick appears on the card once the family is in the request list.
 - **Product window:** a large photo with thumbnails (each model with its own photo has one; clicking a table row also shows that model), the description, key facts, and a table with every model and its sizes, frequency and other specs. Visitors tick the models they need and press "ფასის მოთხოვნა".
@@ -95,7 +95,7 @@ The form asks for name and phone (required), shop or company, email and a commen
 ## Quality checks run
 
 - End-to-end test (`tools/tagsge/e2e.cjs`, Playwright): tabs, search, product window (thumbnails, row photos, model ticks, Back button, Escape, deep links), request list and its persistence, form sending, About link, mobile menu and full-screen product window.
-- No horizontal scrolling at 320, 360, 375, 390, 414, 768, 820, 1024, 1280, 1440 and 1920 px.
+- No horizontal scrolling at 320, 360, 375, 390, 414, 768, 820, 1024, 1280, 1440 and 1920 px; every product window was opened on desktop and phone (photos load, model tables fit on desktop).
 - `html-validate` (recommended rules): no errors.
 - axe-core (WCAG 2 A/AA + best practices): no violations on desktop or mobile, for the page and inside the open product window.
-- Page weight: about 64 KB gzipped for `index.html`; product photos load lazily (about 3 MB in total, each card photo 10–30 KB).
+- Page weight: about 65 KB gzipped for `index.html`; product photos load lazily (about 2 MB for all 426 files; most photos are 5–30 KB).

@@ -99,9 +99,11 @@ function detail(f) {
   const wide = f.cols.map((h, i) => Math.max(...f.rows.map(r => String(i ? r.v[i - 1] ?? '' : r.m).length)) > 24);
   const wc = i => wide[i] ? ' class="w"' : '';
   const head = `<tr>${pickable ? '<th scope="col"><span class="sr-only">არჩევა</span></th>' : ''}${f.cols.map((h, i) => `<th scope="col"${wc(i)}>${h}</th>`).join('')}</tr>`;
+  // keep numbers with their units and sizes like 120 × 40 × 20 on one line; text may wrap
+  const keep = v => esc(v).replace(/ × /g, '\u00A0×\u00A0').replace(/(\d) (მმ|სმ|მ|კგ|გ|ც\.|გაუსი|MHz|kHz)(?![\p{L}])/gu, '$1\u00A0$2');
   const body = f.rows.map(r => {
     const cells = [r.m, ...r.v];
-    return `<tr${r.img ? ` data-src="${src(r.img)}"` : ''}>${pickable ? `<td class="pick-cell"><input type="checkbox" class="pick" value="${esc(r.m)}" aria-label="${esc(r.m)} — არჩევა"></td>` : ''}${cells.map((v, i) => i === 0 ? `<th scope="row"${wc(i)}>${esc(v)}</th>` : `<td${wc(i)}>${esc(v)}</td>`).join('')}</tr>`;
+    return `<tr${r.img ? ` data-src="${src(r.img)}"` : ''}>${pickable ? `<td class="pick-cell"><input type="checkbox" class="pick" value="${esc(r.m)}" aria-label="${esc(r.m)} — არჩევა"></td>` : ''}${cells.map((v, i) => i === 0 ? `<th scope="row"${wc(i)}>${esc(v)}</th>` : `<td${wc(i)}>${keep(v)}</td>`).join('')}</tr>`;
   }).join('');
   const facts = f.facts.length ? `
           <ul class="pdp-facts">${f.facts.map(([k, v]) => `<li><span>${k}</span><b>${esc(v)}</b></li>`).join('')}</ul>` : '';
@@ -121,7 +123,7 @@ function detail(f) {
               <button type="button" class="btn btn-primary js-request">ფასის მოთხოვნა ${I.I_ARROW_BTN}</button>
               <p class="pdp-picked" aria-live="polite"></p>
             </div>
-            <p class="pdp-note">${I.I_BOX}<span>გჭირდებათ სხვა ზომა, ფერი ან ლოგო? დავამზადებთ შეკვეთით.</span></p>
+            <p class="pdp-note">${I.I_BOX}<span>სხვა მოდელი, ზომა ან ფერი გჭირდებათ? მოგვწერეთ — შეკვეთით ჩამოვიტანთ ან დავამზადებთ.</span></p>
           </div>
         </div>`;
 }
