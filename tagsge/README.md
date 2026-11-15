@@ -26,7 +26,7 @@ Light, minimal layout with a blue accent (`#1F5EFF`) and violet, teal and orange
 2. **Hero:** the headline, one line of text, a large blue "კატალოგი" button and the product image, followed by four service cards (measuring and selection, installation, service and warranty, restocking).
 3. **კატალოგი:** a search box, a note that the catalogue shows the main models only and that anything else can be imported or made to order, category tabs, and product family cards. Each family (for example all sizes of one hard tag, or all 32 safer box sizes) is one card that opens a product window. See below.
 4. **Technologies (RF, AM, RFID):** three cards comparing frequency, how the technology works, entrance width, strengths and best use.
-5. **ჩვენს შესახებ:** experience, partnership with several of Georgia's largest retail companies, best prices, direct suppliers in **Turkey and China** (highlighted, with flags), fastest delivery, and a dotted map with the supply routes Turkey → Georgia ← China.
+5. **ჩვენს შესახებ:** experience, partnership with several of Georgia's largest retail companies, best prices, direct suppliers in **Turkey and China** (highlighted, with flags), fastest delivery, and a three-step "როგორ ვმუშაობთ" block (request → order from the factory in Turkey or China → delivery and installation).
 6. **კონტაქტი:** phone, email and address with copy buttons, the map, and the request form.
 
 Animations are short and calm, and all of them switch off for visitors who ask for reduced motion.
@@ -51,7 +51,7 @@ python3 catalog.py
 node build.cjs ../../tagsge/index.html
 ```
 
-`build.cjs` combines `template.html` (layout, CSS and JS), `catalog.json`, `images.json` (photo file names) and `route.json` (the About map) into `tagsge/index.html` and writes `tagsge/sitemap.xml`. New photos go into `tagsge/img/p/` as 720×540 WebP plus a 160×120 `-s.webp` thumbnail; `images.py` is the script that produced the current set from the PDF catalogues.
+`build.cjs` combines `template.html` (layout, CSS and JS), `catalog.json`, `images.json` (photo file names) into `tagsge/index.html` and writes `tagsge/sitemap.xml`. New photos go into `tagsge/img/p/` as 720×540 WebP plus a 160×120 `-s.webp` thumbnail; `images.py` is the script that produced the current set from the PDF catalogues.
 
 ## Before going live: replace the placeholders
 

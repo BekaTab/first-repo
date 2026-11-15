@@ -23,7 +23,7 @@ const ok = (cond, msg) => { if (cond) { pass++; } else { fail++; console.log('FA
     tabs: document.querySelectorAll('#tabs [data-filter]').length,
     details: document.querySelectorAll('.fam .fam-detail[hidden]').length,
     ids: [...document.querySelectorAll('[id]')].map(e => e.id),
-    about: !!document.querySelector('#about .route-svg'),
+    about: !!document.querySelector('#about .howto .steps'),
     nav: [...document.querySelectorAll('#nav-pill a')].map(a => a.getAttribute('href')).join(' '),
     note: document.querySelector('.catalog-note .note-title').textContent,
     jsonld: (() => { try { const j = JSON.parse(document.querySelector('script[type="application/ld+json"]').textContent); return j['@graph'].filter(x => x['@type'] === 'ProductGroup').length; } catch (e) { return -1; } })(),
@@ -34,7 +34,7 @@ const ok = (cond, msg) => { if (cond) { pass++; } else { fail++; console.log('FA
   ok(s.tabs === 11, 'tabs 11, got ' + s.tabs);
   ok(s.details === 42, 'all details hidden in cards');
   ok(new Set(s.ids).size === s.ids.length, 'unique ids');
-  ok(s.about, 'about map present');
+  ok(s.about, 'about steps present');
   ok(s.nav === '#catalog #technology #about #contact', 'nav links: ' + s.nav);
   ok(/კატალოგში არ არის/.test(s.note), 'catalog note text');
   ok(s.jsonld === 42, 'ProductGroup JSON-LD x42, got ' + s.jsonld);

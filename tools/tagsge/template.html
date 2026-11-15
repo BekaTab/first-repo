@@ -387,6 +387,18 @@ html.dialog-open{overflow:hidden}
 .point-icon svg{width:22px;height:22px}
 .point h3{font-size:16px;font-weight:600;line-height:1.35}
 .point p{margin-top:5px;font-size:14px;line-height:1.55;color:var(--muted)}
+.howto{padding:clamp(24px,3vw,36px);border-radius:28px;background:#fff;border:1px solid var(--line);box-shadow:var(--shadow)}
+.howto-title{font-size:20px;font-weight:650;letter-spacing:-.01em}
+.steps{list-style:none;padding:0;margin:22px 0 26px}
+.step{position:relative;display:flex;gap:16px;padding-bottom:24px}
+.step:last-child{padding-bottom:0}
+.step:not(:last-child)::before{content:"";position:absolute;left:17px;top:40px;bottom:6px;width:2px;background:var(--accent-tint)}
+.step-num{display:grid;place-items:center;flex:none;width:36px;height:36px;border-radius:50%;background:var(--accent);color:#fff;font-size:15px;font-weight:700}
+.step-name{font-size:16px;font-weight:650;line-height:1.4;padding-top:6px}
+.step-text{margin-top:4px;font-size:14.5px;line-height:1.55;color:var(--muted)}
+.step-flags{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.step-flags span{display:inline-flex;align-items:center;gap:7px;padding:4px 12px 4px 4px;border-radius:999px;background:var(--bg-soft);font-size:13.5px;font-weight:600}
+.step-flags svg{width:24px;height:24px;border-radius:50%}
 .route{margin:0;padding:22px 22px 20px;border-radius:28px;background:#fff;border:1px solid var(--line);box-shadow:var(--shadow)}
 .route-map{position:relative}
 .route-svg{display:block;width:100%;height:auto;overflow:visible}
@@ -642,13 +654,15 @@ a.cv::after{content:"";position:absolute;inset:0;border-radius:16px}
         <p class="lead">tags.ge მაღაზიების დაცვის სისტემებს აწვდის, ამონტაჟებს და ემსახურება მთელ საქართველოში. პროდუქციას პირდაპირ მწარმოებლებისგან ვიღებთ — ამიტომ ფასი დაბალია, ვადა კი მოკლე.</p>
         <p class="suppliers"><span class="flags">{{FLAG_TR}}{{FLAG_CN}}</span><span>პირდაპირი მომწოდებლები <span class="hl">თურქეთსა</span> და <span class="hl">ჩინეთში</span></span></p>
       </div>
-      <figure class="route" data-reveal style="--d:1">
-        {{ROUTE_SVG}}
-        <figcaption class="route-foot">
-          <p>რაც კატალოგში არ არის, იმასაც ჩამოვიტანთ ან დავამზადებთ შეკვეთით.</p>
-          <a class="btn btn-secondary btn-sm" href="#contact">მოგვწერეთ {{I_ARROW_BTN}}</a>
-        </figcaption>
-      </figure>
+      <div class="howto" data-reveal style="--d:1">
+        <h3 class="howto-title">როგორ ვმუშაობთ</h3>
+        <ol class="steps">
+          <li class="step"><span class="step-num">1</span><div><p class="step-name">მოგვწერეთ, რა გჭირდებათ</p><p class="step-text">კატალოგიდან ან ნებისმიერი სხვა პროდუქტი — შეგირჩევთ საუკეთესო ვარიანტს.</p></div></li>
+          <li class="step"><span class="step-num">2</span><div><p class="step-name">ვუკვეთავთ პირდაპირ ქარხანაში</p><p class="step-text">შუამავლის გარეშე, ამიტომ ფასი დაბალია.</p><p class="step-flags"><span>{{FLAG_TR_S}}თურქეთი</span><span>{{FLAG_CN_S}}ჩინეთი</span></p></div></li>
+          <li class="step"><span class="step-num">3</span><div><p class="step-name">ჩამოვიტანთ და დავამონტაჟებთ</p><p class="step-text">უმოკლეს ვადაში, მთელ საქართველოში.</p></div></li>
+        </ol>
+        <a class="btn btn-primary" href="#contact">მოგვწერეთ {{I_ARROW_BTN}}</a>
+      </div>
     </div>
     <ul class="points">
       <li class="point" data-reveal><span class="point-icon">{{I_COIN}}</span><div><h3>საუკეთესო ფასი</h3><p>შუამავლის გარეშე ვმუშაობთ და ბაზარზე ყველაზე ხელსაყრელ ფასს გთავაზობთ.</p></div></li>

@@ -58,9 +58,6 @@ function flagCN(size) {
   });
   return flagSvg(size, `<circle cx="18" cy="18" r="18" fill="#EE1C25"/><path fill="#FFDE00" d="${star(big[0], big[1], 3 * k, -90)}${small.join('')}"/>`);
 }
-const route = require('./route.json');
-const pin = (cls, pos, inner) => `<span class="pin ${cls}" style="left:${pos.left}%;top:${pos.top}%">${inner}</span>`;
-const ROUTE = `<div class="route-map" aria-hidden="true">${route.svg}${pin('pin-tr', route.pins.tr, flagTR(20) + 'თურქეთი')}${pin('pin-cn', route.pins.cn, flagCN(20) + 'ჩინეთი')}${pin('pin-ge', route.pins.ge, '<i></i>საქართველო')}</div>`;
 
 const esc = s => String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
 const TECH = { rf: 'RF', am: 'AM', rfid: 'RFID', nfc: 'NFC' };
@@ -237,7 +234,7 @@ const rep = {
   LOGO_HEADER: logo('lg-h'), LOGO_FOOTER: logo('lg-f'),
   FILTER_BUTTONS: categories.map(c => `<button type="button" data-filter="${c.id}" aria-pressed="false">${c.tab}</button>`).join('\n      '),
   CATALOG: catalog,
-  FLAG_TR: flagTR(36), FLAG_CN: flagCN(36), ROUTE_SVG: ROUTE,
+  FLAG_TR: flagTR(36), FLAG_CN: flagCN(36), FLAG_TR_S: flagTR(24), FLAG_CN_S: flagCN(24),
   FAM_COUNT: String(families.length),
   MODEL_COUNT: String(families.reduce((a, f) => a + f.rows.length, 0)),
 };

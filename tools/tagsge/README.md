@@ -6,9 +6,8 @@ Sources for `tagsge/index.html`. The published site has no build step; run this 
 |---|---|
 | `catalog.py` | the catalogue: 10 categories and 42 product families with their model tables and photo sources. Run it to write `catalog.json`. |
 | `template.html` | the page layout, CSS and JavaScript, with `{{PLACEHOLDERS}}` |
-| `build.cjs` | fills the template: product cards and windows, JSON-LD, logo, icons, flags, About map; also writes `tagsge/sitemap.xml`. Contact placeholders (phone, email, address) are the `C` object at the top. |
+| `build.cjs` | fills the template: product cards and windows, JSON-LD, logo, icons, flags; also writes `tagsge/sitemap.xml`. Contact placeholders (phone, email, address) are the `C` object at the top. |
 | `images.json` | photo source → file name in `tagsge/img/p/` |
-| `route.json` / `route.cjs` | the dotted Turkey – Georgia – China map. `route.cjs` needs `npm i topojson-client@3.1.0 world-atlas@2.0.2`. |
 | `tags.json`, `ge.json` | logo wordmark outlines |
 | `images.py` | how the product photos were made from the two PDF catalogues and the supplier's website (crop, Real-ESRGAN 4× for small photos, white background, WebP). Its inputs are not in the repository. |
 | `e2e.cjs` | Playwright end-to-end test |
