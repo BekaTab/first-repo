@@ -22,8 +22,8 @@ Light, minimal layout with a blue accent (`#1F5EFF`) and violet, teal and orange
 1. **Header:** the logo, a framed menu (კატალოგი, ტექნოლოგიები, კონტაქტი) whose highlight slides to the link under the pointer and to the section in view, the "ფასის მოთხოვნა" button, and a thin reading-progress line.
 2. **Hero** (light grey-blue background): the headline, one line of text, one large blue "კატალოგი" button and a large product image (two antennas with a hard tag, a label and a magnet in front) that moves slightly with the pointer. Below, four service cards in four colours, following how EAS suppliers describe their service: measuring and selection, installation, service and warranty, restocking.
 3. **კატალოგი:** framed category tabs with a sliding highlight and 20 products. Hovering a product lifts it, outlines it in blue and turns its "ფასის მოთხოვნა" button blue.
-4. **RF, AM თუ RFID?:** three cards with a small moving signal graphic each, the frequency, how the technology works and its entrance width/range, strength, weakness and best use.
-5. **კონტაქტი:** a blue card with phone, email, address and map, next to the request form.
+4. **Technologies (RF, AM, RFID):** three cards without a visible section title (the title is kept for screen readers). Each card has a softly drifting colour glow with a frosted-glass icon at the top, then the frequency, how the technology works and its entrance width/range, strength, weakness and best use. Hovering a card tints the whole card in its colour.
+5. **კონტაქტი:** a white card in the same style as the form card, with a thin colour line on top: phone, email and address as soft rows (the row lifts and its icon turns blue on hover; phone and email have a copy button), and the map. The request form sits next to it.
 
 Animations are short and calm, and all of them switch off for visitors who ask for reduced motion.
 
@@ -85,4 +85,4 @@ The form asks for name and phone (required), shop or company, email and a commen
 - `html-validate` (recommended rules): no errors.
 - axe-core (WCAG 2 A/AA + best practices): no violations on desktop or mobile.
 - Respects `prefers-reduced-motion`. Keyboard accessible: skip link, visible focus, Escape closes the menu, Tab stays inside the open menu.
-- Page weight: about 25 KB gzipped for `index.html` (CSS and JS inline), plus small SVG images.
+- Page weight: about 26 KB gzipped for `index.html` (CSS and JS inline), plus small SVG images.

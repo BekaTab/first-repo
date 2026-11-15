@@ -221,12 +221,21 @@ html.menu-open{overflow:hidden}
 
 /* ===== technologies ===== */
 .techs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
-.tech{display:flex;flex-direction:column;overflow:hidden;border-radius:24px;background:#fff;border:1px solid var(--line);transition:transform .4s var(--ease),box-shadow .4s var(--ease),border-color .4s}
-.tech:hover{transform:translateY(-5px);border-color:color-mix(in srgb,var(--c) 30%,transparent);box-shadow:0 26px 48px -26px color-mix(in srgb,var(--c) 55%,transparent)}
-.tech-visual{height:96px;background:color-mix(in srgb,var(--c) 7%,#fff);border-bottom:1px solid color-mix(in srgb,var(--c) 14%,transparent);color:var(--c);overflow:hidden}
-.tech-visual svg{width:200%;max-width:none;height:100%}
-@media (prefers-reduced-motion:no-preference){.tech-visual svg{animation:slide var(--speed,4s) linear infinite}}
-@keyframes slide{to{transform:translateX(-50%)}}
+.tech{display:flex;flex-direction:column;overflow:hidden;border-radius:24px;background:#fff;border:1px solid var(--line);transition:transform .45s var(--ease),box-shadow .45s var(--ease),border-color .45s,background-color .45s}
+.tech:hover{transform:translateY(-5px);background:color-mix(in srgb,var(--c) 7%,#fff);border-color:color-mix(in srgb,var(--c) 40%,transparent);box-shadow:0 28px 52px -28px color-mix(in srgb,var(--c) 60%,transparent)}
+.tech-visual{position:relative;display:grid;place-items:center;height:132px;overflow:hidden;background:color-mix(in srgb,var(--c) 7%,#fff);border-bottom:1px solid color-mix(in srgb,var(--c) 14%,transparent);transition:background-color .45s}
+.tech:hover .tech-visual{background:color-mix(in srgb,var(--c) 12%,#fff)}
+.glow{position:absolute;border-radius:50%;filter:blur(32px);opacity:.5;transition:opacity .45s}
+.glow.g1{width:210px;height:210px;left:-50px;top:-100px;background:color-mix(in srgb,var(--c) 55%,#fff)}
+.glow.g2{width:190px;height:190px;right:-50px;bottom:-120px;background:color-mix(in srgb,var(--c) 38%,#fff)}
+.tech:hover .glow{opacity:.85}
+@media (prefers-reduced-motion:no-preference){.glow.g1{animation:drift1 16s ease-in-out infinite alternate}.glow.g2{animation:drift2 21s ease-in-out infinite alternate}}
+@keyframes drift1{to{transform:translate(150px,50px) scale(1.15)}}
+@keyframes drift2{to{transform:translate(-140px,-40px) scale(1.2)}}
+.emblem{position:relative;display:grid;place-items:center;width:62px;height:62px;border-radius:19px;background:rgba(255,255,255,.8);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.95);box-shadow:0 14px 32px -16px color-mix(in srgb,var(--c) 70%,transparent);color:color-mix(in srgb,var(--c) 85%,#000);transition:transform .45s var(--ease)}
+.emblem svg{width:28px;height:28px}
+.tech:hover .emblem{transform:translateY(-3px) scale(1.05)}
+.tech:hover .tech-freq{background:#fff}
 .tech-body{display:flex;flex-direction:column;gap:12px;padding:24px 26px 26px;flex:1}
 .tech-head{display:flex;align-items:center;justify-content:space-between;gap:12px}
 .tech-name{font-size:34px;font-weight:700;letter-spacing:-.03em;line-height:1}
@@ -241,17 +250,29 @@ html.menu-open{overflow:hidden}
 
 /* ===== contact ===== */
 .contact{display:grid;grid-template-columns:minmax(0,.95fr) minmax(0,1.05fr);gap:16px;align-items:stretch}
-.contact-card{position:relative;isolation:isolate;overflow:hidden;display:flex;flex-direction:column;gap:24px;padding:clamp(26px,3.2vw,40px);border-radius:28px;color:#fff;background:linear-gradient(135deg,#2563FF 0%,#1F5EFF 45%,#1747D6 100%)}
-.contact-card::before{content:"";position:absolute;z-index:-1;width:520px;height:520px;right:-180px;top:-200px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.16) 0%,rgba(255,255,255,0) 65%)}
-@media (prefers-reduced-motion:no-preference){.contact-card::before{animation:drift 14s ease-in-out infinite alternate}}
-@keyframes drift{to{transform:translate(-80px,60px) scale(1.1)}}
-.contact-list{display:grid;gap:12px;list-style:none;padding:0}
-.contact-list li{display:flex;align-items:center;gap:14px;font-size:16px;font-weight:500}
-.contact-list a{transition:opacity .2s}
-.contact-list a:hover{opacity:.8}
-.ci{display:grid;place-items:center;flex:none;width:44px;height:44px;border-radius:14px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.18)}
+.contact-card{position:relative;isolation:isolate;overflow:hidden;display:flex;flex-direction:column;gap:22px;padding:clamp(24px,3vw,36px);border-radius:28px;background:#fff;border:1px solid var(--line);box-shadow:var(--shadow)}
+.contact-card::before{content:"";position:absolute;left:0;right:0;top:0;height:3px;background:linear-gradient(90deg,var(--accent),var(--violet),var(--teal))}
+.contact-card::after{content:"";position:absolute;z-index:-1;width:440px;height:440px;right:-220px;top:-240px;border-radius:50%;background:radial-gradient(circle,rgba(31,94,255,.10) 0%,rgba(31,94,255,0) 65%)}
+.contact-list{display:grid;gap:10px;list-style:none;padding:0}
+.contact-item{position:relative;display:flex;align-items:center;gap:14px;padding:12px;border-radius:16px;background:var(--bg-soft);border:1px solid transparent;transition:background-color .3s,border-color .3s,box-shadow .3s,transform .3s var(--ease)}
+.contact-item:hover{background:#fff;border-color:rgba(31,94,255,.25);box-shadow:0 14px 28px -18px rgba(31,94,255,.5);transform:translateY(-2px)}
+.ci{display:grid;place-items:center;flex:none;width:44px;height:44px;border-radius:14px;background:#fff;color:var(--accent);box-shadow:0 1px 2px rgba(16,24,40,.08);transition:background-color .3s,color .3s}
+.contact-item:hover .ci{background:var(--accent);color:#fff}
 .ci svg{width:20px;height:20px}
-.map{position:relative;flex:1;min-height:220px;border-radius:20px;overflow:hidden;border:1px solid rgba(255,255,255,.22);background-color:rgba(255,255,255,.1);background-image:linear-gradient(rgba(255,255,255,.12) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.12) 1px,transparent 1px);background-size:36px 36px}
+.cv{display:flex;flex-direction:column;flex:1;min-width:0}
+.cv small{font-size:12.5px;line-height:1.3;color:var(--muted)}
+.cv strong{font-size:16px;font-weight:600;line-height:1.4;overflow-wrap:anywhere}
+a.cv::after{content:"";position:absolute;inset:0;border-radius:16px}
+.copy{position:relative;z-index:1;display:grid;place-items:center;flex:none;width:38px;height:38px;border:0;border-radius:11px;background:transparent;color:var(--muted);opacity:0;transition:opacity .25s,background-color .25s,color .25s}
+.contact-item:hover .copy,.copy:focus-visible,.copy.copied{opacity:1}
+.copy:hover{background:var(--accent-soft);color:var(--accent)}
+.copy svg{width:18px;height:18px;grid-area:1/1}
+.copy .i-ok{opacity:0}
+.copy.copied{color:#12A150}
+.copy.copied .i-copy{opacity:0}
+.copy.copied .i-ok{opacity:1}
+@media (hover:none){.copy{opacity:1}}
+.map{position:relative;flex:1;min-height:220px;border-radius:20px;overflow:hidden;border:1px solid var(--line);background-color:#EEF1F5;background-image:linear-gradient(rgba(11,13,18,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(11,13,18,.05) 1px,transparent 1px);background-size:36px 36px}
 .map iframe{position:absolute;inset:0;width:100%;height:100%;border:0;filter:grayscale(1) contrast(1.05);transition:filter .4s}
 .map:hover iframe{filter:none}
 .form{padding:clamp(24px,3vw,36px);border-radius:28px;background:#fff;border:1px solid var(--line);box-shadow:var(--shadow)}
@@ -690,12 +711,10 @@ html.menu-open{overflow:hidden}
 
 <section class="section section-soft" id="technology" aria-labelledby="tech-title">
   <div class="container">
-    <h2 class="h2 section-title" id="tech-title" data-reveal>RF, AM თუ RFID?</h2>
+    <h2 class="sr-only" id="tech-title">ტექნოლოგიები: RF, AM და RFID</h2>
     <div class="techs">
-      <article class="tech" data-reveal style="--c:var(--blue);--speed:3.2s">
-        <div class="tech-visual" aria-hidden="true">
-          <svg viewBox="0 0 480 96" preserveAspectRatio="none"><path d="M0 48 Q15 18 30 48 T60 48 T90 48 T120 48 T150 48 T180 48 T210 48 T240 48 T270 48 T300 48 T330 48 T360 48 T390 48 T420 48 T450 48 T480 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" vector-effect="non-scaling-stroke"/></svg>
-        </div>
+      <article class="tech" data-reveal style="--c:var(--blue)">
+        <div class="tech-visual" aria-hidden="true"><span class="glow g1"></span><span class="glow g2"></span><span class="emblem"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 8.5a5 5 0 0 0 0 7M15.5 8.5a5 5 0 0 1 0 7M5.6 5.6a9 9 0 0 0 0 12.8M18.4 5.6a9 9 0 0 1 0 12.8"/><circle cx="12" cy="12" r="1.6" fill="currentColor"/></svg></span></div>
         <div class="tech-body">
           <div class="tech-head"><h3 class="tech-name">RF</h3><span class="tech-freq">8.2 MHz</span></div>
           <p class="tech-kind">რადიოსიხშირული</p>
@@ -708,10 +727,8 @@ html.menu-open{overflow:hidden}
           </dl>
         </div>
       </article>
-      <article class="tech" data-reveal style="--c:var(--violet);--d:1;--speed:2.6s">
-        <div class="tech-visual" aria-hidden="true">
-          <svg viewBox="0 0 480 96" preserveAspectRatio="none"><path d="M0 48 H20 L26 22 L32 74 L38 26 L44 70 L50 32 L56 64 L62 40 L68 56 L74 46 L80 50 H140 L146 22 L152 74 L158 26 L164 70 L170 32 L176 64 L182 40 L188 56 L194 46 L200 50 H260 L266 22 L272 74 L278 26 L284 70 L290 32 L296 64 L302 40 L308 56 L314 46 L320 50 H380 L386 22 L392 74 L398 26 L404 70 L410 32 L416 64 L422 40 L428 56 L434 46 L440 50 H480" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"/></svg>
-        </div>
+      <article class="tech" data-reveal style="--c:var(--violet);--d:1">
+        <div class="tech-visual" aria-hidden="true"><span class="glow g1"></span><span class="glow g2"></span><span class="emblem"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4h4v7a2 2 0 0 0 4 0V4h4v7a6 6 0 0 1-12 0z"/><path d="M6 8h4M14 8h4"/></svg></span></div>
         <div class="tech-body">
           <div class="tech-head"><h3 class="tech-name">AM</h3><span class="tech-freq">58 kHz</span></div>
           <p class="tech-kind">აკუსტომაგნიტური</p>
@@ -724,10 +741,8 @@ html.menu-open{overflow:hidden}
           </dl>
         </div>
       </article>
-      <article class="tech" data-reveal style="--c:var(--teal);--d:2;--speed:5s">
-        <div class="tech-visual" aria-hidden="true">
-          <svg viewBox="0 0 480 96" preserveAspectRatio="none"><g fill="currentColor"><rect x="8" y="40" width="10" height="16" rx="3"/><rect x="26" y="40" width="22" height="16" rx="3"/><rect x="56" y="40" width="10" height="16" rx="3"/><rect x="74" y="40" width="10" height="16" rx="3" opacity="0.45"/><rect x="92" y="40" width="22" height="16" rx="3"/><rect x="122" y="40" width="10" height="16" rx="3" opacity="0.45"/><rect x="140" y="40" width="34" height="16" rx="3"/><rect x="182" y="40" width="10" height="16" rx="3"/><rect x="200" y="40" width="22" height="16" rx="3" opacity="0.45"/><rect x="228" y="40" width="10" height="16" rx="3"/><rect x="248" y="40" width="10" height="16" rx="3"/><rect x="266" y="40" width="22" height="16" rx="3"/><rect x="296" y="40" width="10" height="16" rx="3"/><rect x="314" y="40" width="10" height="16" rx="3" opacity="0.45"/><rect x="332" y="40" width="22" height="16" rx="3"/><rect x="362" y="40" width="10" height="16" rx="3" opacity="0.45"/><rect x="380" y="40" width="34" height="16" rx="3"/><rect x="422" y="40" width="10" height="16" rx="3"/><rect x="440" y="40" width="22" height="16" rx="3" opacity="0.45"/><rect x="468" y="40" width="10" height="16" rx="3"/></g></svg>
-        </div>
+      <article class="tech" data-reveal style="--c:var(--teal);--d:2">
+        <div class="tech-visual" aria-hidden="true"><span class="glow g1"></span><span class="glow g2"></span><span class="emblem"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="7" width="10" height="10" rx="2"/><path d="M10 3.5V7M14 3.5V7M10 17v3.5M14 17v3.5M3.5 10H7M3.5 14H7M17 10h3.5M17 14h3.5"/></svg></span></div>
         <div class="tech-body">
           <div class="tech-head"><h3 class="tech-name">RFID</h3><span class="tech-freq">860–960 MHz</span></div>
           <p class="tech-kind">რადიოსიხშირული იდენტიფიკაცია (UHF)</p>
@@ -744,14 +759,14 @@ html.menu-open{overflow:hidden}
   </div>
 </section>
 
-<section class="section" id="contact" aria-labelledby="contact-title">
+<section class="section section-soft" id="contact" aria-labelledby="contact-title">
   <div class="container contact">
     <div class="contact-card" data-reveal>
       <h2 class="h2" id="contact-title">კონტაქტი</h2>
       <ul class="contact-list">
-        <li><span class="ci"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5.5 3.5h3l1.8 4.6-2.2 1.4a11.5 11.5 0 0 0 6.4 6.4l1.4-2.2 4.6 1.8v3a2 2 0 0 1-2.2 2A16.5 16.5 0 0 1 3.5 5.7a2 2 0 0 1 2-2.2z"/></svg></span><a href="tel:+9955XXXXXXXX">+995 5XX XX XX XX</a></li>
-        <li><span class="ci"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M3.5 7.5l8.5 6 8.5-6"/></svg></span><a href="mailto:info@tags.ge">info@tags.ge</a></li>
-        <li><span class="ci"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s7-6.1 7-11.5a7 7 0 0 0-14 0C5 14.9 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg></span><span>თბილისი, საქართველო</span></li>
+        <li class="contact-item"><span class="ci"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5.5 3.5h3l1.8 4.6-2.2 1.4a11.5 11.5 0 0 0 6.4 6.4l1.4-2.2 4.6 1.8v3a2 2 0 0 1-2.2 2A16.5 16.5 0 0 1 3.5 5.7a2 2 0 0 1 2-2.2z"/></svg></span><a class="cv" href="tel:+9955XXXXXXXX"><small>ტელეფონი</small><strong>+995 5XX XX XX XX</strong></a><button type="button" class="copy" data-copy="+995 5XX XX XX XX" aria-label="ნომრის კოპირება"><svg class="i-copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2.5"/><path d="M15 9V6.5A2.5 2.5 0 0 0 12.5 4h-6A2.5 2.5 0 0 0 4 6.5v6A2.5 2.5 0 0 0 6.5 15H9"/></svg><svg class="i-ok" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></button></li>
+        <li class="contact-item"><span class="ci"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M3.5 7.5l8.5 6 8.5-6"/></svg></span><a class="cv" href="mailto:info@tags.ge"><small>ელ-ფოსტა</small><strong>info@tags.ge</strong></a><button type="button" class="copy" data-copy="info@tags.ge" aria-label="ელ-ფოსტის კოპირება"><svg class="i-copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2.5"/><path d="M15 9V6.5A2.5 2.5 0 0 0 12.5 4h-6A2.5 2.5 0 0 0 4 6.5v6A2.5 2.5 0 0 0 6.5 15H9"/></svg><svg class="i-ok" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></button></li>
+        <li class="contact-item"><span class="ci"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s7-6.1 7-11.5a7 7 0 0 0-14 0C5 14.9 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg></span><span class="cv"><small>მისამართი</small><strong>თბილისი, საქართველო</strong></span></li>
       </ul>
       <div class="map">
         <iframe title="tags.ge რუკაზე" src="https://www.google.com/maps?q=Tbilisi%2C%20Georgia&amp;z=12&amp;output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
@@ -982,6 +997,26 @@ html.menu-open{overflow:hidden}
     });
   });
   render();
+
+  /* Copy phone / email */
+  var announce = document.createElement('p'); announce.className = 'sr-only'; announce.setAttribute('aria-live', 'polite'); document.body.appendChild(announce);
+  $$('.copy').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var text = b.getAttribute('data-copy').replace(/\u00A0/g, ' ');
+      var done = function () {
+        b.classList.add('copied'); announce.textContent = 'დაკოპირდა: ' + text;
+        setTimeout(function () { b.classList.remove('copied'); }, 1600);
+      };
+      var fallback = function () {
+        var t = document.createElement('textarea'); t.value = text; t.setAttribute('readonly', '');
+        t.style.position = 'fixed'; t.style.opacity = '0'; document.body.appendChild(t); t.select();
+        try { document.execCommand('copy'); done(); } catch (e) {}
+        document.body.removeChild(t);
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done, fallback);
+      else fallback();
+    });
+  });
 
   /* Request form */
   var form = $('#quote-form'), status = $('#form-status'), submit = $('button[type="submit"]', form);
