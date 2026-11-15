@@ -17,13 +17,15 @@ tagsge/
 
 ## Page
 
-Light, minimal layout with one accent colour (blue `#1F5EFF`):
+Light, minimal layout with a blue accent (`#1F5EFF`) and violet, teal and orange as secondary colours:
 
-1. **Hero** (light grey-blue background): the headline, one line of text, "ფასის მოთხოვნა" and "კატალოგი" buttons, and one large product image: two antennas with a hard tag, a label and a magnet in front. Below, four short points: installation and service, wholesale price, RF/AM compatibility, restocking.
-2. **კატალოგი:** category tabs and 20 products.
-3. **RF თუ AM?:** two cards comparing the systems.
-4. **ხშირი კითხვები:** five questions.
-5. **კონტაქტი:** phone, email, address, hours, map and the request form.
+1. **Header:** the logo, a framed menu (კატალოგი, ტექნოლოგიები, კონტაქტი) whose highlight slides to the link under the pointer and to the section in view, the "ფასის მოთხოვნა" button, and a thin reading-progress line.
+2. **Hero** (light grey-blue background): the headline, one line of text, one large blue "კატალოგი" button and a large product image (two antennas with a hard tag, a label and a magnet in front) that moves slightly with the pointer. Below, four service cards in four colours, following how EAS suppliers describe their service: measuring and selection, installation, service and warranty, restocking.
+3. **კატალოგი:** framed category tabs with a sliding highlight and 20 products. Hovering a product lifts it, outlines it in blue and turns its "ფასის მოთხოვნა" button blue.
+4. **RF, AM თუ RFID?:** three cards with a small moving signal graphic each, the frequency, how the technology works and its entrance width/range, strength, weakness and best use.
+5. **კონტაქტი:** a blue card with phone, email, address and map, next to the request form.
+
+Animations are short and calm, and all of them switch off for visitors who ask for reduced motion.
 
 ## Before going live: replace the placeholders
 
@@ -37,7 +39,6 @@ These values in `index.html` are placeholders. Use search and replace across the
 | Address | `თბილისი, საქართველო` | contact section, JSON-LD `address` (add `streetAddress` and `postalCode`) |
 | Map | `q=Tbilisi%2C%20Georgia` | the Google Maps `<iframe>`: put the street address there |
 | Coordinates | `41.7151`, `44.8271` | `geo.position` / `ICBM` meta tags and JSON-LD `geo` |
-| Opening hours | `ორშ–პარ 10:00–19:00`, `შაბ 11:00–16:00` | contact section and JSON-LD `openingHoursSpecification` |
 
 Also check the product specs (sizes, gauss values, entrance widths, roll quantities). They are typical industry values. Change them to match the models you actually stock.
 
@@ -67,7 +68,7 @@ The form asks for name and phone (required), shop or company, email and a commen
 - One `<h1>`, semantic sections (`header`, `nav`, `main`, `section`, `article`, `footer`), Georgian `lang="ka"`, canonical `https://tags.ge/`.
 - Plain wording Georgian shops use (ჩიპი, მაგნიტი, სტიკერი, დეაქტივატორი, ანტენა); the general term is „დაცვის სისტემები“ and the antenna category is „დამცავი ანტენები“.
 - The word „ანტიქურდული“ is not shown anywhere. Search terms that contain it are kept only in the hidden keywords meta and the JSON-LD `knowsAbout` list.
-- JSON-LD `@graph`: `LocalBusiness` + `WholesaleStore` (with `OfferCatalog` per category), `WebSite`, `WebPage`, 20 `Product` items and a `FAQPage` whose answers match the visible FAQ word for word.
+- JSON-LD `@graph`: `LocalBusiness` + `WholesaleStore` (with `OfferCatalog` per category), `WebSite`, `WebPage` and 20 `Product` items. Opening hours are not published; add `openingHoursSpecification` once you have the real hours.
 - Open Graph and Twitter cards, `sitemap.xml`, `robots.txt`, manifest, favicons.
 - To show Google product rich results (price in search results), add `"offers": { "@type": "Offer", "price": "…", "priceCurrency": "GEL", "availability": "https://schema.org/InStock" }` to each `Product`. Google requires a price for those.
 - After launch: verify the domain in Google Search Console, submit `https://tags.ge/sitemap.xml`, and create a Google Business Profile with the same name, phone and address as the site.
@@ -83,5 +84,5 @@ The form asks for name and phone (required), shop or company, email and a commen
 - No horizontal scrolling at 320, 360, 375, 390, 414, 768, 820, 1024, 1280, 1440 and 1920 px.
 - `html-validate` (recommended rules): no errors.
 - axe-core (WCAG 2 A/AA + best practices): no violations on desktop or mobile.
-- Respects `prefers-reduced-motion`. Keyboard accessible: skip link, visible focus, Escape closes the menu, Tab stays inside the open menu, native `<details>` FAQ.
-- Page weight: about 23 KB gzipped for `index.html` (CSS and JS inline), plus small SVG images.
+- Respects `prefers-reduced-motion`. Keyboard accessible: skip link, visible focus, Escape closes the menu, Tab stays inside the open menu.
+- Page weight: about 25 KB gzipped for `index.html` (CSS and JS inline), plus small SVG images.
