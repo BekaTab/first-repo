@@ -83,22 +83,23 @@ const ok = (cond, msg) => { if (cond) { pass++; } else { fail++; console.log('FA
   ok(await p.evaluate(() => document.getElementById('pdp').open), 'dialog opens');
   ok(p.url().endsWith('#safer-boxes'), 'hash set: ' + p.url());
   ok((await p.textContent('#pdp-title')).includes('დამცავი ყუთები'), 'dialog title');
-  const rows = await p.$$eval('#pdp .vt tbody tr', r => r.length);
-  ok(rows === 32, 'safer box sizes 32, got ' + rows);
+  const rows = await p.$$eval('#pdp .vopt', r => r.length);
+  ok(rows === 32, 'safer box model tiles 32, got ' + rows);
+  ok((await p.textContent('#pdp .vsel-name')) === 'S101', 'first model preselected');
   // thumbnails switch the main image
   const t2 = await p.getAttribute('#pdp .pdp-thumb:nth-child(2)', 'data-src');
   await p.click('#pdp .pdp-thumb:nth-child(2)');
   await p.waitForTimeout(300);
   ok((await p.getAttribute('#pdp .pdp-main img', 'src')) === t2, 'thumb switches image');
-  // pick two models
-  await p.check('#pdp .pick[value="S101"]');
-  await p.check('#pdp .pick[value="S105"]');
-  ok((await p.textContent('#pdp .pdp-picked')).includes('S101, S105'), 'picked text');
+  // choose a model: label and specs follow
+  await p.click('#pdp .vopt[data-name="S105"]');
+  ok((await p.textContent('#pdp .vsel-name')) === 'S105', 'selected label');
+  ok(await p.isVisible('#pdp .vspec[data-i="4"]') && !(await p.isVisible('#pdp .vspec[data-i="0"]')), 'specs follow the chosen model');
   await p.click('#pdp .js-request');
   await p.waitForTimeout(200);
   ok(!(await p.evaluate(() => document.getElementById('pdp').open)), 'dialog closes after request');
   const chips = await p.$$eval('#quote-items li span', l => l.map(x => x.textContent));
-  ok(chips.length === 1 && chips[0] === 'დამცავი ყუთები — S101, S105', 'chip text: ' + chips);
+  ok(chips.length === 1 && chips[0] === 'დამცავი ყუთები — S105', 'chip text: ' + chips);
   ok(await p.evaluate(() => document.getElementById('safer-boxes').classList.contains('is-picked')), 'card marked picked');
   ok(!/#safer-boxes/.test(p.url()), 'hash cleared after close: ' + p.url());
   // whole-family request without picking + card without model column
@@ -109,10 +110,16 @@ const ok = (cond, msg) => { if (cond) { pass++; } else { fail++; console.log('FA
   await p.waitForTimeout(150);
   const chips2 = await p.$$eval('#quote-items li span', l => l.map(x => x.textContent));
   ok(chips2.length === 2, 'second chip added: ' + chips2);
-  // reopen: saved picks are restored
+  // a second model of the same family is added to the same line
   await p.click('#safer-boxes .fam-link');
   await p.waitForTimeout(150);
-  ok(await p.isChecked('#pdp .pick[value="S105"]'), 'saved pick restored in dialog');
+  await p.click('#pdp .vopt[data-name="S204"]');
+  await p.click('#pdp .js-request');
+  await p.waitForTimeout(200);
+  const chips4 = await p.$$eval('#quote-items li span', l => l.map(x => x.textContent));
+  ok(chips4.includes('დამცავი ყუთები — S105, S204'), 'second model joins the line: ' + chips4);
+  await p.click('#safer-boxes .fam-link');
+  await p.waitForTimeout(150);
   // Escape closes, focus returns to the card link
   await p.keyboard.press('Escape');
   await p.waitForTimeout(150);
@@ -131,16 +138,16 @@ const ok = (cond, msg) => { if (cond) { pass++; } else { fail++; console.log('FA
   await p.mouse.click(10, 450);
   await p.waitForTimeout(150);
   ok(!(await p.evaluate(() => document.getElementById('pdp').open)), 'backdrop click closes');
-  // rows with own photo switch the image
+  // a model with its own photo shows that photo; arrow keys move between models
   await p.click('#metal-detachers .fam-link');
   await p.waitForTimeout(150);
-  const row = await p.$('#pdp tbody tr[data-src]:nth-child(3)');
-  if (row) {
-    const rs = await row.getAttribute('data-src');
-    await row.click({ position: { x: 120, y: 10 } });
-    await p.waitForTimeout(300);
-    ok((await p.getAttribute('#pdp .pdp-main img', 'src')) === rs, 'row click switches image');
-  }
+  const tile = await p.$('#pdp .vopt[data-src]:nth-child(3)');
+  const rs = await tile.getAttribute('data-src');
+  await tile.click();
+  await p.waitForTimeout(300);
+  ok((await p.getAttribute('#pdp .pdp-main img', 'src')) === rs, 'model tile switches photo');
+  await p.keyboard.press('ArrowRight');
+  ok((await p.getAttribute('#pdp .vopt:nth-child(4)', 'aria-checked')) === 'true', 'arrow key selects next model');
   await p.keyboard.press('Escape');
   await p.waitForTimeout(300);                      // closing goes Back in history; let that finish
 

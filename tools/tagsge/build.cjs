@@ -91,42 +91,58 @@ function gallery(f) {
   return out;
 }
 
+// Product window like a shop's product page: photos on the left; on the right the description,
+// "choose a model" tiles (photo + name), the chosen model's specs, and the request button.
+const keep = v => esc(v).replace(/ × /g, ' × ').replace(/(\d) (მმ|სმ|მ|კგ|გ|ც\.|გაუსი|MHz|kHz)(?![\p{L}])/gu, '$1 $2');
+function variants(f) {
+  const numbered = f.cols[0] === '№';            // UHF labels: rows are numbered, the dry inlay code names them
+  return f.rows.map(r => {
+    const cells = [r.m, ...r.v];
+    const name = numbered ? r.v[1] : r.m;
+    const sub = numbered ? `${r.v[2]}${/\d$/.test(r.v[2]) ? ' მმ' : ''} · ${r.v[0]}` : (r.v[0] || '');
+    const specs = f.cols.map((h, i) => [h, cells[i]]).filter(([h, v], i) => i > 0 && !(numbered && i === 2) && v && v !== '—');
+    return { name, sub, img: r.img, specs };
+  });
+}
 function detail(f) {
   const c = catById[f.cat];
-  const g = gallery(f);
-  const pickable = hasModelCol(f);
-  const thumbs = g.length > 1 ? `
-          <div class="pdp-thumbs">${g.map((x, i) => `
-            <button type="button" class="pdp-thumb" data-src="${src(x.spec)}"${i === 0 ? ' aria-current="true"' : ''} aria-label="ფოტო ${i + 1}${x.label ? ': ' + esc(x.label) : ''}"><img src="${thumb(x.spec)}" alt="" width="160" height="120" loading="lazy" decoding="async">${x.label ? `<span>${esc(x.label)}</span>` : ''}</button>`).join('')}
+  const photos = [...new Set([f.hero, ...f.gallery])];
+  const thumbs = photos.length > 1 ? `
+          <div class="pdp-thumbs">${photos.map((p, i) => `
+            <button type="button" class="pdp-thumb" data-src="${src(p)}"${i === 0 ? ' aria-current="true"' : ''} aria-label="ფოტო ${i + 1}"><img src="${thumb(p)}" alt="" width="160" height="120" loading="lazy" decoding="async"></button>`).join('')}
           </div>` : '';
-  // columns with long text may wrap; everything else stays on one line
-  const wide = f.cols.map((h, i) => Math.max(...f.rows.map(r => String(i ? r.v[i - 1] ?? '' : r.m).length)) > 24);
-  const wc = i => wide[i] ? ' class="w"' : '';
-  const head = `<tr>${pickable ? '<th scope="col"><span class="sr-only">არჩევა</span></th>' : ''}${f.cols.map((h, i) => `<th scope="col"${wc(i)}>${h}</th>`).join('')}</tr>`;
-  // keep numbers with their units and sizes like 120 × 40 × 20 on one line; text may wrap
-  const keep = v => esc(v).replace(/ × /g, '\u00A0×\u00A0').replace(/(\d) (მმ|სმ|მ|კგ|გ|ც\.|გაუსი|MHz|kHz)(?![\p{L}])/gu, '$1\u00A0$2');
-  const body = f.rows.map(r => {
-    const cells = [r.m, ...r.v];
-    return `<tr${r.img ? ` data-src="${src(r.img)}"` : ''}>${pickable ? `<td class="pick-cell"><input type="checkbox" class="pick" value="${esc(r.m)}" aria-label="${esc(r.m)} — არჩევა"></td>` : ''}${cells.map((v, i) => i === 0 ? `<th scope="row"${wc(i)}>${esc(v)}</th>` : `<td${wc(i)}>${keep(v)}</td>`).join('')}</tr>`;
-  }).join('');
+  const vs = variants(f), many = vs.length > 1, withPics = vs.some(v => v.img);
   const facts = f.facts.length ? `
-          <ul class="pdp-facts">${f.facts.map(([k, v]) => `<li><span>${k}</span><b>${esc(v)}</b></li>`).join('')}</ul>` : '';
+            <ul class="pdp-facts">${f.facts.map(([k, v]) => `<li><span>${k}</span><b>${esc(v)}</b></li>`).join('')}</ul>` : '';
+  const tiles = many ? `
+            <div class="vpick">
+              <p class="vsel">მოდელი: <b class="vsel-name">${esc(vs[0].name)}</b> <span class="vsel-count">(${vs.length} ვარიანტი)</span></p>
+              <div class="vopts${withPics ? '' : ' vopts-text'}" role="radiogroup" aria-label="აირჩიეთ მოდელი">${vs.map((v, i) => `
+                <button type="button" class="vopt" role="radio" aria-checked="${i === 0}" data-i="${i}" data-name="${esc(v.name)}"${v.img ? ` data-src="${src(v.img)}"` : ''}>${withPics ? (v.img ? `<img src="${thumb(v.img)}" alt="" width="160" height="120" loading="lazy" decoding="async">` : '<span class="vopt-noimg" aria-hidden="true"></span>') : ''}<span class="vopt-name">${esc(v.name)}</span>${v.sub ? `<span class="vopt-sub">${keep(v.sub)}</span>` : ''}</button>`).join('')}
+              </div>
+            </div>` : '';
+  const specs = vs.map((v, i) => v.specs.length ? `
+            <dl class="vspec" data-i="${i}"${i ? ' hidden' : ''}>${v.specs.map(([h, x]) => `<div><dt>${h}</dt><dd>${keep(x)}</dd></div>`).join('')}</dl>` : '').join('');
+  const table = vs.length > 3 ? `
+            <details class="vall">
+              <summary>ყველა მოდელის შედარება (${vs.length})</summary>
+              <div class="vt-wrap" tabindex="0" role="region" aria-label="${esc(f.name)} — ყველა მოდელი">
+                <table class="vt"><thead><tr>${f.cols.map(h => `<th scope="col">${h}</th>`).join('')}</tr></thead><tbody>${f.rows.map(r => `<tr>${[r.m, ...r.v].map((v, i) => i ? `<td>${keep(v)}</td>` : `<th scope="row">${esc(v)}</th>`).join('')}</tr>`).join('')}</tbody></table>
+              </div>
+            </details>` : '';
   return `
         <div class="fam-detail" hidden>
           <div class="pdp-media">
-            <figure class="pdp-main"><img src="${src(f.hero)}" alt="${esc(f.name)}" width="720" height="540" loading="lazy" decoding="async"></figure>${thumbs}
+            <figure class="pdp-main"><img src="${src(f.hero)}" data-hero="${src(f.hero)}" alt="${esc(f.name)}" width="720" height="540" loading="lazy" decoding="async"></figure>${thumbs}
           </div>
           <div class="pdp-info">
             <p class="pdp-cat">${c.name}</p>
             <h4 class="pdp-title">${f.name}</h4>
-            <p class="pdp-desc">${f.desc}</p>${facts}
-            ${pickable ? '<p class="vt-hint">მონიშნეთ საჭირო მოდელები და მოითხოვეთ ფასი.</p>\n            ' : ''}<div class="vt-wrap" tabindex="0" role="region" aria-label="${esc(f.name)} — მოდელები">
-              <table class="vt"><thead>${head}</thead><tbody>${body}</tbody></table>
-            </div>
+            <p class="pdp-desc">${f.desc}</p>${facts}${tiles}${specs}
             <div class="pdp-actions">
-              <button type="button" class="btn btn-primary js-request">ფასის მოთხოვნა ${I.I_ARROW_BTN}</button>
+              <button type="button" class="btn btn-primary btn-lg js-request">ფასის მოთხოვნა ${I.I_ARROW_BTN}</button>
               <p class="pdp-picked" aria-live="polite"></p>
-            </div>
+            </div>${table}
             <p class="pdp-note">${I.I_BOX}<span>სხვა მოდელი, ზომა ან ფერი გჭირდებათ? მოგვწერეთ — შეკვეთით ჩამოვიტანთ ან დავამზადებთ.</span></p>
           </div>
         </div>`;
