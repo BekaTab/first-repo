@@ -7,7 +7,7 @@ Plain HTML, CSS and JavaScript with no build step and no dependencies. Open `ind
 ```
 tagsge/
 ├── index.html          the whole site: HTML, CSS (in <style>), JS (at the end), Schema.org JSON-LD
-├── img/                product renders (SVG), hero illustration (hero-light.svg), logo files
+├── img/                product renders (SVG), hero image (hero-family.svg), logo files
 ├── og-image.jpg        1200×630 social preview (Facebook, Messenger, LinkedIn, Telegram)
 ├── favicon.svg / favicon.ico / apple-touch-icon.png / icon-192.png / icon-512.png
 ├── site.webmanifest
@@ -19,7 +19,7 @@ tagsge/
 
 Light, minimal layout with one accent colour (blue `#1F5EFF`):
 
-1. **Hero** (light grey-blue background with a faint dot texture): a small label, the headline, one line of text, "ფასის მოთხოვნა" and "კატალოგი" buttons and three figures (models in the catalogue, 24 h reply, free measuring). Next to it, the antenna illustration. Below, four short points: installation and service, wholesale price, RF/AM compatibility, restocking.
+1. **Hero** (light grey-blue background): the headline, one line of text, "ფასის მოთხოვნა" and "კატალოგი" buttons, and one large product image: two antennas with a hard tag, a label and a magnet in front. Below, four short points: installation and service, wholesale price, RF/AM compatibility, restocking.
 2. **კატალოგი:** category tabs and 20 products.
 3. **RF თუ AM?:** two cards comparing the systems.
 4. **ხშირი კითხვები:** five questions.
@@ -60,7 +60,7 @@ The form asks for name and phone (required), shop or company, email and a commen
 
 **Adding a product:** copy an `<article class="product">` block inside the right `<section class="cat">`, give it a unique `id`, and update the image, `alt`, title, description, spec line and the button's `data-product` and `aria-label` (they must match the title). Add a matching `Product` entry to the JSON-LD and an `Offer` in that category's `OfferCatalog`.
 
-**Using real photos:** replace the file in `img/` (or point `src` at a new `.webp`/`.jpg`) and keep the `alt` text. Product images display at 4:3, the hero image at 5:4 (`img/hero-light.svg`).
+**Using real photos:** replace the file in `img/` (or point `src` at a new `.webp`/`.jpg`) and keep the `alt` text. Product images display at 4:3, the hero image at 4:3 too (`img/hero-family.svg`).
 
 ## SEO
 

@@ -41,7 +41,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400..700&amp;family=Noto+Sans+Georgian:wght@400..700&amp;display=swap">
-<link rel="preload" as="image" href="img/hero-light.svg" type="image/svg+xml">
+<link rel="preload" as="image" href="img/hero-family.svg" type="image/svg+xml">
 <script>document.documentElement.classList.add('js')</script>
 
 <script type="application/ld+json">
@@ -82,7 +82,7 @@ h1,h2,h3,h4,p,ul,ol,figure{margin:0}
 .container{width:100%;max-width:calc(var(--max) + 2 * var(--gutter));margin-inline:auto;padding-inline:var(--gutter)}
 .nowrap{white-space:nowrap}
 
-.h1{font-size:clamp(34px,4.6vw,56px);line-height:1.16;letter-spacing:-.03em;font-weight:650;text-wrap:balance}
+.h1{font-size:clamp(36px,5vw,64px);line-height:1.16;letter-spacing:-.03em;font-weight:650;text-wrap:balance}
 .h1 em{font-style:normal;color:var(--accent)}
 .h2{font-size:clamp(26px,3vw,38px);line-height:1.2;letter-spacing:-.02em;font-weight:650;text-wrap:balance}
 .lead{font-size:clamp(16px,1.4vw,18px);line-height:1.6;color:var(--text-2);text-wrap:pretty}
@@ -140,20 +140,12 @@ h1,h2,h3,h4,p,ul,ol,figure{margin:0}
 html.menu-open{overflow:hidden}
 
 /* ===== hero ===== */
-.hero{position:relative;isolation:isolate;padding:clamp(36px,6vw,80px) 0 clamp(48px,6vw,72px);background:linear-gradient(180deg,var(--hero-bg) 0%,#F1F4F9 100%)}
-.hero::before{content:"";position:absolute;inset:0;z-index:-1;background-image:radial-gradient(rgba(31,94,255,.14) 1px,transparent 1.5px);background-size:22px 22px;-webkit-mask-image:radial-gradient(55% 65% at 78% 42%,#000 0%,transparent 75%);mask-image:radial-gradient(55% 65% at 78% 42%,#000 0%,transparent 75%)}
-.hero-pill{display:inline-flex;align-items:center;gap:8px;margin-bottom:22px;padding:6px 14px 6px 10px;border-radius:999px;background:#fff;border:1px solid var(--line);font-size:13.5px;font-weight:600;color:var(--text-2);box-shadow:0 1px 2px rgba(16,24,40,.04)}
-.hero-pill-dot{width:8px;height:8px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 4px var(--accent-soft)}
-.hero-stats{display:flex;flex-wrap:wrap;gap:16px 0;margin-top:36px;list-style:none;padding:0}
-.hero-stats li{padding:0 24px;border-left:1px solid var(--line-strong)}
-.hero-stats li:first-child{padding-left:0;border-left:0}
-.hero-stats b{display:block;font-size:22px;font-weight:700;letter-spacing:-.02em;line-height:1.2}
-.hero-stats span{display:block;margin-top:2px;font-size:13.5px;color:var(--muted)}
-.hero-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:clamp(32px,5vw,64px);align-items:center}
+.hero{position:relative;padding:clamp(24px,4vw,48px) 0 clamp(48px,6vw,72px);background:linear-gradient(180deg,var(--hero-bg) 0%,#F1F4F9 100%)}
+.hero-grid{display:grid;grid-template-columns:minmax(0,.92fr) minmax(0,1.08fr);gap:clamp(24px,4vw,48px);align-items:center}
 .hero-sub{margin-top:20px;max-width:500px}
 .hero-cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:32px}
-.hero-art{position:relative;aspect-ratio:5/4;border-radius:28px;overflow:hidden;border:1px solid rgba(11,13,18,.06);background:radial-gradient(80% 70% at 50% 35%,#FFFFFF 0%,#F2F6FC 100%);box-shadow:0 40px 80px -40px rgba(16,24,40,.30)}
-.hero-art img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
+.hero-art{margin:0}
+.hero-art img{width:100%;height:auto}
 .features{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:clamp(48px,6vw,72px);padding:0;list-style:none}
 .feature{display:flex;gap:14px;align-items:flex-start;padding:18px;border-radius:18px;background:#fff;border:1px solid rgba(11,13,18,.06);box-shadow:0 1px 2px rgba(16,24,40,.04)}
 .feature-icon{display:grid;place-items:center;flex:none;width:40px;height:40px;border-radius:12px;background:var(--accent-soft);color:var(--accent)}
@@ -163,7 +155,6 @@ html.menu-open{overflow:hidden}
 @media (max-width:900px){.hero-grid{grid-template-columns:minmax(0,1fr)}.features{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media (max-width:600px){
   .feature{flex-direction:column;gap:10px}
-  .hero-stats li{padding:0 16px}
 }
 @media (max-width:480px){.hero-cta .btn{flex:1}.feature{padding:14px}}
 @media (max-width:359px){.features{grid-template-columns:minmax(0,1fr)}}
@@ -326,24 +317,16 @@ html.menu-open{overflow:hidden}
   <div class="container">
     <div class="hero-grid">
       <div data-reveal>
-        <p class="hero-pill"><span class="hero-pill-dot" aria-hidden="true"></span>საბითუმო მიწოდება · მონტაჟი</p>
         <h1 class="h1" id="hero-title">დაცვის სისტემები <em>მაღაზიისთვის</em></h1>
         <p class="lead hero-sub">ანტენები, ჩიპები, სტიკერები და მაგნიტები — საბითუმოდ, მონტაჟით მთელ საქართველოში.</p>
         <div class="hero-cta">
           <a class="btn btn-primary" href="#contact">ფასის მოთხოვნა <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
           <a class="btn btn-secondary" href="#catalog">კატალოგი</a>
         </div>
-        <ul class="hero-stats">
-          <li><b>20+</b><span>მოდელი</span></li>
-          <li><b>24 სთ</b><span>პასუხი</span></li>
-          <li><b>უფასო</b><span>აზომვა</span></li>
-        </ul>
       </div>
-      <div class="hero-visual" data-reveal>
-        <figure class="hero-art">
-          <img src="img/hero-light.svg" width="800" height="640" alt="დამცავი ანტენები მაღაზიის შესასვლელთან" fetchpriority="high" decoding="async">
-        </figure>
-      </div>
+      <figure class="hero-art" data-reveal>
+        <img src="img/hero-family.svg" width="960" height="720" alt="დამცავი ანტენები, ჩიპი, სტიკერი და ჩიპის მოსახსნელი მაგნიტი" fetchpriority="high" decoding="async">
+      </figure>
     </div>
     <ul class="features">
       <li class="feature"><span class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.6 6.4a4.2 4.2 0 0 0-5.5 5.5L3.8 17.2a1.9 1.9 0 0 0 2.7 2.7l5.3-5.3a4.2 4.2 0 0 0 5.5-5.5l-2.6 2.6-2.5-.6-.6-2.5z"/></svg></span><div><p class="feature-title">მონტაჟი და სერვისი</p><p>მთელ საქართველოში.</p></div></li>

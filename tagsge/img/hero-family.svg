@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 720" role="img" aria-labelledby="t">
+<title id="t">დამცავი ანტენები, ჩიპი, სტიკერი და მაგნიტი</title>
+<defs>
+  <radialGradient id="spot" cx="50%" cy="45%" r="50%"><stop offset="0" stop-color="#FFFFFF" stop-opacity=".95"/><stop offset=".55" stop-color="#FFFFFF" stop-opacity=".45"/><stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/></radialGradient>
+  <radialGradient id="stage" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#FFFFFF" stop-opacity=".9"/><stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/></radialGradient>
+  <radialGradient id="shadow"><stop offset="0" stop-color="#0B1220" stop-opacity=".26"/><stop offset=".6" stop-color="#0B1220" stop-opacity=".08"/><stop offset="1" stop-color="#0B1220" stop-opacity="0"/></radialGradient>
+  <radialGradient id="field"><stop offset="0" stop-color="#1F5EFF" stop-opacity=".14"/><stop offset="1" stop-color="#1F5EFF" stop-opacity="0"/></radialGradient>
+  <linearGradient id="acr" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#FFFFFF" stop-opacity=".95"/><stop offset=".55" stop-color="#F1F5FD" stop-opacity=".82"/><stop offset="1" stop-color="#E2EAF8" stop-opacity=".92"/></linearGradient>
+  <linearGradient id="led" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6FA6FF"/><stop offset="1" stop-color="#1F5EFF"/></linearGradient>
+  <linearGradient id="base" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2E333C"/><stop offset="1" stop-color="#121418"/></linearGradient>
+  <radialGradient id="whiteTop" cx="38%" cy="28%" r="85%"><stop offset="0" stop-color="#FFFFFF"/><stop offset=".55" stop-color="#ECEFF4"/><stop offset="1" stop-color="#CDD3DD"/></radialGradient>
+  <linearGradient id="whiteSide" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#B9C0CC"/><stop offset="1" stop-color="#7F8898"/></linearGradient>
+  <radialGradient id="dome" cx="40%" cy="32%" r="75%"><stop offset="0" stop-color="#FFFFFF"/><stop offset=".6" stop-color="#E4E8EE"/><stop offset="1" stop-color="#BFC6D1"/></radialGradient>
+  <linearGradient id="metal" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7D8696"/><stop offset=".45" stop-color="#F6F8FB"/><stop offset=".7" stop-color="#B7BFCB"/><stop offset="1" stop-color="#6E7787"/></linearGradient>
+  <linearGradient id="darkTop" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4A515E"/><stop offset=".5" stop-color="#262B34"/><stop offset="1" stop-color="#14171D"/></linearGradient>
+  <linearGradient id="darkSide" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#0E1014"/><stop offset=".35" stop-color="#2C323C"/><stop offset=".55" stop-color="#3A414D"/><stop offset="1" stop-color="#0E1014"/></linearGradient>
+  <radialGradient id="cone" cx="50%" cy="35%" r="70%"><stop offset="0" stop-color="#596273"/><stop offset="1" stop-color="#14171C"/></radialGradient>
+  <filter id="glow" x="-50%" y="-20%" width="200%" height="140%"><feGaussianBlur stdDeviation="7"/></filter>
+  <g id="gate">
+    <rect x="-66" y="-26" width="132" height="26" rx="9" fill="url(#base)"/>
+    <rect x="-66" y="-26" width="132" height="2" rx="1" fill="#fff" opacity=".25"/>
+    <rect x="-52" y="-446" width="104" height="420" rx="46" fill="url(#acr)" stroke="#C6D2E7" stroke-width="1.5"/>
+    <rect x="-34" y="-414" width="68" height="346" rx="30" fill="none" stroke="#1F5EFF" stroke-width="10" opacity=".2" filter="url(#glow)"/>
+    <rect x="-34" y="-414" width="68" height="346" rx="30" fill="none" stroke="url(#led)" stroke-width="3"/>
+    <rect x="-20" y="-376" width="40" height="270" rx="18" fill="none" stroke="#9DB9FF" stroke-width="1.2" opacity=".55"/>
+    <path d="M-44 -404 V-62" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
+    <circle cx="0" cy="-430" r="4" fill="#1F5EFF"/>
+  </g>
+  <style>
+    .wave{fill:none;stroke:#1F5EFF;stroke-width:1.6;transform-box:fill-box;transform-origin:center;animation:w 3.6s cubic-bezier(.2,.6,.3,1) infinite;opacity:0}
+    .d2{animation-delay:1.2s}.d3{animation-delay:2.4s}
+    @keyframes w{0%{transform:scale(.3,.6);opacity:0}15%{opacity:.4}100%{transform:scale(1,1);opacity:0}}
+    @media (prefers-reduced-motion:reduce){.wave{animation:none;opacity:.16;transform:none}}
+  </style>
+</defs>
+<!-- light -->
+<ellipse cx="480" cy="330" rx="470" ry="360" fill="url(#spot)"/>
+<ellipse cx="480" cy="606" rx="430" ry="72" fill="url(#stage)"/>
+<!-- detection field -->
+<ellipse cx="480" cy="330" rx="190" ry="250" fill="url(#field)"/>
+<ellipse class="wave" cx="480" cy="330" rx="112" ry="214"/>
+<ellipse class="wave d2" cx="480" cy="330" rx="112" ry="214"/>
+<ellipse class="wave d3" cx="480" cy="330" rx="112" ry="214"/>
+<!-- antennas -->
+<ellipse cx="320" cy="562" rx="120" ry="14" fill="url(#shadow)" opacity="1"/>
+<ellipse cx="640" cy="562" rx="120" ry="14" fill="url(#shadow)" opacity="1"/>
+<use href="#gate" x="320" y="560"/>
+<use href="#gate" x="640" y="560"/>
+<!-- products in front -->
+<ellipse cx="226" cy="672" rx="118" ry="17" fill="url(#shadow)" opacity="1"/>
+<g transform="translate(226 616) scale(0.7) translate(-200 -150)">
+<ellipse cx="200" cy="162" rx="112" ry="70" fill="url(#whiteSide)"/>
+<ellipse cx="200" cy="150" rx="112" ry="70" fill="url(#whiteTop)"/>
+<ellipse cx="200" cy="150" rx="110.5" ry="68.6" fill="none" stroke="#fff" stroke-opacity=".9" stroke-width="1.2"/>
+<ellipse cx="200" cy="151.5" rx="84" ry="52" fill="none" stroke="#fff" stroke-width="1.4"/>
+<ellipse cx="200" cy="150" rx="84" ry="52" fill="none" stroke="#B8C0CC" stroke-width="1.4"/>
+<ellipse cx="200" cy="151" rx="56" ry="36" fill="none" stroke="#1F5EFF" stroke-opacity=".55" stroke-width="1.6"/>
+<ellipse cx="200" cy="149" rx="50" ry="32" fill="#B3BBC7"/>
+<ellipse cx="200" cy="142" rx="50" ry="32" fill="url(#dome)"/>
+<ellipse cx="200" cy="140" rx="11" ry="7" fill="#8C95A4"/><ellipse cx="200" cy="138" rx="11" ry="7" fill="url(#metal)"/><ellipse cx="197" cy="136.4" rx="4.6" ry="2.4" fill="#fff" opacity=".85"/></g>
+<ellipse cx="480" cy="680" rx="120" ry="16" fill="url(#shadow)" opacity="0.8"/>
+<g transform="translate(480 640) scale(0.86) translate(-200 -150)">
+<g transform="translate(200 150) scale(1 .58) rotate(-24)">
+  <rect x="-92" y="-92" width="184" height="184" rx="12" fill="#C9D0DA" transform="translate(0 7)"/>
+  <rect x="-92" y="-92" width="184" height="184" rx="12" fill="#FFFFFF"/>
+  <rect x="-92" y="-92" width="184" height="184" rx="12" fill="none" stroke="#E2E6EC" stroke-width="2"/>
+  <rect x="-70" y="-70" width="64" height="10" rx="5" fill="#1F5EFF"/>
+  <rect x="-70" y="-50" width="116" height="7" rx="3.5" fill="#D5DAE2"/>
+  <rect x="-70.00" y="-24" width="3.18" height="66" fill="#1B1F27"/><rect x="-63.64" y="-24" width="1.59" height="66" fill="#1B1F27"/><rect x="-60.45" y="-24" width="1.59" height="66" fill="#1B1F27"/><rect x="-57.27" y="-24" width="4.77" height="66" fill="#1B1F27"/><rect x="-47.73" y="-24" width="1.59" height="66" fill="#1B1F27"/><rect x="-44.55" y="-24" width="3.18" height="66" fill="#1B1F27"/><rect x="-38.18" y="-24" width="1.59" height="66" fill="#1B1F27"/><rect x="-35.00" y="-24" width="1.59" height="66" fill="#1B1F27"/><rect x="-31.82" y="-24" width="3.18" height="66" fill="#1B1F27"/><rect x="-25.45" y="-24" width="4.77" height="66" fill="#1B1F27"/><rect x="-15.91" y="-24" width="1.59" height="66" fill="#1B1F27"/><rect x="-12.73" y="-24" width="1.59" height="66" fill="#1B1F27"/><rect x="-9.55" y="-24" width="3.18" height="66" fill="#1B1F27"/><rect x="-3.18" y="-24" width="1.59" height="66" fill="#1B1F27"/><rect x="-0.00" y="-24" width="4.77" height="66" fill="#1B1F27"/><rect x="9.55" y="-24" width="1.59" height="66" fill="#1B1F27"/><rect x="12.73" y="-24" width="3.18" height="66" fill="#1B1F27"/><rect x="19.09" y="-24" width="1.59" height="66" fill="#1B1F27"/><rect x="22.27" y="-24" width="1.59" height="66" fill="#1B1F27"/><rect x="25.45" y="-24" width="3.18" height="66" fill="#1B1F27"/><rect x="31.82" y="-24" width="1.59" height="66" fill="#1B1F27"/><rect x="35.00" y="-24" width="4.77" height="66" fill="#1B1F27"/><rect x="44.55" y="-24" width="1.59" height="66" fill="#1B1F27"/><rect x="47.73" y="-24" width="1.59" height="66" fill="#1B1F27"/><rect x="50.91" y="-24" width="3.18" height="66" fill="#1B1F27"/><rect x="57.27" y="-24" width="1.59" height="66" fill="#1B1F27"/><rect x="60.45" y="-24" width="3.18" height="66" fill="#1B1F27"/><rect x="66.82" y="-24" width="1.59" height="66" fill="#1B1F27"/>
+  <rect x="-70" y="54" width="140" height="6" rx="3" fill="#E6E9EE"/>
+</g></g>
+<ellipse cx="734" cy="676" rx="114" ry="17" fill="url(#shadow)" opacity="1"/>
+<g transform="translate(734 612) scale(0.68) translate(-200 -150)">
+<ellipse cx="200" cy="186" rx="120" ry="68" fill="#0B0D10"/>
+<path d="M80 140 V186 A120 68 0 0 0 320 186 V140" fill="url(#darkSide)"/>
+<ellipse cx="200" cy="140" rx="120" ry="68" fill="url(#darkTop)"/>
+<ellipse cx="200" cy="140" rx="118.8" ry="67.2" fill="none" stroke="#fff" stroke-opacity=".22" stroke-width="1.2"/>
+<ellipse cx="200" cy="140" rx="88.8" ry="50.32" fill="none" stroke="#000" stroke-opacity=".35" stroke-width="1.4"/>
+<ellipse cx="200" cy="140" rx="50.4" ry="28.56" fill="#0E1014"/>
+<ellipse cx="200" cy="145.44" rx="36" ry="19.040000000000003" fill="url(#cone)"/>
+<ellipse cx="200" cy="140" rx="60" ry="34" fill="none" stroke="#5B9BFF" stroke-width="2.4" opacity=".9"/>
+<path d="M98 104 A118 66 0 0 1 182 74" stroke="#fff" stroke-opacity=".25" stroke-width="3" fill="none" stroke-linecap="round"/></g>
+</svg>
