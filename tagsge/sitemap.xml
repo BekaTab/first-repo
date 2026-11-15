@@ -2,9 +2,51 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
     <loc>https://tags.ge/</loc>
-    <lastmod>2026-11-14</lastmod>
+    <lastmod>2026-11-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>1.0</priority>
     <image:image><image:loc>https://tags.ge/og-image.jpg</image:loc></image:image>
+    <image:image><image:loc>https://tags.ge/img/p/rf-antennas.webp</image:loc></image:image>
+    <image:image><image:loc>https://tags.ge/img/p/am-antennas.webp</image:loc></image:image>
+    <image:image><image:loc>https://tags.ge/img/p/rfid-antennas.webp</image:loc></image:image>
+    <image:image><image:loc>https://tags.ge/img/p/round-tags.webp</image:loc></image:image>
+    <image:image><image:loc>https://tags.ge/img/p/pencil-tags.webp</image:loc></image:image>
+    <image:image><image:loc>https://tags.ge/img/p/flat-tags.webp</image:loc></image:image>
+    <image:image><image:loc>https://tags.ge/img/p/special-tags.webp</image:loc></image:image>
+    <image:image><image:loc>https://tags.ge/img/p/ink-tags.webp</image:loc></image:image>
+    <image:image><image:loc>https://tags.ge/img/p/lanyard-tags.webp</image:loc></image:image>
+    <image:image><image:loc>https://tags.ge/img/p/optical-tags.webp</image:loc></image:image>
+    <image:image><image:loc>https://tags.ge/img/p/peg-tags.webp</image:loc></image:image>
+    <image:image><image:loc>https://tags.ge/img/p/am-labels.webp</image:loc></image:image>
+    <image:image><image:loc>https://tags.ge/img/p/am-special-labels.webp</image:loc></image:image>
+    <image:image><image:loc>https://tags.ge/img/p/rf-labels.webp</image:loc></image:image>
+    <image:image><image:loc>https://tags.ge/img/p/clear-labels.webp</image:loc></image:image>
+    <image:image><image:loc>https://tags.ge/img/p/frozen-labels.webp</image:loc></image:image>
+    <image:image><image:loc>https://tags.ge/img/p/custom-labels.webp</image:loc></image:image>
+    <image:image><image:loc>https://tags.ge/img/p/rf-deactivators.webp</image:loc></image:image>
+    <image:image><image:loc>https://tags.ge/img/p/am-deactivators.webp</image:loc></image:image>
+    <image:image><image:loc>https://tags.ge/img/p/metal-detachers.webp</image:loc></image:image>
+    <image:image><image:loc>https://tags.ge/img/p/cased-detachers.webp</image:loc></image:image>
+    <image:image><image:loc>https://tags.ge/img/p/pins.webp</image:loc></image:image>
+    <image:image><image:loc>https://tags.ge/img/p/lanyards.webp</image:loc></image:image>
+    <image:image><image:loc>https://tags.ge/img/p/bottle-cable-tags.webp</image:loc></image:image>
+    <image:image><image:loc>https://tags.ge/img/p/bottle-neck-tags.webp</image:loc></image:image>
+    <image:image><image:loc>https://tags.ge/img/p/bottle-caps.webp</image:loc></image:image>
+    <image:image><image:loc>https://tags.ge/img/p/safer-boxes.webp</image:loc></image:image>
+    <image:image><image:loc>https://tags.ge/img/p/can-safers.webp</image:loc></image:image>
+    <image:image><image:loc>https://tags.ge/img/p/small-safers.webp</image:loc></image:image>
+    <image:image><image:loc>https://tags.ge/img/p/rfid-hard-tags.webp</image:loc></image:image>
+    <image:image><image:loc>https://tags.ge/img/p/rfid-pins.webp</image:loc></image:image>
+    <image:image><image:loc>https://tags.ge/img/p/rfid-alarm-tags.webp</image:loc></image:image>
+    <image:image><image:loc>https://tags.ge/img/p/rfid-special-tags.webp</image:loc></image:image>
+    <image:image><image:loc>https://tags.ge/img/p/uhf-labels.webp</image:loc></image:image>
+    <image:image><image:loc>https://tags.ge/img/p/hf-labels.webp</image:loc></image:image>
+    <image:image><image:loc>https://tags.ge/img/p/rfid-clothing.webp</image:loc></image:image>
+    <image:image><image:loc>https://tags.ge/img/p/nfc-tags.webp</image:loc></image:image>
+    <image:image><image:loc>https://tags.ge/img/p/rfid-cards.webp</image:loc></image:image>
+    <image:image><image:loc>https://tags.ge/img/p/rfid-readers.webp</image:loc></image:image>
+    <image:image><image:loc>https://tags.ge/img/p/rfid-printer.webp</image:loc></image:image>
+    <image:image><image:loc>https://tags.ge/img/p/animal-ear-tags.webp</image:loc></image:image>
+    <image:image><image:loc>https://tags.ge/img/p/animal-microchips.webp</image:loc></image:image>
   </url>
 </urlset>
