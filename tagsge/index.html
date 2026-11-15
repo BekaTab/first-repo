@@ -231,10 +231,15 @@ html.menu-open{overflow:hidden}
 .fam-short{font-size:14px;line-height:1.5;color:var(--muted)}
 .fam-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:auto;padding-top:12px}
 .fam-meta{display:flex;flex-wrap:wrap;align-items:center;gap:5px}
-.fam-count{margin-right:3px;font-size:13px;font-weight:600;color:var(--text-2)}
+.fam-opts{display:flex;align-items:center;gap:10px;margin-top:10px}
+.fam-swatches{display:flex;flex:none}
+.fam-swatches img,.fam-swatches .more{width:36px;height:36px;border-radius:10px;background:#fff;box-shadow:0 0 0 2px #fff,0 0 0 3px var(--line);object-fit:contain;padding:2px}
+.fam-swatches > * + *{margin-left:-6px}
+.fam-swatches .more{display:grid;place-items:center;font-size:12.5px;font-weight:700;color:#1440C0;background:var(--accent-tint)}
+.fam-count{font-size:13.5px;font-weight:600;line-height:1.35;color:var(--text)}
 .fam-tech{padding:1px 7px;border-radius:999px;border:1px solid var(--line);font-size:10.5px;font-weight:700;letter-spacing:.02em;color:var(--muted)}
-.fam-go{display:grid;place-items:center;flex:none;width:36px;height:36px;border-radius:50%;border:1px solid var(--line-strong);color:var(--text);transition:background-color .3s,border-color .3s,color .3s,transform .3s var(--ease)}
-.fam-go svg{width:17px;height:17px}
+.fam-go{display:inline-flex;align-items:center;gap:6px;flex:none;height:36px;padding:0 14px;border-radius:999px;border:1px solid var(--line-strong);font-size:13px;font-weight:600;white-space:nowrap;color:var(--text);transition:background-color .3s,border-color .3s,color .3s,transform .3s var(--ease)}
+.fam-go svg{width:15px;height:15px}
 .fam:hover .fam-go{background:var(--accent);border-color:var(--accent);color:#fff;transform:translateX(2px)}
 @media (prefers-reduced-motion:no-preference){.fam.enter{animation:rise .5s var(--ease) both;animation-delay:calc(var(--k,0) * 40ms)}}
 .catalog-empty{padding:40px 24px;border:1px dashed var(--line-strong);border-radius:22px;text-align:center;color:var(--text-2);line-height:1.7}
@@ -569,9 +574,11 @@ a.cv::after{content:"";position:absolute;inset:0;border-radius:16px}
         <div class="fam-body">
           <h4 class="fam-name"><a href="#rf-antennas" class="fam-link">RF ანტენები</a></h4>
           <p class="fam-short">ყველაზე ხელმისაწვდომი სისტემა ტანსაცმლის მაღაზიისა და ბუტიკისთვის.</p>
+
+          <div class="fam-opts"><span class="fam-swatches" aria-hidden="true"><img src="img/p/rf-antennas-s.webp" alt="" width="160" height="120" loading="lazy" decoding="async"><img src="img/p/rf-antennas-rs7001-s.webp" alt="" width="160" height="120" loading="lazy" decoding="async"><img src="img/p/rf-antennas-rs7002-s.webp" alt="" width="160" height="120" loading="lazy" decoding="async"></span><span class="fam-count">აირჩიეთ 3 მოდელიდან</span></div>
           <div class="fam-foot">
-            <span class="fam-meta"><span class="fam-count">3 მოდელი</span><span class="fam-tech">RF</span></span>
-            <span class="fam-go" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+            <span class="fam-meta"><span class="fam-tech">RF</span></span>
+            <span class="fam-go" aria-hidden="true">ყველა მოდელი <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
           </div>
         </div>
         <div class="fam-detail" hidden>
@@ -606,9 +613,11 @@ a.cv::after{content:"";position:absolute;inset:0;border-radius:16px}
         <div class="fam-body">
           <h4 class="fam-name"><a href="#am-antennas" class="fam-link">AM ანტენები</a></h4>
           <p class="fam-short">ფართო შესასვლელისთვის. მუშაობს ლითონზე, ფოლგასა და სითხეზეც.</p>
+
+          <div class="fam-opts"><span class="fam-swatches" aria-hidden="true"><img src="img/p/am-antennas-s.webp" alt="" width="160" height="120" loading="lazy" decoding="async"><img src="img/p/am-antennas-am8002-s.webp" alt="" width="160" height="120" loading="lazy" decoding="async"><img src="img/p/am-antennas-am8005-s.webp" alt="" width="160" height="120" loading="lazy" decoding="async"></span><span class="fam-count">აირჩიეთ 3 მოდელიდან</span></div>
           <div class="fam-foot">
-            <span class="fam-meta"><span class="fam-count">3 მოდელი</span><span class="fam-tech">AM</span></span>
-            <span class="fam-go" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+            <span class="fam-meta"><span class="fam-tech">AM</span></span>
+            <span class="fam-go" aria-hidden="true">ყველა მოდელი <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
           </div>
         </div>
         <div class="fam-detail" hidden>
@@ -643,9 +652,11 @@ a.cv::after{content:"";position:absolute;inset:0;border-radius:16px}
         <div class="fam-body">
           <h4 class="fam-name"><a href="#rfid-antennas" class="fam-link">RFID ანტენები</a></h4>
           <p class="fam-short">გაჩვენებთ, კონკრეტულად რომელი ნივთი გავიდა.</p>
+
+          <div class="fam-opts"><span class="fam-swatches" aria-hidden="true"><img src="img/p/rfid-antennas-s.webp" alt="" width="160" height="120" loading="lazy" decoding="async"><img src="img/p/rfid-antennas-ria09-s.webp" alt="" width="160" height="120" loading="lazy" decoding="async"></span><span class="fam-count">აირჩიეთ 2 მოდელიდან</span></div>
           <div class="fam-foot">
-            <span class="fam-meta"><span class="fam-count">2 მოდელი</span><span class="fam-tech">RFID</span></span>
-            <span class="fam-go" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+            <span class="fam-meta"><span class="fam-tech">RFID</span></span>
+            <span class="fam-go" aria-hidden="true">ყველა მოდელი <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
           </div>
         </div>
         <div class="fam-detail" hidden>
@@ -687,9 +698,11 @@ a.cv::after{content:"";position:absolute;inset:0;border-radius:16px}
         <div class="fam-body">
           <h4 class="fam-name"><a href="#round-tags" class="fam-link">მრგვალი და კვადრატული ჩიპები</a></h4>
           <p class="fam-short">ყველაზე გავრცელებული ჩიპები ტანსაცმლისთვის.</p>
+
+          <div class="fam-opts"><span class="fam-swatches" aria-hidden="true"><img src="img/p/round-tags-s.webp" alt="" width="160" height="120" loading="lazy" decoding="async"><img src="img/p/round-tags-t015-s.webp" alt="" width="160" height="120" loading="lazy" decoding="async"><img src="img/p/round-tags-t022-s.webp" alt="" width="160" height="120" loading="lazy" decoding="async"><span class="more">+6</span></span><span class="fam-count">აირჩიეთ 9 მოდელიდან</span></div>
           <div class="fam-foot">
-            <span class="fam-meta"><span class="fam-count">9 მოდელი</span><span class="fam-tech">RF</span><span class="fam-tech">AM</span></span>
-            <span class="fam-go" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+            <span class="fam-meta"><span class="fam-tech">RF</span><span class="fam-tech">AM</span></span>
+            <span class="fam-go" aria-hidden="true">ყველა მოდელი <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
           </div>
         </div>
         <div class="fam-detail" hidden>
@@ -730,9 +743,11 @@ a.cv::after{content:"";position:absolute;inset:0;border-radius:16px}
         <div class="fam-body">
           <h4 class="fam-name"><a href="#pencil-tags" class="fam-link">წაგრძელებული ჩიპები</a></h4>
           <p class="fam-short">მსუბუქი ჩიპები თხელი ქსოვილისთვის.</p>
+
+          <div class="fam-opts"><span class="fam-swatches" aria-hidden="true"><img src="img/p/pencil-tags-s.webp" alt="" width="160" height="120" loading="lazy" decoding="async"><img src="img/p/pencil-tags-t052-s.webp" alt="" width="160" height="120" loading="lazy" decoding="async"><img src="img/p/pencil-tags-t053-s.webp" alt="" width="160" height="120" loading="lazy" decoding="async"><span class="more">+5</span></span><span class="fam-count">აირჩიეთ 8 მოდელიდან</span></div>
           <div class="fam-foot">
-            <span class="fam-meta"><span class="fam-count">8 მოდელი</span><span class="fam-tech">RF</span><span class="fam-tech">AM</span></span>
-            <span class="fam-go" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+            <span class="fam-meta"><span class="fam-tech">RF</span><span class="fam-tech">AM</span></span>
+            <span class="fam-go" aria-hidden="true">ყველა მოდელი <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
           </div>
         </div>
         <div class="fam-detail" hidden>
@@ -772,9 +787,11 @@ a.cv::after{content:"";position:absolute;inset:0;border-radius:16px}
         <div class="fam-body">
           <h4 class="fam-name"><a href="#flat-tags" class="fam-link">ბრტყელი ჩიპები</a></h4>
           <p class="fam-short">ტანსაცმელზე თითქმის არ ჩანს და მოზომვაში ხელს არ უშლის.</p>
+
+          <div class="fam-opts"><span class="fam-swatches" aria-hidden="true"><img src="img/p/flat-tags-s.webp" alt="" width="160" height="120" loading="lazy" decoding="async"><img src="img/p/flat-tags-t009-s.webp" alt="" width="160" height="120" loading="lazy" decoding="async"><img src="img/p/flat-tags-t050-s.webp" alt="" width="160" height="120" loading="lazy" decoding="async"><span class="more">+4</span></span><span class="fam-count">აირჩიეთ 7 მოდელიდან</span></div>
           <div class="fam-foot">
-            <span class="fam-meta"><span class="fam-count">7 მოდელი</span><span class="fam-tech">RF</span><span class="fam-tech">AM</span></span>
-            <span class="fam-go" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+            <span class="fam-meta"><span class="fam-tech">RF</span><span class="fam-tech">AM</span></span>
+            <span class="fam-go" aria-hidden="true">ყველა მოდელი <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
           </div>
         </div>
         <div class="fam-detail" hidden>
@@ -812,9 +829,11 @@ a.cv::after{content:"";position:absolute;inset:0;border-radius:16px}
         <div class="fam-body">
           <h4 class="fam-name"><a href="#special-tags" class="fam-link">სპეციალური ჩიპები</a></h4>
           <p class="fam-short">საბავშვო, დეკორატიული და ფარული ქინძისთავით.</p>
+
+          <div class="fam-opts"><span class="fam-swatches" aria-hidden="true"><img src="img/p/special-tags-s.webp" alt="" width="160" height="120" loading="lazy" decoding="async"><img src="img/p/special-tags-t072-s.webp" alt="" width="160" height="120" loading="lazy" decoding="async"><img src="img/p/special-tags-t073-s.webp" alt="" width="160" height="120" loading="lazy" decoding="async"><span class="more">+1</span></span><span class="fam-count">აირჩიეთ 4 მოდელიდან</span></div>
           <div class="fam-foot">
-            <span class="fam-meta"><span class="fam-count">4 მოდელი</span><span class="fam-tech">RF</span><span class="fam-tech">AM</span></span>
-            <span class="fam-go" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+            <span class="fam-meta"><span class="fam-tech">RF</span><span class="fam-tech">AM</span></span>
+            <span class="fam-go" aria-hidden="true">ყველა მოდელი <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
           </div>
         </div>
         <div class="fam-detail" hidden>
@@ -850,9 +869,11 @@ a.cv::after{content:"";position:absolute;inset:0;border-radius:16px}
         <div class="fam-body">
           <h4 class="fam-name"><a href="#ink-tags" class="fam-link">საღებავიანი ჩიპები</a></h4>
           <p class="fam-short">ძალით მოხსნისას საღებავი იღვრება და ნივთი ფუჭდება.</p>
+
+          <div class="fam-opts"><span class="fam-swatches" aria-hidden="true"><img src="img/p/ink-tags-i010-s.webp" alt="" width="160" height="120" loading="lazy" decoding="async"><img src="img/p/ink-tags-i009-s.webp" alt="" width="160" height="120" loading="lazy" decoding="async"><img src="img/p/ink-tags-i012-s.webp" alt="" width="160" height="120" loading="lazy" decoding="async"><span class="more">+15</span></span><span class="fam-count">აირჩიეთ 18 მოდელიდან</span></div>
           <div class="fam-foot">
-            <span class="fam-meta"><span class="fam-count">18 მოდელი</span><span class="fam-tech">RF</span><span class="fam-tech">AM</span></span>
-            <span class="fam-go" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+            <span class="fam-meta"><span class="fam-tech">RF</span><span class="fam-tech">AM</span></span>
+            <span class="fam-go" aria-hidden="true">ყველა მოდელი <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
           </div>
         </div>
         <div class="fam-detail" hidden>
@@ -903,9 +924,11 @@ a.cv::after{content:"";position:absolute;inset:0;border-radius:16px}
         <div class="fam-body">
           <h4 class="fam-name"><a href="#lanyard-tags" class="fam-link">ჩიპები თოკით</a></h4>
           <p class="fam-short">ჩანთების, ფეხსაცმლისა და აქსესუარებისთვის.</p>
+
+          <div class="fam-opts"><span class="fam-swatches" aria-hidden="true"><img src="img/p/lanyard-tags-s.webp" alt="" width="160" height="120" loading="lazy" decoding="async"><img src="img/p/lanyard-tags-t022-s.webp" alt="" width="160" height="120" loading="lazy" decoding="async"><img src="img/p/lanyard-tags-t085-s.webp" alt="" width="160" height="120" loading="lazy" decoding="async"></span><span class="fam-count">აირჩიეთ 3 მოდელიდან</span></div>
           <div class="fam-foot">
-            <span class="fam-meta"><span class="fam-count">3 მოდელი</span><span class="fam-tech">RF</span><span class="fam-tech">AM</span></span>
-            <span class="fam-go" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+            <span class="fam-meta"><span class="fam-tech">RF</span><span class="fam-tech">AM</span></span>
+            <span class="fam-go" aria-hidden="true">ყველა მოდელი <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
           </div>
         </div>
         <div class="fam-detail" hidden>
@@ -940,9 +963,11 @@ a.cv::after{content:"";position:absolute;inset:0;border-radius:16px}
         <div class="fam-body">
           <h4 class="fam-name"><a href="#optical-tags" class="fam-link">სათვალის ჩიპები</a></h4>
           <p class="fam-short">მზისა და ოპტიკური სათვალეებისთვის.</p>
+
+          <div class="fam-opts"><span class="fam-swatches" aria-hidden="true"><img src="img/p/optical-tags-o003-s.webp" alt="" width="160" height="120" loading="lazy" decoding="async"><img src="img/p/optical-tags-o006-s.webp" alt="" width="160" height="120" loading="lazy" decoding="async"><img src="img/p/optical-tags-o008-s.webp" alt="" width="160" height="120" loading="lazy" decoding="async"></span><span class="fam-count">აირჩიეთ 3 მოდელიდან</span></div>
           <div class="fam-foot">
-            <span class="fam-meta"><span class="fam-count">3 მოდელი</span><span class="fam-tech">RF</span><span class="fam-tech">AM</span></span>
-            <span class="fam-go" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+            <span class="fam-meta"><span class="fam-tech">RF</span><span class="fam-tech">AM</span></span>
+            <span class="fam-go" aria-hidden="true">ყველა მოდელი <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
           </div>
         </div>
         <div class="fam-detail" hidden>
@@ -978,9 +1003,11 @@ a.cv::after{content:"";position:absolute;inset:0;border-radius:16px}
         <div class="fam-body">
           <h4 class="fam-name"><a href="#peg-tags" class="fam-link">ჩამოსაკიდი ჩიპები</a></h4>
           <p class="fam-short">სტენდზე ჩამოკიდებული შეფუთვისა და ბლისტერებისთვის.</p>
+
+          <div class="fam-opts"><span class="fam-swatches" aria-hidden="true"><img src="img/p/peg-tags-s.webp" alt="" width="160" height="120" loading="lazy" decoding="async"><img src="img/p/peg-tags-t075-s.webp" alt="" width="160" height="120" loading="lazy" decoding="async"></span><span class="fam-count">აირჩიეთ 2 მოდელიდან</span></div>
           <div class="fam-foot">
-            <span class="fam-meta"><span class="fam-count">2 მოდელი</span><span class="fam-tech">RF</span><span class="fam-tech">AM</span></span>
-            <span class="fam-go" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+            <span class="fam-meta"><span class="fam-tech">RF</span><span class="fam-tech">AM</span></span>
+            <span class="fam-go" aria-hidden="true">ყველა მოდელი <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
           </div>
         </div>
         <div class="fam-detail" hidden>
@@ -1023,9 +1050,11 @@ a.cv::after{content:"";position:absolute;inset:0;border-radius:16px}
         <div class="fam-body">
           <h4 class="fam-name"><a href="#am-labels" class="fam-link">AM სტიკერები</a></h4>
           <p class="fam-short">ფურცლად ან რულონად, თეთრი ან შტრიხკოდიანი.</p>
+
+          <div class="fam-opts"><span class="fam-swatches" aria-hidden="true"><img src="img/p/am-labels-dr001-s.webp" alt="" width="160" height="120" loading="lazy" decoding="async"><img src="img/p/am-labels-dr002-s.webp" alt="" width="160" height="120" loading="lazy" decoding="async"><img src="img/p/am-labels-dr003-s.webp" alt="" width="160" height="120" loading="lazy" decoding="async"><span class="more">+1</span></span><span class="fam-count">აირჩიეთ 4 მოდელიდან</span></div>
           <div class="fam-foot">
-            <span class="fam-meta"><span class="fam-count">4 მოდელი</span><span class="fam-tech">AM</span></span>
-            <span class="fam-go" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+            <span class="fam-meta"><span class="fam-tech">AM</span></span>
+            <span class="fam-go" aria-hidden="true">ყველა მოდელი <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
           </div>
         </div>
         <div class="fam-detail" hidden>
@@ -1061,9 +1090,11 @@ a.cv::after{content:"";position:absolute;inset:0;border-radius:16px}
         <div class="fam-body">
           <h4 class="fam-name"><a href="#am-special-labels" class="fam-link">სპეციალური AM სტიკერები</a></h4>
           <p class="fam-short">ჩასადები, წყალგამძლე, სამკაულისთვის და ლოგოთი.</p>
+
+          <div class="fam-opts"><span class="fam-swatches" aria-hidden="true"><img src="img/p/am-special-labels-s.webp" alt="" width="160" height="120" loading="lazy" decoding="async"><img src="img/p/am-special-labels-alw01-s.webp" alt="" width="160" height="120" loading="lazy" decoding="async"><img src="img/p/am-special-labels-alj01-s.webp" alt="" width="160" height="120" loading="lazy" decoding="async"><span class="more">+3</span></span><span class="fam-count">აირჩიეთ 6 მოდელიდან</span></div>
           <div class="fam-foot">
-            <span class="fam-meta"><span class="fam-count">6 მოდელი</span><span class="fam-tech">AM</span></span>
-            <span class="fam-go" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+            <span class="fam-meta"><span class="fam-tech">AM</span></span>
+            <span class="fam-go" aria-hidden="true">ყველა მოდელი <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
           </div>
         </div>
         <div class="fam-detail" hidden>
@@ -1100,9 +1131,11 @@ a.cv::after{content:"";position:absolute;inset:0;border-radius:16px}
         <div class="fam-body">
           <h4 class="fam-name"><a href="#rf-labels" class="fam-link">RF სტიკერები</a></h4>
           <p class="fam-short">თეთრი, შტრიხკოდიანი ან გამჭვირვალე — 8 ზომა.</p>
+
+          <div class="fam-opts"><span class="fam-swatches" aria-hidden="true"><img src="img/p/rf-labels-rl4040-s.webp" alt="" width="160" height="120" loading="lazy" decoding="async"><img src="img/p/rf-labels-rl3030-s.webp" alt="" width="160" height="120" loading="lazy" decoding="async"><img src="img/p/rf-labels-rl5050-s.webp" alt="" width="160" height="120" loading="lazy" decoding="async"><span class="more">+5</span></span><span class="fam-count">აირჩიეთ 8 მოდელიდან</span></div>
           <div class="fam-foot">
-            <span class="fam-meta"><span class="fam-count">8 მოდელი</span><span class="fam-tech">RF</span></span>
-            <span class="fam-go" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+            <span class="fam-meta"><span class="fam-tech">RF</span></span>
+            <span class="fam-go" aria-hidden="true">ყველა მოდელი <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
           </div>
         </div>
         <div class="fam-detail" hidden>
@@ -1142,9 +1175,11 @@ a.cv::after{content:"";position:absolute;inset:0;border-radius:16px}
         <div class="fam-body">
           <h4 class="fam-name"><a href="#clear-labels" class="fam-link">გამჭვირვალე RF სტიკერები</a></h4>
           <p class="fam-short">კოსმეტიკისთვის: შტრიხკოდი და ბრენდი ჩანს.</p>
+
+          <div class="fam-opts"><span class="fam-swatches" aria-hidden="true"><img src="img/p/clear-labels-rl1552-s.webp" alt="" width="160" height="120" loading="lazy" decoding="async"><img src="img/p/clear-labels-rl2050-s.webp" alt="" width="160" height="120" loading="lazy" decoding="async"><img src="img/p/clear-labels-rl1965-s.webp" alt="" width="160" height="120" loading="lazy" decoding="async"></span><span class="fam-count">აირჩიეთ 3 მოდელიდან</span></div>
           <div class="fam-foot">
-            <span class="fam-meta"><span class="fam-count">3 მოდელი</span><span class="fam-tech">RF</span></span>
-            <span class="fam-go" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+            <span class="fam-meta"><span class="fam-tech">RF</span></span>
+            <span class="fam-go" aria-hidden="true">ყველა მოდელი <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
           </div>
         </div>
         <div class="fam-detail" hidden>
@@ -1180,9 +1215,11 @@ a.cv::after{content:"";position:absolute;inset:0;border-radius:16px}
         <div class="fam-body">
           <h4 class="fam-name"><a href="#frozen-labels" class="fam-link">სტიკერები გაყინული პროდუქტისთვის</a></h4>
           <p class="fam-short">ტენს და ყინვას უძლებს: ხორცი, თევზი, სასმელი.</p>
+
+          <div class="fam-opts"><span class="fam-swatches" aria-hidden="true"><img src="img/p/frozen-labels-s.webp" alt="" width="160" height="120" loading="lazy" decoding="async"><img src="img/p/frozen-labels-nrl4040-s.webp" alt="" width="160" height="120" loading="lazy" decoding="async"><img src="img/p/frozen-labels-nrl3030-s.webp" alt="" width="160" height="120" loading="lazy" decoding="async"><span class="more">+1</span></span><span class="fam-count">აირჩიეთ 4 მოდელიდან</span></div>
           <div class="fam-foot">
-            <span class="fam-meta"><span class="fam-count">4 მოდელი</span><span class="fam-tech">RF</span><span class="fam-tech">AM</span></span>
-            <span class="fam-go" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+            <span class="fam-meta"><span class="fam-tech">RF</span><span class="fam-tech">AM</span></span>
+            <span class="fam-go" aria-hidden="true">ყველა მოდელი <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
           </div>
         </div>
         <div class="fam-detail" hidden>
@@ -1216,9 +1253,11 @@ a.cv::after{content:"";position:absolute;inset:0;border-radius:16px}
         <div class="fam-body">
           <h4 class="fam-name"><a href="#custom-labels" class="fam-link">სტიკერები თქვენი დიზაინით</a></h4>
           <p class="fam-short">ლოგო, QR კოდი, გაფრთხილება ან სასურველი ფორმა.</p>
+
+          <div class="fam-opts"><span class="fam-swatches" aria-hidden="true"><img src="img/p/custom-labels-s.webp" alt="" width="160" height="120" loading="lazy" decoding="async"><img src="img/p/custom-labels-rp01-s.webp" alt="" width="160" height="120" loading="lazy" decoding="async"><img src="img/p/custom-labels-rp03-s.webp" alt="" width="160" height="120" loading="lazy" decoding="async"><span class="more">+2</span></span><span class="fam-count">აირჩიეთ 5 მოდელიდან</span></div>
           <div class="fam-foot">
-            <span class="fam-meta"><span class="fam-count">5 მოდელი</span><span class="fam-tech">RF</span></span>
-            <span class="fam-go" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+            <span class="fam-meta"><span class="fam-tech">RF</span></span>
+            <span class="fam-go" aria-hidden="true">ყველა მოდელი <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
           </div>
         </div>
         <div class="fam-detail" hidden>
@@ -1263,9 +1302,11 @@ a.cv::after{content:"";position:absolute;inset:0;border-radius:16px}
         <div class="fam-body">
           <h4 class="fam-name"><a href="#rf-deactivators" class="fam-link">RF დეაქტივატორები</a></h4>
           <p class="fam-short">სალაროზე RF სტიკერს გადახდისას თიშავს.</p>
+
+          <div class="fam-opts"><span class="fam-swatches" aria-hidden="true"><img src="img/p/rf-deactivators-s.webp" alt="" width="160" height="120" loading="lazy" decoding="async"><img src="img/p/rf-deactivators-rd002-s.webp" alt="" width="160" height="120" loading="lazy" decoding="async"><img src="img/p/rf-deactivators-rd003-s.webp" alt="" width="160" height="120" loading="lazy" decoding="async"></span><span class="fam-count">აირჩიეთ 3 მოდელიდან</span></div>
           <div class="fam-foot">
-            <span class="fam-meta"><span class="fam-count">3 მოდელი</span><span class="fam-tech">RF</span></span>
-            <span class="fam-go" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+            <span class="fam-meta"><span class="fam-tech">RF</span></span>
+            <span class="fam-go" aria-hidden="true">ყველა მოდელი <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
           </div>
         </div>
         <div class="fam-detail" hidden>
@@ -1299,9 +1340,11 @@ a.cv::after{content:"";position:absolute;inset:0;border-radius:16px}
         <div class="fam-body">
           <h4 class="fam-name"><a href="#am-deactivators" class="fam-link">AM დეაქტივატორები</a></h4>
           <p class="fam-short">სალაროზე AM სტიკერს გადახდისას თიშავს.</p>
+
+          <div class="fam-opts"><span class="fam-swatches" aria-hidden="true"><img src="img/p/am-deactivators-s.webp" alt="" width="160" height="120" loading="lazy" decoding="async"><img src="img/p/am-deactivators-ad006-s.webp" alt="" width="160" height="120" loading="lazy" decoding="async"><img src="img/p/am-deactivators-ad002-s.webp" alt="" width="160" height="120" loading="lazy" decoding="async"></span><span class="fam-count">აირჩიეთ 3 მოდელიდან</span></div>
           <div class="fam-foot">
-            <span class="fam-meta"><span class="fam-count">3 მოდელი</span><span class="fam-tech">AM</span></span>
-            <span class="fam-go" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+            <span class="fam-meta"><span class="fam-tech">AM</span></span>
+            <span class="fam-go" aria-hidden="true">ყველა მოდელი <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
           </div>
         </div>
         <div class="fam-detail" hidden>
@@ -1344,9 +1387,11 @@ a.cv::after{content:"";position:absolute;inset:0;border-radius:16px}
         <div class="fam-body">
           <h4 class="fam-name"><a href="#metal-detachers" class="fam-link">ლითონის მაგნიტები</a></h4>
           <p class="fam-short">სტანდარტული, Superlock და Hyperlock სიძლიერით.</p>
+
+          <div class="fam-opts"><span class="fam-swatches" aria-hidden="true"><img src="img/p/metal-detachers-d001-s.webp" alt="" width="160" height="120" loading="lazy" decoding="async"><img src="img/p/metal-detachers-d003-s.webp" alt="" width="160" height="120" loading="lazy" decoding="async"><img src="img/p/metal-detachers-d011-s.webp" alt="" width="160" height="120" loading="lazy" decoding="async"><span class="more">+7</span></span><span class="fam-count">აირჩიეთ 10 მოდელიდან</span></div>
           <div class="fam-foot">
-            <span class="fam-meta"><span class="fam-count">10 მოდელი</span></span>
-            <span class="fam-go" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+            <span class="fam-meta"></span>
+            <span class="fam-go" aria-hidden="true">ყველა მოდელი <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
           </div>
         </div>
         <div class="fam-detail" hidden>
@@ -1387,9 +1432,11 @@ a.cv::after{content:"";position:absolute;inset:0;border-radius:16px}
         <div class="fam-body">
           <h4 class="fam-name"><a href="#cased-detachers" class="fam-link">მაგნიტები დამცავი კორპუსით</a></h4>
           <p class="fam-short">კორპუსი საკეტით — უცხო ვერ გამოიყენებს.</p>
+
+          <div class="fam-opts"><span class="fam-swatches" aria-hidden="true"><img src="img/p/cased-detachers-d401-s.webp" alt="" width="160" height="120" loading="lazy" decoding="async"><img src="img/p/cased-detachers-s.webp" alt="" width="160" height="120" loading="lazy" decoding="async"><img src="img/p/cased-detachers-d018-s.webp" alt="" width="160" height="120" loading="lazy" decoding="async"></span><span class="fam-count">აირჩიეთ 3 მოდელიდან</span></div>
           <div class="fam-foot">
-            <span class="fam-meta"><span class="fam-count">3 მოდელი</span></span>
-            <span class="fam-go" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+            <span class="fam-meta"></span>
+            <span class="fam-go" aria-hidden="true">ყველა მოდელი <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
           </div>
         </div>
         <div class="fam-detail" hidden>
@@ -1431,9 +1478,11 @@ a.cv::after{content:"";position:absolute;inset:0;border-radius:16px}
         <div class="fam-body">
           <h4 class="fam-name"><a href="#pins" class="fam-link">ქინძისთავები</a></h4>
           <p class="fam-short">ფოლადის, პლასტმასის, საღებავიანი და სიგნალიზაციით.</p>
+
+          <div class="fam-opts"><span class="fam-swatches" aria-hidden="true"><img src="img/p/pins-p001-s.webp" alt="" width="160" height="120" loading="lazy" decoding="async"><img src="img/p/pins-p002-s.webp" alt="" width="160" height="120" loading="lazy" decoding="async"><img src="img/p/pins-s.webp" alt="" width="160" height="120" loading="lazy" decoding="async"><span class="more">+10</span></span><span class="fam-count">აირჩიეთ 13 მოდელიდან</span></div>
           <div class="fam-foot">
-            <span class="fam-meta"><span class="fam-count">13 მოდელი</span></span>
-            <span class="fam-go" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+            <span class="fam-meta"></span>
+            <span class="fam-go" aria-hidden="true">ყველა მოდელი <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
           </div>
         </div>
         <div class="fam-detail" hidden>
@@ -1478,9 +1527,11 @@ a.cv::after{content:"";position:absolute;inset:0;border-radius:16px}
         <div class="fam-body">
           <h4 class="fam-name"><a href="#lanyards" class="fam-link">თოკები</a></h4>
           <p class="fam-short">ფოლადის თოკები ჩიპებისთვის, 150–180 მმ.</p>
+
+          <div class="fam-opts"><span class="fam-swatches" aria-hidden="true"><img src="img/p/lanyards-l001-s.webp" alt="" width="160" height="120" loading="lazy" decoding="async"><img src="img/p/lanyards-l002-s.webp" alt="" width="160" height="120" loading="lazy" decoding="async"><img src="img/p/lanyards-l003-s.webp" alt="" width="160" height="120" loading="lazy" decoding="async"><span class="more">+2</span></span><span class="fam-count">აირჩიეთ 5 მოდელიდან</span></div>
           <div class="fam-foot">
-            <span class="fam-meta"><span class="fam-count">5 მოდელი</span></span>
-            <span class="fam-go" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+            <span class="fam-meta"></span>
+            <span class="fam-go" aria-hidden="true">ყველა მოდელი <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
           </div>
         </div>
         <div class="fam-detail" hidden>
@@ -1525,9 +1576,11 @@ a.cv::after{content:"";position:absolute;inset:0;border-radius:16px}
         <div class="fam-body">
           <h4 class="fam-name"><a href="#bottle-cable-tags" class="fam-link">ბოთლის ჩიპები თოკით</a></h4>
           <p class="fam-short">ბოთლის ყელზე, ფოლადის ან პლასტმასის თოკით.</p>
+
+          <div class="fam-opts"><span class="fam-swatches" aria-hidden="true"><img src="img/p/bottle-cable-tags-b001-s.webp" alt="" width="160" height="120" loading="lazy" decoding="async"><img src="img/p/bottle-cable-tags-b002-s.webp" alt="" width="160" height="120" loading="lazy" decoding="async"><img src="img/p/bottle-cable-tags-b004-s.webp" alt="" width="160" height="120" loading="lazy" decoding="async"><span class="more">+2</span></span><span class="fam-count">აირჩიეთ 5 მოდელიდან</span></div>
           <div class="fam-foot">
-            <span class="fam-meta"><span class="fam-count">5 მოდელი</span><span class="fam-tech">RF</span><span class="fam-tech">AM</span></span>
-            <span class="fam-go" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+            <span class="fam-meta"><span class="fam-tech">RF</span><span class="fam-tech">AM</span></span>
+            <span class="fam-go" aria-hidden="true">ყველა მოდელი <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
           </div>
         </div>
         <div class="fam-detail" hidden>
@@ -1563,9 +1616,11 @@ a.cv::after{content:"";position:absolute;inset:0;border-radius:16px}
         <div class="fam-body">
           <h4 class="fam-name"><a href="#bottle-neck-tags" class="fam-link">ბოთლის ყელის ჩიპები</a></h4>
           <p class="fam-short">რგოლი, რომელიც ბოთლის ყელზე იკეტება.</p>
+
+          <div class="fam-opts"><span class="fam-swatches" aria-hidden="true"><img src="img/p/bottle-neck-tags-s.webp" alt="" width="160" height="120" loading="lazy" decoding="async"><img src="img/p/bottle-neck-tags-b017-s.webp" alt="" width="160" height="120" loading="lazy" decoding="async"><img src="img/p/bottle-neck-tags-b014-s.webp" alt="" width="160" height="120" loading="lazy" decoding="async"></span><span class="fam-count">აირჩიეთ 3 მოდელიდან</span></div>
           <div class="fam-foot">
-            <span class="fam-meta"><span class="fam-count">3 მოდელი</span><span class="fam-tech">RF</span><span class="fam-tech">AM</span></span>
-            <span class="fam-go" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+            <span class="fam-meta"><span class="fam-tech">RF</span><span class="fam-tech">AM</span></span>
+            <span class="fam-go" aria-hidden="true">ყველა მოდელი <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
           </div>
         </div>
         <div class="fam-detail" hidden>
@@ -1599,9 +1654,11 @@ a.cv::after{content:"";position:absolute;inset:0;border-radius:16px}
         <div class="fam-body">
           <h4 class="fam-name"><a href="#bottle-caps" class="fam-link">ბოთლის დამცავი თავსახურები</a></h4>
           <p class="fam-short">სრულად ფარავს ბოთლის თავს, ბრენდი ჩანს.</p>
+
+          <div class="fam-opts"><span class="fam-swatches" aria-hidden="true"><img src="img/p/bottle-caps-s.webp" alt="" width="160" height="120" loading="lazy" decoding="async"><img src="img/p/bottle-caps-b021-s.webp" alt="" width="160" height="120" loading="lazy" decoding="async"><img src="img/p/bottle-caps-b022-s.webp" alt="" width="160" height="120" loading="lazy" decoding="async"><span class="more">+1</span></span><span class="fam-count">აირჩიეთ 4 მოდელიდან</span></div>
           <div class="fam-foot">
-            <span class="fam-meta"><span class="fam-count">4 მოდელი</span><span class="fam-tech">RF</span><span class="fam-tech">AM</span></span>
-            <span class="fam-go" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+            <span class="fam-meta"><span class="fam-tech">RF</span><span class="fam-tech">AM</span></span>
+            <span class="fam-go" aria-hidden="true">ყველა მოდელი <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
           </div>
         </div>
         <div class="fam-detail" hidden>
@@ -1645,9 +1702,11 @@ a.cv::after{content:"";position:absolute;inset:0;border-radius:16px}
         <div class="fam-body">
           <h4 class="fam-name"><a href="#safer-boxes" class="fam-link">დამცავი ყუთები</a></h4>
           <p class="fam-short">კოსმეტიკის, სუნამოს, ელექტრონიკისა და დისკებისთვის.</p>
+
+          <div class="fam-opts"><span class="fam-count">აირჩიეთ 32 მოდელიდან</span></div>
           <div class="fam-foot">
-            <span class="fam-meta"><span class="fam-count">32 მოდელი</span><span class="fam-tech">RF</span><span class="fam-tech">AM</span><span class="fam-tech">RFID</span></span>
-            <span class="fam-go" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+            <span class="fam-meta"><span class="fam-tech">RF</span><span class="fam-tech">AM</span><span class="fam-tech">RFID</span></span>
+            <span class="fam-go" aria-hidden="true">ყველა მოდელი <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
           </div>
         </div>
         <div class="fam-detail" hidden>
@@ -1683,9 +1742,11 @@ a.cv::after{content:"";position:absolute;inset:0;border-radius:16px}
         <div class="fam-body">
           <h4 class="fam-name"><a href="#can-safers" class="fam-link">ცილინდრული ყუთები</a></h4>
           <p class="fam-short">ქილებისთვის: საღეჭი რეზინი, ყავა, ბავშვის საკვები.</p>
+
+          <div class="fam-opts"><span class="fam-swatches" aria-hidden="true"><img src="img/p/can-safers-s501-s.webp" alt="" width="160" height="120" loading="lazy" decoding="async"><img src="img/p/can-safers-s502-s.webp" alt="" width="160" height="120" loading="lazy" decoding="async"><img src="img/p/can-safers-s503-s.webp" alt="" width="160" height="120" loading="lazy" decoding="async"><span class="more">+1</span></span><span class="fam-count">აირჩიეთ 4 მოდელიდან</span></div>
           <div class="fam-foot">
-            <span class="fam-meta"><span class="fam-count">4 მოდელი</span><span class="fam-tech">RF</span><span class="fam-tech">AM</span><span class="fam-tech">RFID</span></span>
-            <span class="fam-go" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+            <span class="fam-meta"><span class="fam-tech">RF</span><span class="fam-tech">AM</span><span class="fam-tech">RFID</span></span>
+            <span class="fam-go" aria-hidden="true">ყველა მოდელი <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
           </div>
         </div>
         <div class="fam-detail" hidden>
@@ -1721,9 +1782,11 @@ a.cv::after{content:"";position:absolute;inset:0;border-radius:16px}
         <div class="fam-body">
           <h4 class="fam-name"><a href="#small-safers" class="fam-link">მცირე შეფუთვის ყუთები</a></h4>
           <p class="fam-short">ბატარეების, კარტრიჯებისა და მცირე შეფუთვისთვის.</p>
+
+          <div class="fam-opts"><span class="fam-swatches" aria-hidden="true"><img src="img/p/small-safers-s601-s.webp" alt="" width="160" height="120" loading="lazy" decoding="async"><img src="img/p/small-safers-s602-s.webp" alt="" width="160" height="120" loading="lazy" decoding="async"><img src="img/p/small-safers-s603-s.webp" alt="" width="160" height="120" loading="lazy" decoding="async"><span class="more">+1</span></span><span class="fam-count">აირჩიეთ 4 მოდელიდან</span></div>
           <div class="fam-foot">
-            <span class="fam-meta"><span class="fam-count">4 მოდელი</span><span class="fam-tech">RF</span><span class="fam-tech">AM</span><span class="fam-tech">RFID</span></span>
-            <span class="fam-go" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+            <span class="fam-meta"><span class="fam-tech">RF</span><span class="fam-tech">AM</span><span class="fam-tech">RFID</span></span>
+            <span class="fam-go" aria-hidden="true">ყველა მოდელი <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
           </div>
         </div>
         <div class="fam-detail" hidden>
@@ -1768,9 +1831,11 @@ a.cv::after{content:"";position:absolute;inset:0;border-radius:16px}
         <div class="fam-body">
           <h4 class="fam-name"><a href="#rfid-hard-tags" class="fam-link">დაცვის ჩიპები RFID-ით</a></h4>
           <p class="fam-short">ჩვეულებრივი დაცვა და RFID ერთ ჩიპში.</p>
+
+          <div class="fam-opts"><span class="fam-swatches" aria-hidden="true"><img src="img/p/rfid-hard-tags-s.webp" alt="" width="160" height="120" loading="lazy" decoding="async"><img src="img/p/rfid-hard-tags-rit02-s.webp" alt="" width="160" height="120" loading="lazy" decoding="async"><img src="img/p/rfid-hard-tags-rit03-s.webp" alt="" width="160" height="120" loading="lazy" decoding="async"><span class="more">+1</span></span><span class="fam-count">აირჩიეთ 4 მოდელიდან</span></div>
           <div class="fam-foot">
-            <span class="fam-meta"><span class="fam-count">4 მოდელი</span><span class="fam-tech">RF</span><span class="fam-tech">AM</span><span class="fam-tech">RFID</span></span>
-            <span class="fam-go" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+            <span class="fam-meta"><span class="fam-tech">RF</span><span class="fam-tech">AM</span><span class="fam-tech">RFID</span></span>
+            <span class="fam-go" aria-hidden="true">ყველა მოდელი <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
           </div>
         </div>
         <div class="fam-detail" hidden>
@@ -1806,9 +1871,11 @@ a.cv::after{content:"";position:absolute;inset:0;border-radius:16px}
         <div class="fam-body">
           <h4 class="fam-name"><a href="#rfid-pins" class="fam-link">RFID ქინძისთავები</a></h4>
           <p class="fam-short">ქინძისთავი ჩაშენებული RFID ჩიპით.</p>
+
+          <div class="fam-opts"><span class="fam-swatches" aria-hidden="true"><img src="img/p/rfid-pins-s.webp" alt="" width="160" height="120" loading="lazy" decoding="async"><img src="img/p/rfid-pins-rip02-s.webp" alt="" width="160" height="120" loading="lazy" decoding="async"></span><span class="fam-count">აირჩიეთ 2 მოდელიდან</span></div>
           <div class="fam-foot">
-            <span class="fam-meta"><span class="fam-count">2 მოდელი</span><span class="fam-tech">RFID</span></span>
-            <span class="fam-go" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+            <span class="fam-meta"><span class="fam-tech">RFID</span></span>
+            <span class="fam-go" aria-hidden="true">ყველა მოდელი <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
           </div>
         </div>
         <div class="fam-detail" hidden>
@@ -1841,9 +1908,11 @@ a.cv::after{content:"";position:absolute;inset:0;border-radius:16px}
         <div class="fam-body">
           <h4 class="fam-name"><a href="#rfid-alarm-tags" class="fam-link">RFID სიგნალიზაციის ჩიპები</a></h4>
           <p class="fam-short">ჩიპი ფოლადის თოკით და სიგნალიზაციით.</p>
+
+          <div class="fam-opts"><span class="fam-swatches" aria-hidden="true"><img src="img/p/rfid-alarm-tags-s.webp" alt="" width="160" height="120" loading="lazy" decoding="async"><img src="img/p/rfid-alarm-tags-riat011-s.webp" alt="" width="160" height="120" loading="lazy" decoding="async"></span><span class="fam-count">აირჩიეთ 2 მოდელიდან</span></div>
           <div class="fam-foot">
-            <span class="fam-meta"><span class="fam-count">2 მოდელი</span><span class="fam-tech">RF</span><span class="fam-tech">AM</span><span class="fam-tech">RFID</span></span>
-            <span class="fam-go" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+            <span class="fam-meta"><span class="fam-tech">RF</span><span class="fam-tech">AM</span><span class="fam-tech">RFID</span></span>
+            <span class="fam-go" aria-hidden="true">ყველა მოდელი <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
           </div>
         </div>
         <div class="fam-detail" hidden>
@@ -1876,9 +1945,11 @@ a.cv::after{content:"";position:absolute;inset:0;border-radius:16px}
         <div class="fam-body">
           <h4 class="fam-name"><a href="#rfid-special-tags" class="fam-link">სპეციალური RFID ჩიპები</a></h4>
           <p class="fam-short">ბოთლებისთვის, ბლისტერებისთვის, ყუთებისა და ქილებისთვის.</p>
+
+          <div class="fam-opts"><span class="fam-swatches" aria-hidden="true"><img src="img/p/rfid-special-tags-s.webp" alt="" width="160" height="120" loading="lazy" decoding="async"><img src="img/p/rfid-special-tags-rit088-s.webp" alt="" width="160" height="120" loading="lazy" decoding="async"><img src="img/p/rfid-special-tags-risw001-s.webp" alt="" width="160" height="120" loading="lazy" decoding="async"><span class="more">+1</span></span><span class="fam-count">აირჩიეთ 4 მოდელიდან</span></div>
           <div class="fam-foot">
-            <span class="fam-meta"><span class="fam-count">4 მოდელი</span><span class="fam-tech">RF</span><span class="fam-tech">AM</span><span class="fam-tech">RFID</span></span>
-            <span class="fam-go" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+            <span class="fam-meta"><span class="fam-tech">RF</span><span class="fam-tech">AM</span><span class="fam-tech">RFID</span></span>
+            <span class="fam-go" aria-hidden="true">ყველა მოდელი <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
           </div>
         </div>
         <div class="fam-detail" hidden>
@@ -1913,9 +1984,11 @@ a.cv::after{content:"";position:absolute;inset:0;border-radius:16px}
         <div class="fam-body">
           <h4 class="fam-name"><a href="#uhf-labels" class="fam-link">UHF RFID ეტიკეტები</a></h4>
           <p class="fam-short">33 ფორმა და ზომა — ტანსაცმლის, საწყობისა და ლოჯისტიკისთვის.</p>
+
+          <div class="fam-opts"><span class="fam-count">აირჩიეთ 33 ტიპიდან</span></div>
           <div class="fam-foot">
-            <span class="fam-meta"><span class="fam-count">33 ტიპი</span><span class="fam-tech">RFID</span></span>
-            <span class="fam-go" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+            <span class="fam-meta"><span class="fam-tech">RFID</span></span>
+            <span class="fam-go" aria-hidden="true">ყველა მოდელი <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
           </div>
         </div>
         <div class="fam-detail" hidden>
@@ -1948,9 +2021,11 @@ a.cv::after{content:"";position:absolute;inset:0;border-radius:16px}
         <div class="fam-body">
           <h4 class="fam-name"><a href="#hf-labels" class="fam-link">HF და NFC ეტიკეტები</a></h4>
           <p class="fam-short">მცირე მანძილზე წასაკითხი: NFC, ბიბლიოთეკა, დოკუმენტები.</p>
+
+          <div class="fam-opts"><span class="fam-count">აირჩიეთ 21 ტიპიდან</span></div>
           <div class="fam-foot">
-            <span class="fam-meta"><span class="fam-count">21 ტიპი</span><span class="fam-tech">NFC</span></span>
-            <span class="fam-go" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+            <span class="fam-meta"><span class="fam-tech">NFC</span></span>
+            <span class="fam-go" aria-hidden="true">ყველა მოდელი <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
           </div>
         </div>
         <div class="fam-detail" hidden>
@@ -1982,9 +2057,11 @@ a.cv::after{content:"";position:absolute;inset:0;border-radius:16px}
         <div class="fam-body">
           <h4 class="fam-name"><a href="#rfid-clothing" class="fam-link">RFID ტანსაცმლის ეტიკეტები</a></h4>
           <p class="fam-short">ქაღალდის, ქსოვილის და პლასტმასის ჩამოსაკიდები.</p>
+
+          <div class="fam-opts"><span class="fam-swatches" aria-hidden="true"><img src="img/p/rfid-clothing-ril01-s.webp" alt="" width="160" height="120" loading="lazy" decoding="async"><img src="img/p/rfid-clothing-ril02-s.webp" alt="" width="160" height="120" loading="lazy" decoding="async"><img src="img/p/rfid-clothing-ril03-s.webp" alt="" width="160" height="120" loading="lazy" decoding="async"><span class="more">+2</span></span><span class="fam-count">აირჩიეთ 5 მოდელიდან</span></div>
           <div class="fam-foot">
-            <span class="fam-meta"><span class="fam-count">5 მოდელი</span><span class="fam-tech">RFID</span></span>
-            <span class="fam-go" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+            <span class="fam-meta"><span class="fam-tech">RFID</span></span>
+            <span class="fam-go" aria-hidden="true">ყველა მოდელი <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
           </div>
         </div>
         <div class="fam-detail" hidden>
@@ -2020,9 +2097,11 @@ a.cv::after{content:"";position:absolute;inset:0;border-radius:16px}
         <div class="fam-body">
           <h4 class="fam-name"><a href="#nfc-tags" class="fam-link">NFC ტეგები</a></h4>
           <p class="fam-short">ტელეფონის მიდებით ხსნის ბმულს. Ø25 და Ø30 მმ.</p>
+
+          <div class="fam-opts"><span class="fam-count">აირჩიეთ 3 მოდელიდან</span></div>
           <div class="fam-foot">
-            <span class="fam-meta"><span class="fam-count">3 მოდელი</span><span class="fam-tech">NFC</span></span>
-            <span class="fam-go" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+            <span class="fam-meta"><span class="fam-tech">NFC</span></span>
+            <span class="fam-go" aria-hidden="true">ყველა მოდელი <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
           </div>
         </div>
         <div class="fam-detail" hidden>
@@ -2055,9 +2134,10 @@ a.cv::after{content:"";position:absolute;inset:0;border-radius:16px}
         <div class="fam-body">
           <h4 class="fam-name"><a href="#rfid-cards" class="fam-link">RFID ბარათები</a></h4>
           <p class="fam-short">დაშვების, სასტუმროსა და ლოიალობის ბარათები.</p>
+
           <div class="fam-foot">
-            <span class="fam-meta"><span class="fam-count">1 მოდელი</span><span class="fam-tech">RFID</span></span>
-            <span class="fam-go" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+            <span class="fam-meta"><span class="fam-tech">RFID</span></span>
+            <span class="fam-go" aria-hidden="true">დეტალები <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
           </div>
         </div>
         <div class="fam-detail" hidden>
@@ -2091,9 +2171,11 @@ a.cv::after{content:"";position:absolute;inset:0;border-radius:16px}
         <div class="fam-body">
           <h4 class="fam-name"><a href="#rfid-readers" class="fam-link">RFID მკითხველები</a></h4>
           <p class="fam-short">ხელის, სტაციონარული და სამაგიდო მკითხველები.</p>
+
+          <div class="fam-opts"><span class="fam-swatches" aria-hidden="true"><img src="img/p/rfid-readers-rirw05-s.webp" alt="" width="160" height="120" loading="lazy" decoding="async"><img src="img/p/rfid-readers-s.webp" alt="" width="160" height="120" loading="lazy" decoding="async"><img src="img/p/rfid-readers-rirw07-s.webp" alt="" width="160" height="120" loading="lazy" decoding="async"><span class="more">+1</span></span><span class="fam-count">აირჩიეთ 4 მოდელიდან</span></div>
           <div class="fam-foot">
-            <span class="fam-meta"><span class="fam-count">4 მოდელი</span><span class="fam-tech">RFID</span></span>
-            <span class="fam-go" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+            <span class="fam-meta"><span class="fam-tech">RFID</span></span>
+            <span class="fam-go" aria-hidden="true">ყველა მოდელი <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
           </div>
         </div>
         <div class="fam-detail" hidden>
@@ -2128,9 +2210,10 @@ a.cv::after{content:"";position:absolute;inset:0;border-radius:16px}
         <div class="fam-body">
           <h4 class="fam-name"><a href="#rfid-printer" class="fam-link">RFID პრინტერი</a></h4>
           <p class="fam-short">ბეჭდავს და წერს RFID ეტიკეტებს.</p>
+
           <div class="fam-foot">
-            <span class="fam-meta"><span class="fam-count">1 მოდელი</span><span class="fam-tech">RFID</span></span>
-            <span class="fam-go" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+            <span class="fam-meta"><span class="fam-tech">RFID</span></span>
+            <span class="fam-go" aria-hidden="true">დეტალები <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
           </div>
         </div>
         <div class="fam-detail" hidden>
@@ -2168,9 +2251,11 @@ a.cv::after{content:"";position:absolute;inset:0;border-radius:16px}
         <div class="fam-body">
           <h4 class="fam-name"><a href="#animal-ear-tags" class="fam-link">ცხოველის RFID საყურეები</a></h4>
           <p class="fam-short">ელექტრონული საყურეები პირუტყვისთვის.</p>
+
+          <div class="fam-opts"><span class="fam-swatches" aria-hidden="true"><img src="img/p/animal-ear-tags-s.webp" alt="" width="160" height="120" loading="lazy" decoding="async"><img src="img/p/animal-ear-tags-rif05-s.webp" alt="" width="160" height="120" loading="lazy" decoding="async"><img src="img/p/animal-ear-tags-rif06-s.webp" alt="" width="160" height="120" loading="lazy" decoding="async"><span class="more">+1</span></span><span class="fam-count">აირჩიეთ 4 მოდელიდან</span></div>
           <div class="fam-foot">
-            <span class="fam-meta"><span class="fam-count">4 მოდელი</span><span class="fam-tech">RFID</span></span>
-            <span class="fam-go" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+            <span class="fam-meta"><span class="fam-tech">RFID</span></span>
+            <span class="fam-go" aria-hidden="true">ყველა მოდელი <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
           </div>
         </div>
         <div class="fam-detail" hidden>
@@ -2205,9 +2290,10 @@ a.cv::after{content:"";position:absolute;inset:0;border-radius:16px}
         <div class="fam-body">
           <h4 class="fam-name"><a href="#animal-microchips" class="fam-link">ცხოველის მიკროჩიპები</a></h4>
           <p class="fam-short">ბრინჯის მარცვლის ზომის ჩიპი, შპრიცით.</p>
+
           <div class="fam-foot">
-            <span class="fam-meta"><span class="fam-count">1 მოდელი</span><span class="fam-tech">RFID</span></span>
-            <span class="fam-go" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+            <span class="fam-meta"><span class="fam-tech">RFID</span></span>
+            <span class="fam-go" aria-hidden="true">დეტალები <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
           </div>
         </div>
         <div class="fam-detail" hidden>

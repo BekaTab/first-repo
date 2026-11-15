@@ -69,12 +69,16 @@ const catById = Object.fromEntries(categories.map(c => [c.id, c]));
 const src = spec => `img/p/${imgs[spec] || 'missing'}.webp`;
 const thumb = spec => `img/p/${imgs[spec] || 'missing'}-s.webp`;
 const numModels = f => f.cols[0] === '№' || f.cols[0] === 'ანტენა, მმ' ? f.rows.length : f.rows.length;
-const countLabel = f => {
+const unitFrom = f => (f.id === 'uhf-labels' || f.id === 'hf-labels') ? 'ტიპიდან' : 'მოდელიდან';
+// Like the "+6 more" swatches on big shops: small photos of the models inside, then a plain sentence
+function options(f) {
   const n = f.rows.length;
-  if (f.id === 'uhf-labels') return `${n} ტიპი`;
-  if (f.id === 'hf-labels') return `${n} ტიპი`;
-  return n === 1 ? '1 მოდელი' : `${n} მოდელი`;
-};
+  if (n < 2) return '';
+  const pics = [...new Set(f.rows.map(r => r.img).filter(Boolean))].slice(0, n > 3 ? 3 : n);
+  const sw = pics.length >= 2 ? `<span class="fam-swatches" aria-hidden="true">${pics.map(s => `<img src="${thumb(s)}" alt="" width="160" height="120" loading="lazy" decoding="async">`).join('')}${n > pics.length ? `<span class="more">+${n - pics.length}</span>` : ''}</span>` : '';
+  return `
+          <div class="fam-opts">${sw}<span class="fam-count">აირჩიეთ ${n} ${unitFrom(f)}</span></div>`;
+}
 const hasModelCol = f => f.cols[0] === 'მოდელი' || f.cols[0] === 'ჩიპი';
 
 function gallery(f) {
@@ -136,9 +140,10 @@ function card(f) {
         <div class="fam-body">
           <h4 class="fam-name"><a href="#${f.id}" class="fam-link">${f.name}</a></h4>
           <p class="fam-short">${f.short}</p>
+${options(f)}
           <div class="fam-foot">
-            <span class="fam-meta"><span class="fam-count">${countLabel(f)}</span>${f.tech.map(t => `<span class="fam-tech">${TECH[t]}</span>`).join('')}</span>
-            <span class="fam-go" aria-hidden="true">${I.I_ARROW}</span>
+            <span class="fam-meta">${f.tech.map(t => `<span class="fam-tech">${TECH[t]}</span>`).join('')}</span>
+            <span class="fam-go" aria-hidden="true">${f.rows.length > 1 ? 'ყველა მოდელი' : 'დეტალები'} ${I.I_ARROW}</span>
           </div>
         </div>${detail(f)}
       </article>`;
